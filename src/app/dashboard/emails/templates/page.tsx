@@ -517,7 +517,7 @@ export default function EmailTemplatesPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <IconTemplate size={28} className="!text-accent" />
+          <IconTemplate size={28} className="!text-accent-text" />
           <div>
             <h1 className="!text-2xl font-bold">{t('email_templates') || 'Templates d\'emails'}</h1>
             <p className="!text-sm !text-muted-foreground">

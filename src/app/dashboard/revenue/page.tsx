@@ -450,7 +450,7 @@ export default function RevenuePage() {
         if (!client?.name) return <span className="!text-sm">-</span>;
         return (
           <span
-            className="!text-sm cursor-pointer hover:!text-accent transition-colors"
+            className="!text-sm cursor-pointer hover:!text-accent-text transition-colors"
             onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name, client.documentId)}`); }}
           >
             {client.name}
@@ -567,7 +567,7 @@ export default function RevenuePage() {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartLine className="w-4 h-4 !text-accent" />
+            <IconChartLine className="w-4 h-4 !text-accent-text" />
             <span className="!text-sm font-medium !text-primary">{t('revenue_evolution') || 'Évolution CA'}</span>
           </div>
           <div className="h-40">
@@ -583,7 +583,7 @@ export default function RevenuePage() {
           className="card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartBar className="w-4 h-4 !text-accent" />
+            <IconChartBar className="w-4 h-4 !text-accent-text" />
             <span className="!text-sm font-medium !text-primary">{t('invoices_by_month') || 'Factures/mois'}</span>
           </div>
           <div className="h-40">
@@ -599,7 +599,7 @@ export default function RevenuePage() {
           className="card p-4 md:col-span-2 lg:col-span-1"
         >
           <div className="flex items-center gap-2 mb-3">
-            <IconChartPie className="w-4 h-4 !text-accent" />
+            <IconChartPie className="w-4 h-4 !text-accent-text" />
             <span className="!text-sm font-medium !text-primary">{t('revenue_by_client') || 'CA/client'}</span>
           </div>
           <div className="h-40">

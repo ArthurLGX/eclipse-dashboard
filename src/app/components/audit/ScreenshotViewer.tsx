@@ -127,7 +127,7 @@ export default function ScreenshotViewer({
         <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
           <div className="flex items-center gap-3">
             <div className="p-1.5 bg-accent-light ">
-              <IconPhoto className="w-4 h-4 !text-accent" />
+              <IconPhoto className="w-4 h-4 !text-accent-text" />
             </div>
             <div>
               <h4 className="font-semibold !text-primary !text-sm">
@@ -171,7 +171,7 @@ export default function ScreenshotViewer({
 
             <button
               onClick={() => setIsFullscreen(true)}
-              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
+              className="p-2 !text-muted hover:!text-accent-text hover:bg-accent-light  transition-colors"
               title={t('fullscreen') || 'Plein écran'}
             >
               <IconMaximize className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function ScreenshotViewer({
 
             <button
               onClick={handleDownload}
-              className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
+              className="p-2 !text-muted hover:!text-accent-text hover:bg-accent-light  transition-colors"
               title={t('download') || 'Télécharger'}
             >
               <IconDownload className="w-4 h-4" />

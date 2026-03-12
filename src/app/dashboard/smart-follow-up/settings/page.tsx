@@ -191,7 +191,7 @@ export default function SmartFollowUpSettingsPage() {
           </button>
           <div>
             <h1 className="!text-3xl font-bold !text-primary mb-2 flex items-center gap-3">
-              <IconSettings className="w-8 h-8 !text-accent" />
+              <IconSettings className="w-8 h-8 !text-accent-text" />
               Paramètres Smart Follow-Up
             </h1>
             <p className="!text-muted">Configurez les règles d&apos;automatisation des relances</p>
@@ -211,7 +211,7 @@ export default function SmartFollowUpSettingsPage() {
       {/* Section Activation */}
       <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="!text-xl font-bold !text-primary mb-4 flex items-center gap-2">
-          <IconShieldCheck className="w-6 h-6 !text-accent" />
+          <IconShieldCheck className="w-6 h-6 !text-accent-text" />
           Activation du système
         </h2>
         
@@ -283,7 +283,7 @@ export default function SmartFollowUpSettingsPage() {
       {/* Section Configuration ICP */}
       <div id="icp" className="bg-card border border-default p-6 mb-6">
         <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-          <IconFilter className="w-6 h-6 text-accent" />
+          <IconFilter className="w-6 h-6 text-accent-text" />
           Configuration Ideal Client Profile (ICP)
         </h2>
         <p className="text-sm text-muted mb-6">
@@ -491,7 +491,7 @@ export default function SmartFollowUpSettingsPage() {
               key={keyword}
               className="flex items-center gap-2 px-3 py-2 bg-accent/10 border border-accent/20 "
             >
-              <span className="!text-sm !text-accent font-medium">{keyword}</span>
+              <span className="!text-sm !text-accent-text font-medium">{keyword}</span>
               <button
                 onClick={() => handleRemoveKeyword(keyword)}
                 className="!text-error hover:!text-error-dark transition-colors"
@@ -509,7 +509,7 @@ export default function SmartFollowUpSettingsPage() {
       {/* Section Délais de relance */}
       <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="!text-xl font-bold !text-primary mb-4 flex items-center gap-2">
-          <IconClock className="w-6 h-6 !text-accent" />
+          <IconClock className="w-6 h-6 !text-accent-text" />
           Délais de relance (en jours)
         </h2>
         
@@ -656,7 +656,7 @@ export default function SmartFollowUpSettingsPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="!text-xl font-bold !text-primary flex items-center gap-2">
-              <IconFilter className="w-6 h-6 !text-accent" />
+              <IconFilter className="w-6 h-6 !text-accent-text" />
               Règles de filtrage personnalisées
             </h2>
             <p className="!text-sm !text-muted mt-2">
@@ -690,7 +690,7 @@ export default function SmartFollowUpSettingsPage() {
               {customRules.filter(r => r.enabled).map(rule => (
                 <div key={rule.id} className="flex items-center gap-2 p-3 bg-secondary/50 ">
                   <span className="!text-sm !text-primary font-medium">{rule.name}</span>
-                  <span className="px-2 py-1 !text-xs bg-accent/10 !text-accent rounded">
+                  <span className="px-2 py-1 !text-xs bg-accent/10 !text-accent-text rounded">
                     Priorité {rule.priority}
                   </span>
                 </div>
@@ -706,7 +706,7 @@ export default function SmartFollowUpSettingsPage() {
       {/* Section Notifications */}
       <div className="bg-card border border-default  p-6 mb-6">
         <h2 className="!text-xl font-bold !text-primary mb-4 flex items-center gap-2">
-          <IconBell className="w-6 h-6 !text-accent" />
+          <IconBell className="w-6 h-6 !text-accent-text" />
           Préférences de notification
         </h2>
         

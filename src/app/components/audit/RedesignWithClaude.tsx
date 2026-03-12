@@ -169,7 +169,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
       <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
         <div className="flex items-center gap-3">
           <div className="p-1.5 bg-accent-light">
-            <IconSparkles className="w-4 h-4 !text-accent" />
+            <IconSparkles className="w-4 h-4 !text-accent-text" />
           </div>
           <div>
             <h4 className="font-semibold !text-primary !text-sm">{t('redesign_title')}</h4>
@@ -247,7 +247,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
             <div className="relative w-20 h-20 mx-auto mb-4">
               <div className="absolute inset-0 rounded-full border-4 border-accent opacity-20" />
               <div className="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin" />
-              <IconSparkles className="absolute inset-0 m-auto w-8 h-8 !text-accent animate-pulse" />
+              <IconSparkles className="absolute inset-0 m-auto w-8 h-8 !text-accent-text animate-pulse" />
             </div>
             <p className="!text-lg font-medium !text-primary mb-2">{t('redesign_generating')}</p>
             {/* Progress bar */}

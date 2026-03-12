@@ -310,7 +310,7 @@ export default function ClientWorkflowView({
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="inline-flex items-center gap-1 !text-xs !text-accent hover:underline"
+                          className="inline-flex items-center gap-1 !text-xs !text-accent-text hover:underline"
                         >
                           <IconExternalLink className="w-3 h-3" />
                           {link.label}

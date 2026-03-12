@@ -613,7 +613,7 @@ function DashboardLayoutContent({
                       {resolvedMode === 'dark' ? (
                         <IconSun stroke={'#ffd700'} size={16} className="!text-warning" />
                       ) : (
-                        <IconMoon size={16} className="!text-accent" />
+                        <IconMoon size={16} className="!text-accent-text" />
                       )}
                     </button>
                     {/* Pin Button */}
@@ -622,7 +622,7 @@ function DashboardLayoutContent({
                       className="btn-ghost p-1.5"
                     >
                       {isPinned ? (
-                        <IconPinFilled size={16} className="!text-accent" />
+                        <IconPinFilled size={16} className="!text-accent-text" />
                       ) : (
                         <IconPin size={16} className="!text-secondary" />
                       )}
@@ -768,7 +768,7 @@ function DashboardLayoutContent({
                   {resolvedMode === 'dark' ? (
                     <IconSun stroke={'#ffd700'} size={18} className="!text-warning" />
                   ) : (
-                    <IconMoon size={18} className="!text-accent" />
+                    <IconMoon size={18} className="!text-accent-text" />
                   )}
                 </button>
                 {/* Notification bell mobile */}

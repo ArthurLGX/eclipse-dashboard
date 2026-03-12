@@ -501,7 +501,7 @@ export default function YourCompanyPage() {
                       href={companyProfile?.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="!text-accent underline p-3 bg-muted  block"
+                      className="!text-accent-text underline p-3 bg-muted  block"
                     >
                       {companyProfile?.website}
                     </a>

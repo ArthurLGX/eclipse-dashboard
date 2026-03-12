@@ -131,7 +131,7 @@ export default function BusinessSetupModal() {
 
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-accent-light ">
-                <IconSparkles className="w-8 h-8 !text-accent" />
+                <IconSparkles className="w-8 h-8 !text-accent-text" />
               </div>
               <div>
                 <h2 className="!text-2xl font-bold !text-primary">
@@ -185,7 +185,7 @@ export default function BusinessSetupModal() {
                     {t('select_your_modules') || 'Sélectionnez vos modules'}
                   </h3>
                   <p className="!text-muted mt-2">
-                    {t('modules_for') || 'Modules recommandés pour'} <span className="!text-accent font-medium">{businessLabel}</span>
+                    {t('modules_for') || 'Modules recommandés pour'} <span className="!text-accent-text font-medium">{businessLabel}</span>
                   </p>
                 </div>
                 {selectedType && (

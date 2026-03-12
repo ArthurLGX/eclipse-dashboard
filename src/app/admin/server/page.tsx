@@ -143,7 +143,7 @@ export default function AdminServerPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-            <IconServer className="w-7 h-7 !text-accent" />
+            <IconServer className="w-7 h-7 !text-accent-text" />
             {t('server_monitoring') || 'Monitoring Serveur'}
           </h1>
           <p className="!text-sm !text-muted">{t('realtime_monitoring') || 'Surveillance en temps réel de votre infrastructure'}</p>
@@ -319,7 +319,7 @@ export default function AdminServerPage() {
       <div className="card p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
-            <IconActivity className="w-5 h-5 !text-accent" />
+            <IconActivity className="w-5 h-5 !text-accent-text" />
             {t('response_time') || 'Temps de réponse'}
           </h2>
           <span className="!text-sm !text-muted">
@@ -417,7 +417,7 @@ export default function AdminServerPage() {
       <div className="card p-6">
         <h2 className="!text-lg font-semibold !text-primary mb-4">{t('health_endpoint') || 'Endpoint de santé'}</h2>
         <div className="flex items-center gap-4 p-4 bg-muted/5  border border-muted">
-          <code className="flex-1 !text-sm !text-accent font-mono">
+          <code className="flex-1 !text-sm !text-accent-text font-mono">
             GET {API_URL}/api/health
           </code>
           <button

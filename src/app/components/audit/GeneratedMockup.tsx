@@ -213,13 +213,13 @@ export default function GeneratedMockup({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card overflow-hidden"
+        className="bg-card overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
           <div className="flex items-center gap-3 relative">
             <div className="p-1.5 bg-accent-light ">
-              <IconSparkles className="w-4 h-4 !text-accent" />
+              <IconSparkles className="w-4 h-4 !text-accent-text" />
             </div>
             <div>
               <h4 className="font-semibold !text-primary !text-sm">
@@ -236,21 +236,21 @@ export default function GeneratedMockup({
               <>
                 <button
                   onClick={() => setComparisonMode(comparisonMode === 'side-by-side' ? 'slider' : 'side-by-side')}
-                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
+                  className="p-2 !text-muted hover:!text-accent-text hover:bg-accent-light  transition-colors"
                   title={t('toggle_comparison') || 'Changer le mode'}
                 >
                   <IconArrowsHorizontal className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setIsFullscreen(true)}
-                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
+                  className="p-2 !text-muted hover:!text-accent-text hover:bg-accent-light  transition-colors"
                   title={t('fullscreen') || 'Plein écran'}
                 >
                   <IconMaximize className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleDownload}
-                  className="p-2 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
+                  className="p-2 !text-muted hover:!text-accent-text hover:bg-accent-light  transition-colors"
                   title={t('download') || 'Télécharger'}
                 >
                   <IconDownload className="w-4 h-4" />
@@ -266,7 +266,7 @@ export default function GeneratedMockup({
             /* Initial State - Generate Button */
             <div className="!text-center py-12">
               <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-accent-light flex items-center justify-center">
-                <IconSparkles className="w-10 h-10 !text-accent" />
+                <IconSparkles className="w-10 h-10 !text-accent-text" />
               </div>
               <h4 className="!text-lg font-semibold !text-primary mb-2">
                 {t('generate_ideal_mockup') || 'Générer la maquette idéale'}
@@ -293,7 +293,7 @@ export default function GeneratedMockup({
               <div className="relative w-20 h-20 mx-auto mb-4">
                 <div className="absolute inset-0 rounded-full border-4 border-accent opacity-20" />
                 <div className="absolute inset-0 rounded-full border-4 border-accent border-t-transparent animate-spin" />
-                <IconSparkles className="absolute inset-0 m-auto w-8 h-8 !text-accent animate-pulse" />
+                <IconSparkles className="absolute inset-0 m-auto w-8 h-8 !text-accent-text animate-pulse" />
               </div>
               <p className="!text-lg font-medium !text-primary">
                 {isImageLoading 
@@ -333,7 +333,7 @@ export default function GeneratedMockup({
                     href="https://pollinations.ai"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="!text-accent hover:underline !text-sm"
+                    className="!text-accent-text hover:underline !text-sm"
                   >
                     → {t('check_pollinations') || 'Voir le statut de Pollinations.ai'}
                   </a>
@@ -434,7 +434,7 @@ export default function GeneratedMockup({
                     style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
                   >
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-accent">
-                      <IconArrowsHorizontal className="w-5 h-5 !text-accent" />
+                      <IconArrowsHorizontal className="w-5 h-5 !text-accent-text" />
                     </div>
                   </div>
                   
@@ -551,7 +551,7 @@ export default function GeneratedMockup({
                       style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
                     >
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center border-2 border-accent">
-                        <IconArrowsHorizontal className="w-5 h-5 !text-accent" />
+                        <IconArrowsHorizontal className="w-5 h-5 !text-accent-text" />
                       </div>
                     </div>
                   </div>

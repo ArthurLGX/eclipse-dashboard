@@ -167,7 +167,7 @@ export default function EmailSidebar({
               onClick={() => onViewChange(item.id)}
               className={`w-full flex items-center gap-3 px-4 py-2 rounded-r-full transition-colors !text-left mb-1 ${
                 isActive
-                  ? 'bg-accent-light !text-accent font-medium'
+                  ? 'bg-accent-light !text-accent-text font-medium'
                   : 'hover:bg-hover !text-primary'
               }`}
             >
@@ -216,7 +216,7 @@ export default function EmailSidebar({
                       onClick={() => onViewChange(item.id)}
                       className={`w-full flex items-center gap-3 px-4 py-2 pl-11 rounded-r-full transition-colors !text-left mb-1 ${
                         isActive
-                          ? 'bg-accent-light !text-accent font-medium'
+                          ? 'bg-accent-light !text-accent-text font-medium'
                           : 'hover:bg-hover !text-primary'
                       }`}
                     >

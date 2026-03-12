@@ -321,7 +321,7 @@ export default function NotificationsPage() {
         .slice(0, 2);
       return (
         <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-          <span className="!text-sm font-boldtext-accent">{initials}</span>
+          <span className="!text-sm font-boldtext-accent-text">{initials}</span>
         </div>
       );
     }
@@ -329,7 +329,7 @@ export default function NotificationsPage() {
     if (notification.type === 'project_invitation') {
       return (
         <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-          <IconUsers className="w-5 h-5 !text-accent" />
+          <IconUsers className="w-5 h-5 !text-accent-text" />
         </div>
       );
     }

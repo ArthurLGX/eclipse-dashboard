@@ -163,11 +163,11 @@ export default function TrialExpiredModal({
                       className="bg-hover border border-default  p-4 hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="!text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
+                        <h4 className="!text-primary font-semibold capitalize group-hover:!text-accent-text transition-colors">
                           {plan.name}
                         </h4>
                         <div className="!text-right">
-                          <div className="!text-accent font-bold">
+                          <div className="!text-accent-text font-bold">
                             {language === 'en' ? '€' : ''}
                             {plan.price_monthly.toFixed(2)}
                             {language === 'fr' ? '€' : ''}
@@ -183,10 +183,10 @@ export default function TrialExpiredModal({
                       </p>
 
                       <div className="flex items-center justify-between">
-                        <span className="!text-accent !text-xs font-medium">
+                        <span className="!text-accent-text !text-xs font-medium">
                           {t('select_plan')}
                         </span>
-                        <div className="!text-accent !text-xs">→</div>
+                        <div className="!text-accent-text !text-xs">→</div>
                       </div>
                     </motion.button>
                   ))}

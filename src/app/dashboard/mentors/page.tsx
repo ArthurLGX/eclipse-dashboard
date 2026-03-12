@@ -120,7 +120,7 @@ export default function MentorsPage() {
               </div>
               <button
                 onClick={() => {}}
-                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
               >
                 <IconPlus className="w-4 h-4" />
                 {t('add_mentor') || 'Ajouter un mentor'}
@@ -157,7 +157,7 @@ export default function MentorsPage() {
               </div>
               <button
                 onClick={() => {}}
-                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all mx-auto"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all mx-auto"
               >
                 <IconPlus className="w-4 h-4" />
                 {t('add_first_mentor') || 'Ajouter le premier mentor'}

@@ -789,7 +789,7 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                 {/* Duplicate check mode selector */}
                 <div className="p-4  bg-card-hover border border-default">
                   <div className="flex items-center gap-2 mb-3">
-                    <IconInfoCircle className="w-5 h-5 !text-accent" />
+                    <IconInfoCircle className="w-5 h-5 !text-accent-text" />
                     <p className="!text-sm font-medium !text-primary">
                       {t('duplicate_check_mode') || 'Vérification des doublons'}
                     </p>

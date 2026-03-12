@@ -91,7 +91,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-                  <IconFilter className="w-7 h-7 !text-accent" />
+                  <IconFilter className="w-7 h-7 !text-accent-text" />
                   Règles de filtrage
                 </h2>
                 <p className="!text-sm !text-muted mt-1">
@@ -124,7 +124,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
               <div className="space-y-4">
                 <button
                   onClick={handleCreateNew}
-                  className="w-full p-4 border-2 border-dashed border-accent  !text-accent hover:bg-accent/5 transition-colors flex items-center justify-center gap-2 font-medium"
+                  className="w-full p-4 border-2 border-dashed border-accent  !text-accent-text hover:bg-accent/5 transition-colors flex items-center justify-center gap-2 font-medium"
                 >
                   <IconPlus className="w-5 h-5" />
                   Créer une nouvelle règle
@@ -152,7 +152,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
                               <h3 className="font-semibold !text-primary">{rule.name}</h3>
-                              <span className="px-2 py-1 !text-xs font-medium rounded-full bg-accent/10 !text-accent">
+                              <span className="px-2 py-1 !text-xs font-medium rounded-full bg-accent/10 !text-accent-text">
                                 Priorité {rule.priority}
                               </span>
                               {rule.enabled ? (
@@ -199,7 +199,7 @@ export default function RuleManagementModal({ isOpen, onClose, rules: initialRul
                               className="p-2 hover:bg-secondary  transition-colors"
                               title="Modifier"
                             >
-                              <IconEdit className="w-5 h-5 !text-accent" />
+                              <IconEdit className="w-5 h-5 !text-accent-text" />
                             </button>
                             <button
                               onClick={() => handleDeleteRule(rule.id)}

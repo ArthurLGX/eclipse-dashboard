@@ -112,7 +112,7 @@ export default function AdminSettingsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-            <IconSettings className="w-7 h-7 !text-accent" />
+            <IconSettings className="w-7 h-7 !text-accent-text" />
             {t('configuration') || 'Configuration'}
           </h1>
           <p className="!text-sm !text-muted">{t('global_platform_settings') || 'Paramètres globaux de la plateforme'}</p>
@@ -152,7 +152,7 @@ export default function AdminSettingsPage() {
         {/* General Settings */}
         <div className="card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconBuildingStore className="w-5 h-5 !text-accent" />
+            <IconBuildingStore className="w-5 h-5 !text-accent-text" />
             {t('general_settings') || 'Paramètres généraux'}
           </h2>
           <div className="space-y-4">
@@ -220,7 +220,7 @@ export default function AdminSettingsPage() {
         {/* Security Settings */}
         <div className="card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconShield className="w-5 h-5 !text-accent" />
+            <IconShield className="w-5 h-5 !text-accent-text" />
             {t('security') || 'Sécurité'}
           </h2>
           <div className="space-y-4">
@@ -296,7 +296,7 @@ export default function AdminSettingsPage() {
         {/* Notifications */}
         <div className="card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconBell className="w-5 h-5 !text-accent" />
+            <IconBell className="w-5 h-5 !text-accent-text" />
             {t('notifications') || 'Notifications'}
           </h2>
           <div className="space-y-4">
@@ -350,7 +350,7 @@ export default function AdminSettingsPage() {
         {/* Features */}
         <div className="card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconPalette className="w-5 h-5 !text-accent" />
+            <IconPalette className="w-5 h-5 !text-accent-text" />
             {t('features') || 'Fonctionnalités'}
           </h2>
           <div className="space-y-4">

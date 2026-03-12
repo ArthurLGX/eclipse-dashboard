@@ -156,7 +156,7 @@ export default function MonitoringPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
             <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-              <IconServer className="w-7 h-7 !text-accent" />
+              <IconServer className="w-7 h-7 !text-accent-text" />
               {t('monitoring') || 'Monitoring'}
             </h1>
             <p className="!text-muted !text-sm mt-1">
@@ -187,7 +187,7 @@ export default function MonitoringPage() {
           <div className="card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light ">
-                <IconWorld className="w-5 h-5 !text-accent" />
+                <IconWorld className="w-5 h-5 !text-accent-text" />
               </div>
               <div>
                 <p className="!text-2xl font-bold !text-primary">{stats.total}</p>
@@ -330,7 +330,7 @@ export default function MonitoringPage() {
                                 href={site.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
-                                className="!text-xs !text-accent hover:underline flex items-center gap-1"
+                                className="!text-xs !text-accent-text hover:underline flex items-center gap-1"
                               >
                                 {site.url}
                                 <IconExternalLink className="w-3 h-3" />
@@ -405,7 +405,7 @@ export default function MonitoringPage() {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => router.push(`/dashboard/monitoring/${site.documentId}`)}
-                              className="p-1.5 !text-muted hover:!text-accent hover:bg-accent-light  transition-colors"
+                              className="p-1.5 !text-muted hover:!text-accent-text hover:bg-accent-light  transition-colors"
                               title={t('view_stats') || 'Voir les statistiques'}
                             >
                               <IconChartBar className="w-4 h-4" />

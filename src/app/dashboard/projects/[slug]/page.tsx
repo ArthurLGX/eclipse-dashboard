@@ -461,7 +461,7 @@ const PROJECT_TYPES = [
           {/* En-tête du projet (infos basiques) */}
           <div className="bg-card p-8 !text-center mb-6">
             <div className="w-20 h-20 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
-              <IconFileText className="w-10 h-10 !text-accent" />
+              <IconFileText className="w-10 h-10 !text-accent-text" />
             </div>
             <h1 className="!text-2xl font-bold !text-primary mb-2">{project.title}</h1>
             {project.user?.username && (
@@ -498,7 +498,7 @@ const PROJECT_TYPES = [
             ) : (
               <div className="!text-center">
                 <div className="w-16 h-16 bg-accent-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <IconUserPlus className="w-8 h-8 !text-accent" />
+                  <IconUserPlus className="w-8 h-8 !text-accent-text" />
                 </div>
                 <h2 className="!text-xl font-bold !text-primary mb-2">{t('request_collaboration')}</h2>
                 <p className="!text-primary mb-6">{t('collaboration_request_description')}</p>
@@ -527,7 +527,7 @@ const PROJECT_TYPES = [
           <div className="!text-center mt-6">
             <Link
               href="/dashboard/projects"
-              className="!text-accent hover:!text-accent/80 flex items-center gap-2 justify-center"
+              className="!text-accent-text hover:!text-accent/80 flex items-center gap-2 justify-center"
             >
               <IconArrowLeft className="w-4 h-4" />
               {t('back_to_projects')}
@@ -762,7 +762,7 @@ const PROJECT_TYPES = [
                           [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                           [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                           [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                          [&_a]:!text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                          [&_a]:!text-accent-text [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
                         dangerouslySetInnerHTML={{ __html: project.description }}
                       />
                     ) : (
@@ -793,7 +793,7 @@ const PROJECT_TYPES = [
                             [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                             [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                             [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                            [&_a]:!text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                            [&_a]:!text-accent-text [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
                           dangerouslySetInnerHTML={{ __html: project.notes || '' }}
                         />
                       )}
@@ -954,7 +954,7 @@ const PROJECT_TYPES = [
                                     {note.title}
                                   </h3>
                                   {note.source === 'phantom_ai' && (
-                                    <span className="px-2 py-0.5 !text-xs rounded-full bg-accent-light !text-accent font-medium">
+                                    <span className="px-2 py-0.5 !text-xs rounded-full bg-accent-light !text-accent-text font-medium">
                                       Fathom AI
                                     </span>
                                   )}
@@ -1006,7 +1006,7 @@ const PROJECT_TYPES = [
                                     href={note.recording_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2  bg-accent-light !text-accent hover:opacity-80 transition-colors"
+                                    className="p-2  bg-accent-light !text-accent-text hover:opacity-80 transition-colors"
                                     title="Voir l'enregistrement"
                                   >
                                     <IconPlayerPlay className="w-4 h-4" />
@@ -1018,7 +1018,7 @@ const PROJECT_TYPES = [
                             {/* Expandable transcription */}
                             {note.transcription && (
                               <details className="mt-4 group">
-                                <summary className="cursor-pointer !text-sm !text-accent hover:underline list-none flex items-center gap-1">
+                                <summary className="cursor-pointer !text-sm !text-accent-text hover:underline list-none flex items-center gap-1">
                                   <IconFileText className="w-4 h-4" />
                                   Voir la transcription
                                 </summary>
@@ -1033,7 +1033,7 @@ const PROJECT_TYPES = [
                             {/* Action items list */}
                             {note.action_items && note.action_items.length > 0 && (
                               <details className="mt-3 group">
-                                <summary className="cursor-pointer !text-sm !text-accent hover:underline list-none flex items-center gap-1">
+                                <summary className="cursor-pointer !text-sm !text-accent-text hover:underline list-none flex items-center gap-1">
                                   <IconListCheck className="w-4 h-4" />
                                   Voir les actions ({note.action_items.length})
                                 </summary>
@@ -1128,7 +1128,7 @@ const PROJECT_TYPES = [
                                 }`} />
                               </div>
                               <div>
-                                <p className="!text-primary font-medium group-hover:!text-accent transition-colors">
+                                <p className="!text-primary font-medium group-hover:!text-accent-text transition-colors">
                                   {facture.reference}
                                 </p>
                                 <p className="!text-sm !text-muted">

@@ -66,7 +66,7 @@ export default function ClientFacturesPage() {
       label: t('reference'),
       render: (v, row) => (
         <span
-          className="!text-primary font-medium cursor-pointer hover:!text-accent transition-colors"
+          className="!text-primary font-medium cursor-pointer hover:!text-accent-text transition-colors"
           onClick={() => router.push(`/dashboard/factures/${getFactureSlug(row)}`)}
         >
           {v as string}

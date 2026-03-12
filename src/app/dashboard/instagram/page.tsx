@@ -465,7 +465,7 @@ function InstagramPlanner() {
     return (
       <div className="min-h-screen bg-page flex items-center justify-center">
         <div className="!text-center">
-          <IconLoader2 className="w-12 h-12 !text-accent animate-spin mx-auto mb-4" />
+          <IconLoader2 className="w-12 h-12 !text-accent-text animate-spin mx-auto mb-4" />
           <p className="!text-muted">Chargement des posts...</p>
         </div>
       </div>
@@ -505,7 +505,7 @@ function InstagramPlanner() {
       {isConnecting && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
           <div className="bg-card  p-8 shadow-xl flex flex-col items-center gap-4">
-            <IconLoader2 className="w-12 h-12 !text-accent animate-spin" />
+            <IconLoader2 className="w-12 h-12 !text-accent-text animate-spin" />
             <p className="!text-primary font-medium">Connexion à Instagram en cours...</p>
             <p className="!text-secondary !text-sm">Vous allez être redirigé vers Facebook</p>
           </div>
@@ -589,7 +589,7 @@ function InstagramPlanner() {
                   onClick={() => openCreateModal('post')}
                   className="w-full flex items-center gap-3 px-4 py-3 !text-left hover:bg-hover transition-colors"
                 >
-                  <IconPhoto className="w-5 h-5 !text-accent" />
+                  <IconPhoto className="w-5 h-5 !text-accent-text" />
                   <span>Post</span>
                 </button>
                 <button
@@ -623,7 +623,7 @@ function InstagramPlanner() {
           <div className="bg-card border border-default  p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light ">
-                <IconPhoto className="w-5 h-5 !text-accent" />
+                <IconPhoto className="w-5 h-5 !text-accent-text" />
               </div>
               <div>
                 <p className="!text-2xl font-bold !text-primary">{stats.total}</p>
@@ -656,7 +656,7 @@ function InstagramPlanner() {
           <div className="bg-card border border-default  p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light ">
-                <IconMessageCircle className="w-5 h-5 !text-accent" />
+                <IconMessageCircle className="w-5 h-5 !text-accent-text" />
               </div>
               <div>
                 <p className="!text-2xl font-bold !text-primary">{stats.totalComments}</p>
@@ -812,7 +812,7 @@ function InstagramPlanner() {
                   className="flex-shrink-0 flex flex-col items-center gap-1"
                 >
                   <div className="w-16 h-16 rounded-full border-2 border-dashed border-accent flex items-center justify-center">
-                    <IconPlus className="w-6 h-6 !text-accent" />
+                    <IconPlus className="w-6 h-6 !text-accent-text" />
                   </div>
                   <span className="!text-xs !text-muted">Ajouter</span>
                 </button>
@@ -1006,7 +1006,7 @@ function InstagramPlanner() {
             {/* Quick Tips */}
             <div className="bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-orange-400/10 border border-accent  p-4">
               <h3 className="font-semibold !text-primary mb-3 flex items-center gap-2">
-                <IconSparkles className="w-5 h-5 !text-accent" />
+                <IconSparkles className="w-5 h-5 !text-accent-text" />
                 Conseils
               </h3>
               <ul className="space-y-2 !text-sm !text-secondary">
@@ -1086,7 +1086,7 @@ function InstagramPlanner() {
                     {(editingPost.mediaUrls?.length || 0) < 10 && (
                       <button
                         onClick={() => setShowMediaPicker(true)}
-                        className="aspect-square border-2 border-dashed border-default  flex flex-col items-center justify-center gap-1 !text-muted hover:border-accent hover:!text-accent transition-colors"
+                        className="aspect-square border-2 border-dashed border-default  flex flex-col items-center justify-center gap-1 !text-muted hover:border-accent hover:!text-accent-text transition-colors"
                       >
                         <IconUpload className="w-6 h-6" />
                         <span className="!text-xs">Ajouter</span>
@@ -1171,7 +1171,7 @@ function InstagramPlanner() {
                       {editingPost.hashtags?.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 px-2 py-1 bg-accent-light !text-accent !text-sm rounded-full"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-accent-light !text-accent-text !text-sm rounded-full"
                         >
                           #{tag}
                           <button onClick={() => removeHashtag(tag)}>
@@ -1187,7 +1187,7 @@ function InstagramPlanner() {
                         <button
                           key={tag}
                           onClick={() => addHashtag(tag)}
-                          className="px-2 py-1 !text-xs !text-muted bg-muted rounded-full hover:bg-accent-light hover:!text-accent transition-colors"
+                          className="px-2 py-1 !text-xs !text-muted bg-muted rounded-full hover:bg-accent-light hover:!text-accent-text transition-colors"
                         >
                           #{tag}
                         </button>
@@ -1229,7 +1229,7 @@ function InstagramPlanner() {
                               onClick={() => setEditingPost(prev => ({ ...prev, music }))}
                               className="flex items-center gap-2 p-2 !text-left bg-muted  hover:bg-accent-light transition-colors"
                             >
-                              <IconMusic className="w-4 h-4 !text-accent" />
+                              <IconMusic className="w-4 h-4 !text-accent-text" />
                               <div className="min-w-0">
                                 <p className="!text-xs font-medium !text-primary truncate">{music.title}</p>
                                 <p className="!text-xs !text-muted truncate">{music.artist}</p>
@@ -1474,7 +1474,7 @@ function CalendarView({
                 {isCurrentMonth && (
                   <button
                     onClick={() => onCreatePost(date)}
-                    className="p-0.5 !text-muted hover:!text-accent opacity-0 hover:opacity-100 transition-opacity"
+                    className="p-0.5 !text-muted hover:!text-accent-text opacity-0 hover:opacity-100 transition-opacity"
                   >
                     <IconPlus className="w-3 h-3" />
                   </button>
@@ -1637,7 +1637,7 @@ function PostPreviewModal({
                   )}
 
                   {post.hashtags.length > 0 && (
-                    <p className="!text-sm !text-accent">
+                    <p className="!text-sm !text-accent-text">
                       {post.hashtags.map(t => `#${t}`).join(' ')}
                     </p>
                   )}

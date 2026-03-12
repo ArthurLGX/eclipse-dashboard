@@ -472,7 +472,7 @@ export default function CalendarPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
             <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-              <IconCalendar className="w-7 h-7 !text-accent" />
+              <IconCalendar className="w-7 h-7 !text-accent-text" />
               {t('calendar') || 'Calendrier'}
             </h1>
             <p className="!text-muted !text-sm mt-1">
@@ -526,7 +526,7 @@ export default function CalendarPage() {
             className="rounded-sm"
             unoptimized
           />
-          <Link href="/dashboard/settings/meeting-integrations" target="_blank" className="!text-primary group-hover:!text-accent transition-colors">
+          <Link href="/dashboard/settings/meeting-integrations" target="_blank" className="!text-primary group-hover:!text-accent-text transition-colors">
               Fathom AI
             </Link>
               {/*is user connected to fathom, afficher une pastille verte avec le texte "Connecté"*/}
@@ -541,7 +541,7 @@ export default function CalendarPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Calendar Grid */}
-          <div className="lg:col-span-3 card p-4">
+          <div className="lg:col-span-3 bg-card p-4">
             {/* Calendar Header */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -698,7 +698,7 @@ export default function CalendarPage() {
                           )}
                           {/* Recurring indicator */}
                           {(event.recurrence && event.recurrence !== 'none' || event.recurrence_parent_id) && (
-                            <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-accent-light rounded !text-accent w-fit">
+                            <div className="flex items-center gap-1 mt-1.5 px-1.5 py-0.5 bg-accent-light rounded !text-accent-text w-fit">
                               <IconCalendarEvent className="w-3 h-3" />
                               <span className="!text-[10px] font-medium">
                                 {(() => {
@@ -1410,7 +1410,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
           {eventType === 'meeting' && (
             <div className="p-4  border border-default bg-muted !space-y-3">
               <div className="flex items-center gap-2 !text-sm font-medium !text-primary">
-                <IconNotes className="w-4 h-4 !text-accent" />
+                <IconNotes className="w-4 h-4 !text-accent-text" />
                 {t('meeting_notes') || 'Notes de réunion'}
               </div>
               
@@ -1430,7 +1430,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                     <span className={`text-sm font-medium ${noteMode === 'manual' ? 'text-accent' : 'text-secondary'}`}>
                       {t('manual_notes') || 'Notes manuelles'}
                     </span>
-                    {noteMode === 'manual' && <IconCheck className="w-4 h-4 !text-accent ml-auto" />}
+                    {noteMode === 'manual' && <IconCheck className="w-4 h-4 !text-accent-text ml-auto" />}
                   </div>
                   <p className="!text-xs !text-muted mt-1">
                     {t('manual_notes_desc') || 'Prendre des notes après la réunion'}
@@ -1456,7 +1456,7 @@ function EventModal({ isOpen, onClose, event, defaultDate, projects, clients, de
                 >
                   <div className="flex items-center gap-2">
                     {checkingFathom ? (
-                      <IconLoader2 className="w-5 h-5 !text-accent animate-spin" />
+                      <IconLoader2 className="w-5 h-5 !text-accent-text animate-spin" />
                     ) : (
                       <Image
                         src="https://icons.duckduckgo.com/ip3/fathom.video.ico"

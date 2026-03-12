@@ -210,7 +210,7 @@ function EmailHistory() {
             </button>
             
             <h1 className="!text-xl font-semibold !text-primary flex items-center gap-2">
-              <IconMail className="w-6 h-6 !text-accent" />
+              <IconMail className="w-6 h-6 !text-accent-text" />
               {t('email_history') || 'Historique des emails'}
             </h1>
           </div>
@@ -282,7 +282,7 @@ function EmailHistory() {
           <div className="flex-1 min-w-0">
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
+                <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
               </div>
             ) : filteredEmails.length === 0 ? (
               <div className="!text-center py-20">
@@ -445,7 +445,7 @@ function EmailHistory() {
                           href={att.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2 py-0.5 bg-accent-light !text-accent rounded-full !text-xs hover:bg-accent-light transition-colors"
+                          className="px-2 py-0.5 bg-accent-light !text-accent-text rounded-full !text-xs hover:bg-accent-light transition-colors"
                         >
                           {att.name}
                         </a>

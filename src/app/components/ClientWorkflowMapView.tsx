@@ -820,7 +820,7 @@ export default function ClientWorkflowMapView({
             <motion.div
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-accent-light border border-accent rounded-full !text-[10px] !text-accent whitespace-nowrap flex items-center gap-1"
+              className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-accent-light border border-accent rounded-full !text-[10px] !text-accent-text whitespace-nowrap flex items-center gap-1"
             >
               <IconChevronRight className="w-3 h-3" />
               {satellite.guidedTip}
@@ -959,7 +959,7 @@ export default function ClientWorkflowMapView({
               <button
                 type="button"
                 onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-                className="p-2 rounded !text-muted hover:bg-hover hover:!text-accent transition-colors"
+                className="p-2 rounded !text-muted hover:bg-hover hover:!text-accent-text transition-colors"
                 title={t('replay_tutorial') || 'Revoir le tutoriel'}
               >
                 <IconPlayerPlay className="w-4 h-4" />
@@ -1012,7 +1012,7 @@ export default function ClientWorkflowMapView({
 
       {/* Mode indicator */}
       {guidedMode && viewMode === 'radial' && (
-        <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-accent-light border border-accent rounded-full !text-xs !text-accent flex items-center gap-2">
+        <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-accent-light border border-accent rounded-full !text-xs !text-accent-text flex items-center gap-2">
           <IconCompass className="w-3.5 h-3.5" />
           {t('workflow_guided_mode') || 'Mode guidé activé'}
         </div>
@@ -1204,10 +1204,10 @@ export default function ClientWorkflowMapView({
                   {/* Pipeline stage indicator - shows where in sales cycle */}
                   {radialClient.pipeline_status && (
                     <div 
-                      className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-accent-light border border-accent !text-[9px] !text-accent whitespace-nowrap flex items-center gap-1"
+                      className="absolute -bottom-5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-accent-light border border-accent !text-[9px] !text-accent-text whitespace-nowrap flex items-center gap-1"
                       title={t('current_pipeline_stage') || 'Étape pipeline actuelle'}
                     >
-                      <IconChartLine className="w-2.5 h-2.5 !text-accent" />
+                      <IconChartLine className="w-2.5 h-2.5 !text-accent-text" />
                       {getPipelineLabel(radialClient.pipeline_status)}
                     </div>
                   )}
@@ -1217,7 +1217,7 @@ export default function ClientWorkflowMapView({
                     <div className="absolute -bottom-11 left-1/2 -translate-x-1/2 !text-[9px] !text-muted whitespace-nowrap">
                       {Math.round(completeness * 100)}% • {completenessData.missing.length > 0 && <span className="!text-warning">{completenessData.missing.length} {t(completenessData.missing.length > 1 ? 'workflow_missing_plural' : 'workflow_missing') || 'manquant'}</span>}
                       {completenessData.missing.length > 0 && completenessData.notDone.length > 0 && ' • '}
-                      {completenessData.notDone.length > 0 && <span className="!text-accent">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
+                      {completenessData.notDone.length > 0 && <span className="!text-accent-text">{completenessData.notDone.length} {t('workflow_in_progress') || 'en cours'}</span>}
                     </div>
                   )}
 
@@ -1748,10 +1748,10 @@ export default function ClientWorkflowMapView({
             <div className="flex items-center justify-between p-5 border-b border-default">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-                  {createModal.type === 'quote' && <IconFileText className="w-5 h-5 !text-accent" />}
-                  {createModal.type === 'invoice' && <IconFileInvoice className="w-5 h-5 !text-accent" />}
-                  {createModal.type === 'contract' && <IconSignature className="w-5 h-5 !text-accent" />}
-                  {createModal.type === 'project' && <IconBriefcase className="w-5 h-5 !text-accent" />}
+                  {createModal.type === 'quote' && <IconFileText className="w-5 h-5 !text-accent-text" />}
+                  {createModal.type === 'invoice' && <IconFileInvoice className="w-5 h-5 !text-accent-text" />}
+                  {createModal.type === 'contract' && <IconSignature className="w-5 h-5 !text-accent-text" />}
+                  {createModal.type === 'project' && <IconBriefcase className="w-5 h-5 !text-accent-text" />}
                 </div>
                 <div>
                   <h3 className="!text-lg font-semibold !text-primary">{createModal.label}</h3>

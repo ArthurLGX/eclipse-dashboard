@@ -376,10 +376,10 @@ export default function CreateProjectModal({
                       className="p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                     >
                       <div className="flex items-start justify-between mb-3">
-                        <div className="p-2  bg-accent-light !text-accent">
+                        <div className="p-2  bg-accent-light !text-accent-text">
                           <IconBriefcase className="w-5 h-5" />
                         </div>
-                        <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                        <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
                       </div>
                       
                       <h3 className="font-semibold !text-primary mb-1">
@@ -438,7 +438,7 @@ export default function CreateProjectModal({
                 {selectedTemplate && selectedTemplate.id !== 'custom' && (
                   <div className="p-4  bg-accent-light border border-accent-light">
                     <div className="flex items-center gap-3 mb-2">
-                      <IconCheck className="w-5 h-5 !text-accent" />
+                      <IconCheck className="w-5 h-5 !text-accent-text" />
                       <span className="font-medium !text-primary">
                         {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
@@ -490,7 +490,7 @@ export default function CreateProjectModal({
                       <button
                         type="button"
                         onClick={() => setShowNewClientForm(true)}
-                        className="flex items-center gap-2 !text-sm !text-accent hover:underline"
+                        className="flex items-center gap-2 !text-sm !text-accent-text hover:underline"
                       >
                         <IconPlus className="w-4 h-4" color="white" />
                         {t('create_new_client') || 'Créer un nouveau client'}

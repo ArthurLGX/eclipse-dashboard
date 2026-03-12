@@ -1032,7 +1032,7 @@ export default function ShareProjectModal({
                     {t('recipient_email') || 'Email du destinataire'}
                   </label>
                   <div className="relative">
-                    <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-accent" />
+                    <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-accent-text" />
                     <input
                       type="email"
                       value={emailRecipient}
@@ -1186,7 +1186,7 @@ export default function ShareProjectModal({
                             <button
                               type="button"
                               onClick={() => setShowMediaPicker(true)}
-                              className="w-full py-2 px-3 border-2 border-dashed border-default  !text-sm !text-secondary hover:border-accent hover:!text-accent transition-colors flex items-center justify-center gap-2"
+                              className="w-full py-2 px-3 border-2 border-dashed border-default  !text-sm !text-secondary hover:border-accent hover:!text-accent-text transition-colors flex items-center justify-center gap-2"
                             >
                               <IconPhoto className="w-4 h-4" />
                               {customBannerImage 
@@ -1226,7 +1226,7 @@ export default function ShareProjectModal({
                               id="showBannerTitle"
                               checked={showBannerTitle}
                               onChange={(e) => setShowBannerTitle(e.target.checked)}
-                              className="w-4 h-4 !text-accent border-default rounded focus:ring-accent"
+                              className="w-4 h-4 !text-accent-text border-default rounded focus:ring-accent"
                             />
                             <label htmlFor="showBannerTitle" className="!text-sm !text-secondary">
                               {t('show_banner_title') || 'Afficher un titre'}

@@ -105,13 +105,13 @@ const ToolResultCard: React.FC<{
       case 'createTask':
         return <IconListCheck size={16} className="!text-success-text" />;
       case 'createQuote':
-        return <IconFileInvoice size={16} className="!text-accent" />;
+        return <IconFileInvoice size={16} className="!text-accent-text" />;
       case 'createContract':
         return <IconFileText size={16} className="!text-warning" />;
       case 'suggestNextSteps':
         return <IconArrowRight size={16} className="!text-warning" />;
       default:
-        return <IconSparkles size={16} className="!text-accent" />;
+        return <IconSparkles size={16} className="!text-accent-text" />;
     }
   };
 
@@ -168,7 +168,7 @@ const ToolResultCard: React.FC<{
           <div className="flex gap-2">
             <button 
               onClick={() => handleCopy(`Objet: ${result.email!.subject}\n\n${result.email!.body}`)}
-              className="!text-xs !text-accent hover:underline flex items-center gap-1 px-2 py-1 rounded bg-accent-light"
+              className="!text-xs !text-accent-text hover:underline flex items-center gap-1 px-2 py-1 rounded bg-accent-light"
             >
               {copied ? <IconCheck size={12} /> : <IconCopy size={12} />}
               {copied ? 'Copié !' : (t('copy_email') || 'Copier l\'email')}
@@ -228,7 +228,7 @@ const ToolResultCard: React.FC<{
               {result.actionUrl && (
                 <button 
                   onClick={() => onAction?.('navigateToQuote', result)}
-                  className="w-full !text-xs !text-accent bg-accent-light hover:bg-accent hover:!text-white flex items-center justify-center gap-1 px-3 py-2  transition-colors"
+                  className="w-full !text-xs !text-accent-text bg-accent-light hover:bg-accent hover:!text-white flex items-center justify-center gap-1 px-3 py-2  transition-colors"
                 >
                   <IconExternalLink size={14} />
                   {t('view_quote') || 'Voir le devis'}
@@ -238,7 +238,7 @@ const ToolResultCard: React.FC<{
           ) : (
             <button 
               onClick={() => onAction?.('confirmQuote', result)}
-              className="w-full !text-xs !text-white bg-accent hover:bg-accent-light hover:!text-accent flex items-center justify-center gap-1 px-3 py-2  transition-colors"
+              className="w-full !text-xs !text-white bg-accent hover:bg-accent-light hover:!text-accent-text flex items-center justify-center gap-1 px-3 py-2  transition-colors"
             >
               <IconFileInvoice size={14} />
               {t('create_quote_now') || 'Créer le devis maintenant'}
@@ -290,7 +290,7 @@ const ToolResultCard: React.FC<{
         <ul className="!text-xs !text-secondary !space-y-1.5">
           {result.steps.map((step: string, i: number) => (
             <li key={i} className="flex items-start gap-2 p-1.5 rounded hover:bg-card cursor-pointer transition-colors">
-              <span className="!text-accent font-bold min-w-[16px]">{i + 1}.</span>
+              <span className="!text-accent-text font-bold min-w-[16px]">{i + 1}.</span>
               <span>{step}</span>
             </li>
           ))}
@@ -369,13 +369,13 @@ const ToolLoadingCard: React.FC<{ toolName: string; args?: Record<string, unknow
       case 'createTask':
         return <IconListCheck size={18} className="!text-success-text" />;
       case 'createQuote':
-        return <IconFileInvoice size={18} className="!text-accent" />;
+        return <IconFileInvoice size={18} className="!text-accent-text" />;
       case 'createContract':
         return <IconFileText size={18} className="!text-warning" />;
       case 'suggestNextSteps':
         return <IconArrowRight size={18} className="!text-warning" />;
       default:
-        return <IconSparkles size={18} className="!text-accent" />;
+        return <IconSparkles size={18} className="!text-accent-text" />;
     }
   };
 

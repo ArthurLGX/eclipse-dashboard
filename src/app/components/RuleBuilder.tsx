@@ -105,7 +105,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               type="checkbox"
               checked={rule.enabled}
               onChange={(e) => setRule({ ...rule, enabled: e.target.checked })}
-              className="w-4 h-4 !text-accent bg-secondary border-default rounded focus:ring-accent"
+              className="w-4 h-4 !text-accent-text bg-secondary border-default rounded focus:ring-accent"
             />
             <span className="!text-sm font-medium !text-primary">Règle activée</span>
           </label>
@@ -116,7 +116,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
       <div className="border border-default  p-6 bg-card">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold !text-primary flex items-center gap-2">
-            <IconFilter className="w-5 h-5 !text-accent" />
+            <IconFilter className="w-5 h-5 !text-accent-text" />
             Conditions (toutes doivent être vraies)
           </h3>
         </div>
@@ -165,7 +165,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateCondition('sender', { type: 'contains', value: '', case_sensitive: false })}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Ajouter condition sur l&apos;expéditeur
             </button>
@@ -210,7 +210,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateCondition('domain', { type: 'is', value: '' })}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Ajouter condition sur le domaine
             </button>
@@ -259,7 +259,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateCondition('subject', { type: 'contains', value: '', case_sensitive: false })}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Ajouter condition sur le sujet
             </button>
@@ -297,7 +297,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateCondition('keywords', { type: 'contains_any', value: [] })}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Ajouter condition sur les mots-clés
             </button>
@@ -325,7 +325,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateCondition('has_contact', true)}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Ajouter condition sur le contact
             </button>
@@ -337,7 +337,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
       <div className="border border-default  p-6 bg-card">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold !text-primary flex items-center gap-2">
-            <IconSettings className="w-5 h-5 !text-accent" />
+            <IconSettings className="w-5 h-5 !text-accent-text" />
             Actions
           </h3>
         </div>
@@ -378,7 +378,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateAction('set_priority', 'medium')}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Définir une priorité
             </button>
@@ -405,7 +405,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
           ) : (
             <button
               onClick={() => updateAction('custom_delay', 7)}
-              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent transition-colors !text-sm"
+              className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors !text-sm"
             >
               + Définir un délai personnalisé
             </button>

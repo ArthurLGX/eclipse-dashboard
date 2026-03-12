@@ -1340,7 +1340,7 @@ export default function ProjectTasks({
             {/* Bouton IA */}
             <button
               onClick={() => setShowAIGenerator(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-accent hover:!text-white !text-accent  transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-muted hover:bg-accent hover:!text-white !text-accent-text  transition-colors"
               title={t('ai_assistant') || 'Assistant IA Eclipse'}
             >
               <Image 
@@ -1485,12 +1485,12 @@ export default function ProjectTasks({
             className="flex flex-wrap items-center justify-between gap-3 p-3 bg-accent-light border border-accent "
           >
             <div className="flex items-center gap-3">
-              <span className="!text-sm font-medium !text-accent">
+              <span className="!text-sm font-medium !text-accent-text">
                 {selectedTasks.size} {t('selected_tasks') || 'tâche(s) sélectionnée(s)'}
               </span>
               <button
                 onClick={selectAllVisibleTasks}
-                className="!text-sm !text-accent hover:underline flex items-center gap-1"
+                className="!text-sm !text-accent-text hover:underline flex items-center gap-1"
               >
                 <IconSelectAll className="w-4 h-4" />
                 {t('select_all') || 'Tout sélectionner'}
@@ -1582,7 +1582,7 @@ export default function ProjectTasks({
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium !text-primary flex items-center gap-2">
-                  {parentTaskForSubtask && <IconSubtask className="w-4 h-4 !text-accent" />}
+                  {parentTaskForSubtask && <IconSubtask className="w-4 h-4 !text-accent-text" />}
                   {parentTaskForSubtask 
                     ? `${t('new_subtask') || 'Nouvelle sous-tâche'}`
                     : (t('new_task') || 'Nouvelle tâche')
@@ -2227,7 +2227,7 @@ function TaskCard({
                   e.stopPropagation();
                   onAddSubtask();
                 }}
-                className="p-1.5 !text-muted hover:!text-accent transition-colors"
+                className="p-1.5 !text-muted hover:!text-accent-text transition-colors"
                 title={t('add_subtask') || 'Ajouter une sous-tâche'}
               >
                 <IconSubtask className="w-4 h-4" />
@@ -2239,7 +2239,7 @@ function TaskCard({
                   e.stopPropagation();
                   onDuplicate(!isSubtask && hasSubtasks);
                 }}
-                className="p-1.5 !text-muted hover:!text-accent transition-colors"
+                className="p-1.5 !text-muted hover:!text-accent-text transition-colors"
                 title={hasSubtasks ? (t('duplicate_with_subtasks') || 'Dupliquer avec sous-tâches') : (t('duplicate') || 'Dupliquer')}
               >
                 <IconCopy className="w-4 h-4" />
@@ -2277,7 +2277,7 @@ function TaskCard({
                     [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-2
                     [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-2
                     [&_li]:mb-1 [&_li]:!text-primary
-                    [&_a]:!text-accent [&_a]:underline
+                    [&_a]:!text-accent-text [&_a]:underline
                     [&_strong]:font-semibold [&_strong]:!text-primary
                     [&_em]:italic
                     [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
@@ -2348,7 +2348,7 @@ function TaskCard({
                                 e.stopPropagation();
                                 onDuplicateSubtask(subtask);
                               }}
-                              className="p-1 !text-muted hover:!text-accent transition-colors"
+                              className="p-1 !text-muted hover:!text-accent-text transition-colors"
                               title={t('duplicate') || 'Dupliquer'}
                             >
                               <IconCopy className="w-3.5 h-3.5" />
@@ -2358,7 +2358,7 @@ function TaskCard({
                                 e.stopPropagation();
                                 onEditSubtask(subtask);
                               }}
-                              className="p-1 !text-muted hover:!text-accent transition-colors"
+                              className="p-1 !text-muted hover:!text-accent-text transition-colors"
                               title={t('edit') || 'Modifier'}
                             >
                               <IconEdit className="w-3.5 h-3.5" />
@@ -2710,7 +2710,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                       onClose();
                       onAddSubtask();
                     }}
-                    className="!text-xs px-2 py-1  border-accent-light !text-accent hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
+                    className="!text-xs px-2 py-1  border-accent-light !text-accent-text hover:bg-accent-light hover:border-accent transition-colors flex items-center gap-1"
                   >
                     <IconPlus className="w-3 h-3" />
                     {t('add_subtask') || 'Ajouter'}
@@ -3178,7 +3178,7 @@ function TaskKanbanView({
         {totalTasks > 0 && (
           <div className="flex items-center gap-2">
             <span className="!text-sm !text-muted-foreground">{t('completion') || 'Complétion'}:</span>
-            <span className="font-semibold !text-accent">{Math.round((completedTasks / totalTasks) * 100)}%</span>
+            <span className="font-semibold !text-accent-text">{Math.round((completedTasks / totalTasks) * 100)}%</span>
           </div>
         )}
       </div>
@@ -4369,7 +4369,7 @@ function TaskGanttView({
                                 onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
                                 style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}
                               >
-                                  <div className="flex items-center gap-2 !text-muted hover:!text-accent">
+                                  <div className="flex items-center gap-2 !text-muted hover:!text-accent-text">
                                   <IconPlus className="w-3.5 h-3.5" />
                                   <span className="!text-xs">{t('add_task') || 'Add task...'}</span>
                                 </div>

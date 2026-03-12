@@ -55,7 +55,7 @@ function IntegrationCard({ title, description, icon, status, children }: Integra
     <div className="bg-card border border-default  p-6 !space-y-4">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-accent-light  !text-accent">
+          <div className="p-2 bg-accent-light  !text-accent-text">
             {icon}
           </div>
           <div>
@@ -244,7 +244,7 @@ function ApiTokensSection() {
         {!showCreateModal ? (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:!border-accent hover:!text-accent transition-colors flex items-center justify-center gap-2"
+            className="w-full p-3 border-2 border-dashed border-default  !text-muted hover:!border-accent hover:!text-accent-text transition-colors flex items-center justify-center gap-2"
           >
             <IconPlus size={18} />
             {t('create_api_token') || 'Générer un nouveau token'}
@@ -267,7 +267,7 @@ function ApiTokensSection() {
               <button
                 onClick={handleCreateToken}
                 disabled={creating || !newTokenName.trim()}
-                className="flex-1 px-4 py-2 bg-accent !text-accent  hover:opacity-90 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 bg-accent !text-accent-text  hover:opacity-90 disabled:opacity-50 transition-colors"
               >
                 {creating ? (t('creating') || 'Création...') : (t('create') || 'Créer')}
               </button>
@@ -341,7 +341,7 @@ function ApiTokensSection() {
           href="https://github.com/ArthurLGX/eclipse-tracker-extension"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 !text-sm !text-accent hover:underline"
+          className="inline-flex items-center gap-2 !text-sm !text-accent-text hover:underline"
         >
           {t('download_extension') || 'Télécharger l\'extension VS Code'}
           <IconExternalLink size={14} />
@@ -473,7 +473,7 @@ function TypeformIntegrationCard() {
           href="https://www.typeform.com/help/a/webhooks-360029573471/"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 !text-sm !text-accent hover:underline"
+          className="inline-flex items-center gap-2 !text-sm !text-accent-text hover:underline"
         >
           {t('typeform_docs') || 'Documentation Typeform Webhooks'}
           <IconExternalLink size={14} />

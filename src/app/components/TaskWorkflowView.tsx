@@ -895,7 +895,7 @@ export default function TaskWorkflowView({
                     style={{ width: `${overallProgress}%` }}
                   />
                 </div>
-                <span className="!text-sm font-bold !text-accent min-w-[3ch]">{overallProgress}%</span>
+                <span className="!text-sm font-bold !text-accent-text min-w-[3ch]">{overallProgress}%</span>
               </div>
             </div>
             {/* Task count */}
@@ -909,7 +909,7 @@ export default function TaskWorkflowView({
             {onRefresh && (
               <button 
                 onClick={onRefresh} 
-                className="p-1.5  hover:bg-hover !text-muted hover:!text-accent transition-colors" 
+                className="p-1.5  hover:bg-hover !text-muted hover:!text-accent-text transition-colors" 
                 title={t('refresh') || 'Actualiser'}
               >
                 <IconRefresh size={18} />

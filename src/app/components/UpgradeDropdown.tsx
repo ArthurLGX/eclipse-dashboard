@@ -202,11 +202,11 @@ export default function UpgradeDropdown({
                   className="w-full p-4  border border-default hover:border-accent hover:bg-hover transition-all duration-200 !text-left group"
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="!text-primary font-semibold capitalize group-hover:!text-accent transition-colors">
+                    <h4 className="!text-primary font-semibold capitalize group-hover:!text-accent-text transition-colors">
                       {plan.name}
                     </h4>
                     <div className="!text-right">
-                      <div className="!text-accent font-bold">
+                      <div className="!text-accent-text font-bold">
                         {language === 'en' ? '€' : ''}
                         {togglePlan
                           ? plan.price_yearly.toFixed(2)
@@ -233,14 +233,14 @@ export default function UpgradeDropdown({
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="!text-accent !text-xs font-medium">
+                      <span className="!text-accent-text !text-xs font-medium">
                         {t('upgrade_to')}
                       </span>
-                      <span className="!text-accent font-semibold capitalize">
+                      <span className="!text-accent-text font-semibold capitalize">
                         {plan.name}
                       </span>
                     </div>
-                    <div className="!text-accent !text-xs">→</div>
+                    <div className="!text-accent-text !text-xs">→</div>
                   </div>
                 </motion.button>
               ))}

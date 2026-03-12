@@ -628,10 +628,10 @@ export default function ClientsPage() {
             <p className="!text-primary font-medium">{value as string}</p>
             {row._isCollaborative && row._collaborativeProjects && (
               <span 
-                className="inline-flex items-center gap-1 px-1.5 py-0.5  !text-[10px] font-semibold bg-accent-light !text-accent border border-accent"
+                className="inline-flex items-center gap-1 px-1.5 py-0.5  !text-[10px] font-semibold bg-accent-light !text-accent-text border border-accent"
                 title={`Via projet${row._collaborativeProjects.length > 1 ? 's' : ''}: ${row._collaborativeProjects.map(p => p.title).join(', ')}`}
               >
-                <IconUsersGroup className="w-3 h-3 !text-accent" />
+                <IconUsersGroup className="w-3 h-3 !text-accent-text" />
                 Collab
               </span>
             )}
@@ -695,7 +695,7 @@ export default function ClientsPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => router.push(`/dashboard/projects/${firstProject.slug}`)}
-                className="!text-xs !text-accent hover:underline"
+                className="!text-xs !text-accent-text hover:underline"
                 title={`${t('collaborative_via_project') || 'Via projet'}: ${row._collaborativeProjects.map(p => p.title).join(', ')}`}
               >
                 {t('view_project') || 'Voir projet'}

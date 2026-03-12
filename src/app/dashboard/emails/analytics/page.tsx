@@ -137,7 +137,7 @@ function EmailAnalytics() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
+        <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
       </div>
     );
   }
@@ -148,7 +148,7 @@ function EmailAnalytics() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
-            <IconChartBar className="w-7 h-7 !text-accent" />
+            <IconChartBar className="w-7 h-7 !text-accent-text" />
             {t('email_analytics') || 'Analytics Email'}
           </h1>
           <p className="!text-muted mt-1">
@@ -232,7 +232,7 @@ function EmailAnalytics() {
         {/* Liste des emails récents */}
         <div className="bg-card border border-default  p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconMail className="w-5 h-5 !text-accent" />
+            <IconMail className="w-5 h-5 !text-accent-text" />
             {t('recent_emails') || 'Emails récents'}
           </h2>
 
@@ -256,7 +256,7 @@ function EmailAnalytics() {
         {/* Top liens cliqués */}
         <div className="bg-card border border-default  p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconClick className="w-5 h-5 !text-accent" />
+            <IconClick className="w-5 h-5 !text-accent-text" />
             {t('top_clicked_links') || 'Liens les plus cliqués'}
           </h2>
 
@@ -266,7 +266,7 @@ function EmailAnalytics() {
                 key={link.url}
                 className="flex items-center gap-3 p-3 bg-secondary/5 "
               >
-                <div className="w-8 h-8 rounded-full bg-accent-light !text-accent flex items-center justify-center !text-sm font-bold">
+                <div className="w-8 h-8 rounded-full bg-accent-light !text-accent-text flex items-center justify-center !text-sm font-bold">
                   {index + 1}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -274,7 +274,7 @@ function EmailAnalytics() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="!text-sm !text-primary hover:!text-accent truncate block flex items-center gap-1"
+                    className="!text-sm !text-primary hover:!text-accent-text truncate block flex items-center gap-1"
                   >
                     {new URL(link.url).hostname}
                     <IconExternalLink className="w-3 h-3 shrink-0" />
@@ -599,7 +599,7 @@ function EmailDetailModal({
                     className="flex items-center gap-4 p-3 bg-page "
                   >
                     <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center">
-                      <IconUser className="w-4 h-4 !text-accent" />
+                      <IconUser className="w-4 h-4 !text-accent-text" />
                     </div>
                     
                     <div className="flex-1 min-w-0">
@@ -679,7 +679,7 @@ function EmailDetailModal({
                           href={click.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="font-medium !text-primary hover:!text-accent truncate block flex items-center gap-1"
+                          className="font-medium !text-primary hover:!text-accent-text truncate block flex items-center gap-1"
                         >
                           {(() => {
                             try {

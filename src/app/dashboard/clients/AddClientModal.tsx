@@ -118,7 +118,7 @@ export default function AddClientModal({
           <div>
             <label className="flex items-center gap-1.5 !text-secondary !text-xs mb-1.5 font-medium">
               <IconUser size={14} className="!text-muted" />
-              {t('name')} <span className="!text-accent">*</span>
+              {t('name')} <span className="!text-accent-text">*</span>
             </label>
             <input
               ref={nameInputRef}
@@ -276,7 +276,7 @@ export default function AddClientModal({
           >
             {loading ? (
               <>
-                <IconLoader2 size={16} className="animate-spin !text-accent" />
+                <IconLoader2 size={16} className="animate-spin !text-accent-text" />
                 <span>{t('loading')}</span>
               </>
             ) : success ? (
@@ -286,7 +286,7 @@ export default function AddClientModal({
               </>
             ) : (
               <>
-                <IconUserPlus size={16} className="!text-accent" />
+                <IconUserPlus size={16} className="!text-accent-text" />
                 <span>{t('add_client')}</span>
               </>
             )}

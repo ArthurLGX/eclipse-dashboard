@@ -83,7 +83,7 @@ export default function AdminModulesPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
-          <IconSettings className="w-7 h-7 !text-accent" />
+          <IconSettings className="w-7 h-7 !text-accent-text" />
           {language === 'fr' ? 'Gestion des Modules' : 'Module Management'}
         </h1>
         <p className="!text-muted mt-2">
@@ -116,7 +116,7 @@ export default function AdminModulesPage() {
               >
                 <div className="flex items-center justify-start w-full  gap-3">
                   <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
-                    <span className="!text-accent !text-lg">
+                    <span className="!text-accent-text !text-lg">
                       {module.icon === 'IconTargetArrow' ? '🎯' : '📦'}
                     </span>
                   </div>
@@ -201,7 +201,7 @@ export default function AdminModulesPage() {
         transition={{ delay: 0.1 }}
         className="card mt-6 p-4 bg-accent-light border-accent"
       >
-        <h3 className="font-semibold !text-accent mb-2">
+        <h3 className="font-semibold !text-accent-text mb-2">
           {language === 'fr' ? 'Comment ça marche ?' : 'How does it work?'}
         </h3>
         <ul className="!text-sm !text-primary !space-y-1">

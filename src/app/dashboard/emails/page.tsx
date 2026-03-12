@@ -18,7 +18,7 @@ export default function EmailsPage() {
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="text-center">
-        <IconLoader2 className="w-12 h-12 text-accent mx-auto mb-4 animate-spin" />
+        <IconLoader2 className="w-12 h-12 text-accent-text mx-auto mb-4 animate-spin" />
         <p className="text-muted">Redirection vers Smart Follow-Up...</p>
       </div>
     </div>

@@ -449,7 +449,7 @@ export default function ProjectWorkflowView({
             )}
             <Link 
               href={`/dashboard/clients/${client.documentId}`}
-              className="!text-muted hover:!text-accent transition-colors"
+              className="!text-muted hover:!text-accent-text transition-colors"
             >
               {client.name}
             </Link>
@@ -481,7 +481,7 @@ export default function ProjectWorkflowView({
                   resetOnboarding();
                   setShowOnboarding(true);
                 }}
-                className="p-1.5  hover:bg-hover !text-muted hover:!text-accent transition-colors flex items-center gap-1"
+                className="p-1.5  hover:bg-hover !text-muted hover:!text-accent-text transition-colors flex items-center gap-1"
                 title={t('replay_tutorial') || 'Revoir le tutoriel'}
               >
                 <IconHelpCircle size={18} />
@@ -654,7 +654,7 @@ export default function ProjectWorkflowView({
                           {/* Add new button */}
                           <button
                             onClick={() => handleNodeClick({ ...node, status: 'ghost' })}
-                            className="w-full flex items-center gap-2 p-2  hover:bg-accent-light !text-accent !text-sm mt-1 border-t border-default pt-2"
+                            className="w-full flex items-center gap-2 p-2  hover:bg-accent-light !text-accent-text !text-sm mt-1 border-t border-default pt-2"
                           >
                             <IconPlus size={14} />
                             Ajouter

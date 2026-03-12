@@ -1115,7 +1115,7 @@ ${user?.username || 'L\'équipe'}`;
                     <div className="flex items-start gap-3">
                       <IconAlertTriangle className="w-5 h-5 !text-warning-text flex-shrink-0 mt-0.5" />
                       <div className="flex-1">
-                        <p className="!text-sm font-medium !text-accent mb-2">
+                        <p className="!text-sm font-medium !text-accent-text mb-2">
                           {contractLanguage === 'fr' 
                             ? 'Attention aux dates du contrat' 
                             : 'Contract date warnings'}
@@ -1285,11 +1285,11 @@ ${user?.username || 'L\'équipe'}`;
 
                 {generatedContract.warnings && generatedContract.warnings.length > 0 && (
                   <div className="p-4 bg-accent-light ">
-                    <p className="!text-sm font-medium !text-accent flex items-center gap-2 mb-2">
+                    <p className="!text-sm font-medium !text-accent-text flex items-center gap-2 mb-2">
                       <IconAlertTriangle className="w-4 h-4" />
                       {t('warnings') || 'Points d\'attention'}
                     </p>
-                    <ul className="!text-xs !text-accent !space-y-1">
+                    <ul className="!text-xs !text-accent-text !space-y-1">
                       {generatedContract.warnings.map((warning, i) => (
                         <li key={i}>• {warning}</li>
                       ))}
@@ -1327,7 +1327,7 @@ ${user?.username || 'L\'équipe'}`;
                     ) : (
                       <button
                         onClick={() => setActiveSignature('provider')}
-                        className="w-full h-32 border-2 border-dashed border-muted  hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 !text-muted hover:!text-accent"
+                        className="w-full h-32 border-2 border-dashed border-muted  hover:border-accent transition-colors flex flex-col items-center justify-center gap-2 !text-muted hover:!text-accent-text"
                       >
                         <IconSignature className="w-8 h-8" />
                         <span className="!text-sm">{t('click_to_sign') || 'Cliquer pour signer'}</span>
@@ -1462,7 +1462,7 @@ ${user?.username || 'L\'équipe'}`;
                   </p>
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-accent-light rounded-full flex items-center justify-center">
-                      <span className="!text-accent font-medium">
+                      <span className="!text-accent-text font-medium">
                         {selectedClient?.name?.charAt(0) || 'C'}
                       </span>
                     </div>
@@ -1473,7 +1473,7 @@ ${user?.username || 'L\'équipe'}`;
                   </div>
                   {!selectedClient?.email && (
                     <div className="mt-3 p-3 bg-accent-light ">
-                      <p className="!text-sm !text-accent flex items-center gap-2">
+                      <p className="!text-sm !text-accent-text flex items-center gap-2">
                         <IconAlertTriangle className="w-4 h-4" />
                         {t('client_no_email_warning') || 'Ce client n\'a pas d\'email. Ajoutez-en un pour pouvoir envoyer le contrat.'}
                       </p>

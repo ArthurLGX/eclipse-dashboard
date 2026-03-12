@@ -424,7 +424,7 @@ const GravitationalFlow: React.FC<GravitationalFlowProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5, duration: 1 }}
-              className="!text-accent !text-sm font-light tracking-wider"
+              className="!text-accent-text !text-sm font-light tracking-wider"
             >
               Un seul flux.
             </motion.p>

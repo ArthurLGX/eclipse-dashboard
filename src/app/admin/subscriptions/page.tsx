@@ -237,7 +237,7 @@ export default function AdminSubscriptionsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-            <IconCreditCard className="w-7 h-7 !text-accent" />
+            <IconCreditCard className="w-7 h-7 !text-accent-text" />
             {t('subscriptions_management') || 'Gestion des Abonnements'}
           </h1>
           <p className="!text-sm !text-muted">{subscriptions.length} {t('subscriptions_total') || 'abonnements au total'}</p>
@@ -261,9 +261,9 @@ export default function AdminSubscriptionsPage() {
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-2  bg-accent-light">
-              <IconTrendingUp className="w-6 h-6 !text-accent" />
+              <IconTrendingUp className="w-6 h-6 !text-accent-text" />
             </div>
-            <span className="!text-xs !text-accent bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
+            <span className="!text-xs !text-accent-text bg-accent-light px-2 py-1 rounded-full font-medium">MRR</span>
           </div>
           <p className="!text-3xl font-bold !text-primary">{totalMRR.toLocaleString()}€</p>
           <p className="!text-sm !text-muted">{t('monthly_recurring_revenue') || 'Revenu mensuel récurrent'}</p>
@@ -305,10 +305,10 @@ export default function AdminSubscriptionsPage() {
                   className="p-1.5  hover:bg-hover transition-colors"
                   title={t('edit_plan') || 'Modifier le plan'}
                 >
-                  <IconEdit className="w-4 h-4 !text-muted hover:!text-accent" />
+                  <IconEdit className="w-4 h-4 !text-muted hover:!text-accent-text" />
                 </button>
               </div>
-              <p className="!text-2xl font-bold !text-accent">
+              <p className="!text-2xl font-bold !text-accent-text">
                 {plan.price_monthly || 0}€
                 <span className="!text-sm font-normal !text-muted">/{t('month') || 'mois'}</span>
               </p>
@@ -402,7 +402,7 @@ export default function AdminSubscriptionsPage() {
                     {sub.users && sub.users.length > 0 ? (
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
-                          <span className="!text-accent font-medium !text-sm">
+                          <span className="!text-accent-text font-medium !text-sm">
                             {sub.users[0].username?.charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -417,7 +417,7 @@ export default function AdminSubscriptionsPage() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
-                      <IconCrown className="w-4 h-4 !text-accent" />
+                      <IconCrown className="w-4 h-4 !text-accent-text" />
                       <span className="font-medium !text-primary !text-sm">{sub.plan?.name || t('no_plan') || 'Sans plan'}</span>
                     </div>
                     {sub.plan?.price_monthly !== undefined && (
@@ -492,7 +492,7 @@ export default function AdminSubscriptionsPage() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="!text-xl font-bold !text-primary flex items-center gap-2">
-                  <IconEdit className="w-5 h-5 !text-accent" />
+                  <IconEdit className="w-5 h-5 !text-accent-text" />
                   {t('edit_plan') || 'Modifier le plan'}
                 </h2>
                 <button

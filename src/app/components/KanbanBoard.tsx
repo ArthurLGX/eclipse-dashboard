@@ -149,7 +149,7 @@ function ContactCard({
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-              <span className="!text-xs font-medium !text-accent">{getInitials(contact.name)}</span>
+              <span className="!text-xs font-medium !text-accent-text">{getInitials(contact.name)}</span>
             </div>
           )}
           
@@ -219,10 +219,10 @@ function ContactCard({
                 {onViewJourney && (
                   <button
                     onClick={(e) => { e.stopPropagation(); onViewJourney(); setShowMenu(false); }}
-                    className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2 !text-accent"
+                    className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2 !text-accent-text"
                     title={t('view_client_journey_tooltip') || 'Le pipeline dit où vous en êtes, le parcours explique pourquoi'}
                   >
-                    <IconRoute size={14} className="!text-accent" /> {t('view_client_journey') || 'Voir le parcours'}
+                    <IconRoute size={14} className="!text-accent-text" /> {t('view_client_journey') || 'Voir le parcours'}
                   </button>
                 )}
                 <button
@@ -259,7 +259,7 @@ function ContactCard({
           <a 
             href={`mailto:${contact.email}`} 
             onClick={(e) => e.stopPropagation()}
-            className="!text-xs !text-muted-foreground hover:!text-accent flex items-center gap-1"
+            className="!text-xs !text-muted-foreground hover:!text-accent-text flex items-center gap-1"
           >
             <IconMail size={12} />
           </a>
@@ -268,7 +268,7 @@ function ContactCard({
           <a 
             href={`tel:${contact.phone}`}
             onClick={(e) => e.stopPropagation()}
-            className="!text-xs !text-muted-foreground hover:!text-accent flex items-center gap-1"
+            className="!text-xs !text-muted-foreground hover:!text-accent-text flex items-center gap-1"
           >
             <IconPhone size={12} />
           </a>
@@ -279,7 +279,7 @@ function ContactCard({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="!text-xs !text-muted-foreground hover:!text-accent flex items-center gap-1"
+            className="!text-xs !text-muted-foreground hover:!text-accent-text flex items-center gap-1"
           >
             <IconWorld size={12} />
           </a>

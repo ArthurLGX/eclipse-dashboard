@@ -65,7 +65,7 @@ function InfoCard({
 }) {
   return (
     <div className={`flex items-start gap-3 p-4 bg-muted  border border-default ${className}`}>
-      <div className="p-2  bg-accent-light !text-accent">
+      <div className="p-2  bg-accent-light !text-accent-text">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
@@ -133,7 +133,7 @@ function SubscriberItem({ subscriber }: { subscriber: Subscriber }) {
 
   return (
     <div className="flex items-center gap-3 p-3 bg-card  border border-default hover:border-accent-light transition-colors">
-      <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center !text-accent font-semibold !text-sm">
+      <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center !text-accent-text font-semibold !text-sm">
         {getInitials()}
       </div>
       <div className="flex-1 min-w-0">
@@ -266,7 +266,7 @@ export default function NewsletterDetailPage() {
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <div className="!text-center">
-                <IconLoader2 className="w-12 h-12 animate-spin !text-accent mx-auto mb-4" />
+                <IconLoader2 className="w-12 h-12 animate-spin !text-accent-text mx-auto mb-4" />
                 <p className="!text-muted">{t('loading_newsletter') || 'Chargement de la newsletter...'}</p>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function NewsletterDetailPage() {
                 <p className="!text-primary font-medium mb-2">{error}</p>
                 <button
                   onClick={() => router.push('/dashboard/newsletters')}
-                  className="!text-accent hover:underline"
+                  className="!text-accent-text hover:underline"
                 >
                   {t('back_to_newsletters') || 'Retour aux newsletters'}
                 </button>
@@ -335,9 +335,9 @@ export default function NewsletterDetailPage() {
                   <div className="bg-card  border border-default overflow-hidden">
                     <div className="p-4 border-b border-default bg-muted/30">
                       <h2 className="font-semibold !text-primary flex items-center gap-2">
-                        <IconUsers className="w-5 h-5 !text-accent" />
+                        <IconUsers className="w-5 h-5 !text-accent-text" />
                         {t('subscribers') || 'Destinataires'}
-                        <span className="ml-auto px-2 py-0.5 bg-accent-light !text-accent !text-sm rounded-full">
+                        <span className="ml-auto px-2 py-0.5 bg-accent-light !text-accent-text !text-sm rounded-full">
                           {newsletter.subscribers?.length || 0}
                         </span>
                       </h2>
@@ -381,7 +381,7 @@ export default function NewsletterDetailPage() {
               <div className="bg-card  border border-default overflow-hidden">
                 <div className="p-4 border-b border-default bg-muted/30">
                   <h2 className="font-semibold !text-primary flex items-center gap-2">
-                    <IconEye className="w-5 h-5 !text-accent" />
+                    <IconEye className="w-5 h-5 !text-accent-text" />
                     {t('email_preview') || 'Aperçu de l\'email'}
                   </h2>
                 </div>

@@ -281,7 +281,7 @@ export default function CompactEmailForm({
             {recipients.map(recipient => (
               <span
                 key={recipient.id}
-                className="flex items-center gap-1 px-2 py-1 bg-accent-light !text-accent rounded !text-xs"
+                className="flex items-center gap-1 px-2 py-1 bg-accent-light !text-accent-text rounded !text-xs"
               >
                 {recipient.name || recipient.email}
                 <button

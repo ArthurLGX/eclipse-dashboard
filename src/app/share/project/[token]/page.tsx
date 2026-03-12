@@ -309,7 +309,7 @@ export default function SharedProjectPage() {
                 [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                 [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                [&_a]:!text-accent [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                [&_a]:!text-accent-text [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
               dangerouslySetInnerHTML={{ __html: project.description }}
             />
           </motion.div>
@@ -437,7 +437,7 @@ export default function SharedProjectPage() {
                     {' • '}
                     <button 
                       onClick={() => setStatusFilter('all')}
-                      className="!text-accent hover:underline"
+                      className="!text-accent-text hover:underline"
                     >
                       {t('show_all') || 'Voir toutes'}
                     </button>
@@ -653,7 +653,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
                   [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
                   [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
                   [&_li]:mb-0.5 [&_li]:!text-primary
-                  [&_a]:!text-accent [&_a]:underline
+                  [&_a]:!text-accent-text [&_a]:underline
                   [&_strong]:font-semibold [&_strong]:!text-primary
                   [&_em]:italic
                   [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2
@@ -662,7 +662,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
               />
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 !text-xs !text-accent hover:!text-accent/80 mt-1 transition-colors"
+                className="flex items-center gap-1 !text-xs !text-accent-text hover:!text-accent/80 mt-1 transition-colors"
               >
                 {isExpanded ? (
                   <>

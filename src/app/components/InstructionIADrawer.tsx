@@ -79,7 +79,7 @@ export default function InstructionIADrawer({
           >
             <div className="flex items-center justify-between p-4 border-b border-default">
               <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
-                <IconSparkles className="w-5 h-5 text-accent" />
+                <IconSparkles className="w-5 h-5 text-accent-text" />
                 Instruction IA
               </h2>
               <button

@@ -75,7 +75,7 @@ function ProjectsBackground({ userProjects }: { userProjects: Project[] }) {
             className="bg-card border border-default  p-4 h-32"
           >
             <div className="flex items-center gap-2 mb-3">
-              <IconFolder className="w-4 h-4 !text-accent" />
+              <IconFolder className="w-4 h-4 !text-accent-text" />
               <span className="!text-sm font-medium !text-primary truncate">{project.title}</span>
             </div>
             <div className="h-1.5 bg-muted rounded-full overflow-hidden mb-2">
@@ -235,7 +235,7 @@ export default function InvitationPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-page">
         <div className="!text-center">
-          <IconLoader2 className="w-12 h-12 !text-accent animate-spin mx-auto mb-4" />
+          <IconLoader2 className="w-12 h-12 !text-accent-text animate-spin mx-auto mb-4" />
           <p className="!text-primary">{t('loading') || 'Chargement...'}</p>
         </div>
       </div>
@@ -307,13 +307,13 @@ export default function InvitationPage() {
         </div>
 
         {/* Titre */}
-        <h1 className="!text-2xl font-bold !text-accent !text-center mb-2">
+        <h1 className="!text-2xl font-bold !text-accent-text !text-center mb-2">
           {t('project_invitation') || 'Invitation À Collaborer'}
         </h1>
 
         {/* Message */}
         <p className="!text-secondary !text-center mb-6">
-          <span className="!text-accent font-medium">
+          <span className="!text-accent-text font-medium">
             {invitation.sender?.username || 'Un utilisateur'}
           </span>{' '}
           {t('invites_you_to_collaborate') || 'vous invite à collaborer sur le projet'}
@@ -321,7 +321,7 @@ export default function InvitationPage() {
 
         {/* Projet */}
         <div className="bg-muted  p-5 mb-6 border border-default">
-          <h2 className="!text-lg font-semibold !text-accent mb-1">
+          <h2 className="!text-lg font-semibold !text-accent-text mb-1">
             {invitation.project?.title || 'Projet'}
           </h2>
           <p className="!text-xl font-bold !text-primary mb-3 uppercase tracking-wide">
@@ -339,7 +339,7 @@ export default function InvitationPage() {
             <span className="flex items-center gap-1">
               <IconUser className="w-3.5 h-3.5" />
               {t('permission') || 'Permission'}: {' '}
-              <span className={invitation.permission === 'edit' ? 'text-accent font-medium' : 'text-info font-medium'}>
+              <span className={invitation.permission === 'edit' ? 'text-accent-text font-medium' : 'text-info font-medium'}>
                 {invitation.permission === 'edit' 
                   ? t('can_edit') || 'Peut modifier'
                   : t('view_only') || 'Lecture seule'}

@@ -300,7 +300,7 @@ export default function OnboardingTour({
             <div className="px-6 pt-5 pb-3 flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center">
-                  <IconSparkles size={15} className="!text-accent" />
+                  <IconSparkles size={15} className="!text-accent-text" />
                 </div>
                 <span className="!text-sm !text-secondary font-medium">
                   {currentStep + 1} / {steps.length}
@@ -386,10 +386,10 @@ export function OnboardingReplayButton({
   return (
     <button
       onClick={onReplay}
-      className="flex items-center gap-2 px-3 py-2 !text-sm !text-secondary hover:!text-accent bg-muted hover:bg-accent-light  transition-all"
+      className="flex items-center gap-2 px-3 py-2 !text-sm !text-secondary hover:!text-accent-text bg-muted hover:bg-accent-light  transition-all"
       title={label || t('replay_tutorial') || 'Revoir le tutoriel'}
     >
-      <IconPlayerPlay size={14} className="!text-accent" />
+      <IconPlayerPlay size={14} className="!text-accent-text" />
       {label || t('tutorial') || 'Tutoriel'}
     </button>
   );

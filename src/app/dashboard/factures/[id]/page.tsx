@@ -1458,7 +1458,7 @@ export default function FacturePage() {
               id="updateClientStatus"
               checked={updateClientOnConvert}
               onChange={(e) => setUpdateClientOnConvert(e.target.checked)}
-              className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
+              className="mt-1 w-4 h-4 rounded border-default !text-accent-text focus:ring-accent"
             />
             <div>
               <label htmlFor="updateClientStatus" className="!text-sm font-medium !text-primary cursor-pointer">

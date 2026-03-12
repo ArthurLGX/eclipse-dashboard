@@ -169,7 +169,7 @@ export default function SupportDropdown({
                 >
                   <span className="!text-lg">{option.icon}</span>
                   <div className="flex-1">
-                    <div className="!text-primary font-medium !text-sm group-hover:!text-accent transition-colors">
+                    <div className="!text-primary font-medium !text-sm group-hover:!text-accent-text transition-colors">
                       {option.label}
                     </div>
                     <div className="!text-secondary !text-xs">

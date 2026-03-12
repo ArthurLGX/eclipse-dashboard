@@ -243,12 +243,12 @@ export default function GrowthAuditPage() {
       <div>
         <div className="flex items-center gap-1.5 mb-2">
           <div className="w-4 h-px bg-accent" />
-          <span className="text-[9px] uppercase tracking-[0.2em] text-accent font-mono">
+          <span className="text-[9px] uppercase tracking-[0.2em] text-accent-text font-mono">
             {t('growth_audit_tool_tag')}
           </span>
         </div>
         <h1 className="text-2xl md:text-[28px] font-extrabold text-primary tracking-tight flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-accent/15 border border-accent/40 flex items-center justify-center text-accent">
+          <div className="w-9 h-9 rounded-lg bg-accent/15 border border-accent/40 flex items-center justify-center text-accent-text">
             <IconSearch className="w-[18px] h-[18px]" />
           </div>
           {t('growth_audit')}
@@ -265,7 +265,7 @@ export default function GrowthAuditPage() {
           {/* Audit panel */}
           <div className="bg-card overflow-hidden">
             <div className="px-5 py-4 border-b border-default flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-md bg-accent/15 text-accent flex items-center justify-center">
+              <div className="w-7 h-7 rounded-md bg-accent/15 text-accent-text flex items-center justify-center">
                 <IconSearch className="w-3.5 h-3.5" />
               </div>
               <h3 className="font-bold text-sm text-primary">{t('analyze_page')}</h3>
@@ -414,7 +414,7 @@ export default function GrowthAuditPage() {
                             </motion.div>
                             <span
                               className={`text-xs mt-2 text-center ${
-                                isActive ? 'text-accent font-medium' : isCompleted ? 'text-success' : 'text-muted'
+                                isActive ? 'text-accent-text font-medium' : isCompleted ? 'text-success' : 'text-muted'
                               }`}
                             >
                               {t(step.labelKey)}
@@ -440,7 +440,7 @@ export default function GrowthAuditPage() {
                       </span>
                     </div>
                     <div className="mt-6 text-center">
-                      <span className="text-3xl font-bold text-accent">
+                      <span className="text-3xl font-bold text-accent-text">
                         {Math.round(((currentStep + stepProgress / 100) / ANALYSIS_STEPS.length) * 100)}%
                       </span>
                     </div>
@@ -457,7 +457,7 @@ export default function GrowthAuditPage() {
                 className="flex flex-col items-center justify-center py-12 px-5 text-center"
               >
                 <div className="px-5 py-4 border-b border-default w-full flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-md bg-accent/15 text-accent flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-md bg-accent/15 text-accent-text flex items-center justify-center">
                     <IconCircleCheck className="w-3.5 h-3.5" />
                   </div>
                   <h3 className="font-bold text-sm text-primary">{t('audit_results')}</h3>
@@ -739,7 +739,7 @@ export default function GrowthAuditPage() {
                               </div>
                               <div className="grid grid-cols-2 gap-2 text-center">
                                 <div className="p-2 bg-card rounded flex items-center justify-center gap-2">
-                                  <IconLink className="w-4 h-4 text-accent" />
+                                  <IconLink className="w-4 h-4 text-accent-text" />
                                   <div>
                                     <p className="text-lg font-bold text-primary">{result.seo.links.internal}</p>
                                     <p className="text-xs text-muted">{t('internal_links')}</p>

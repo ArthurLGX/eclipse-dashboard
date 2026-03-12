@@ -145,7 +145,7 @@ export default function AutomationActionDetailModal({
             <div className="flex items-center justify-between p-6 border-b border-default">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12  bg-accent/10 flex items-center justify-center">
-                  <IconBrain className="w-6 h-6 !text-accent" />
+                  <IconBrain className="w-6 h-6 !text-accent-text" />
                 </div>
                 <div>
                   <h2 className="!text-xl font-bold !text-primary">
@@ -248,13 +248,13 @@ export default function AutomationActionDetailModal({
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold !text-primary flex items-center gap-2">
-                    <IconMail className="w-5 h-5 !text-accent" />
+                    <IconMail className="w-5 h-5 !text-accent-text" />
                     {t('proposed_email') || 'Email proposé'}
                   </h3>
                   {!isEditing && (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="!text-sm !text-accent hover:!text-accent-light flex items-center gap-1"
+                      className="!text-sm !text-accent-text hover:!text-accent-light flex items-center gap-1"
                     >
                       <IconEdit className="w-4 h-4" />
                       {t('edit_content') || 'Modifier'}

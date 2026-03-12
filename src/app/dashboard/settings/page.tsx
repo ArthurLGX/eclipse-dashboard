@@ -850,7 +850,7 @@ export default function SettingsPage() {
                     }}
                     className="btn-ghost px-4 py-2.5 flex items-center gap-2  border border-default hover:border-accent hover:bg-accent-light transition-all"
                   >
-                    <IconRocket className="w-5 h-5 !text-accent" />
+                    <IconRocket className="w-5 h-5 !text-accent-text" />
                     <span>{t('launch_onboarding') || 'Lancer l\'assistant de configuration'}</span>
                   </button>
                 </div>
@@ -922,14 +922,14 @@ export default function SettingsPage() {
                   <IconPlugConnected className="w-6 h-6 !text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent-text transition-colors">
                     {t('api_tokens') || 'API Tokens & Webhooks'}
                   </h3>
                   <p className="!text-sm !text-muted">
                     {t('api_tokens_integration_desc') || 'Connectez VS Code, Cursor et Typeform à Eclipse'}
                   </p>
                 </div>
-                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
               </div>
             </Link>
             
@@ -943,14 +943,14 @@ export default function SettingsPage() {
                   <IconBrain className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent-text transition-colors">
                     {t('ai_features_management') || 'Gestion des fonctionnalités IA'}
                   </h3>
                   <p className="!text-sm !text-muted">
                     {t('ai_features_subtitle') || 'Activez/désactivez les features IA pour économiser vos tokens OpenAI'}
                   </p>
                 </div>
-                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
               </div>
             </Link>
             
@@ -971,14 +971,14 @@ export default function SettingsPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold !text-primary group-hover:!text-accent transition-colors">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent-text transition-colors">
                     Fathom AI
                   </h3>
                   <p className="!text-sm !text-muted">
                     {t('fathom_integration_desc') || 'Notes de réunion automatiques - Transcriptions, résumés et actions'}
                   </p>
                 </div>
-                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
               </div>
             </Link>
 

@@ -152,7 +152,7 @@ export default function TaskDetailModal({
                 <h3 className="text-sm font-semibold text-primary mb-3">Analyse IA existante</h3>
                 <div className="flex flex-wrap gap-2">
                   {ai.intent && (
-                    <span className="px-2 py-1 text-xs bg-accent-light !text-accent rounded">
+                    <span className="px-2 py-1 text-xs bg-accent-light !text-accent-text rounded">
                       Intention : {ai.intent}
                     </span>
                   )}
@@ -194,7 +194,7 @@ export default function TaskDetailModal({
               {/* Raisonnement et suggestion IA */}
               <section>
                 <h3 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
-                  <IconBrain className="w-4 h-4 text-accent" />
+                  <IconBrain className="w-4 h-4 text-accent-text" />
                   Réflexion et suggestion
                 </h3>
                 {loading && (
@@ -222,7 +222,7 @@ export default function TaskDetailModal({
                       <p className="text-sm text-primary whitespace-pre-wrap">{analysis.reasoning}</p>
                     </div>
                     <div className="bg-green-500/5 border border-default rounded-lg p-4">
-                      <p className="text-xs !text-green-600 font-medium !text-accent uppercase mb-2">Suggestion d&apos;action</p>
+                      <p className="text-xs !text-green-600 font-medium !text-accent-text uppercase mb-2">Suggestion d&apos;action</p>
                       <p className="text-sm text-primary font-medium whitespace-pre-wrap">{analysis.suggestion}</p>
                     </div>
                   </div>

@@ -106,13 +106,13 @@ export default function FloatingPricingHeader({
                             <span
                               className={`capitalize transition-all duration-500 ${
                                 highlightedPlan === plan.name
-                                  ? 'text-accent font-extrabold'
+                                  ? 'text-accent-text font-extrabold'
                                   : 'font-normal'
                               }`}
                             >
                               {plan.name}
                             </span>
-                            <span className="!text-sm !text-accent font-bold">
+                            <span className="!text-sm !text-accent-text font-bold">
                               {language === 'en' ? '€' : ''}
                               {togglePlan
                                 ? plan.price_yearly

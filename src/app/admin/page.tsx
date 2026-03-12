@@ -232,7 +232,7 @@ export default function AdminOverviewPage() {
     switch (type) {
       case 'user_registered': return <IconUserPlus className="w-4 h-4 !text-success-text -text" />;
       case 'subscription_changed': return <IconCreditCard className="w-4 h-4 !text-info" />;
-      case 'email_sent': return <IconMail className="w-4 h-4 !text-accent" />;
+      case 'email_sent': return <IconMail className="w-4 h-4 !text-accent-text" />;
       case 'error': return <IconAlertTriangle className="w-4 h-4 !text-danger" />;
       default: return <IconActivity className="w-4 h-4 !text-muted" />;
     }
@@ -277,7 +277,7 @@ export default function AdminOverviewPage() {
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
-            <IconServer className="w-5 h-5 !text-accent" />
+            <IconServer className="w-5 h-5 !text-accent-text" />
             {t('server_health') || 'Santé du Serveur'}
           </h2>
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
@@ -425,7 +425,7 @@ export default function AdminOverviewPage() {
           className="card p-6"
         >
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
-            <IconActivity className="w-5 h-5 !text-accent" />
+            <IconActivity className="w-5 h-5 !text-accent-text" />
             {t('recent_activity') || 'Activité récente'}
           </h2>
           <div className="space-y-3">
@@ -482,8 +482,8 @@ export default function AdminOverviewPage() {
                   href={action.href}
                   className="flex items-center gap-3 p-4  bg-muted/5 border border-muted hover:border-accent-light hover:bg-accent-light transition-all group"
                 >
-                  <Icon className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
-                  <span className="!text-sm font-medium !text-primary group-hover:!text-accent transition-colors">
+                  <Icon className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
+                  <span className="!text-sm font-medium !text-primary group-hover:!text-accent-text transition-colors">
                     {action.label}
                   </span>
                 </a>

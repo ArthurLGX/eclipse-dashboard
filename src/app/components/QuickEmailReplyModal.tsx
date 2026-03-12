@@ -187,7 +187,7 @@ export default function QuickEmailReplyModal({
               </div>
               {walegoLeadStatus && (walegoLeadStatus.reasoning || walegoLeadStatus.tips) && (
                 <div className="rounded-lg p-3 bg-accent/10 border border-accent/20">
-                  <p className="text-xs font-semibold text-accent uppercase mb-2">Lead Status (suggestions Walego)</p>
+                  <p className="text-xs font-semibold text-accent-text uppercase mb-2">Lead Status (suggestions Walego)</p>
                   {walegoLeadStatus.reasoning && (
                     <p className="text-sm text-primary mb-2 whitespace-pre-wrap">{walegoLeadStatus.reasoning}</p>
                   )}

@@ -167,7 +167,7 @@ export default function MonitoringDetailPage() {
                 href={site.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="!text-accent hover:underline flex items-center gap-1 !text-sm"
+                className="!text-accent-text hover:underline flex items-center gap-1 !text-sm"
               >
                 {site.url}
                 <IconExternalLink className="w-3 h-3" />
@@ -232,7 +232,7 @@ export default function MonitoringDetailPage() {
             className="card p-4"
           >
             <div className="flex items-center gap-2 mb-3">
-              <IconServer className="w-4 h-4 !text-accent" />
+              <IconServer className="w-4 h-4 !text-accent-text" />
               <span className="!text-sm font-medium !text-primary">{t('hosting_info') || 'Hébergement'}</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -207,7 +207,7 @@ export default function PendingQuotesWidget({ quotes, onQuoteUpdated }: PendingQ
           <div className="px-6 py-3 border-t border-default bg-muted !text-center">
             <button
               onClick={() => router.push('/dashboard/factures?type=quote')}
-                className="!text-sm !text-accent hover:!text-primary"
+                className="!text-sm !text-accent-text hover:!text-primary"
             >
               {`+ ${pendingQuotes.length - 5} ${t('other_quotes') || 'autres devis'}`}
             </button>

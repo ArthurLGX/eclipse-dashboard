@@ -324,11 +324,6 @@ export default function SmartFollowUpPage() {
             }`}>
               {fromPriorityDomain ? '100%' : `${(action.confidence_score * 100).toFixed(0)}%`}
             </span>
-            {fromPriorityDomain && action.confidence_score < 1 && (
-              <span className="text-[10px] text-muted" title={`Score brut: ${(action.confidence_score * 100).toFixed(0)}%`}>
-                ↗
-              </span>
-            )}
           </div>
         );
       },
@@ -708,7 +703,7 @@ export default function SmartFollowUpPage() {
             <p className="!text-xs !text-primary mb-2">Instruction IA :</p>  
             <div className="p-3 bg-accent-light border border-accent rounded-lg flex items-center justify-between mb-4 w-fit">
               <div className="flex items-center gap-2 !text-sm !text-primary min-w-0 flex-1">
-                <IconSparkles className="w-4 h-4 shrink-0 text-accent" />
+                <IconSparkles className="w-4 h-4 shrink-0 text-accent-text" />
                 <span className="truncate !text-xs text-primary">{aiInstruction}</span>
               </div>
               <button

@@ -273,11 +273,11 @@ export default function MediaPickerModal({
           <div className="flex items-center justify-between p-4 border-b border-default">
             <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
               {mediaType === 'video' ? (
-                <IconVideo className="w-5 h-5 !text-accent" />
+                <IconVideo className="w-5 h-5 !text-accent-text" />
               ) : mediaType === 'document' ? (
-                <IconFileTypePdf className="w-5 h-5 !text-accent" />
+                <IconFileTypePdf className="w-5 h-5 !text-accent-text" />
               ) : (
-                <IconPhoto className="w-5 h-5 !text-accent" />
+                <IconPhoto className="w-5 h-5 !text-accent-text" />
               )}
               {getTitle()}
             </h3>
@@ -295,7 +295,7 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('computer')}
               className={`flex-1 px-4 py-3 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'computer'
-                  ? '!text-accent border-b-2 border-accent bg-accent-light'
+                  ? '!text-accent-text border-b-2 border-accent bg-accent-light'
                   : '!text-secondary hover:!text-primary hover:bg-hover'
               }`}
             >
@@ -306,7 +306,7 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('library')}
               className={`flex-1 px-4 py-3 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'library'
-                  ? '!text-accent border-b-2 border-accent bg-accent-light'
+                  ? '!text-accent-text border-b-2 border-accent bg-accent-light'
                   : '!text-secondary hover:!text-primary hover:bg-hover'
               }`}
             >
@@ -317,7 +317,7 @@ export default function MediaPickerModal({
               onClick={() => setActiveTab('url')}
               className={`flex-1 px-4 py-3 !text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'url'
-                  ? '!text-accent border-b-2 border-accent bg-accent-light'
+                  ? '!text-accent-text border-b-2 border-accent bg-accent-light'
                   : '!text-secondary hover:!text-primary hover:bg-hover'
               }`}
             >
@@ -347,13 +347,13 @@ export default function MediaPickerModal({
                 >
                   {uploading ? (
                     <>
-                      <IconLoader2 className="w-12 h-12 !text-accent animate-spin mb-4" />
+                      <IconLoader2 className="w-12 h-12 !text-accent-text animate-spin mb-4" />
                       <p className="!text-primary font-medium">{t('uploading') || 'Upload en cours...'}</p>
                     </>
                   ) : (
                     <>
                       <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mb-4 group-hover:bg-accent-light transition-colors">
-                        <IconUpload className="w-8 h-8 !text-accent" />
+                        <IconUpload className="w-8 h-8 !text-accent-text" />
                       </div>
                       <p className="!text-primary font-medium mb-2">
                         {t('click_to_upload') || 'Cliquez pour sélectionner'}
@@ -375,7 +375,7 @@ export default function MediaPickerModal({
               <div className="min-h-[300px] pb-16">
                 {loadingLibrary ? (
                   <div className="flex items-center justify-center h-[300px]">
-                    <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
+                    <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
                   </div>
                 ) : libraryMedia.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-[300px] !text-secondary">
@@ -456,7 +456,7 @@ export default function MediaPickerModal({
               <div className="flex flex-col items-center justify-center h-full min-h-[300px]">
                 <div className="w-full max-w-md !space-y-4">
                   <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center mx-auto mb-4">
-                    <IconLink className="w-8 h-8 !text-accent" />
+                    <IconLink className="w-8 h-8 !text-accent-text" />
                   </div>
                   
                   <div>

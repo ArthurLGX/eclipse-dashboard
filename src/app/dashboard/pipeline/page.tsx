@@ -172,7 +172,7 @@ function SelectContactModal({
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-                      <span className="!text-sm font-medium !text-accent">{getInitials(contact.name)}</span>
+                      <span className="!text-sm font-medium !text-accent-text">{getInitials(contact.name)}</span>
                     </div>
                   )}
                   
@@ -952,7 +952,7 @@ export default function PipelinePage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <IconChartBar size={28} className="!text-accent" />
+          <IconChartBar size={28} className="!text-accent-text" />
           <div>
             <h1 className="!text-2xl font-bold !text-primary">
               {t('pipeline') || 'Pipeline commercial'}
@@ -971,7 +971,7 @@ export default function PipelinePage() {
           {onboardingCompleted && (
             <button
               onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-              className="flex items-center gap-1.5 px-2.5 py-2  border border-default !text-muted hover:!text-accent hover:bg-accent-light transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-2  border border-default !text-muted hover:!text-accent-text hover:bg-accent-light transition-colors"
               title={t('replay_tutorial') || 'Revoir le tutoriel'}
             >
               <IconPlayerPlay size={16} />
@@ -982,7 +982,7 @@ export default function PipelinePage() {
             onClick={() => setShowKPIs(!showKPIs)}
             className={`flex items-center gap-2 px-3 py-2  border transition-colors ${
               showKPIs 
-                ? 'bg-accent-light !text-accent border-accent' 
+                ? 'bg-accent-light !text-accent-text border-accent' 
                 : 'bg-card !text-muted border-default hover:bg-hover'
             }`}
           >
@@ -1039,7 +1039,7 @@ export default function PipelinePage() {
                 <IconTrendingUp size={16} />
                 <span className="!text-xs font-medium">{t('conversion_rate') || 'Conversion'}</span>
               </div>
-              <p className="!text-xl font-bold !text-accent">
+              <p className="!text-xl font-bold !text-accent-text">
                 {kpis.conversionRate.toFixed(1)}%
               </p>
               <p className="!text-xs !text-muted mt-1">

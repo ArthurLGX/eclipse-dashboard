@@ -32,7 +32,7 @@ export default function AuditCategoryBlock({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card overflow-hidden"
+      className="bg-card overflow-hidden"
     >
       {/* Header */}
       <button
@@ -41,7 +41,7 @@ export default function AuditCategoryBlock({
       >
         <div className="flex items-center gap-3">
           {icon && (
-            <span className="p-1.5 bg-accent-light  !text-accent">
+            <span className="p-1.5 bg-accent-light  !text-accent-text">
               {icon}
             </span>
           )}

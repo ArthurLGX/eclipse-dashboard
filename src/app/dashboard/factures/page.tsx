@@ -605,7 +605,7 @@ export default function FacturesPage() {
               </div>
               <button
                 onClick={() => router.push(`/dashboard/factures/new${isQuoteMode ? '?type=quote' : ''}`)}
-                className="flex items-center gap-2 bg-primary !text-white border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
               >
                 <IconFileInvoice className="w-4 h-4" />
                 {isQuoteMode ? (t('create_quote') || 'Créer un devis') : (t('create_facture') || 'Créer une facture')}
@@ -751,7 +751,7 @@ export default function FacturesPage() {
               id="updateClientStatusTable"
               checked={updateClientOnConvert}
               onChange={(e) => setUpdateClientOnConvert(e.target.checked)}
-              className="mt-1 w-4 h-4 rounded border-default !text-accent focus:ring-accent"
+              className="mt-1 w-4 h-4 rounded border-default !text-accent-text focus:ring-accent"
             />
             <div>
               <label htmlFor="updateClientStatusTable" className="!text-sm font-medium !text-primary cursor-pointer">

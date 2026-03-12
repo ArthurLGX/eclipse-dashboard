@@ -246,7 +246,7 @@ export default function DailySuggestionsModal() {
               <div className="flex flex-col items-center justify-center py-12">
                 <div className="relative">
                   <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center">
-                    <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
+                    <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
                   </div>
                   <motion.div
                     className="absolute inset-0 rounded-full border-2 border-accent"

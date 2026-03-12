@@ -191,7 +191,7 @@ export default function AIFeaturesSettingsPage() {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <IconBrain className="w-12 h-12 text-accent mx-auto mb-4 animate-pulse" />
+          <IconBrain className="w-12 h-12 text-accent-text mx-auto mb-4 animate-pulse" />
           <p className="text-muted">Chargement des paramètres IA...</p>
         </div>
       </div>
@@ -211,7 +211,7 @@ export default function AIFeaturesSettingsPage() {
           </button>
           <div>
             <h1 className="text-3xl font-bold text-primary mb-2 flex items-center gap-3">
-              <IconBrain className="w-8 h-8 text-accent" />
+              <IconBrain className="w-8 h-8 text-accent-text" />
               Gestion des fonctionnalités IA
             </h1>
             <p className="text-muted">Activez/désactivez les features IA pour économiser vos tokens OpenAI</p>
@@ -301,7 +301,7 @@ export default function AIFeaturesSettingsPage() {
                         </span>
                       </div>
                       <p className="text-sm text-muted mb-2">{feature.description}</p>
-                      <span className="text-xs font-mono text-accent bg-accent/10 px-2 py-1 rounded">
+                      <span className="text-xs font-mono text-accent-text bg-accent/10 px-2 py-1 rounded">
                         {feature.tokenCost}
                       </span>
                     </div>

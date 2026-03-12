@@ -75,7 +75,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
                     : 'bg-success-light'
               }`}>
                 {isLoading ? (
-                  <IconLoader2 className="w-6 h-6 !text-accent animate-spin" />
+                  <IconLoader2 className="w-6 h-6 !text-accent-text animate-spin" />
                 ) : result?.errors && result.errors.length > 0 ? (
                   <IconAlertCircle className="w-6 h-6 !text-warning" />
                 ) : (
@@ -102,7 +102,7 @@ export default function EmailSyncModal({ isOpen, onClose, result, isLoading }: E
               <div className="space-y-2">
                 <div className="flex items-center justify-between !text-sm">
                   <span className="!text-muted">Progression</span>
-                  <span className="!text-accent font-medium">{Math.round(progress)}%</span>
+                  <span className="!text-accent-text font-medium">{Math.round(progress)}%</span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
                   <motion.div

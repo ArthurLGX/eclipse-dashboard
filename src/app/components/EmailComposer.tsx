@@ -973,7 +973,7 @@ Cordialement`);
             <div className="flex items-center gap-3">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-2 px-4 py-2 !text-sm bg-accent-light !text-accent hover:bg-[var(--color-accent)] hover:!text-white  transition-colors"
+              className="flex items-center gap-2 px-4 py-2 !text-sm bg-accent-light !text-accent-text hover:bg-[var(--color-accent)] hover:!text-white  transition-colors"
             >
               {showPreview ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
               {showPreview ? (t('edit') || 'Éditer') : (t('preview') || 'Aperçu')}
@@ -1030,12 +1030,12 @@ Cordialement`);
             >
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-                  <IconCornerUpLeft className="w-5 h-5 !text-accent" />
+                  <IconCornerUpLeft className="w-5 h-5 !text-accent-text" />
                 </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="!text-xs font-medium !text-accent uppercase tracking-wide">
+                    <span className="!text-xs font-medium !text-accent-text uppercase tracking-wide">
                       {t('replying_to') || 'Réponse à'}
                     </span>
                   </div>
@@ -1144,7 +1144,7 @@ Cordialement`);
                       <div className="max-h-[50vh] overflow-y-auto p-2">
                         {loadingDocuments ? (
                           <div className="flex items-center justify-center py-12">
-                            <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
+                            <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
                           </div>
                         ) : filteredDocuments.length === 0 ? (
                           <div className="!text-center py-12 !text-muted">
@@ -1279,7 +1279,7 @@ Cordialement`);
             {activeFeatures.title && (
               <div>
                 <label className="block !text-sm font-medium !text-secondary mb-2">
-                  <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent" />
+                  <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent-text" />
                   {t('email_title') || 'Titre de l\'email'}
                   <span className="!text-muted font-normal ml-2">({t('optional') || 'optionnel'})</span>
                 </label>
@@ -1295,7 +1295,7 @@ Cordialement`);
 
             <div>
               <label className="block !text-sm font-medium !text-secondary mb-2">
-                <IconMail className="w-4 h-4 inline mr-1.5 !text-accent" />
+                <IconMail className="w-4 h-4 inline mr-1.5 !text-accent-text" />
                 {t('subject') || 'Objet'} *
               </label>
               <input
@@ -1407,7 +1407,7 @@ Cordialement`);
                     }}
                     className="hidden"
                   />
-                  <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent cursor-pointer transition-colors">
+                  <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-default  !text-muted hover:border-accent hover:!text-accent-text cursor-pointer transition-colors">
                     {uploadingAttachment ? (
                       <IconLoader2 className="w-5 h-5 animate-spin" />
                     ) : (
@@ -1421,7 +1421,7 @@ Cordialement`);
 
                 <button
                   onClick={() => setShowMediaPicker(true)}
-                  className="px-4 py-3 border border-default  !text-muted hover:border-accent hover:!text-accent transition-colors"
+                  className="px-4 py-3 border border-default  !text-muted hover:border-accent hover:!text-accent-text transition-colors"
                 >
                   {t('from_library') || 'Depuis la bibliothèque'}
                 </button>
@@ -1433,7 +1433,7 @@ Cordialement`);
           <div className="bg-card border border-default  p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <IconSignature className="w-5 h-5 !text-accent" />
+                <IconSignature className="w-5 h-5 !text-accent-text" />
                 <div>
                   <div className="font-medium !text-primary">
                     {t('include_signature') || 'Inclure la signature'}
@@ -1461,7 +1461,7 @@ Cordialement`);
             {signatureData && (
               <Link
                 href="/dashboard/settings?tab=email"
-                className="mt-3 inline-flex items-center gap-1.5 !text-sm !text-accent hover:!text-accent/80 transition-colors"
+                className="mt-3 inline-flex items-center gap-1.5 !text-sm !text-accent-text hover:!text-accent/80 transition-colors"
               >
                 <IconPencil className="w-3.5 h-3.5" />
                 {t('edit_signature') || 'Modifier la signature'}

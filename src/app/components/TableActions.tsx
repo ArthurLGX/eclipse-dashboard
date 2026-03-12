@@ -145,7 +145,7 @@ export default function TableActions({
                 setOpen(false);
                 onView();
               }}
-              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent transition-colors"
+              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent-text transition-colors"
               type="button"
             >
               <svg
@@ -177,7 +177,7 @@ export default function TableActions({
                 setOpen(false);
                 onEdit();
               }}
-              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent transition-colors"
+              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent-text transition-colors"
               type="button"
             >
               <svg
@@ -204,7 +204,7 @@ export default function TableActions({
                 setOpen(false);
                 onFactures();
               }}
-              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent transition-colors"
+              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent-text transition-colors"
               type="button"
             >
               <IconFileInvoice className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function TableActions({
                 setOpen(false);
                 onProjects();
               }}
-              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent transition-colors"
+              className="m-1  w-full cursor-pointer flex items-center gap-2 px-4 py-2 !text-sm !text-primary hover:bg-hover hover:!text-accent-text transition-colors"
               type="button"
             >
               <IconBuilding className="w-4 h-4" />

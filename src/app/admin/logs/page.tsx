@@ -191,7 +191,7 @@ export default function AdminLogsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-            <IconHistory className="w-7 h-7 !text-accent" />
+            <IconHistory className="w-7 h-7 !text-accent-text" />
             {t('logs_audit') || 'Logs & Audit'}
           </h1>
           <p className="!text-sm !text-muted">{t('platform_actions_history') || 'Historique des actions sur la plateforme'}</p>

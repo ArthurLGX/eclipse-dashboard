@@ -1286,7 +1286,7 @@ function RichTextEditor({
             [&_p]:mb-2
             [&_ul]:list-disc [&_ul]:pl-5
             [&_ol]:list-decimal [&_ol]:pl-5
-            [&_a]:!text-accent [&_a]:underline
+            [&_a]:!text-accent-text [&_a]:underline
             [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
             [&_video]:rounded-lg [&_video]:cursor-pointer [&_video]:transition-all [&_video]:max-w-full
             empty:before:content-[attr(data-placeholder)] empty:before:!text-gray-400 empty:before:pointer-events-none"
@@ -2336,6 +2336,7 @@ export default function ComposeNewsletterPage() {
         template: templateData || templates[0],
         title: emailTitle || emailSubject,
         content: emailContent,
+        contentImages,
         ctaText,
         ctaUrl,
         bannerImageUrl,
@@ -2347,6 +2348,8 @@ export default function ComposeNewsletterPage() {
         buttonTextColor: customColors.buttonTextColor,
         headerBackgroundUrl,
         fontFamily: customColors.fontFamily,
+        signatureData,
+        strapiBaseUrl: process.env.NEXT_PUBLIC_STRAPI_URL || '',
       });
 
       // Combiner les clients sélectionnés et les emails manuels
@@ -2439,11 +2442,20 @@ export default function ComposeNewsletterPage() {
     }
   };
 
-  // Générer le HTML complet de l'email pour l'envoi
+  // Helper: convertit les URLs relatives en URLs absolues pour les emails
+  const toAbsoluteUrl = (url: string | undefined, base: string): string => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const baseUrl = base || (typeof window !== 'undefined' ? window.location.origin : '');
+    return url.startsWith('/') ? baseUrl + url : baseUrl + '/' + url;
+  };
+
+  // Générer le HTML complet de l'email pour l'envoi (compatible clients email)
   const generateEmailHtml = ({
     template,
     title,
     content,
+    contentImages = [],
     ctaText: cta,
     ctaUrl: ctaLink,
     bannerImageUrl: banner,
@@ -2455,10 +2467,13 @@ export default function ComposeNewsletterPage() {
     buttonTextColor,
     headerBackgroundUrl: headerBgUrl,
     fontFamily,
+    signatureData: sig,
+    strapiBaseUrl = '',
   }: {
     template: EmailTemplate;
     title: string;
     content: string;
+    contentImages?: string[];
     ctaText: string;
     ctaUrl: string;
     bannerImageUrl: string;
@@ -2470,22 +2485,109 @@ export default function ComposeNewsletterPage() {
     buttonTextColor?: string;
     headerBackgroundUrl?: string;
     fontFamily?: string;
+    signatureData?: CreateEmailSignatureData | null;
+    strapiBaseUrl?: string;
   }) => {
+    const base = strapiBaseUrl;
     const isPromo = template.id === 'promotional';
     const isAnnouncement = template.id === 'announcement';
     
-    // Use custom colors if provided
     const titleColor = headerTitleColor || template.textColor || '#1f2937';
     const ctaButtonColor = buttonColor || template.primaryColor;
     const ctaButtonTextColor = buttonTextColor || '#ffffff';
     const emailFont = fontFamily || 'Arial';
     const fontFamilyCSS = `'${emailFont}', Arial, Helvetica, sans-serif`;
-    const googleFontUrl = fontFamily 
+    const googleFontUrl = fontFamily && fontFamily !== 'Arial'
       ? `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily).replace(/%20/g, '+')}:wght@400;600;700&display=swap`
       : null;
-    const headerBackground = headerBgUrl 
-      ? `background-image: url(${headerBgUrl}); background-size: cover; background-position: center; background-color: ${template.primaryColor};`
+
+    // URLs absolues pour compatibilité email
+    const absHeaderBg = toAbsoluteUrl(headerBgUrl, base);
+    const absBanner = toAbsoluteUrl(banner, base);
+    const absFooterLogo = toAbsoluteUrl(footerLogoUrl || undefined, base);
+    const absProfilePic = toAbsoluteUrl(userProfilePicture || undefined, base);
+
+    // Contenu avec images en URLs absolues
+    let processedContent = content;
+    processedContent = processedContent.replace(
+      /<img([^>]*)\ssrc=["']([^"']+)["']/gi,
+      (_, attrs, src) => `<img${attrs} src="${toAbsoluteUrl(src, base)}"`
+    );
+
+    // Header : image de fond ou gradient (les clients email supportent variablement background-image)
+    const headerStyle = absHeaderBg
+      ? `background-image: url(${absHeaderBg}); background-size: cover; background-position: center; background-color: ${template.primaryColor};`
       : `background: linear-gradient(135deg, ${template.primaryColor}, ${template.accentColor});`;
+
+    // Utiliser signatureData pour le footer si disponible
+    const useSignature = sig && (sig.sender_name || sig.company_name || sig.logo_url);
+    const sigPrimary = sig?.primary_color || '#10b981';
+    const sigText = sig?.text_color || '#333333';
+    const sigSecondary = sig?.secondary_color || '#666666';
+    const logoSize = sig?.logo_size || 100;
+    const absSigLogo = toAbsoluteUrl(sig?.logo_url, base);
+
+    const footerHtml = useSignature
+      ? `
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                <tr>
+                  ${sig?.logo_url ? `
+                  <td width="${logoSize}" valign="top" style="padding-right: 12px; vertical-align: top;">
+                    <img src="${absSigLogo}" alt="Logo" style="width: ${logoSize}px; height: ${logoSize}px; object-fit: contain; border-radius: 8px; display: block;">
+                  </td>
+                  ` : ''}
+                  <td valign="top" style="vertical-align: top;">
+                    ${sig?.sender_name ? `<div style="font-weight: bold; font-size: 16px; color: ${sigText}; font-family: ${fontFamilyCSS};">${sig.sender_name}</div>` : ''}
+                    ${sig?.sender_title ? `<div style="color: ${sigSecondary}; margin-bottom: 6px; font-size: 14px; font-family: ${fontFamilyCSS};">${sig.sender_title}</div>` : ''}
+                    ${sig?.company_name ? `<div style="font-weight: 600; color: ${sigPrimary}; margin-bottom: 4px; font-family: ${fontFamilyCSS};">${sig.company_name}</div>` : ''}
+                    <div style="font-size: 13px; color: ${sigSecondary}; font-family: ${fontFamilyCSS};">
+                      ${sig?.phone ? `<div>📞 ${sig.phone}</div>` : ''}
+                      ${sig?.website ? `<div>🌐 <a href="${sig.website}" style="color: ${sigPrimary}; text-decoration: none;">${sig.website.replace(/^https?:\/\//, '')}</a></div>` : ''}
+                      ${sig?.address ? `<div>📍 ${sig.address}</div>` : ''}
+                    </div>
+                    ${sig?.social_links && sig.social_links.length > 0 ? `
+                    <div style="margin-top: 10px;">
+                      ${sig.social_links.map((link) => {
+                        const label = link.label || SOCIAL_PLATFORM_LABELS[link.platform] || link.platform;
+                        const color = link.color || sigPrimary;
+                        return `<a href="${link.url}" style="color: ${color}; margin-right: 8px; text-decoration: none; font-weight: 500;">${label}</a>`;
+                      }).join('')}
+                    </div>
+                    ` : ''}
+                  </td>
+                </tr>
+              </table>
+              <p style="margin: 16px 0 0 0; text-align: center; color: #9ca3af; font-size: 12px; font-family: ${fontFamilyCSS};">
+                <a href="#" style="color: #9ca3af; text-decoration: underline;">${t('unsubscribe') || 'Se désabonner'}</a>
+              </p>
+      `
+      : `
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="80" valign="top">
+                    ${absFooterLogo 
+                      ? `<img src="${absFooterLogo}" alt="Logo" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;">`
+                      : absProfilePic 
+                        ? `<img src="${absProfilePic}" alt="Profile" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;">`
+                        : `<div style="width: 64px; height: 64px; border-radius: 8px; background-color: #e5e7eb;"></div>`
+                    }
+                  </td>
+                  <td valign="top" style="padding-left: 16px;">
+                    <p style="margin: 0 0 4px 0; font-weight: 600; color: #1f2937; font-family: ${fontFamilyCSS};">${footer.firstName} ${footer.lastName}</p>
+                    ${footer.email ? `<p style="margin: 0 0 2px 0; color: #374151; font-size: 14px; font-family: ${fontFamilyCSS};">✉️ ${footer.email}</p>` : ''}
+                    ${footer.phone ? `<p style="margin: 0 0 2px 0; color: #374151; font-size: 14px; font-family: ${fontFamilyCSS};">📞 ${footer.phone}</p>` : ''}
+                    ${footer.website ? `<p style="margin: 0; color: #374151; font-size: 14px; font-family: ${fontFamilyCSS};">🌐 <a href="${footer.website}" style="color: #3b82f6; text-decoration: none;">${footer.website.replace(/^https?:\/\//, '')}</a></p>` : ''}
+                  </td>
+                </tr>
+              </table>
+              ${footer.customText ? `<p style="margin: 16px 0 0 0; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #374151; font-size: 14px; font-family: ${fontFamilyCSS};">${footer.customText}</p>` : ''}
+              <p style="margin: 16px 0 0 0; text-align: center; color: #9ca3af; font-size: 12px; font-family: ${fontFamilyCSS};">
+                <a href="#" style="color: #9ca3af; text-decoration: underline;">${footer.unsubscribeText}</a>
+              </p>
+      `;
+
+    const absBannerFinal = banner ? absBanner : (useSignature && sig?.banner_url ? toAbsoluteUrl(sig.banner_url, base) : '');
+    const bannerLink = useSignature && sig?.banner_link ? sig.banner_link : '';
 
     return `
 <!DOCTYPE html>
@@ -2508,25 +2610,29 @@ export default function ComposeNewsletterPage() {
         <table width="700" cellpadding="0" cellspacing="0" style="max-width: 700px; width: 100%; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <!-- Header -->
           <tr>
-            <td style="${headerBackground} padding: ${isAnnouncement ? '48px' : '32px'} 24px; !text-align: center;">
-              ${isPromo ? `<div style="display: inline-block; padding: 4px 16px; background-color: rgba(255,255,255,0.4); border-radius: 20px; color: #1f2937; font-size: 14px; font-weight: bold; margin-bottom: 16px;">🎉 ${t('special_offer') || 'Offre Spéciale'}</div>` : ''}
-              <h1 style="margin: 0; color: ${titleColor}; font-size: ${isAnnouncement ? '28px' : '24px'}; font-weight: bold;">${title}</h1>
+            <td align="center" style="${headerStyle} padding: ${isAnnouncement ? '48px' : '32px'} 24px; text-align: center;">
+              ${isPromo ? `<div style="display: inline-block; padding: 4px 16px; background-color: rgba(255,255,255,0.4); border-radius: 20px; color: #1f2937; font-size: 14px; font-weight: bold; margin-bottom: 16px; font-family: ${fontFamilyCSS};">🎉 ${t('special_offer') || 'Offre Spéciale'}</div>` : ''}
+              <h1 style="margin: 0; color: ${titleColor}; font-size: ${isAnnouncement ? '28px' : '24px'}; font-weight: bold; text-align: center; font-family: ${fontFamilyCSS};">${title}</h1>
             </td>
           </tr>
           
           <!-- Content -->
           <tr>
             <td style="padding: 32px 24px;">
-              <div style="color: #374151; font-size: 16px; line-height: 1.6;">
-                ${content}
+              <div style="color: #374151; font-size: 16px; line-height: 1.6; font-family: ${fontFamilyCSS};">
+                ${processedContent}
               </div>
               
               ${cta && ctaLink ? `
-              <div style="!text-align: center; margin: 32px 0;">
-                <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; !text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
-                  ${cta}${isPromo ? ' →' : ''}
-                </a>
-              </div>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin: 32px 0;">
+                <tr>
+                  <td align="center" style="text-align: center;">
+                    <a href="${ctaLink}" style="display: inline-block; padding: 16px 32px; background-color: ${ctaButtonColor}; color: ${ctaButtonTextColor}; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; font-family: ${fontFamilyCSS};">
+                      ${cta}${isPromo ? ' →' : ''}
+                    </a>
+                  </td>
+                </tr>
+              </table>
               ` : ''}
             </td>
           </tr>
@@ -2534,38 +2640,17 @@ export default function ComposeNewsletterPage() {
           <!-- Footer -->
           <tr>
             <td style="padding: 24px; border-top: 1px solid #e5e7eb;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td width="80" valign="top">
-                    ${footerLogoUrl 
-                      ? `<img src="${footerLogoUrl}" alt="Logo" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;">`
-                      : userProfilePicture 
-                        ? `<img src="${userProfilePicture}" alt="Profile" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover;">`
-                        : `<div style="width: 64px; height: 64px; border-radius: 8px; background-color: #e5e7eb;"></div>`
-                    }
-                  </td>
-                  <td valign="top" style="padding-left: 16px;">
-                    <p style="margin: 0 0 4px 0; font-weight: 600; color: #1f2937;">${footer.firstName} ${footer.lastName}</p>
-                    ${footer.email ? `<p style="margin: 0 0 2px 0; color: #FFFFFF; font-size: 14px;">✉️ ${footer.email}</p>` : ''}
-                    ${footer.phone ? `<p style="margin: 0 0 2px 0; color: #FFFFFF; font-size: 14px;">📞 ${footer.phone}</p>` : ''}
-                    ${footer.website ? `<p style="margin: 0; color: #FFFFFF; font-size: 14px;">🌐 <a href="${footer.website}" style="color: #3b82f6;">${footer.website.replace(/^https?:\/\//, '')}</a></p>` : ''}
-                  </td>
-                </tr>
-              </table>
-              
-              ${footer.customText ? `<p style="margin: 16px 0 0 0; padding-top: 16px; border-top: 1px solid #e5e7eb; color: #FFFFFF; font-size: 14px;">${footer.customText}</p>` : ''}
-              
-              <p style="margin: 16px 0 0 0; !text-align: center; color: #9ca3af; font-size: 12px;">
-                <a href="#" style="color: #9ca3af;">${footer.unsubscribeText}</a>
-              </p>
+              ${footerHtml}
             </td>
           </tr>
           
-          ${banner ? `
+          ${absBannerFinal ? `
           <!-- Banner -->
           <tr>
             <td style="padding: 0 24px 24px;">
-              <img src="${banner}" alt="Banner" style="width: 100%; max-height: 192px; object-fit: contain; border-radius: 8px;">
+              ${bannerLink ? `<a href="${bannerLink}" target="_blank" style="display: block;">` : ''}
+              <img src="${absBannerFinal}" alt="${sig?.banner_alt || 'Banner'}" style="width: 100%; max-height: 192px; object-fit: contain; border-radius: 8px; display: block;">
+              ${bannerLink ? `</a>` : ''}
             </td>
           </tr>
           ` : ''}
@@ -2716,7 +2801,7 @@ export default function ComposeNewsletterPage() {
                     ) : (
                       step.icon
                     )}
-                    <span className="hidden sm:inline font-medium !text-accent">{step.label}</span>
+                    <span className="hidden sm:inline font-medium !text-accent-text">{step.label}</span>
                   </button>
                   {index < steps.length - 1 && (
                     <div className={`flex-1 h-0.5 mx-2 rounded ${
@@ -2815,7 +2900,7 @@ export default function ComposeNewsletterPage() {
                       <div className="mt-8">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
-                            <IconPalette className="w-5 h-5 !text-accent" />
+                            <IconPalette className="w-5 h-5 !text-accent-text" />
                             {t('my_saved_themes') || 'Mes thèmes'}
                           </h3>
                           <span className="!text-sm !text-muted">
@@ -2892,7 +2977,7 @@ export default function ComposeNewsletterPage() {
                                   </div>
                                   
                                   {/* Nom */}
-                                  <p className="font-medium !text-primary !text-sm truncate group-hover:!text-accent transition-colors">
+                                  <p className="font-medium !text-primary !text-sm truncate group-hover:!text-accent-text transition-colors">
                                     {template.name}
                                   </p>
                                   
@@ -2915,7 +3000,7 @@ export default function ComposeNewsletterPage() {
                                       handleUpdateTemplate(template.documentId);
                                     }}
                                     disabled={isUpdating || isDeleting}
-                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 !text-xs  bg-accent-light !text-accent hover:border-accent-light transition-colors disabled:opacity-50"
+                                    className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 !text-xs  bg-accent-light !text-accent-text hover:border-accent-light transition-colors disabled:opacity-50"
                                     title={t('update_theme') || 'Mettre à jour avec les paramètres actuels'}
                                   >
                                     {isUpdating ? (
@@ -3388,7 +3473,7 @@ export default function ComposeNewsletterPage() {
                         {signatureData?.banner_url && !bannerImageUrl && (
                           <button
                             onClick={() => setBannerImageUrl(signatureData.banner_url || '')}
-                            className="!text-sm !text-accent hover:!text-accent/80 transition-colors flex items-center gap-1"
+                            className="!text-sm !text-accent-text hover:!text-accent/80 transition-colors flex items-center gap-1"
                           >
                             <IconPhoto className="w-4 h-4" />
                             {t('use_signature_banner') || 'Utiliser la bannière de ma signature'}
@@ -3425,7 +3510,7 @@ export default function ComposeNewsletterPage() {
                           {/* Indicator if using signature banner */}
                           {signatureData?.banner_url === bannerImageUrl && (
                             <div className="mt-2 !text-xs !text-muted flex items-center gap-1">
-                              <IconCheck className="w-3 h-3 !text-accent" />
+                              <IconCheck className="w-3 h-3 !text-accent-text" />
                               {t('using_signature_banner') || 'Utilise la bannière de votre signature email'}
                             </div>
                           )}
@@ -3436,7 +3521,7 @@ export default function ComposeNewsletterPage() {
                           className="border-2 border-dashed border-default  p-6 !text-center 
                             hover:border-accent hover:bg-accent-light/30 transition-all cursor-pointer group"
                         >
-                          <IconUpload className="w-8 h-8 mx-auto mb-2 !text-muted group-hover:!text-accent transition-colors" />
+                          <IconUpload className="w-8 h-8 mx-auto mb-2 !text-muted group-hover:!text-accent-text transition-colors" />
                           <p className="!text-primary font-medium">{t('add_banner') || 'Ajouter une bannière'}</p>
                           <p className="!text-sm !text-muted">{t('banner_hint') || 'Image promotionnelle en fin d\'email'}</p>
                         </div>
@@ -3446,7 +3531,7 @@ export default function ComposeNewsletterPage() {
                       <div className="pt-2 border-t border-default">
                         <Link
                           href="/dashboard/settings?tab=email"
-                          className="!text-sm !text-accent hover:!text-accent/80 transition-colors inline-flex items-center gap-1"
+                          className="!text-sm !text-accent-text hover:!text-accent/80 transition-colors inline-flex items-center gap-1"
                         >
                           <IconSettings className="w-3.5 h-3.5" />
                           {t('edit_signature_banner') || 'Modifier la bannière dans ma signature email'}
@@ -3470,7 +3555,7 @@ export default function ComposeNewsletterPage() {
                     {/* Manual email input with suggestions */}
                     <div className="bg-card  border border-default p-4 mb-4">
                       <h3 className="font-semibold !text-primary mb-3 flex items-center gap-2">
-                        <IconMail className="w-5 h-5 !text-accent" />
+                        <IconMail className="w-5 h-5 !text-accent-text" />
                         {t('add_recipient_manually') || 'Ajouter un destinataire'}
                       </h3>
                       
@@ -3523,7 +3608,7 @@ export default function ComposeNewsletterPage() {
                                               className="w-10 h-10 rounded-full object-cover"
                                             />
                                           ) : (
-                                            <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center !text-accent font-semibold">
+                                            <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center !text-accent-text font-semibold">
                                               {client.name[0]?.toUpperCase()}
                                             </div>
                                           )}
@@ -3531,7 +3616,7 @@ export default function ComposeNewsletterPage() {
                                             <p className="font-medium !text-primary truncate">{client.name}</p>
                                             <p className="!text-sm !text-muted truncate">{client.email}</p>
                                           </div>
-                                          <IconCheck className="w-5 h-5 !text-accent opacity-0 group-hover:opacity-100" />
+                                          <IconCheck className="w-5 h-5 !text-accent-text opacity-0 group-hover:opacity-100" />
                                         </button>
                                       ))}
                                     </div>
@@ -3585,7 +3670,7 @@ export default function ComposeNewsletterPage() {
                                 key={manual.email}
                                 className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full group"
                               >
-                                <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center !text-accent !text-xs font-semibold">
+                                <div className="w-6 h-6 rounded-full border-accent-light flex items-center justify-center !text-accent-text !text-xs font-semibold">
                                   {getEmailInitials(manual.email)}
                                 </div>
                                 <span className="!text-sm !text-primary">{manual.email}</span>
@@ -3611,7 +3696,7 @@ export default function ComposeNewsletterPage() {
                             type="checkbox"
                             checked={selectAll}
                             onChange={handleSelectAllRecipients}
-                            className="w-5 h-5 rounded border-default !text-accent focus:ring-accent"
+                            className="w-5 h-5 rounded border-default !text-accent-text focus:ring-accent"
                           />
                           <span className="font-medium !text-primary">
                             {t('select_all_clients')} ({clients.length})
@@ -3638,7 +3723,7 @@ export default function ComposeNewsletterPage() {
                                 type="checkbox"
                                 checked={selectedRecipients.includes(client.id)}
                                 onChange={() => handleToggleRecipient(client.id)}
-                                className="w-5 h-5 rounded border-default !text-accent focus:ring-accent"
+                                className="w-5 h-5 rounded border-default !text-accent-text focus:ring-accent"
                               />
                               {client.image?.url ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -3648,7 +3733,7 @@ export default function ComposeNewsletterPage() {
                                   className="w-10 h-10 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center !text-accent font-semibold">
+                                <div className="w-10 h-10 rounded-full border-accent-light flex items-center justify-center !text-accent-text font-semibold">
                                   {client.name[0]?.toUpperCase()}
                                 </div>
                               )}
@@ -3685,7 +3770,7 @@ export default function ComposeNewsletterPage() {
                         <div className="bg-card  p-5 border border-default">
                           <div className="flex items-center gap-3 mb-3">
                             <div className="w-10 h-10  bg-accent-light flex items-center justify-center">
-                              <IconTemplate className="w-5 h-5 !text-accent" />
+                              <IconTemplate className="w-5 h-5 !text-accent-text" />
                             </div>
                             <span className="!text-sm !text-secondary">{t('step_template')}</span>
                           </div>
@@ -3738,7 +3823,7 @@ export default function ComposeNewsletterPage() {
                           {manualEmails.slice(0, 3).map(manual => (
                             <span
                               key={manual.email}
-                              className="px-3 py-1 bg-accent-light rounded-full !text-sm !text-accent flex items-center gap-1"
+                              className="px-3 py-1 bg-accent-light rounded-full !text-sm !text-accent-text flex items-center gap-1"
                             >
                               <span className="w-4 h-4 rounded-full border-accent-light flex items-center justify-center !text-[10px] font-bold">
                                 {getEmailInitials(manual.email)}
@@ -3747,7 +3832,7 @@ export default function ComposeNewsletterPage() {
                             </span>
                           ))}
                           {totalRecipients > 11 && (
-                            <span className="px-3 py-1 bg-accent-light rounded-full !text-sm !text-accent">
+                            <span className="px-3 py-1 bg-accent-light rounded-full !text-sm !text-accent-text">
                               +{totalRecipients - 11} {t('others')}
                             </span>
                           )}
@@ -3822,7 +3907,7 @@ export default function ComposeNewsletterPage() {
                   <button
                     onClick={handleNextStep}
                     disabled={!canProceed()}
-                    className="flex items-center gap-2 px-6 py-2  bg-accent !text-accent font-medium
+                    className="flex items-center gap-2 px-6 py-2  bg-accent !text-accent-text font-medium
                       hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <span>{t('next')}</span>
@@ -4155,7 +4240,7 @@ export default function ComposeNewsletterPage() {
                 <div className="p-6 overflow-y-auto max-h-[60vh]">
                   {loadingLibrary ? (
                     <div className="flex items-center justify-center py-16">
-                      <IconLoader2 className="w-8 h-8 animate-spin !text-accent" />
+                      <IconLoader2 className="w-8 h-8 animate-spin !text-accent-text" />
                     </div>
                   ) : showLibraryModal.type === 'image' ? (
                     libraryMedia.images.length > 0 ? (

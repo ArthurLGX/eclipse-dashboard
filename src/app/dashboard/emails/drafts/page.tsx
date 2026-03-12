@@ -165,14 +165,14 @@ function DraftsContent() {
       >
         <Link
           href="/dashboard/emails"
-          className="inline-flex items-center gap-2 !text-muted hover:!text-accent mb-4 transition-colors"
+          className="inline-flex items-center gap-2 !text-muted hover:!text-accent-text mb-4 transition-colors"
         >
           <IconArrowLeft className="w-4 h-4" />
           {t('back_to_emails') || 'Retour aux emails'}
         </Link>
         
         <h1 className="!text-3xl font-bold !text-primary flex items-center gap-3">
-          <IconDeviceFloppy className="w-8 h-8 !text-accent" />
+          <IconDeviceFloppy className="w-8 h-8 !text-accent-text" />
           {t('drafts') || 'Brouillons'}
         </h1>
         <p className="!text-muted mt-2">
@@ -223,7 +223,7 @@ function DraftsContent() {
       >
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <IconLoader2 className="w-8 h-8 !text-accent animate-spin" />
+            <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
           </div>
         ) : filteredDrafts.length === 0 ? (
           <div className="!text-center py-16 !text-muted">
@@ -259,7 +259,7 @@ function DraftsContent() {
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold !text-primary truncate group-hover:!text-accent transition-colors">
+                        <h4 className="font-semibold !text-primary truncate group-hover:!text-accent-text transition-colors">
                           {draft.name || draft.subject || t('untitled_draft') || 'Sans titre'}
                         </h4>
                         <span 

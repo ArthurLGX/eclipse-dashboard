@@ -137,16 +137,16 @@ export default function EmailReplyNotification({
             >
               <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
                 {notification.email.client?.enterprise ? (
-                  <IconBuilding className="w-5 h-5 !text-accent" />
+                  <IconBuilding className="w-5 h-5 !text-accent-text" />
                 ) : (
-                  <IconUser className="w-5 h-5 !text-accent" />
+                  <IconUser className="w-5 h-5 !text-accent-text" />
                 )}
               </div>
               
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <IconMail className="w-4 h-4 !text-accent" />
-                  <span className="!text-xs !text-accent font-medium">
+                  <IconMail className="w-4 h-4 !text-accent-text" />
+                  <span className="!text-xs !text-accent-text font-medium">
                     {t('new_reply') || 'Nouvelle réponse'}
                   </span>
                 </div>

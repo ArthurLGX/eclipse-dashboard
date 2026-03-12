@@ -337,7 +337,7 @@ export default function SmtpConfigSection() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <IconLoader2 className="w-8 h-8 animate-spin !text-accent" />
+        <IconLoader2 className="w-8 h-8 animate-spin !text-accent-text" />
       </div>
     );
   }
@@ -352,7 +352,7 @@ export default function SmtpConfigSection() {
       <div className="flex items-start justify-between">
         <div>
           <h3 className="!text-lg font-semibold !text-primary flex items-center gap-2">
-            <IconMail className="w-5 h-5 !text-accent" />
+            <IconMail className="w-5 h-5 !text-accent-text" />
             {t('smtp_config_title') || 'Configuration SMTP'}
           </h3>
           <p className="!text-sm !text-secondary mt-1">

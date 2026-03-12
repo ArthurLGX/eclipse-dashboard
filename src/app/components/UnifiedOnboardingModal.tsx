@@ -892,7 +892,7 @@ export default function UnifiedOnboardingModal() {
                           className={`
                             relative flex flex-col items-center gap-3 p-5  border-2 transition-all cursor-pointer
                             ${isSelected 
-                              ? 'border-accent bg-accent-light !text-accent shadow-lg' 
+                              ? 'border-accent bg-accent-light !text-accent-text shadow-lg' 
                               : 'border-default bg-card hover:border-accent hover:bg-accent-light'
                             }
                           `}
@@ -956,7 +956,7 @@ export default function UnifiedOnboardingModal() {
                           className={`
                             relative flex flex-col items-start gap-3 p-5  border-2 transition-all cursor-pointer !text-left
                             ${isSelected 
-                              ? 'border-accent bg-accent-light !text-accent shadow-lg' 
+                              ? 'border-accent bg-accent-light !text-accent-text shadow-lg' 
                               : 'border-default bg-card hover:border-accent hover:bg-accent-light'
                             }
                           `}
@@ -1070,7 +1070,7 @@ export default function UnifiedOnboardingModal() {
                     {/* Right: Template Preview */}
                     <div className="bg-muted-light  p-6 !space-y-4">
                       <h4 className="font-semibold !text-primary flex items-center gap-2">
-                        <IconTemplate className="w-5 h-5 !text-accent" />
+                        <IconTemplate className="w-5 h-5 !text-accent-text" />
                         {t('onboarding_template_preview') || 'Aperçu du template'}
                       </h4>
                       
@@ -1096,10 +1096,10 @@ export default function UnifiedOnboardingModal() {
                       {/* Estimated Value */}
                         <div className="mt-4 p-4 bg-accent-light border border-accent ">
                         <div className="flex items-center justify-between">
-                          <span className="!text-sm !text-accent font-medium">
+                          <span className="!text-sm !text-accent-text font-medium">
                             {t('onboarding_estimated_value') || 'Valeur estimée'}
                           </span>
-                          <span className="!text-2xl font-bold !text-accent">
+                          <span className="!text-2xl font-bold !text-accent-text">
                             {estimatedValue.toLocaleString('fr-FR')} €
                           </span>
                         </div>
@@ -1115,7 +1115,7 @@ export default function UnifiedOnboardingModal() {
                           {templateStats.phases.map((phase) => (
                             <span 
                               key={phase}
-                              className="px-3 py-1 bg-accent-light border border-accent !text-accent !text-xs rounded-full"
+                              className="px-3 py-1 bg-accent-light border border-accent !text-accent-text !text-xs rounded-full"
                             >
                               {phase}
                             </span>
@@ -1161,7 +1161,7 @@ export default function UnifiedOnboardingModal() {
                       <p className="!text-sm !text-muted">{t('client_created') || 'Client créé'}</p>
                     </div>
                     <div className="p-5 bg-accent-light border border-accent ">
-                      <IconBriefcase className="w-8 h-8 !text-accent mx-auto mb-2" />
+                      <IconBriefcase className="w-8 h-8 !text-accent-text mx-auto mb-2" />
                       <p className="font-semibold !text-primary truncate">{createdProject?.title || 'Projet'}</p>
                       <p className="!text-sm !text-muted">{t('project_created') || 'Projet créé'}</p>
                     </div>
@@ -1175,8 +1175,8 @@ export default function UnifiedOnboardingModal() {
                   {/* Estimated value highlight */}
                   {templateStats && (
                     <div className="max-w-md mx-auto p-6 bg-accent-light border border-accent ">
-                      <p className="!text-sm !text-accent mb-1">{t('potential_revenue') || 'Chiffre d\'affaires potentiel'}</p>
-                      <p className="!text-4xl font-bold !text-accent">
+                      <p className="!text-sm !text-accent-text mb-1">{t('potential_revenue') || 'Chiffre d\'affaires potentiel'}</p>
+                      <p className="!text-4xl font-bold !text-accent-text">
                         {estimatedValue.toLocaleString('fr-FR')} €
                       </p>
                       <p className="!text-sm !text-muted mt-2">

@@ -404,7 +404,7 @@ export default function ProjectsPage() {
                 handleScheduleMeeting(row);
               }}
               title={t('schedule_meeting') || 'Planifier une réunion'}
-              className="p-1.5 lg:w-fit w-full  cursor-pointer hover:bg-accent-light !text-muted hover:!text-accent transition-colors"
+              className="p-1.5 lg:w-fit w-full  cursor-pointer hover:bg-accent-light !text-muted hover:!text-accent-text transition-colors"
             >
               <IconCalendarEvent className="w-4 h-4" />
             </button>

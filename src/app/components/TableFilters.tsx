@@ -246,13 +246,13 @@ export default function TableFilters({
               {/* Header */}
               <div className="flex items-center gap-2 mb-4 pb-3 border-b border-default">
                 <div className="p-1.5">
-                  <IconFilter className="w-4 h-4 !text-accent" />
+                  <IconFilter className="w-4 h-4 !text-accent-text" />
                 </div>
                 <span className="!text-sm font-semibold !text-primary">
                   {t('filter_by') || 'Filtrer par'}
                 </span>
                 {activeFiltersCount > 0 && (
-                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light !text-accent !text-xs font-medium">
+                  <span className="ml-auto px-2 py-0.5 rounded-full bg-accent-light !text-accent-text !text-xs font-medium">
                     {activeFiltersCount} actif{activeFiltersCount > 1 ? 's' : ''}
                   </span>
                 )}

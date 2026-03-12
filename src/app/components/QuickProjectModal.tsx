@@ -387,10 +387,10 @@ export default function QuickProjectModal({
                         {t('duplicate_desc') || 'Dupliquer phases, tâches et estimations'}
                       </p>
                     </div>
-                    <IconChevronRight className="w-5 h-5 !text-accent" />
+                    <IconChevronRight className="w-5 h-5 !text-accent-text" />
                   </div>
                   {lastProject && (
-                    <div className="mt-3 pt-3 border-t border-accent flex items-center gap-2 !text-sm !text-accent">
+                    <div className="mt-3 pt-3 border-t border-accent flex items-center gap-2 !text-sm !text-accent-text">
                       <IconBriefcase className="w-4 h-4" />
                       <span>{t('last_used') || 'Dernier utilisé'} : <strong>{lastProject.title}</strong></span>
                     </div>
@@ -403,7 +403,7 @@ export default function QuickProjectModal({
                   className="w-full p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3  bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
+                    <div className="p-3  bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent-text transition-colors">
                       <IconTemplate className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -414,7 +414,7 @@ export default function QuickProjectModal({
                         {t('template_desc') || 'Démarrer avec un modèle prédéfini'}
                       </p>
                     </div>
-                    <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                    <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
                   </div>
                 </button>
 
@@ -424,7 +424,7 @@ export default function QuickProjectModal({
                   className="w-full p-4  border border-default hover:border-accent bg-card hover:bg-hover !text-left transition-all group"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-3  bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent transition-colors">
+                    <div className="p-3  bg-muted !text-secondary group-hover:bg-accent-light group-hover:!text-accent-text transition-colors">
                       <IconFolderPlus className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
@@ -435,7 +435,7 @@ export default function QuickProjectModal({
                         {t('empty_project_desc') || 'Commencer de zéro'}
                       </p>
                     </div>
-                    <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent transition-colors" />
+                    <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
                   </div>
                 </button>
               </motion.div>
@@ -569,8 +569,8 @@ export default function QuickProjectModal({
                 {selectedSourceProject && (
                   <div className="p-3  bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 !text-sm">
-                      <IconCopy className="w-4 h-4 !text-accent" />
-                      <span className="!text-accent font-medium">
+                      <IconCopy className="w-4 h-4 !text-accent-text" />
+                      <span className="!text-accent-text font-medium">
                         {t('duplicating_from') || 'Duplication de'} : {selectedSourceProject.title}
                       </span>
                     </div>
@@ -590,8 +590,8 @@ export default function QuickProjectModal({
                 {selectedTemplate && (
                   <div className="p-3  bg-accent-light border border-accent">
                     <div className="flex items-center gap-2 !text-sm">
-                      <IconTemplate className="w-4 h-4 !text-accent" />
-                      <span className="!text-accent font-medium">
+                      <IconTemplate className="w-4 h-4 !text-accent-text" />
+                      <span className="!text-accent-text font-medium">
                         {t('template') || 'Template'} : {language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
                       </span>
                     </div>

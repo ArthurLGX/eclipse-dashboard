@@ -433,7 +433,7 @@ export default function DataTable<T = unknown>({
                   className="flex-shrink-0"
                 >
                   {isSelected ? (
-                    <IconSquareCheck stroke={1} className="w-5 h-5 !text-accent" />
+                    <IconSquareCheck stroke={1} className="w-5 h-5 !text-accent-text" />
                   ) : (
                     <IconSquare className="w-5 h-5 !text-muted" />
                   )}
@@ -645,7 +645,7 @@ export default function DataTable<T = unknown>({
               {!allSelected && (
                 <button
                   onClick={selectAll}
-                  className="!text-sm !text-accent hover:underline"
+                  className="!text-sm !text-accent-text hover:underline"
                 >
                   {t('select_all') || 'Tout sélectionner'} ({allIds.length})
                 </button>

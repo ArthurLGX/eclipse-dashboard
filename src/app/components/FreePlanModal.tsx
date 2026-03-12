@@ -129,7 +129,7 @@ export default function FreePlanModal({
                 <span className="!text-secondary font-medium capitalize">
                   {plan.name}
                 </span>
-                <span className="!text-accent font-bold">Gratuit</span>
+                <span className="!text-accent-text font-bold">Gratuit</span>
               </div>
               <p className="!text-secondary !text-sm">{plan.description}</p>
             </div>
@@ -140,7 +140,7 @@ export default function FreePlanModal({
                 <span className="!text-sm !text-secondary">
                   {t('trial_period')}
                 </span>
-                <span className="!text-sm !text-accent font-medium">
+                <span className="!text-sm !text-accent-text font-medium">
                   30 jours
                 </span>
               </div>

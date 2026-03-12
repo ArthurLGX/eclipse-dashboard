@@ -37,7 +37,7 @@ export default function ThemeToggle() {
         ) : (
           <IconMoon
             size={18}
-            className="!text-accent group-hover:opacity-80 transition-colors"
+            className="!text-accent-text group-hover:opacity-80 transition-colors"
           />
         )}
       </motion.div>
