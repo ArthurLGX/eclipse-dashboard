@@ -68,6 +68,9 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
     // Ne pas faire d'appels API si l'utilisateur n'est pas authentifié
     if (!authenticated || !user?.id || isSyncing) return;
     
+    // Ne pas synchroniser si l'URL API n'est pas configurée (évite "Failed to fetch")
+    if (typeof window !== 'undefined' && !process.env.NEXT_PUBLIC_STRAPI_URL) return;
+    
     // Ne pas synchroniser si on sait déjà que l'IMAP n'est pas configuré
     if (imapConfigured === false) return;
     
@@ -123,23 +126,31 @@ export function EmailNotificationProvider({ children }: { children: React.ReactN
       
       lastSyncRef.current = Date.now();
     } catch (error: unknown) {
-      // Vérifier si c'est une erreur de configuration IMAP manquante
       const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // Erreur de configuration IMAP manquante
       const isImapNotConfigured = errorMessage.includes('No SMTP/IMAP configuration') || 
                                    errorMessage.includes('IMAP configuration not found') ||
                                    errorMessage.includes('400');
       
+      // Erreur réseau (CORS, API indisponible, URL invalide)
+      const isNetworkError = errorMessage.includes('Failed to fetch') || 
+                             errorMessage.includes('NetworkError') ||
+                             errorMessage.includes('Load failed');
+      
       if (isImapNotConfigured) {
-        // Marquer l'IMAP comme non configuré pour arrêter les tentatives
         setImapConfigured(false);
-        
-        // Ne logger qu'une seule fois
         if (!imapErrorLoggedRef.current) {
-          console.info('ℹ️ Configuration IMAP non trouvée - Synchronisation automatique désactivée. Configurez votre IMAP dans les paramètres pour activer la réception automatique d\'emails.');
+          console.info('ℹ️ Configuration IMAP non trouvée - Synchronisation automatique désactivée.');
+          imapErrorLoggedRef.current = true;
+        }
+      } else if (isNetworkError) {
+        // Ne pas spammer la console pour les erreurs réseau récurrentes
+        if (!imapErrorLoggedRef.current) {
+          console.warn('Email sync: erreur réseau (API indisponible ou CORS). La synchro réessaiera plus tard.');
           imapErrorLoggedRef.current = true;
         }
       } else {
-        // Autre type d'erreur, logger normalement
         console.error('Email sync error:', error);
       }
     } finally {
