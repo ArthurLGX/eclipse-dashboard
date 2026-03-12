@@ -1387,8 +1387,8 @@ export default function ComposeNewsletterPage() {
     opacity: number;  // 0-100%
   }
   
-  // Polices Google disponibles
-  const availableFonts = [
+  // Polices Google disponibles (useMemo pour stabilité des deps useEffect)
+  const availableFonts = useMemo(() => [
     { name: 'Inter', family: 'Inter, sans-serif' },
     { name: 'Roboto', family: 'Roboto, sans-serif' },
     { name: 'Open Sans', family: "'Open Sans', sans-serif" },
@@ -1404,7 +1404,7 @@ export default function ComposeNewsletterPage() {
     { name: 'Quicksand', family: 'Quicksand, sans-serif' },
     { name: 'Work Sans', family: "'Work Sans', sans-serif" },
     { name: 'DM Sans', family: "'DM Sans', sans-serif" },
-  ];
+  ], []);
 
   const [customColors, setCustomColors] = useState({
     gradientStops: [
@@ -1456,8 +1456,8 @@ export default function ComposeNewsletterPage() {
     autoSaveDelay: 15000, // Sauvegarde toutes les 15 secondes
   });
 
-  // Generate CSS gradient from stops
-  const generateGradientCSS = (stops: GradientStop[], angle: number) => {
+  // Generate CSS gradient from stops (useCallback pour stabilité des deps useMemo)
+  const generateGradientCSS = useCallback((stops: GradientStop[], angle: number) => {
     if (stops.length === 0) return '#FFFFFF';
     if (stops.length === 1) {
       const s = stops[0];
@@ -1468,7 +1468,7 @@ export default function ComposeNewsletterPage() {
       .map(s => `${hexToRgba(s.color, s.opacity / 100)} ${s.position}%`)
       .join(', ');
     return `linear-gradient(${angle}deg, ${colorStops})`;
-  };
+  }, []);
 
   // Convert hex to rgba
   const hexToRgba = (hex: string, alpha: number) => {
@@ -1676,7 +1676,7 @@ export default function ComposeNewsletterPage() {
       gradientAngle: customColors.gradientAngle,
       gradientCSS: generateGradientCSS(customColors.gradientStops, customColors.gradientAngle),
     },
-  ], [t, customColors]);
+  ], [t, customColors, generateGradientCSS]);
 
   const steps: { id: Step; label: string; icon: React.ReactNode }[] = useMemo(() => [
     { id: 'template', label: t('step_template'), icon: <IconTemplate className="w-5 h-5" /> },
@@ -2336,7 +2336,6 @@ export default function ComposeNewsletterPage() {
         template: templateData || templates[0],
         title: emailTitle || emailSubject,
         content: emailContent,
-        contentImages,
         ctaText,
         ctaUrl,
         bannerImageUrl,
@@ -2455,7 +2454,6 @@ export default function ComposeNewsletterPage() {
     template,
     title,
     content,
-    contentImages = [],
     ctaText: cta,
     ctaUrl: ctaLink,
     bannerImageUrl: banner,
@@ -2473,7 +2471,6 @@ export default function ComposeNewsletterPage() {
     template: EmailTemplate;
     title: string;
     content: string;
-    contentImages?: string[];
     ctaText: string;
     ctaUrl: string;
     bannerImageUrl: string;
