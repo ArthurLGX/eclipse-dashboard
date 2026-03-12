@@ -11,4 +11,5 @@ export { default as GlobalScoreDisplay } from './GlobalScoreDisplay';
 export { default as ScreenshotViewer } from './ScreenshotViewer';
 export { default as WireframeComparison } from './WireframeComparison';
 export { default as GeneratedMockup } from './GeneratedMockup';
+export { default as RedesignWithClaude } from './RedesignWithClaude';
 

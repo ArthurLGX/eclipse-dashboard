@@ -704,18 +704,21 @@ export default function SmartFollowUpPage() {
         <div className="max-w-7xl mx-auto px-8 py-6">
           {/* Bannière instruction IA active */}
           {hasAiInstruction && (
-            <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg flex items-center justify-between mb-4">
+            <>
+            <p className="!text-xs !text-primary mb-2">Instruction IA :</p>  
+            <div className="p-3 bg-accent-light border border-accent rounded-lg flex items-center justify-between mb-4 w-fit">
               <div className="flex items-center gap-2 !text-sm !text-primary min-w-0 flex-1">
                 <IconSparkles className="w-4 h-4 shrink-0 text-accent" />
-                <span className="truncate">{aiInstruction}</span>
+                <span className="truncate !text-xs text-primary">{aiInstruction}</span>
               </div>
               <button
                 onClick={() => setShowInstructionDrawer(true)}
-                className="shrink-0 !text-xs font-medium text-accent hover:underline whitespace-nowrap ml-2"
+                className="shrink-0 px-2.5 py-1 rounded-full bg-success-light !text-success-text !text-xs font-medium whitespace-nowrap ml-2 hover:opacity-90 transition-opacity"
               >
                 Modifier →
               </button>
             </div>
+            </>
           )}
 
           {/* KPIs */}

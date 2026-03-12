@@ -309,8 +309,8 @@ export default function AITaskGenerator({
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || t('ai_generation_error'));
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error((errorData as { error?: string })?.error || t('ai_generation_error'));
       }
 
       const data: AITaskResponse = await response.json();

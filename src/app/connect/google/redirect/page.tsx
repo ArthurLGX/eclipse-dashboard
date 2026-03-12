@@ -38,7 +38,7 @@ export default function GoogleRedirectPage() {
 
  
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response.json().catch(() => ({}));
           console.error('[Google Redirect] Error response:', errorData);
           throw new Error(errorData.error?.message || t('authentication_error'));
         }

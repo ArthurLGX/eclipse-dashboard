@@ -140,8 +140,8 @@ export default function GeneratedMockup({
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Generation failed');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error((errorData as { error?: string })?.error || 'Generation failed');
       }
       
       const data = await response.json();
