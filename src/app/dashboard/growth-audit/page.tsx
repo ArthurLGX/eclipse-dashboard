@@ -27,7 +27,6 @@ import {
   IconBrandTwitter,
   IconDeviceDesktopAnalytics,
   IconLanguage,
-  IconRobot,
   IconChevronRight,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
