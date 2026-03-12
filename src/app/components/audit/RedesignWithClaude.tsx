@@ -193,6 +193,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
               >
                 {screenshot ? (
                   <>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- base64 data URL from paste, next/image doesn't support it */}
                     <img
                       src={screenshot}
                       alt="Screenshot"
