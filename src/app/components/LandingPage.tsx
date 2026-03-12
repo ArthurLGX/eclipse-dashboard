@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { useTheme } from '@/app/context/ThemeContext';
 import useLenis from '@/utils/useLenis';
 import { motion } from 'motion/react';
+import { fetchPlans } from '@/lib/api';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { formatFeatureDisplay } from '@/utils/formatFeatureDisplay';
 
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 const cardVariants = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
@@ -15,7 +18,11 @@ export default function LandingPage() {
   const [navScrolled, setNavScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [togglePlan, setTogglePlan] = useState(false);
+  const [plans, setPlans] = useState<Array<{ name: string; description: string; price_monthly: number; price_yearly: number; features: string }>>([]);
+  const [plansLoading, setPlansLoading] = useState(true);
   const { setThemeMode, resolvedMode } = useTheme();
+  const { t } = useLanguage();
   useLenis();
   useEffect(() => {
     const onScroll = () => {
@@ -28,6 +35,25 @@ export default function LandingPage() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetchPlans() as { data?: Array<{ rank: number; name: string; description: string; price_monthly: number; price_yearly: number; features: string }> };
+        const sorted = (res?.data || []).sort((a, b) => (a?.rank ?? 0) - (b?.rank ?? 0));
+        setPlans(sorted);
+      } catch {
+        setPlans([
+          { name: 'free', description: 'Pour démarrer', price_monthly: 0, price_yearly: 0, features: '{}' },
+          { name: 'pro', description: 'Pour les indépendants actifs', price_monthly: 29, price_yearly: 29, features: '{}' },
+          { name: 'studio', description: 'Pour les équipes', price_monthly: 79, price_yearly: 79, features: '{}' },
+        ]);
+      } finally {
+        setPlansLoading(false);
+      }
+    };
+    load();
+  }, []);
+
   return (
     <div className="landing-page min-h-screen ">
       <div className="landing-scroll-progress " style={{ width: `${scrollProgress}%` }} />
@@ -38,10 +64,10 @@ export default function LandingPage() {
           <span>Eclipse Studio Dashboard</span>
         </Link>
         <ul className="landing-nav-links">
-          <li><a href="#features">Fonctionnalités</a></li>
-          <li><a href="#pricing">Tarifs</a></li>
-          <li><a href="#testimonials">Témoignages</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#features">{t('landing_nav_features')}</a></li>
+          <li><a href="#pricing">{t('landing_nav_pricing')}</a></li>
+          <li><a href="#testimonials">{t('landing_nav_testimonials')}</a></li>
+          <li><a href="#faq">{t('landing_nav_faq')}</a></li>
         </ul>
         <div className="flex items-center gap-2">
           <button
@@ -52,8 +78,8 @@ export default function LandingPage() {
           >
             {resolvedMode === 'dark' ? '☀️' : '🌙'}
           </button>
-          <Link href="/login" className="landing-btn-ghost">Se connecter</Link>
-          <Link href="/pricing" className="landing-btn-primary">Essai gratuit →</Link>
+          <Link href="/login" className="landing-btn-ghost">{t('landing_nav_login')}</Link>
+          <Link href="/pricing" className="landing-btn-primary">{t('landing_nav_free_trial')}</Link>
         </div>
       </nav>
 
@@ -63,23 +89,23 @@ export default function LandingPage() {
 
         <motion.div className="landing-eyebrow" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="landing-eyebrow-dot" />
-          Nouveau — Smart Follow-Up IA disponible
+          {t('landing_hero_eyebrow')}
         </motion.div>
 
         <motion.h1 className="landing-title" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
-          Le dashboard qui<br />fait <em>avancer</em> votre<br />business.
+          {t('landing_hero_title_before')}<em>{t('landing_hero_title_em')}</em>{t('landing_hero_title_after')}
         </motion.h1>
 
         <motion.p className="landing-sub" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-          Projets, clients, pipeline, factures — tout centralisé. Conçu pour les indépendants et studios qui veulent passer moins de temps sur l&apos;admin.
+          {t('landing_hero_sub')}
         </motion.p>
 
         <motion.div className="landing-actions" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
           <Link href="/pricing" className="landing-btn-primary-lg">
-            Démarrer gratuitement
+            {t('landing_hero_cta')}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
           </Link>
-          <a href="#features" className="landing-btn-ghost-lg">Voir les fonctionnalités</a>
+          <a href="#features" className="landing-btn-ghost-lg">{t('landing_hero_cta_secondary')}</a>
         </motion.div>
 
         <motion.div className="landing-proof" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
@@ -92,7 +118,7 @@ export default function LandingPage() {
           </div>
           <div className="landing-proof-text">
             <div className="landing-stars">★★★★★</div>
-            <strong>124 indépendants</strong> font confiance à Eclipse Studio Dashboard
+            <strong>{t('landing_proof_independents')}</strong> {t('landing_proof_text')}
           </div>
         </motion.div>
 
@@ -177,7 +203,7 @@ export default function LandingPage() {
       </section>
 
       <motion.div className="landing-logos-section" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}>
-        <div className="landing-logos-label">Utilisé par des freelances et studios partout en France</div>
+        <div className="landing-logos-label">{t('landing_logos_label')}</div>
         <div className="landing-logos-row">
           {['Quantior', 'Barbieri Économie', 'Subtil Event', 'LC Detailers', 'Cognix Systems', 'AMGM'].map((name, i) => (
             <motion.div key={name} className="landing-logo-item" initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.05 }}>{name}</motion.div>
@@ -186,23 +212,23 @@ export default function LandingPage() {
       </motion.div>
 
       <section className="landing-section" id="features">
-        <motion.div className="landing-section-label" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5 }}><span>●</span> Fonctionnalités</motion.div>
-        <motion.h2 className="landing-section-title" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5, delay: 0.05 }}>Tout ce dont vous avez <em>besoin</em>, rien de plus.</motion.h2>
-        <motion.p className="landing-section-sub" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5, delay: 0.1 }}>Un seul outil pour remplacer Notion, Trello, Pennylane et votre CRM. Pensé pour aller vite.</motion.p>
+        <motion.div className="landing-section-label" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5 }}><span>●</span> {t('landing_section_features')}</motion.div>
+        <motion.h2 className="landing-section-title" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5, delay: 0.05 }}>{t('landing_section_features_title_before')}<em>{t('landing_section_features_title_em')}</em>{t('landing_section_features_title_after')}</motion.h2>
+        <motion.p className="landing-section-sub" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-60px' }} transition={{ duration: 0.5, delay: 0.1 }}>{t('landing_section_features_sub')}</motion.p>
 
         <motion.div className="landing-features-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} >
           {[
-            { icon: '📋', title: 'Gestion de projets', desc: 'Tâches, sous-tâches, workflow Kanban, Gantt — tout pour livrer vos projets à temps sans chaos.', tag: 'Kanban · Gantt · Timeline', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent2) 10%, transparent)', color: '#818cf8' } },
-            { icon: '🎯', title: 'Pipeline commercial', desc: 'Suivez chaque opportunité de la prospection à la signature. Score ICP, relances automatiques, KPIs live.', tag: 'CRM · Lead scoring', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent) 8%, transparent)', color: 'var(--landing-accent)' } },
-            { icon: '🧾', title: 'Factures & Devis', desc: 'Créez et envoyez des factures professionnelles en 30 secondes. Suivi des paiements, relances auto.', tag: 'PDF · Relances · Stripe', tagStyle: { background: 'color-mix(in srgb, var(--landing-green) 8%, transparent)', color: 'var(--landing-green)' } },
-            { icon: '🤖', title: 'Smart Follow-Up IA', desc: "L'IA analyse vos emails entrants, score les leads, et planifie les bonnes relances au bon moment.", tag: 'IA · Emails · Scoring', tagStyle: { background: 'color-mix(in srgb, #8b5cf6 12%, transparent)', color: '#a78bfa' } },
-            { icon: '📊', title: 'Contacts & CRM', desc: 'Base de contacts unifiée. Clients, prospects, partenaires — avec historique, notes et statuts.', tag: 'CRM · Tags · Import CSV', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent) 8%, transparent)', color: 'var(--landing-accent)' } },
-            { icon: '📧', title: 'Newsletters', desc: 'Créez et envoyez des newsletters à vos contacts depuis le dashboard. Statistiques d\'envoi incluses.', tag: 'SMTP · Planification', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent2) 10%, transparent)', color: '#818cf8' } },
+            { icon: '📋', titleKey: 'landing_feat_projects', descKey: 'landing_feat_projects_desc', tag: 'Kanban · Gantt · Timeline', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent2) 10%, transparent)', color: '#818cf8' } },
+            { icon: '🎯', titleKey: 'landing_feat_pipeline', descKey: 'landing_feat_pipeline_desc', tag: 'CRM · Lead scoring', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent) 8%, transparent)', color: 'var(--landing-accent)' } },
+            { icon: '🧾', titleKey: 'landing_feat_invoices', descKey: 'landing_feat_invoices_desc', tag: 'PDF · Relances · Stripe', tagStyle: { background: 'color-mix(in srgb, var(--landing-green) 8%, transparent)', color: 'var(--landing-green)' } },
+            { icon: '🤖', titleKey: 'landing_feat_smart_followup', descKey: 'landing_feat_smart_followup_desc', tag: 'IA · Emails · Scoring', tagStyle: { background: 'color-mix(in srgb, #8b5cf6 12%, transparent)', color: '#a78bfa' } },
+            { icon: '📊', titleKey: 'landing_feat_contacts', descKey: 'landing_feat_contacts_desc', tag: 'CRM · Tags · Import CSV', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent) 8%, transparent)', color: 'var(--landing-accent)' } },
+            { icon: '📧', titleKey: 'landing_feat_newsletters', descKey: 'landing_feat_newsletters_desc', tag: 'SMTP · Planification', tagStyle: { background: 'color-mix(in srgb, var(--landing-accent2) 10%, transparent)', color: '#818cf8' } },
           ].map((f) => (
-            <motion.div key={f.title} className="landing-feature-card" variants={cardVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+            <motion.div key={f.titleKey} className="landing-feature-card" variants={cardVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }}>
               <div className="landing-feat-icon">{f.icon}</div>
-              <div className="landing-feat-title">{f.title}</div>
-              <div className="landing-feat-desc">{f.desc}</div>
+              <div className="landing-feat-title">{t(f.titleKey)}</div>
+              <div className="landing-feat-desc">{t(f.descKey)}</div>
               <div className="landing-feat-tag" style={f.tagStyle}>{f.tag}</div>
             </motion.div>
           ))}
@@ -263,64 +289,135 @@ export default function LandingPage() {
 
       <section className="landing-section" id="pricing">
         <div className="text-center flex flex-col items-center">
-          <motion.div className="landing-section-label justify-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}><span>●</span> Tarifs</motion.div>
-          <motion.h2 className="landing-section-title max-w-full text-center" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>Simple. <em>Transparent.</em> Sans surprise.</motion.h2>
-          <motion.p className="landing-section-sub text-center max-w-md mx-auto mb-0" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>Commencez gratuitement. Passez au plan suivant quand vous en avez besoin.</motion.p>
+          <motion.div className="landing-section-label justify-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}><span>●</span> {t('landing_pricing_label')}</motion.div>
+          <motion.h2 className="landing-section-title max-w-full text-center" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>{t('landing_pricing_title')}</motion.h2>
+          <motion.p className="landing-section-sub text-center max-w-md mx-auto mb-0" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>{t('landing_pricing_sub')}</motion.p>
         </div>
-        <motion.div className="landing-pricing-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={stagger}>
-          <motion.div className="landing-pricing-card" variants={cardVariants} whileHover={{ y: -6, transition: { duration: 0.2 } }}>
-            <div className="landing-pricing-name">Starter</div>
-            <div className="landing-pricing-price">0 <span className="text-lg font-medium">€</span></div>
-            <div className="landing-pricing-period">pour toujours</div>
-            <div className="landing-pricing-divider" />
-            {['5 projets actifs', '50 contacts', '3 factures / mois', 'Pipeline de base'].map((f) => (
-              <div key={f} className="landing-pricing-feature"><span className="landing-pricing-check">✓</span> {f}</div>
-            ))}
-            <div className="landing-pricing-feature opacity-40"><span className="landing-pricing-check">✗</span> Smart Follow-Up IA</div>
-            <div className="landing-pricing-feature opacity-40"><span className="landing-pricing-check">✗</span> Newsletters</div>
-            <Link href="/pricing" className="landing-btn-pricing-outline">Commencer gratuitement</Link>
-          </motion.div>
-          <motion.div className="landing-pricing-card featured" variants={cardVariants} whileHover={{ y: -8, scale: 1.02, transition: { duration: 0.2 } }}>
-            <div className="landing-pricing-badge">⚡ Le plus populaire</div>
-            <div className="landing-pricing-name">Pro</div>
-            <div className="landing-pricing-price">29 <span className="text-lg font-medium">€</span></div>
-            <div className="landing-pricing-period">par mois, facturé annuellement</div>
-            <div className="landing-pricing-divider" />
-            {['50 projets actifs', '1 000 contacts', 'Factures illimitées', 'Pipeline complet', 'Smart Follow-Up IA', 'Newsletters (100/mois)'].map((f) => (
-              <div key={f} className="landing-pricing-feature"><span className="landing-pricing-check">✓</span> {f}</div>
-            ))}
-            <Link href="/pricing" className="landing-btn-pricing-dark">Essai gratuit 14 jours</Link>
-          </motion.div>
-          <motion.div className="landing-pricing-card" variants={cardVariants} whileHover={{ y: -6, transition: { duration: 0.2 } }}>
-            <div className="landing-pricing-name">Studio</div>
-            <div className="landing-pricing-price">79 <span className="text-lg font-medium">€</span></div>
-            <div className="landing-pricing-period">par mois, facturé annuellement</div>
-            <div className="landing-pricing-divider" />
-            {['Projets illimités', 'Contacts illimités', 'Multi-utilisateurs', 'API & intégrations', 'IA prioritaire', 'Support dédié'].map((f) => (
-              <div key={f} className="landing-pricing-feature"><span className="landing-pricing-check">✓</span> {f}</div>
-            ))}
-            <Link href="/pricing" className="landing-btn-pricing-outline">Contacter l&apos;équipe</Link>
-          </motion.div>
+
+        {/* Toggle Mensuel / Annuel */}
+        <div className="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-10">
+          <span className={`text-sm font-medium transition-colors duration-200 ${!togglePlan ? 'text-accent' : 'opacity-60'}`} style={{ color: !togglePlan ? 'var(--landing-accent)' : undefined }}>
+            {t('landing_pricing_monthly')}
+          </span>
+          <button
+            type="button"
+            onClick={() => setTogglePlan(!togglePlan)}
+            className="relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent"
+            style={{ background: togglePlan ? 'var(--landing-accent)' : 'var(--landing-border)' }}
+          >
+            <span
+              className="inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300"
+              style={{ transform: togglePlan ? 'translateX(36px)' : 'translateX(4px)' }}
+            />
+          </button>
+          <span className={`text-sm font-medium transition-colors duration-200 ${togglePlan ? 'text-accent' : 'opacity-60'}`} style={{ color: togglePlan ? 'var(--landing-accent)' : undefined }}>
+            {t('landing_pricing_yearly')}
+          </span>
+          <span
+            className="px-3 py-1 rounded-full text-xs font-medium"
+            style={{ background: togglePlan ? 'color-mix(in srgb, var(--landing-accent) 15%, transparent)' : 'var(--landing-border)', color: togglePlan ? 'var(--landing-accent)' : 'var(--landing-text-sm)' }}
+          >
+            {t('landing_pricing_save')}
+          </span>
+        </div>
+
+        <motion.div
+          className={`landing-pricing-grid ${!plansLoading && plans.length >= 4 ? 'cols-4' : ''}`}
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+        >
+          {plansLoading ? (
+            [1, 2, 3].map((idx) => (
+              <div key={idx} className="landing-pricing-card animate-pulse">
+                <div className="h-4 w-20 bg-muted rounded mb-4" style={{ background: 'var(--landing-border)' }} />
+                <div className="h-10 w-16 rounded mb-4" style={{ background: 'var(--landing-border)' }} />
+                <div className="h-3 w-28 rounded mb-6" style={{ background: 'var(--landing-border)' }} />
+                <div className="landing-pricing-divider" />
+                <div className="space-y-3 mt-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="h-4 rounded" style={{ background: 'var(--landing-border)' }} />
+                  ))}
+                </div>
+                <div className="h-12 rounded-lg mt-6" style={{ background: 'var(--landing-border)' }} />
+              </div>
+            ))
+          ) : plans.length > 0 ? (
+            plans.map((plan) => {
+              const featured = plan.name === 'pro';
+              const price = togglePlan ? plan.price_yearly : plan.price_monthly;
+              let features: string[] = [];
+              try {
+                const f = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
+                if (f && typeof f === 'object') {
+                  features = Object.entries(f)
+                    .filter(([, v]) => v !== false && v !== null && v !== undefined)
+                    .slice(0, 8)
+                    .map(([k, v]) => formatFeatureDisplay(k, v as boolean | number | string, t))
+                    .filter(Boolean);
+                }
+              } catch { /* ignore */ }
+              const fallbackFeatures: Record<string, string[]> = {
+                free: [t('projects_active_format', { count: '5' }), t('clients_active_format', { count: '50' }), '3 factures / mois', 'Pipeline de base', t('email_support')],
+                starter: [t('projects_active_format', { count: '5' }), t('clients_active_format', { count: '50' }), '3 factures / mois', 'Pipeline de base', t('email_support')],
+                pro: [t('projects_active_format', { count: '50' }), t('clients_active_format', { count: '1000' }), 'Factures illimitées', 'Pipeline complet', 'Smart Follow-Up IA', 'Newsletters (100/mois)'],
+                studio: [t('projects_active_format', { count: '∞' }), t('clients_active_format', { count: '∞' }), 'Multi-utilisateurs', 'API & intégrations', 'IA prioritaire', 'Support dédié'],
+                expert: [t('projects_active_format', { count: '∞' }), t('clients_active_format', { count: '∞' }), 'Multi-utilisateurs', 'API & intégrations', 'IA prioritaire', 'Support dédié'],
+              };
+              const displayFeatures = features.length > 0 ? features : (fallbackFeatures[plan.name] ?? fallbackFeatures.pro);
+              const displayName = plan.name.charAt(0).toUpperCase() + plan.name.slice(1);
+              const period = price === 0 ? 'pour toujours' : togglePlan ? `par mois, facturé annuellement · -20%` : 'par mois';
+              const ctaFree = plan.name === 'free' ? 'Commencer gratuitement' : null;
+              const ctaPro = plan.name === 'pro' ? 'Essai gratuit 14 jours' : null;
+              const cta = ctaFree ?? ctaPro ?? `Choisir ${displayName}`;
+              const href = plan.name === 'free' ? '/login' : '/pricing';
+
+              return (
+                <motion.div
+                  key={plan.name}
+                  className={`landing-pricing-card ${featured ? 'featured' : ''}`}
+                  variants={cardVariants}
+                  whileHover={featured ? { y: -8, scale: 1.02, transition: { duration: 0.2 } } : { y: -6, transition: { duration: 0.2 } }}
+                >
+                  {featured && <div className="landing-pricing-badge">⚡ {t('most_popular')}</div>}
+                  <div className="landing-pricing-name">{displayName}</div>
+                  <div className="landing-pricing-price">{price} <span className="text-lg font-medium">€</span></div>
+                  <div className="landing-pricing-period">{period}</div>
+                  <div className="landing-pricing-divider" />
+                  {displayFeatures.map((f, idx) => (
+                    <div key={`${plan.name}-${idx}`} className="landing-pricing-feature"><span className="landing-pricing-check">✓</span> {f}</div>
+                  ))}
+                  <Link href={href} className={featured ? 'landing-btn-pricing-dark' : 'landing-btn-pricing-outline'}>
+                    {cta}
+                  </Link>
+                </motion.div>
+              );
+            })
+          ) : (
+            <div className="col-span-full text-center py-12" style={{ color: 'var(--landing-text-sm)' }}>
+              {t('landing_no_plans')}
+            </div>
+          )}
         </motion.div>
       </section>
 
       <section className="landing-section flex flex-col items-center pt-0" id="testimonials">
-        <motion.div className="landing-section-label" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}><span>●</span> Témoignages</motion.div>
-        <motion.h2 className="landing-section-title" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>Ils en parlent <em>mieux</em> que nous.</motion.h2>
+        <motion.div className="landing-section-label" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}><span>●</span> {t('landing_testimonials_label')}</motion.div>
+        <motion.h2 className="landing-section-title" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>{t('landing_testimonials_title_before')}<em>{t('landing_testimonials_title_em')}</em>{t('landing_testimonials_title_after')}</motion.h2>
         <motion.div className="landing-testimonials-grid" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }} variants={stagger}>
           {[
-            { stars: '★★★★★', text: "Eclipse Studio Dashboard m'a permis de sortir de l'enfer des spreadsheets. Mes devis partent en 30 secondes et je ne loupe plus aucune relance client.", name: 'Jérémie Bole Du Chaumont', role: 'Développeur indépendant', avatar: 'JB' },
-            { stars: '★★★★★', text: 'Le Smart Follow-Up IA est bluffant. Il analyse mes emails entrants et me dit exactement quoi relancer et quand. J\'ai gagné 2 deals grâce à ça.', name: 'Arthur Le Goux', role: 'Eclipse Studio Development', avatar: 'EC', avatarBg: '#1a2e1a', avatarColor: '#86efac' },
-            { stars: '★★★★★', text: "Interface propre, intuitive, et ça va vite. C'est rare pour un outil de gestion. Plus besoin de jongler entre 4 apps différentes.", name: 'Nicolas Barbieri', role: 'Barbieri Économie', avatar: 'NB', avatarBg: '#1e1e3f', avatarColor: '#c4b5fd' },
-          ].map((t) => (
-            <motion.div key={t.name} className="landing-testimonial-card" variants={cardVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }}>
-              <div className="landing-testimonial-stars">{t.stars}</div>
-              <div className="landing-testimonial-text">{t.text}</div>
+            { stars: '★★★★★', textKey: 'landing_testimonial_1', name: 'Jérémie Bole Du Chaumont', roleKey: 'landing_role_developer', avatar: 'JB' },
+            { stars: '★★★★★', textKey: 'landing_testimonial_2', name: 'Arthur Le Goux', roleKey: 'landing_role_eclipse', avatar: 'EC', avatarBg: '#1a2e1a', avatarColor: '#86efac' },
+            { stars: '★★★★★', textKey: 'landing_testimonial_3', name: 'Nicolas Barbieri', roleKey: 'landing_role_barbieri', avatar: 'NB', avatarBg: '#1e1e3f', avatarColor: '#c4b5fd' },
+          ].map((item) => (
+            <motion.div key={item.name} className="landing-testimonial-card" variants={cardVariants} whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+              <div className="landing-testimonial-stars">{item.stars}</div>
+              <div className="landing-testimonial-text">{t(item.textKey)}</div>
               <div className="flex items-center gap-2.5">
-                <div className="landing-testimonial-avatar" style={t.avatarBg ? { background: t.avatarBg, color: t.avatarColor } : undefined}>{t.avatar}</div>
+                <div className="landing-testimonial-avatar" style={item.avatarBg ? { background: item.avatarBg, color: item.avatarColor } : undefined}>{item.avatar}</div>
                 <div>
-                  <div className="text-sm font-bold" style={{ color: 'var(--landing-text)' }}>{t.name}</div>
-                  <div className="text-xs" style={{ color: 'var(--landing-text-sm)' }}>{t.role}</div>
+                  <div className="text-sm font-bold" style={{ color: 'var(--landing-text)' }}>{item.name}</div>
+                  <div className="text-xs" style={{ color: 'var(--landing-text-sm)' }}>{t(item.roleKey)}</div>
                 </div>
               </div>
             </motion.div>
@@ -330,23 +427,23 @@ export default function LandingPage() {
 
       <section className="landing-section pt-0" id="faq">
         <div className="text-center flex flex-col items-center  ">
-          <motion.div className="landing-section-label justify-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}><span>●</span> FAQ</motion.div>
-          <motion.h2 className="landing-section-title max-w-full text-center" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>Questions <em>fréquentes</em></motion.h2>
+          <motion.div className="landing-section-label justify-center" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}><span>●</span> {t('landing_faq_label')}</motion.div>
+          <motion.h2 className="landing-section-title max-w-full text-center" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.05 }}>{t('landing_faq_title_before')}<em>{t('landing_faq_title_em')}</em></motion.h2>
         </div>
         <motion.div className="max-w-[680px] mx-auto mt-14" initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-40px' }} variants={stagger}>
           {[
-            { q: "Puis-je essayer avant de payer ?", a: "Oui, le plan Starter est gratuit pour toujours. Le plan Pro inclut un essai gratuit de 14 jours sans carte bancaire requise." },
-            { q: "Comment fonctionne le Smart Follow-Up IA ?", a: "En connectant votre boîte email (Gmail, Outlook), l'IA analyse chaque email entrant, lui attribue un score ICP, identifie le type de contact et planifie automatiquement la meilleure action de suivi." },
-            { q: "Mes données sont-elles sécurisées ?", a: "Vos données sont hébergées en Europe (France), chiffrées en transit et au repos. Nous ne vendons ni ne partageons aucune donnée avec des tiers." },
-            { q: "Puis-je importer mes données existantes ?", a: "Oui, Eclipse Studio Dashboard supporte l'import CSV pour les contacts, et des intégrations directes avec Google Contacts, Notion, et d'autres outils sont en cours." },
-            { q: "Y a-t-il une application mobile ?", a: "L'interface web est entièrement responsive et fonctionne parfaitement sur mobile. Une application native iOS/Android est en cours de développement." },
+            { qKey: 'landing_faq_1_q', aKey: 'landing_faq_1_a' },
+            { qKey: 'landing_faq_2_q', aKey: 'landing_faq_2_a' },
+            { qKey: 'landing_faq_3_q', aKey: 'landing_faq_3_a' },
+            { qKey: 'landing_faq_4_q', aKey: 'landing_faq_4_a' },
+            { qKey: 'landing_faq_5_q', aKey: 'landing_faq_5_a' },
           ].map((faq, i) => (
             <motion.div key={i} className={`landing-faq-item ${openFaq === i ? 'open' : ''}`} onClick={() => setOpenFaq(openFaq === i ? null : i)} variants={cardVariants} whileHover={{ x: 4 }} transition={{ duration: 0.15 }}>
               <div className="landing-faq-question">
-                {faq.q}
+                {t(faq.qKey)}
                 <div className="landing-faq-icon">+</div>
               </div>
-              <div className="landing-faq-answer">{faq.a}</div>
+              <div className="landing-faq-answer">{t(faq.aKey)}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -354,13 +451,13 @@ export default function LandingPage() {
 
       <section className="landing-cta-section">
         <div className="landing-cta-bg" />
-        <motion.h2 className="landing-cta-title" initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>Prêt à reprendre<br /><em>le contrôle</em> ?</motion.h2>
-        <motion.p className="landing-cta-sub" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>Rejoignez 124 indépendants qui gèrent leur business sans friction.</motion.p>
+        <motion.h2 className="landing-cta-title" initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>{t('landing_cta_title')}<br /><em>{t('landing_cta_title_em')}</em> ?</motion.h2>
+        <motion.p className="landing-cta-sub" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>{t('landing_cta_sub')}</motion.p>
         <motion.div className="flex gap-2 max-w-[400px] mx-auto" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
-          <input type="email" className="landing-cta-input" placeholder="votre@email.fr" />
-          <Link href="/pricing" className="landing-btn-primary" style={{ padding: '14px 20px', fontSize: 14, whiteSpace: 'nowrap' }}>Commencer →</Link>
+          <input type="email" className="landing-cta-input" placeholder={t('landing_cta_placeholder')} />
+          <Link href="/pricing" className="landing-btn-primary" style={{ padding: '14px 20px', fontSize: 14, whiteSpace: 'nowrap' }}>{t('landing_cta_button')}</Link>
         </motion.div>
-        <motion.div className="text-xs mt-3" style={{ color: 'var(--landing-text-sm)' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }}>Gratuit · Sans carte bancaire · Installation en 2 minutes</motion.div>
+        <motion.div className="text-xs mt-3" style={{ color: 'var(--landing-text-sm)' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }}>{t('landing_cta_badge')}</motion.div>
       </section>
 
       <footer className="landing-footer">
@@ -369,42 +466,42 @@ export default function LandingPage() {
             <div className="landing-footer-logo-mark">ES</div>
             <span className="font-bold text-[13px] tracking-tight" style={{ color: 'var(--landing-text)' }}>Eclipse Studio Dashboard</span>
           </div>
-          <div className="landing-footer-tagline">Le dashboard des indépendants qui avancent vite.</div>
+          <div className="landing-footer-tagline">{t('landing_footer_tagline')}</div>
         </div>
         <div>
-          <div className="landing-footer-col-title">Produit</div>
+          <div className="landing-footer-col-title">{t('landing_footer_product')}</div>
           <ul className="landing-footer-links">
-            <li><a href="#features">Fonctionnalités</a></li>
-            <li><a href="#">Pipeline commercial</a></li>
-            <li><a href="#">Smart Follow-Up</a></li>
-            <li><a href="#">Factures & Devis</a></li>
-            <li><a href="#pricing">Tarifs</a></li>
+            <li><a href="#features">{t('landing_nav_features')}</a></li>
+            <li><a href="#">{t('landing_footer_pipeline')}</a></li>
+            <li><a href="#">{t('landing_footer_smart_followup')}</a></li>
+            <li><a href="#">{t('landing_footer_invoices')}</a></li>
+            <li><a href="#pricing">{t('landing_nav_pricing')}</a></li>
           </ul>
         </div>
         <div>
-          <div className="landing-footer-col-title">Ressources</div>
+          <div className="landing-footer-col-title">{t('landing_footer_resources')}</div>
           <ul className="landing-footer-links">
-            <li><a href="#">Documentation</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Changelog</a></li>
-            <li><a href="#">Status</a></li>
-            <li><a href="#">API</a></li>
+            <li><a href="#">{t('landing_footer_docs')}</a></li>
+            <li><a href="#">{t('landing_footer_blog')}</a></li>
+            <li><a href="#">{t('landing_footer_changelog')}</a></li>
+            <li><a href="#">{t('landing_footer_status')}</a></li>
+            <li><a href="#">{t('landing_footer_api')}</a></li>
           </ul>
         </div>
         <div>
-          <div className="landing-footer-col-title">Entreprise</div>
+          <div className="landing-footer-col-title">{t('landing_footer_company')}</div>
           <ul className="landing-footer-links">
-            <li><a href="#">À propos</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><Link href="/privacy">Confidentialité</Link></li>
-            <li><Link href="/terms">CGU</Link></li>
-            <li><a href="#">Mentions légales</a></li>
+            <li><a href="#">{t('landing_footer_about')}</a></li>
+            <li><a href="#">{t('landing_footer_contact')}</a></li>
+            <li><Link href="/privacy">{t('landing_footer_privacy')}</Link></li>
+            <li><Link href="/terms">{t('landing_footer_terms')}</Link></li>
+            <li><a href="#">{t('landing_footer_legal')}</a></li>
           </ul>
         </div>
       </footer>
       <div className="landing-footer-bottom">
-        <span>© 2026 Eclipse Studio Dashboard. Tous droits réservés.</span>
-        <span className="font-mono text-[11px]" style={{ color: 'var(--landing-text-sm)' }}>Made in France 🇫🇷</span>
+        <span>{t('landing_footer_copyright')}</span>
+        <span className="font-mono text-[11px]" style={{ color: 'var(--landing-text-sm)' }}>{t('landing_footer_made_in')}</span>
       </div>
     </div>
   );

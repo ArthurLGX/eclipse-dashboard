@@ -124,7 +124,7 @@ export default function TableFilters({
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search bar */}
         <div className="flex-1 relative">
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 shrink-0" style={{ color: 'var(--text-muted)' }} />
           <input
             type="text"
             placeholder={searchPlaceholder}

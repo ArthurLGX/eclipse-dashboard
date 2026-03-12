@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
@@ -8,7 +9,7 @@ import {
   fetchPlans,
   fetchSubscriptionsUser,
 } from '@/lib/api';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { usePopup } from '../context/PopupContext';
@@ -16,6 +17,7 @@ import PaymentModal from '@/app/components/PaymentModal';
 import FreePlanModal from '@/app/components/FreePlanModal';
 import FloatingPricingHeader from '@/app/components/FloatingPricingHeader';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { formatFeatureDisplay, formatFeatureValue } from '@/utils/formatFeatureDisplay';
 
 interface Plan {
   rank: number;
@@ -55,11 +57,9 @@ export default function Plans() {
     if (user) {
       setSelectedPlan(plan);
 
-      // Si c'est le plan gratuit, ouvrir la modale de confirmation
       if (plan.name === 'free') {
         setShowFreePlanModal(true);
       } else {
-        // Sinon, ouvrir le modal de paiement
         setShowPaymentModal(true);
       }
     } else {
@@ -70,7 +70,6 @@ export default function Plans() {
   const handlePlanClick = (planName: string) => {
     setHighlightedPlan(planName);
 
-    // Scroll vers le tableau
     const tableElement = document.getElementById('pricing-table');
     if (tableElement) {
       tableElement.scrollIntoView({
@@ -79,7 +78,6 @@ export default function Plans() {
       });
     }
 
-    // Retirer le highlight après 3 secondes
     setTimeout(() => {
       setHighlightedPlan(null);
     }, 3000);
@@ -98,7 +96,7 @@ export default function Plans() {
         plan: selectedPlan.documentId,
         billing_type: billingType,
         price: price,
-        trial: selectedPlan.name === 'free' ? true : false, // Plus en trial après paiement
+        trial: selectedPlan.name === 'free' ? true : false,
         plan_name: selectedPlan.name,
         plan_description: selectedPlan.description,
         plan_features: selectedPlan.features,
@@ -114,7 +112,6 @@ export default function Plans() {
         setSelectedPlan(null);
         router.push('/dashboard/profile/your-subscription');
 
-        // Déclencher la mise à jour de l'UsageProgressBar
         triggerSubscriptionUpdate();
       }
     } catch (error) {
@@ -128,7 +125,6 @@ export default function Plans() {
       try {
         setLoading(true);
         const response = await fetchPlans() as { data?: Plan[] };
-        // Trier les plans selon leur rank
         const sortedPlans = (response?.data || []).sort(
           (a: Plan, b: Plan) => a.rank - b.rank
         );
@@ -162,230 +158,170 @@ export default function Plans() {
     fetchCurrentUserPlan();
   }, [user?.id]);
 
-  // Fonction pour obtenir les styles d'un plan
-  const getPlanStyles = (planName: string) => {
-    if (planName === 'pro') {
-      return {
-        card: 'bg-accent-light border-accent',
-        title: 'text-primary',
-        description: 'text-secondary',
-        price: 'text-accent',
-        button: 'bg-accent hover:bg-[var(--color-accent)] !text-white border-accent',
-      };
-    }
-    if (planName === 'free') {
-      return {
-        card: 'bg-muted border-default',
-        title: 'text-primary',
-        description: 'text-secondary',
-        price: 'text-accent',
-        button: 'bg-card hover:bg-hover !text-primary border-default',
-      };
-    }
-    return {
-      card: 'bg-card border-default hover:border-accent',
-      title: 'text-primary',
-      description: 'text-secondary',
-      price: 'text-accent',
-      button: 'bg-primary hover:bg-primary/80 !text-white border-transparent',
-    };
+  // Sections prédéfinies (ordre d'affichage)
+  const predefinedSections: Record<string, string[]> = {
+    Limites: ['max_active_projects', 'max_active_clients', 'max_prospects_active', 'max_handle_mentors'],
+    Stockage: ['storage'],
+    Newsletters: ['based_newsletters', 'advanced_newsletters', 'personalized_newsletters', 'max_newsletters'],
+    Support: ['priority_support', 'all_time_support', 'phone_support', 'email_support'],
+    Fonctionnalités: ['personalized_integrations', 'anticipated_features', 'data_export', 'advanced_reports', 'auto_save', 'smart_automation'],
   };
+  const sectionLabelKeys: Record<string, string> = {
+    Limites: 'landing_section_limits',
+    Stockage: 'landing_section_storage',
+    Newsletters: 'landing_section_newsletters',
+    Support: 'landing_section_support',
+    Fonctionnalités: 'landing_section_functionality',
+    Autres: 'landing_section_other',
+  };
+  const allPredefinedKeys = new Set(Object.values(predefinedSections).flat());
+
+  // Détecter tous les champs présents dans les features Strapi
+  const keysFromPlans = new Set<string>();
+  plans.forEach((plan) => {
+    if (!plan.features) return;
+    try {
+      const f = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
+      if (f && typeof f === 'object') Object.keys(f).forEach((k) => keysFromPlans.add(k));
+    } catch { /* ignore */ }
+  });
+
+  // Nouveaux champs non définis → section "Autres"
+  const newKeys = [...keysFromPlans].filter((k) => !allPredefinedKeys.has(k)).sort();
+
+  const sections: Record<string, string[]> = { ...predefinedSections };
+  if (newKeys.length > 0) sections.Autres = newKeys;
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen w-full pt-32 pb-16 px-4 bg-page">
-      <motion.h1 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="!text-4xl font-bold !text-center lg:max-w-2xl !text-primary mb-10"
-      >
-        {t('pricing_page_title')}
-      </motion.h1>
+    <div className="landing-page min-h-screen w-full pt-20">
+      <section className="landing-section" id="pricing-plans">
+        <div className="text-center flex flex-col items-center">
+          <motion.div className="landing-section-label justify-center" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}><span>●</span> {t('landing_pricing_label')}</motion.div>
+          <motion.h1 className="landing-section-title max-w-full text-center" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.05 }}>{t('pricing_page_title')}</motion.h1>
+          <motion.p className="landing-section-sub text-center max-w-md mx-auto mb-0" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>{t('landing_pricing_sub')}</motion.p>
+        </div>
 
-      {/* Toggle Mensuel/Annuel */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="flex flex-col lg:flex-row items-center justify-center w-full gap-4 mb-8"
-      >
-        <span
-          className={`text-sm font-medium transition-colors duration-200 ${
-            !togglePlan ? 'text-accent' : 'text-muted'
-          }`}
-        >
-          {t('monthly')}
-        </span>
-
-        <button
-          onClick={() => setTogglePlan(!togglePlan)}
-          className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-1 focus:ring-accent focus:ring-offset-2 focus:ring-offset-page ${
-            togglePlan ? 'bg-accent' : 'bg-muted'
-          }`}
-        >
+        {/* Toggle Mensuel / Annuel */}
+        <div className="flex flex-col sm:flex-row items-center justify-center w-full gap-4 mt-10">
+          <span className={`text-sm font-medium transition-colors duration-200 ${!togglePlan ? 'text-accent' : 'opacity-60'}`} style={{ color: !togglePlan ? 'var(--landing-accent)' : undefined }}>
+            {t('monthly')}
+          </span>
+          <button
+            type="button"
+            onClick={() => setTogglePlan(!togglePlan)}
+            className="relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent"
+            style={{ background: togglePlan ? 'var(--landing-accent)' : 'var(--landing-border)' }}
+          >
+            <span
+              className="inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300"
+              style={{ transform: togglePlan ? 'translateX(36px)' : 'translateX(4px)' }}
+            />
+          </button>
+          <span className={`text-sm font-medium transition-colors duration-200 ${togglePlan ? 'text-accent' : 'opacity-60'}`} style={{ color: togglePlan ? 'var(--landing-accent)' : undefined }}>
+            {t('yearly')}
+          </span>
           <span
-            className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
-              togglePlan ? 'translate-x-9' : 'translate-x-1'
-            }`}
-          />
-        </button>
+            className="px-3 py-1 rounded-full text-xs font-medium"
+            style={{ background: togglePlan ? 'color-mix(in srgb, var(--landing-accent) 15%, transparent)' : 'var(--landing-border)', color: togglePlan ? 'var(--landing-accent)' : 'var(--landing-text-sm)' }}
+          >
+            {t('save_20_percent')}
+          </span>
+        </div>
 
-        <span
-          className={`text-sm font-medium transition-colors duration-200 ${
-            togglePlan ? 'text-accent' : 'text-muted'
-          }`}
+        {/* Grille des plans */}
+        <motion.div
+          initial={false}
+          className={`landing-pricing-grid ${!loading && plans.length >= 4 ? 'cols-4' : ''} mt-14`}
         >
-          {t('yearly')}
-        </span>
-
-        <span
-          className={`ml-2 px-3 py-1 rounded-full !text-xs font-medium transition-colors ${
-            togglePlan
-              ? 'bg-accent-light !text-accent'
-              : 'bg-muted !text-secondary'
-          }`}
-        >
-          {t('save_20_percent')}
-        </span>
-      </motion.div>
-
-      {/* Grille des plans */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl px-4">
-        {loading ? (
-          // Skeleton Loader
-          <>
-            {[1, 2, 3, 4].map(index => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.15 * index,
-                  ease: 'easeInOut',
-                }}
-                className="flex relative flex-col items-center justify-between bg-card backdrop-blur-sm border border-default  p-8 animate-pulse"
-              >
-                {/* Badge skeleton */}
-                <div className="absolute top-4 right-1/2 translate-x-1/2">
-                  <div className="h-6 w-24 bg-muted rounded-full"></div>
+          {loading ? (
+            [1, 2, 3, 4].slice(0, 4).map((idx) => (
+              <div key={idx} className="landing-pricing-card animate-pulse">
+                <div className="h-4 w-20 rounded mb-4" style={{ background: 'var(--landing-border)' }} />
+                <div className="h-10 w-16 rounded mb-4" style={{ background: 'var(--landing-border)' }} />
+                <div className="h-3 w-28 rounded mb-6" style={{ background: 'var(--landing-border)' }} />
+                <div className="landing-pricing-divider" />
+                <div className="space-y-3 mt-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="h-4 rounded" style={{ background: 'var(--landing-border)' }} />
+                  ))}
                 </div>
+                <div className="h-12 rounded-lg mt-6" style={{ background: 'var(--landing-border)' }} />
+              </div>
+            ))
+          ) : plans.length > 0 ? (
+            plans.map((plan: Plan) => {
+              const featured = plan.name === 'pro';
+              const price = togglePlan ? plan.price_yearly : plan.price_monthly;
+              let features: string[] = [];
+              try {
+                const f = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
+                if (f && typeof f === 'object') {
+                  features = Object.entries(f)
+                    .filter(([, v]) => v !== false && v !== null && v !== undefined)
+                    .slice(0, 8)
+                    .map(([k, v]) => formatFeatureDisplay(k, v as boolean | number | string, t))
+                    .filter(Boolean);
+                }
+              } catch { /* ignore */ }
+              const fallbackFeatures: Record<string, string[]> = {
+                free: [t('projects_active_format', { count: '5' }), t('clients_active_format', { count: '50' }), '3 factures / mois', 'Pipeline de base', t('email_support')],
+                starter: [t('projects_active_format', { count: '5' }), t('clients_active_format', { count: '50' }), '3 factures / mois', 'Pipeline de base', t('email_support')],
+                pro: [t('projects_active_format', { count: '50' }), t('clients_active_format', { count: '1000' }), 'Factures illimitées', 'Pipeline complet', 'Smart Follow-Up IA', 'Newsletters (100/mois)'],
+                studio: [t('projects_active_format', { count: '∞' }), t('clients_active_format', { count: '∞' }), 'Multi-utilisateurs', 'API & intégrations', 'IA prioritaire', 'Support dédié'],
+                expert: [t('projects_active_format', { count: '∞' }), t('clients_active_format', { count: '∞' }), 'Multi-utilisateurs', 'API & intégrations', 'IA prioritaire', 'Support dédié'],
+              };
+              const displayFeatures = features.length > 0 ? features : (fallbackFeatures[plan.name] ?? fallbackFeatures.pro);
+              const displayName = plan.name.charAt(0).toUpperCase() + plan.name.slice(1);
 
-                {/* Title and description skeleton */}
-                <div className="!text-center my-8 w-full">
-                  <div className="h-8 w-32 bg-muted rounded mb-4 mx-auto"></div>
-                  <div className="h-4 w-48 bg-muted rounded mx-auto"></div>
-                </div>
-
-                {/* Price skeleton */}
-                <div className="!text-center mb-8 w-full">
-                  <div className="h-12 w-24 bg-muted rounded mb-4 mx-auto"></div>
-                  <div className="h-4 w-32 bg-muted rounded mx-auto"></div>
-                </div>
-
-                {/* Features skeleton */}
-                <div className="space-y-4 mb-8 w-full">
-                  <div className="h-4 w-full bg-muted rounded"></div>
-                  <div className="h-4 w-3/4 bg-muted rounded"></div>
-                  <div className="h-4 w-1/2 bg-muted rounded"></div>
-                </div>
-
-                {/* Button skeleton */}
-                <div className="w-full h-12 bg-muted "></div>
-              </motion.div>
-            ))}
-          </>
-        ) : plans.length > 0 ? (
-          plans.map((plan: Plan, index: number) => {
-            const styles = getPlanStyles(plan.name);
-            return (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.15 * index,
-                  ease: 'easeInOut',
-                }}
-                key={plan.id}
-              >
-                <motion.div
-                  onClick={() => handlePlanClick(plan.name)}
-                  className={`flex relative flex-col items-center justify-between backdrop-blur-sm border  p-8 transition-all duration-300 cursor-pointer ${styles.card}`}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  {plan.name === 'pro' && (
-                    <div className="absolute top-4 right-1/2 translate-x-1/2 flex mb-4 mx-auto">
-                      <span className="!text-xs font-medium !text-accent bg-accent-light rounded-full px-3 py-1">
-                        {t('most_popular')}
+              return (
+                <div key={plan.name}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    onClick={() => handlePlanClick(plan.name)}
+                    className={`landing-pricing-card ${featured ? 'featured' : ''}`}
+                    whileHover={featured ? { y: -8, scale: 1.02, transition: { duration: 0.2 } } : { y: -6, transition: { duration: 0.2 } }}
+                  >
+                    {featured && <div className="landing-pricing-badge">⚡ {t('most_popular')}</div>}
+                    <div className="landing-pricing-name">{displayName}</div>
+                    <p className="landing-pricing-desc mb-4" style={{ color: 'var(--landing-text-md)', fontSize: 13 }}>{plan.description}</p>
+                    <div className="landing-pricing-price">{price} <span className="text-lg font-medium">€</span></div>
+                    <div className="landing-pricing-period">{t('per_month')}</div>
+                    {togglePlan && price > 0 && (
+                      <p className="text-sm mb-4" style={{ color: 'var(--landing-text-sm)' }}>
+                        {t('billed_yearly')} {(plan.price_yearly * 0.8 * 12).toFixed(2)}€ · {t('save_20_percent')}
+                      </p>
+                    )}
+                    <div className="landing-pricing-divider" />
+                    {displayFeatures.map((f, idx) => (
+                      <div key={`${plan.name}-${idx}`} className="landing-pricing-feature"><span className="landing-pricing-check">✓</span> {f}</div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); handleChoosePlan(plan); }}
+                      className={featured ? 'landing-btn-pricing-dark' : 'landing-btn-pricing-outline'}
+                    >
+                      {t('choose_plan')}
+                    </button>
+                  </motion.div>
+                  {currentUserPlan === plan.name && (
+                    <div className="flex my-4 mx-auto justify-center items-center">
+                      <span className="text-xs font-medium rounded-full px-3 py-1 border" style={{ color: 'var(--landing-text-sm)', background: 'var(--landing-border)', borderColor: 'var(--landing-border2)' }}>
+                        {t('your_current_plan')}
                       </span>
                     </div>
                   )}
-
-                  <div className="!text-center my-8">
-                    <h2 className={`text-2xl font-bold ${styles.title} mb-2 capitalize`}>
-                      {plan.name}
-                    </h2>
-                    <p className={`text-sm ${styles.description}`}>
-                      {plan.description}
-                    </p>
-                  </div>
-
-                  <div className="!text-center mb-8">
-                    <div>
-                      <span className={`text-4xl font-bold ${styles.price}`}>
-                        {language === 'en' ? '€' : ''}
-                        {togglePlan ? plan.price_yearly : plan.price_monthly}
-                        {language === 'fr' ? '€' : ''}
-                      </span>
-                      <span className="!text-muted !text-sm ml-2">
-                        {t('per_month')}
-                      </span>
-                    </div>
-                    {togglePlan && (
-                      <div className="!text-sm flex flex-col items-center justify-center gap-2 mt-2">
-                        <span className="!text-secondary font-medium">
-                          {t('billed_yearly')} {language === 'en' ? '€' : ''}
-                          {(plan.price_yearly * 0.8 * 12).toFixed(2)}
-                          {language === 'fr' ? '€' : ''}
-                        </span>
-                        <span className="!text-accent !text-xs font-medium">
-                          {t('save_20_percent')}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleChoosePlan(plan);
-                    }}
-                    className={`w-full cursor-pointer font-semibold py-3 px-6  border transition-all duration-200 ${styles.button}`}
-                  >
-                    {t('choose_plan')}
-                  </button>
-                </motion.div>
-                
-                {currentUserPlan === plan.name && (
-                  <div className="flex my-4 mx-auto justify-center items-center">
-                    <span className="!text-xs font-medium !text-muted bg-muted/20 rounded-full px-3 py-1 border border-default">
-                      {t('your_current_plan')}
-                    </span>
-                  </div>
-                )}
-              </motion.div>
-            );
-          })
-        ) : (
-          <div className="col-span-full !text-center py-12">
-            <div className="!text-secondary !text-lg">
-              {plans.length === 0
-                ? t('no_plans_available')
-                : t('loading_plans')}
+                </div>
+              );
+            })
+          ) : (
+            <div className="col-span-full text-center py-12" style={{ color: 'var(--landing-text-sm)' }}>
+              {t('landing_no_plans')}
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </motion.div>
+      </section>
 
       {/* Tableau comparatif */}
       {!loading && plans.length > 0 && (
@@ -396,51 +332,40 @@ export default function Plans() {
             highlightedPlan={highlightedPlan}
             language={language}
           />
-          <motion.div 
+          <motion.section
+            className="landing-section pt-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="w-full max-w-6xl px-4 mt-16"
           >
-            <h2 className="!text-2xl font-bold !text-center !text-primary mb-8">
-              {t('compare_plans')}
-            </h2>
+            <h2 className="landing-section-title max-w-full !text-center mb-8">{t('compare_plans')}</h2>
             <div
               id="pricing-table"
-              className="bg-card backdrop-blur-sm border border-default  overflow-hidden"
+              className="rounded-2xl overflow-hidden border"
+              style={{ background: 'var(--landing-surface)', borderColor: 'var(--landing-border2)' }}
             >
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-default">
-                      <th className="p-4 !text-left !text-muted font-medium capitalize w-1/3">
+                    <tr style={{ borderBottom: '1px solid var(--landing-border)' }}>
+                      <th className="p-4 text-left font-medium w-1/3" style={{ color: 'var(--landing-text-sm)' }}>
                         {t('features')}
                       </th>
                       {plans.map(plan => (
                         <th
                           key={plan.id}
-                          className={`p-4 !text-center !text-primary font-semibold transition-all duration-500 w-1/6 ${
-                            highlightedPlan === plan.name
-                              ? 'bg-accent-light'
-                              : ''
-                          }`}
+                          className={`p-4 text-center font-semibold transition-all duration-500 w-1/6 ${highlightedPlan === plan.name ? '' : ''}`}
+                          style={{
+                            background: highlightedPlan === plan.name ? 'color-mix(in srgb, var(--landing-accent) 12%, transparent)' : undefined,
+                            color: 'var(--landing-text)',
+                          }}
                         >
                           <div className="flex flex-col items-center gap-2">
-                            <span
-                              className={`capitalize transition-all duration-500 ${
-                                highlightedPlan === plan.name
-                                  ? 'text-accent font-extrabold'
-                                  : 'font-normal'
-                              }`}
-                            >
+                            <span className={`capitalize transition-all duration-500 ${highlightedPlan === plan.name ? 'font-extrabold' : 'font-normal'}`} style={{ color: highlightedPlan === plan.name ? 'var(--landing-accent)' : undefined }}>
                               {plan.name}
                             </span>
-                            <span className="!text-sm !text-accent font-bold">
-                              {language === 'en' ? '€' : ''}
-                              {togglePlan
-                                ? plan.price_yearly
-                                : plan.price_monthly}
-                              {language === 'fr' ? '€' : ''}
+                            <span className="text-sm font-bold" style={{ color: 'var(--landing-accent)' }}>
+                              {language === 'en' ? '€' : ''}{togglePlan ? plan.price_yearly : plan.price_monthly}{language === 'fr' ? '€' : ''}
                             </span>
                           </div>
                         </th>
@@ -448,184 +373,65 @@ export default function Plans() {
                     </tr>
                   </thead>
                   <tbody>
-                    {(() => {
-                      // Définir les sections et leurs features
-                      const sections = {
-                        Limites: [
-                          'max_active_projects',
-                          'max_active_clients',
-                          'max_prospects_active',
-                          'max_handle_mentors',
-                        ],
-                        Stockage: ['storage'],
-                        Newsletters: [
-                          'based_newsletters',
-                          'advanced_newsletters',
-                          'personalized_newsletters',
-                          'max_newsletters',
-                        ],
-                        Support: [
-                          'priority_support',
-                          'all_time_support',
-                          'phone_support',
-                          'email_support',
-                        ],
-                        Fonctionnalités: [
-                          'personalized_integrations',
-                          'anticipated_features',
-                          'data_export',
-                          'advanced_reports',
-                          'auto_save',
-                        ],
-                      };
+                    {Object.entries(sections).map(([sectionName, sectionFeatures]) => (
+                      <React.Fragment key={sectionName}>
+                        <tr style={{ background: 'var(--landing-border)' }}>
+                          <td colSpan={plans.length + 1} className="p-3 font-semibold text-center" style={{ color: 'var(--landing-text)' }}>
+                            {t(sectionLabelKeys[sectionName] || sectionName)}
+                          </td>
+                        </tr>
 
-                      return Object.entries(sections).map(
-                        ([sectionName, sectionFeatures]) => (
-                          <React.Fragment key={sectionName}>
-                            {/* En-tête de section */}
-                            <tr className="bg-hover">
-                              <td
-                                colSpan={plans.length + 1}
-                                className="p-3 !text-primary font-semibold !text-center"
-                              >
-                                {sectionName}
+                        {sectionFeatures.map(featureKey => {
+                          const translated = t(featureKey);
+                          const label = translated === featureKey
+                            ? featureKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                            : translated;
+
+                          return (
+                            <tr
+                              key={featureKey}
+                              className="hover:bg-opacity-50 transition-colors"
+                              style={{ borderBottom: '1px solid var(--landing-border)' }}
+                            >
+                              <td className="p-4 font-medium" style={{ color: 'var(--landing-text-md)' }}>
+                                {label}
                               </td>
-                            </tr>
+                              {plans.map(plan => {
+                                if (!plan.features) {
+                                  return <td key={plan.id} className="p-4 text-center" style={{ color: 'var(--landing-text-sm)' }}>-</td>;
+                                }
+                                try {
+                                  const features = typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features;
+                                  const value = features[featureKey];
+                                  const formatted = formatFeatureValue(featureKey, value);
+                                  const cellBg = highlightedPlan === plan.name ? 'color-mix(in srgb, var(--landing-accent) 8%, transparent)' : undefined;
 
-                            {/* Features de la section */}
-                            {sectionFeatures.map(featureKey => (
-                              <tr
-                                key={featureKey}
-                                className="border-b border-default hover:bg-hover transition-colors"
-                              >
-                                <td className="p-4 !text-secondary font-medium">
-                                  {(() => {
-                                    const labels = {
-                                      max_active_projects: t(
-                                        'max_active_projects'
-                                      ),
-                                      max_active_clients:
-                                        t('max_active_clients'),
-                                      max_prospects_active: t(
-                                        'max_prospects_active'
-                                      ),
-                                      max_handle_mentors:
-                                        t('max_handle_mentors'),
-                                      storage: t('storage'),
-                                      based_newsletters: t('based_newsletters'),
-                                      advanced_newsletters: t(
-                                        'advanced_newsletters'
-                                      ),
-                                      personalized_newsletters: t(
-                                        'personalized_newsletters'
-                                      ),
-                                      priority_support: t('priority_support'),
-                                      all_time_support: t('all_time_support'),
-                                      phone_support: t('phone_support'),
-                                      email_support: t('email_support'),
-                                      personalized_integrations: t(
-                                        'personalized_integrations'
-                                      ),
-                                      anticipated_features: t(
-                                        'anticipated_features'
-                                      ),
-                                      data_export: t('data_export'),
-                                      advanced_reports: t('advanced_reports'),
-                                      auto_save: t('auto_save'),
-                                      max_newsletters: t('max_newsletters'),
-                                    };
+                                  if (formatted.type === 'check') {
                                     return (
-                                      labels[
-                                        featureKey as keyof typeof labels
-                                      ] ||
-                                      featureKey
-                                        .replace(/_/g, ' ')
-                                        .replace(/\b\w/g, l => l.toUpperCase())
+                                      <td key={plan.id} className="p-4 text-center" style={{ background: cellBg }}>
+                                        {formatted.value ? <IconCheck className="w-5 h-5 mx-auto" style={{ color: 'var(--landing-green)' }} /> : <IconX className="w-5 h-5 mx-auto" style={{ color: 'var(--landing-text-sm)' }} />}
+                                      </td>
                                     );
-                                  })()}
-                                </td>
-                                {plans.map(plan => (
-                                  <td
-                                    key={plan.id}
-                                    className={`p-4 !text-center transition-all duration-500 ${
-                                      highlightedPlan === plan.name
-                                        ? 'bg-accent-light'
-                                        : ''
-                                    }`}
-                                  >
-                                    {(() => {
-                                      if (!plan.features)
-                                        return (
-                                          <span className="!text-muted">
-                                            -
-                                          </span>
-                                        );
-
-                                      try {
-                                        const features =
-                                          typeof plan.features === 'string'
-                                            ? JSON.parse(plan.features)
-                                            : plan.features;
-
-                                        const value = features[featureKey];
-
-                                        if (typeof value === 'boolean') {
-                                          return value ? (
-                                            <IconCheck className="w-5 h-5 !text-success-text -text mx-auto" />
-                                          ) : (
-                                            <IconX className="w-5 h-5 !text-muted mx-auto" />
-                                          );
-                                        } else if (typeof value === 'number') {
-                                          if (featureKey === 'storage') {
-                                            return (
-                                              <span className="!text-primary font-medium">
-                                                {value === 0
-                                                  ? '∞'
-                                                  : value === 100
-                                                    ? '100 MB'
-                                                    : `${value} GB`}
-                                              </span>
-                                            );
-                                          }
-                                          return (
-                                            <span className="!text-primary font-medium">
-                                              {value === 0 ? '∞' : value}
-                                            </span>
-                                          );
-                                        } else if (typeof value === 'string') {
-                                          return (
-                                            <span className="!text-primary !text-sm">
-                                              {value}
-                                            </span>
-                                          );
-                                        }
-
-                                        return (
-                                          <span className="!text-muted">
-                                            -
-                                          </span>
-                                        );
-                                      } catch {
-                                        return (
-                                          <span className="!text-muted">
-                                            -
-                                          </span>
-                                        );
-                                      }
-                                    })()}
-                                  </td>
-                                ))}
-                              </tr>
-                            ))}
-                          </React.Fragment>
-                        )
-                      );
-                    })()}
+                                  }
+                                  return (
+                                    <td key={plan.id} className="p-4 text-center font-medium text-sm" style={{ color: 'var(--landing-text)', background: cellBg }}>
+                                      {formatted.value || '-'}
+                                    </td>
+                                  );
+                                } catch {
+                                  return <td key={plan.id} className="p-4 text-center" style={{ color: 'var(--landing-text-sm)' }}>-</td>;
+                                }
+                              })}
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          </motion.div>
+          </motion.section>
         </>
       )}
 

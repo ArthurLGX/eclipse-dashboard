@@ -178,7 +178,7 @@ export default function QuickEmailReplyModal({
             </div>
 
             {/* Sujet + Réponse IA / Lead Status Walego */}
-            <div className="px-6 py-4 bg-secondary/50 border-b border-default space-y-3">
+            <div className="px-6 py-4 bg-secondary-light border-b border-default space-y-3">
               <div>
                 <p className="text-xs text-muted mb-1">Sujet original :</p>
                 <p className="text-sm font-medium text-primary">
