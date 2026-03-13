@@ -21,7 +21,6 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePreferences } from '@/app/context/PreferencesContext';
 import { useQuota, QuotaNotification } from '@/app/context/QuotaContext';
-import { useEmailNotificationsOptional } from '@/app/context/EmailNotificationContext';
 import {
   fetchNotifications,
   fetchUnreadNotificationCount,
@@ -33,21 +32,21 @@ import {
 } from '@/lib/api';
 import type { Notification } from '@/types';
 
-export default function NotificationBell() {
+interface NotificationBellProps {
+  embedded?: boolean;
+}
+
+export default function NotificationBell({ embedded = false }: NotificationBellProps) {
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const { preferences } = usePreferences();
   const { notifications: quotaNotifications } = useQuota();
-  const emailNotifications = useEmailNotificationsOptional();
   const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  
-  // Email unread count from context
-  const emailUnreadCount = emailNotifications?.unreadCount || 0;
   const [loading, setLoading] = useState(false);
   const [dismissedQuotaAlerts, setDismissedQuotaAlerts] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -275,21 +274,28 @@ export default function NotificationBell() {
   return (
     <>
       {/* Bell Button - Fixed en haut à droite (desktop only) */}
-      <div ref={dropdownRef} className="hidden lg:block fixed top-5 right-5 z-[1002]">
+      <div
+        ref={dropdownRef}
+        className={
+          embedded
+            ? 'relative'
+            : 'hidden lg:block fixed top-5 right-5 z-[1002]'
+        }
+      >
         <button
           onClick={handleToggle}
           className="relative p-3  bg-card backdrop-blur-sm border border-default hover:bg-hover !text-muted hover:!text-primary transition-all shadow-theme-lg"
         >
           <IconBell className="w-5 h-5" />
           
-          {/* Badge - includes notifications + quota alerts + unread emails */}
-          {(unreadCount + visibleQuotaAlerts.length + emailUnreadCount) > 0 && (
+          {/* Badge - notifications + quota alerts */}
+          {(unreadCount + visibleQuotaAlerts.length) > 0 && (
             <motion.span
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-danger !text-white !text-xs font-bold rounded-full flex items-center justify-center shadow-lg"
             >
-              {(unreadCount + visibleQuotaAlerts.length + emailUnreadCount) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length + emailUnreadCount)}
+              {(unreadCount + visibleQuotaAlerts.length) > 99 ? '99+' : (unreadCount + visibleQuotaAlerts.length)}
             </motion.span>
           )}
         </button>
@@ -322,34 +328,6 @@ export default function NotificationBell() {
 
             {/* Notifications List */}
             <div className="max-h-96 overflow-y-auto">
-              {/* Emails non lus */}
-              {emailUnreadCount > 0 && (
-                <div className="p-4 bg-info-light border-b border-default">
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                      router.push('/dashboard/emails/inbox');
-                    }}
-                    className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-                        <IconBell className="w-5 h-5 !text-white" />
-                      </div>
-                      <div className="!text-left">
-                        <p className="!text-sm font-medium !text-primary">
-                          {emailUnreadCount} {emailUnreadCount > 1 ? 'nouveaux emails' : 'nouvel email'}
-                        </p>
-                        <p className="!text-xs !text-muted">
-                          Cliquez pour voir votre boîte de réception
-                        </p>
-                      </div>
-                    </div>
-                    <IconArrowRight className="w-4 h-4 !text-muted" />
-                  </button>
-                </div>
-              )}
-              
               {/* Alertes de quota */}
               {visibleQuotaAlerts.length > 0 && (
                 <div >

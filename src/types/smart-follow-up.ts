@@ -185,6 +185,12 @@ export interface AutomationAction {
     name: string;
     email: string;
   } | null;
+  /** Photo de profil extraite du mail Walego (chemin local /leads/avatars/...) */
+  avatar_path?: string | null;
+  /** Titre/poste extrait du mail Walego */
+  lead_title?: string | null;
+  /** Lien LinkedIn extrait du mail Walego */
+  linkedin_url?: string | null;
   follow_up_task: {
     id: number;
     documentId: string;

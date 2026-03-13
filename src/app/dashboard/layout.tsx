@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { OnboardingProvider } from '@/app/context/OnboardingContext';
 import { UserPreferencesProvider, useUserPreferencesOptional } from '@/app/context/UserPreferencesContext';
-import { EmailNotificationProvider } from '@/app/context/EmailNotificationContext';
 import { AIFeaturesProvider, useAIFeatures } from '@/app/context/AIFeaturesContext';
 import UnifiedOnboardingModal from '@/app/components/UnifiedOnboardingModal';
 import { LenisProvider } from '@/app/context/LenisContext';
@@ -18,12 +17,9 @@ import {
   IconMail,
   IconPin,
   IconPinFilled,
-  IconLogout,
   IconCreditCard,
-  IconBuildings,
   IconFileInvoice,
   IconChevronDown,
-  IconSettings,
   IconSun,
   IconMoon,
   IconChartLine,
@@ -32,7 +28,6 @@ import {
   IconActivity,
   IconUsersGroup,
   IconBriefcase,
-  IconUserCog,
   IconShield,
   IconServer,
   IconClock,
@@ -43,7 +38,6 @@ import {
   IconBell,
   IconBrandInstagram,
 } from '@tabler/icons-react';
-import Image from 'next/image';
 import { useAuth } from '../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import TrialExpiredGuard from '@/app/components/TrialExpiredGuard';
@@ -52,6 +46,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { BreadCrumb } from '@/app/components/BreadCrumb';
 import { useCurrentUser } from '@/hooks/useApi';
 import NotificationBell from '@/app/components/NotificationBell';
+import ProfileDropdown from '@/app/components/ProfileDropdown';
 import TimerIndicator from '@/app/components/TimerIndicator';
 import { useTheme } from '@/app/context/ThemeContext';
 import { useSidebar } from '@/app/context/SidebarContext';
@@ -61,7 +56,6 @@ import { MobileDrawer, MobileHeader, MobileBottomNav } from '@/app/components/mo
 import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
 import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
-import { useEmailNotificationsOptional } from '@/app/context/EmailNotificationContext';
 import { useAutomationActions } from '@/hooks/useSmartFollowUp';
 
 interface SidebarItem {
@@ -89,13 +83,11 @@ export default function DashboardLayout({
         <LenisProvider>
           <UserPreferencesProvider>
             <AIFeaturesProvider>
-              <EmailNotificationProvider>
-                <OnboardingProvider>
-                  <AIAssistantProvider>
-                    <DashboardLayoutContent>{children}</DashboardLayoutContent>
-                  </AIAssistantProvider>
-                </OnboardingProvider>
-              </EmailNotificationProvider>
+              <OnboardingProvider>
+                <AIAssistantProvider>
+                  <DashboardLayoutContent>{children}</DashboardLayoutContent>
+                </AIAssistantProvider>
+              </OnboardingProvider>
             </AIFeaturesProvider>
           </UserPreferencesProvider>
         </LenisProvider>
@@ -124,8 +116,6 @@ function DashboardLayoutContent({
   const { resolvedMode, setThemeMode } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
-  const emailNotifications = useEmailNotificationsOptional();
-  const emailUnreadCount = emailNotifications?.unreadCount || 0;
   const { data: automationActions } = useAutomationActions('pending');
   const smartFollowUpLeadsCount = automationActions?.length ?? 0;
 
@@ -224,6 +214,19 @@ function DashboardLayoutContent({
            status: getModuleStatus('revenue', moduleStatuses) || undefined,
         },
       ],
+    },
+
+    // ═══════════════════════════════════════
+    // SMART FOLLOW-UP (Élément standalone, à part entière)
+    // ═══════════════════════════════════════
+    {
+      id: 'smart_follow_up',
+      label: t('smart_follow_up') || 'Smart Follow-Up',
+      icon: <IconTargetArrow size={15} stroke={1} />,
+      path: '/dashboard/smart-follow-up',
+      moduleId: 'smart_follow_up',
+      status: getModuleStatus('smart_follow_up', moduleStatuses) || undefined,
+      badgeCount: smartFollowUpLeadsCount > 0 ? smartFollowUpLeadsCount : undefined,
     },
 
     // ═══════════════════════════════════════
@@ -329,16 +332,6 @@ function DashboardLayoutContent({
           moduleId: 'newsletters',
           status: getModuleStatus('newsletters', moduleStatuses) || undefined,
         },
-        // Smart Follow-Up Engine
-        {
-          id: 'smart_follow_up',
-          label: t('smart_follow_up') || 'Smart Follow-Up',
-          icon: <IconTargetArrow size={15} stroke={1} />,
-          path: '/dashboard/smart-follow-up',
-          moduleId: 'smart_follow_up',
-          status: getModuleStatus('smart_follow_up', moduleStatuses) || undefined,
-          badgeCount: smartFollowUpLeadsCount > 0 ? smartFollowUpLeadsCount : undefined,
-        },
         // Technique
         {
           id: 'monitoring',
@@ -397,54 +390,8 @@ function DashboardLayoutContent({
     },
 
     // ═══════════════════════════════════════
-    // COMPTE (Menu déroulant)
+    // COMPTE : déplacé dans le menu profil (photo à gauche des notifications)
     // ═══════════════════════════════════════
-    {
-      id: 'category_account',
-      label: t('category_account') || 'Compte',
-      icon: <IconUserCog size={15} stroke={1} />,
-      isCategory: true,
-      menuItems: [
-        {
-          id: 'profile',
-          label: t('profile'),
-          icon: (
-            <div className="flex w-5 h-5 cursor-pointer hover:border-accent transition-all ease-in-out duration-300 border-warning border-2 rounded-full relative overflow-hidden">
-              <Image
-                alt="user profile picture"
-                src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
-                fill
-                style={{ objectFit: 'cover' }}
-              />
-            </div>
-          ),
-          path: '/dashboard/profile/personal-information',
-           status: getModuleStatus('profile', moduleStatuses) || undefined,
-        },
-        {
-          id: 'your_subscription',
-          label: t('your_subscription'),
-          icon: <IconCreditCard size={15} stroke={1} />,
-          path: '/dashboard/profile/your-subscription',
-          moduleId: 'profile',
-          status: getModuleStatus('your_subscription', moduleStatuses) || undefined,
-        },
-        {
-          id: 'your_enterprise',
-          label: t('your_enterprise'),
-          icon: <IconBuildings size={15} stroke={1} />,
-          path: '/dashboard/profile/your-company',
-           status: getModuleStatus('your_enterprise', moduleStatuses) || undefined,
-        },
-        {
-          id: 'settings',
-          label: t('settings') || 'Paramètres',
-          icon: <IconSettings size={15} stroke={1} />,
-          path: '/dashboard/settings',
-           status: getModuleStatus('settings', moduleStatuses) || undefined,
-              },
-      ],
-    },
 
     // ═══════════════════════════════════════
     // ADMINISTRATION (Visible uniquement pour les admins)
@@ -457,16 +404,9 @@ function DashboardLayoutContent({
     }] : []),
 
     // ═══════════════════════════════════════
-    // DÉCONNEXION (Toujours visible)
+    // DÉCONNEXION : dans le menu profil (photo en haut à droite)
     // ═══════════════════════════════════════
-    {
-      id: 'logout',
-      label: t('logout'),
-      icon: <IconLogout size={15} stroke={1} />,
-      onClick: logout,
-      path: '/login?type=login',
-    },
-  ], [t, profilePictureUrl, logout, isAdmin, moduleStatuses, emailUnreadCount, smartFollowUpLeadsCount]);
+  ], [t, profilePictureUrl, isAdmin, moduleStatuses, smartFollowUpLeadsCount]);
 
   // Filtrer les items selon les préférences de visibilité ET les modules activés
   const visibleSidebarItems = useMemo(() => {
@@ -474,7 +414,11 @@ function DashboardLayoutContent({
   
     
     return sidebarItems
-      .filter(item => isLinkVisible(item.id))
+      .filter(item => {
+        if (!isLinkVisible(item.id)) return false;
+        if (!item.isCategory && item.moduleId && !isModuleEnabled(item.moduleId)) return false;
+        return true;
+      })
       .map(item => {
         // Si c'est une catégorie, filtrer aussi ses enfants
         if (item.isCategory && item.menuItems) {
@@ -568,8 +512,14 @@ function DashboardLayoutContent({
       {/* Timer Indicator - Fixed en haut à droite (à côté des notifications) */}
       <TimerIndicator />
       
-      {/* Notification Bell - Fixed en haut à droite */}
-      <NotificationBell />
+      {/* Profile + Notification - Fixed en haut à droite */}
+      <div className="hidden lg:flex fixed top-5 right-5 z-[1002] items-center gap-2">
+        <ProfileDropdown
+          profilePictureUrl={profilePictureUrl}
+          onLogout={logout}
+        />
+        <NotificationBell embedded />
+      </div>
       
       {/* AI Chat Assistant - Fixed en bas à gauche */}
       {isFeatureEnabled('ai_assistant') && <AIChatAssistant />}
@@ -722,7 +672,7 @@ function DashboardLayoutContent({
                       </AnimatePresence>
                     </>
                   ) : (
-                    /* Affichage des items normaux (logout) */
+                    /* Affichage des items normaux (smart_follow_up, admin, etc.) */
                     <motion.button
                       onClick={() => handleItemClick(item)}
                       className={`nav-item group w-full mb-0.5 ${activeItem === item.id ? 'active' : ''}`}
@@ -741,6 +691,20 @@ function DashboardLayoutContent({
                             <span className="!text-xs font-medium whitespace-nowrap">
                               {item.label}
                             </span>
+                            {item.badgeCount && item.badgeCount > 0 && (
+                              <span className="min-w-[18px] h-[18px] px-1 bg-accent !text-white !text-[10px] font-bold rounded-full flex items-center justify-center">
+                                {item.badgeCount > 99 ? '99+' : item.badgeCount}
+                              </span>
+                            )}
+                            {item.status && !item.badgeCount && (
+                              <span className={`ml-auto !text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                                item.status === 'beta'
+                                  ? 'bg-warning-light !text-warning-text border border-warning'
+                                  : 'bg-success-light !text-success-text -text border border-success'
+                              }`}>
+                                {item.status === 'beta' ? 'Beta' : 'New'}
+                              </span>
+                            )}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -778,6 +742,13 @@ function DashboardLayoutContent({
                 >
                   <IconBell size={18} className="!text-secondary" />
                 </button>
+                {/* Profil mobile - même menu déroulant que desktop */}
+                <div className="lg:hidden">
+                  <ProfileDropdown
+                    profilePictureUrl={profilePictureUrl}
+                    onLogout={logout}
+                  />
+                </div>
               </div>
             }
           />

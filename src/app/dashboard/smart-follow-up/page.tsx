@@ -251,18 +251,44 @@ export default function SmartFollowUpPage() {
         const ContactIcon = contactType.icon;
         const isLowScore = action.confidence_score < minScoreThreshold;
         const fromPriorityDomain = isLeadFromPriorityDomain(action);
-        
+        const avatarPath = action.avatar_path;
+        const displayName = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact inconnu';
+
         return (
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-              fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
-            }`}>
-              <ContactIcon className={`w-5 h-5 ${fromPriorityDomain ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
+                !avatarPath && (fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
+              }`}
+            >
+              {avatarPath ? (
+                <>
+                  <img
+                    src={avatarPath}
+                    alt={displayName}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                  <div
+                    className={`w-full h-full hidden items-center justify-center ${
+                      fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
+                    }`}
+                  >
+                    <ContactIcon className={`w-5 h-5 ${fromPriorityDomain ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
+                  </div>
+                </>
+              ) : (
+                <ContactIcon className={`w-5 h-5 ${fromPriorityDomain ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
+              )}
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-medium text-primary truncate">
-                  {action.client?.name || extractWalegoLeadName(action.proposed_content.subject) || 'Contact inconnu'}
+                  {displayName}
                 </p>
                 {fromPriorityDomain && (
                   <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700">
