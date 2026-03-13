@@ -27,12 +27,12 @@ interface CustomColors {
   headerTitleColor: string;
   gradientAngle: number;
   fontFamily: string;
-  buttonPaddingX?: number;
-  buttonPaddingY?: number;
-  buttonRounded?: number;
-  buttonHasBorder?: boolean;
-  buttonBorderWidth?: number;
-  buttonBorderColor?: string;
+  buttonPaddingX: number;
+  buttonPaddingY: number;
+  buttonRounded: number;
+  buttonHasBorder: boolean;
+  buttonBorderWidth: number;
+  buttonBorderColor: string;
 }
 
 interface FontOption {

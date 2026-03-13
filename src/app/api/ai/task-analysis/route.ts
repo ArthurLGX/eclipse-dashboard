@@ -1,16 +1,19 @@
 import { openai } from '@ai-sdk/openai';
 import { anthropic } from '@ai-sdk/anthropic';
-import { generateObject } from 'ai';
-import { z } from 'zod';
+import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { parseWalegoLeadStatus, formatWalegoLeadStatusForAnalysis } from '@/utils/walego-lead-status';
+import { SMART_FOLLOW_UP_MAIL_SCANNER_PROMPT } from '@/lib/ai/smart-follow-up-mail-scanner-prompt';
 
 export const maxDuration = 30;
 
-const schema = z.object({
-  reasoning: z.string().describe("Raisonnement de l'IA sur ce lead"),
-  suggestion: z.string().describe("Suggestion d'action concrète"),
-});
+/** Extrait la ligne ACTION du format Mail Scanner pour la suggestion */
+function extractActionFromMailScannerOutput(fullOutput: string): string {
+  const actionMatch = fullOutput.match(/✅\s*ACTION\s*(?:IMMÉDIATE\s*)?:?\s*([^\n]+)/);
+  if (actionMatch) return actionMatch[1].trim();
+  if (fullOutput.includes('Aucun signal détecté')) return 'Aucune action requise';
+  return fullOutput.split('\n').filter(Boolean).pop() ?? fullOutput;
+}
 
 const taskTypeLabels: Record<string, string> = {
   payment_reminder: 'rappel de paiement',
@@ -64,49 +67,51 @@ export async function POST(req: Request) {
     }
 
     const instructionBlock = ai_instruction?.trim()
-      ? `\nINSTRUCTION PERSONNALISÉE (à respecter) :\n${ai_instruction}\n`
+      ? `\n\n---\nINSTRUCTION PERSONNALISÉE (à respecter en priorité) :\n${ai_instruction}\n`
       : '';
 
-    const prompt = `Tu es un assistant IA expert en analyse de leads et suivi commercial.${instructionBlock}
+    const systemPrompt = SMART_FOLLOW_UP_MAIL_SCANNER_PROMPT + instructionBlock;
 
+    const userMessage = `Analyse ce mail entrant et applique le process adapté (Walego / RDV confirmé / Lead entrant).
 
-CONTEXTE DU LEAD/TÂCHE :
+CONTEXTE :
 - Contact : ${context.from_name || task.contact?.name || 'Inconnu'}
 - Email : ${context.from_email || task.contact?.email || 'N/A'}
 - Sujet : ${context.original_subject || task.received_email?.subject || 'N/A'}
 - Reçu le : ${context.received_at || 'N/A'}
 - Type de tâche : ${taskTypeLabels[task.task_type] || task.task_type}
-- Entités extraites : ${(context.extracted_entities || aiAnalysis.entities || []).join(', ') || 'Aucune'}
+${(context.extracted_entities || aiAnalysis.entities || []).length > 0 ? `- Entités : ${(context.extracted_entities || aiAnalysis.entities || []).join(', ')}` : ''}
 
-ANALYSE IA EXISTANTE :
-- Intention détectée : ${aiAnalysis.intent || 'N/A'}
-- Urgence : ${aiAnalysis.urgency || 'N/A'}
-- Sentiment : ${aiAnalysis.sentiment || 'N/A'}
-- Langue : ${aiAnalysis.language || 'N/A'}
-- Confiance : ${aiAnalysis.confidence != null ? `${(aiAnalysis.confidence * 100).toFixed(0)}%` : 'N/A'}
+Analyse IA préalable : ${aiAnalysis.intent || 'N/A'} | Urgence : ${aiAnalysis.urgency || 'N/A'} | Sentiment : ${aiAnalysis.sentiment || 'N/A'}
 
-DOMAINE PRIORITAIRE : Si l'email provient d'un domaine que le client a indiqué comme prioritaire (ex: walego.co, walego.com), considère ce lead comme prioritaire et recommande une action rapide.
+---
+CORPS DU MAIL :
+${(email_body || task.context?.email_body || '').slice(0, 6000)}`;
 
-Produis une analyse structurée en français avec :
-1. RAISONNEMENT : Explique en 2-4 phrases ton analyse du lead - qui est ce contact, quel est le contexte commercial, pourquoi cette tâche a été créée, et ce que l'IA a détecté comme intention/urgence.
-2. SUGGESTION : Recommande une action concrète (ex: "Relancer rapidement - lead Walego prioritaire", "Envoyer un devis personnalisé pour app/développement", "Planifier un appel de découverte"). Sois spécifique et actionnable.`;
-
-    const options = { schema, prompt, temperature: 0.5 };
+    const modelOptions = { temperature: 0.4, maxRetries: 0 };
 
     try {
-      const { object } = await generateObject({
-        ...options,
+      const { text } = await generateText({
+        ...modelOptions,
         model: openai('gpt-4o'),
-        maxRetries: 0,
+        system: systemPrompt,
+        prompt: userMessage,
       });
-      return NextResponse.json(object);
+
+      const reasoning = text.trim();
+      const suggestion = extractActionFromMailScannerOutput(reasoning);
+      return NextResponse.json({ reasoning, suggestion });
     } catch (openaiError) {
       if (isQuotaExceeded(openaiError) && process.env.ANTHROPIC_API_KEY) {
-        const { object } = await generateObject({
-          ...options,
-          model: anthropic('claude-sonnet-4-6') as unknown as Parameters<typeof generateObject>[0]['model'],
+        const { text } = await generateText({
+          ...modelOptions,
+          model: anthropic('claude-sonnet-4-6') as unknown as Parameters<typeof generateText>[0]['model'],
+          system: systemPrompt,
+          prompt: userMessage,
         });
-        return NextResponse.json(object);
+        const reasoning = text.trim();
+        const suggestion = extractActionFromMailScannerOutput(reasoning);
+        return NextResponse.json({ reasoning, suggestion });
       }
       throw openaiError;
     }

@@ -121,7 +121,7 @@ export default function QuotaExceededModal<T>({
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="card p-6 w-full max-w-2xl max-h-[90vh] flex flex-col"
+          className="bg-card p-6 w-full max-w-2xl max-h-[90vh] flex flex-col"
         >
           {/* Header */}
           <div className="flex items-start gap-4 mb-6">
