@@ -795,7 +795,7 @@ export default function SmartFollowUpPage() {
           {activeTab === 'actions' ? (
             /* LEADS */
             (actions?.length ?? 0) === 0 ? (
-              <div className="card p-16 text-center">
+              <div className="bg-card p-16 text-center">
                 <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
                 <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead en attente</div>
                 <div className="!text-sm !text-muted max-w-xs mx-auto">
