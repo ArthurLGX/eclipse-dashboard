@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { anthropic } from '@ai-sdk/anthropic';
+import { generateText } from 'ai';
 import { AI_MODELS } from '@/lib/ai';
+import { isOpenAIQuotaExceeded, canUseClaudeFallback } from '@/lib/ai/openai-claude-fallback';
 
 const getOpenAIClient = () => {
   return new OpenAI({
@@ -90,18 +93,33 @@ Warnings should be clear, concise and actionable in English.`;
 
 ${contractContent}`;
 
-    const completion = await openai.chat.completions.create({
-      model: AI_MODELS.fast.id,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
-      response_format: { type: 'json_object' },
-      max_tokens: 500,
-      temperature: 0.3, // Lower temperature for more consistent analysis
-    });
+    let responseContent: string;
+    try {
+      const completion = await openai.chat.completions.create({
+        model: AI_MODELS.fast.id,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        response_format: { type: 'json_object' },
+        max_tokens: 500,
+        temperature: 0.3,
+      });
+      responseContent = completion.choices[0].message.content || '';
+    } catch (openaiError) {
+      if (isOpenAIQuotaExceeded(openaiError) && canUseClaudeFallback()) {
+        const { text } = await generateText({
+          model: anthropic('claude-sonnet-4-20250514'),
+          system: systemPrompt,
+          prompt: userPrompt,
+          temperature: 0.3,
+        });
+        responseContent = text;
+      } else {
+        throw openaiError;
+      }
+    }
 
-    const responseContent = completion.choices[0].message.content;
     if (!responseContent) {
       return NextResponse.json({ warnings: [] });
     }

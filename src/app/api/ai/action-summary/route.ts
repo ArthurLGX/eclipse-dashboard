@@ -1,6 +1,8 @@
 import { openai } from '@ai-sdk/openai';
+import { anthropic } from '@ai-sdk/anthropic';
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
+import { isOpenAIQuotaExceeded, canUseClaudeFallback } from '@/lib/ai/openai-claude-fallback';
 
 export const maxDuration = 30;
 
@@ -45,11 +47,26 @@ Génère un résumé concis en 3-4 phrases qui explique :
 
 Sois direct, professionnel et utile. Réponds en français.`;
 
-    const { text } = await generateText({
-      model: openai('gpt-4o'),
-      prompt,
-      temperature: 0.7,
-    });
+    let text: string;
+    try {
+      const result = await generateText({
+        model: openai('gpt-4o'),
+        prompt,
+        temperature: 0.7,
+      });
+      text = result.text;
+    } catch (openaiError) {
+      if (isOpenAIQuotaExceeded(openaiError) && canUseClaudeFallback()) {
+        const result = await generateText({
+          model: anthropic('claude-sonnet-4-20250514'),
+          prompt,
+          temperature: 0.7,
+        });
+        text = result.text;
+      } else {
+        throw openaiError;
+      }
+    }
 
     return NextResponse.json({ summary: text });
   } catch (error) {

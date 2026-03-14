@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { anthropic } from '@ai-sdk/anthropic';
+import { generateText } from 'ai';
 import { AI_MODELS } from '@/lib/ai';
+import { isOpenAIQuotaExceeded, canUseClaudeFallback } from '@/lib/ai/openai-claude-fallback';
 
 const getOpenAIClient = () => {
   return new OpenAI({
@@ -149,14 +152,27 @@ Respond in JSON with this exact format:
 
 ${texts.rules}`;
 
-    const completion = await openai.chat.completions.create({
-      model: AI_MODELS.fast.id,
-      messages: [{ role: 'user', content: prompt }],
-      response_format: { type: 'json_object' },
-      max_tokens: 300,
-    });
+    let responseContent: string;
+    try {
+      const completion = await openai.chat.completions.create({
+        model: AI_MODELS.fast.id,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        max_tokens: 300,
+      });
+      responseContent = completion.choices[0].message.content || '';
+    } catch (openaiError) {
+      if (isOpenAIQuotaExceeded(openaiError) && canUseClaudeFallback()) {
+        const { text } = await generateText({
+          model: anthropic('claude-sonnet-4-20250514'),
+          prompt,
+        });
+        responseContent = text;
+      } else {
+        throw openaiError;
+      }
+    }
 
-    const responseContent = completion.choices[0].message.content;
     if (!responseContent) {
       throw new Error('AI did not return content');
     }

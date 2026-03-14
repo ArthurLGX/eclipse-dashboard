@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { anthropic } from '@ai-sdk/anthropic';
+import { generateText } from 'ai';
 import { selectModel } from '@/lib/ai/router';
+import { isOpenAIQuotaExceeded, canUseClaudeFallback } from '@/lib/ai/openai-claude-fallback';
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_API_KEY,
@@ -94,18 +97,33 @@ Tu dois retourner un JSON valide avec cette structure exacte:
   "reasoning": "Explication courte de la logique de tarification"
 }`;
 
-    const completion = await openai.chat.completions.create({
-      model: model.id,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: prompt },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.7,
-      max_tokens: 2000,
-    });
+    let responseContent: string;
+    try {
+      const completion = await openai.chat.completions.create({
+        model: model.id,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: prompt },
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+        max_tokens: 2000,
+      });
+      responseContent = completion.choices[0].message.content || '';
+    } catch (openaiError) {
+      if (isOpenAIQuotaExceeded(openaiError) && canUseClaudeFallback()) {
+        const { text } = await generateText({
+          model: anthropic('claude-sonnet-4-20250514'),
+          system: systemPrompt,
+          prompt,
+          temperature: 0.7,
+        });
+        responseContent = text;
+      } else {
+        throw openaiError;
+      }
+    }
 
-    const responseContent = completion.choices[0].message.content;
     if (!responseContent) {
       throw new Error('L\'IA n\'a pas retourné de contenu');
     }

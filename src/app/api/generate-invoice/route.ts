@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { anthropic } from '@ai-sdk/anthropic';
+import { generateText } from 'ai';
+import { isOpenAIQuotaExceeded, canUseClaudeFallback } from '@/lib/ai/openai-claude-fallback';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -111,17 +114,31 @@ Retourne un JSON avec cette structure exacte:
   "reasoning": "string - explication courte de ton analyse"
 }`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.3,
-      max_tokens: 2000,
-    });
-
-    const responseText = completion.choices[0]?.message?.content;
+    let responseText: string | undefined;
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
+        temperature: 0.3,
+        max_tokens: 2000,
+      });
+      responseText = completion.choices[0]?.message?.content ?? undefined;
+    } catch (openaiError) {
+      if (isOpenAIQuotaExceeded(openaiError) && canUseClaudeFallback()) {
+        const { text } = await generateText({
+          model: anthropic('claude-sonnet-4-20250514'),
+          system: systemPrompt,
+          prompt: userPrompt,
+          temperature: 0.3,
+        });
+        responseText = text;
+      } else {
+        throw openaiError;
+      }
+    }
 
     if (!responseText) {
       return NextResponse.json(

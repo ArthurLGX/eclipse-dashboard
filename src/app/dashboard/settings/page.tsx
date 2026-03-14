@@ -35,6 +35,7 @@ import {
   IconChevronRight,
   IconSquare,
   IconRocket,
+  IconKey,
 } from '@tabler/icons-react';
 import SmtpConfigSection from '@/app/components/SmtpConfigSection';
 import EmailSignatureSection from '@/app/components/EmailSignatureSection';
@@ -933,6 +934,27 @@ export default function SettingsPage() {
               </div>
             </Link>
             
+            {/* API Keys IA */}
+            <Link
+              href="/dashboard/settings/ai-keys"
+              className="block p-4  border border-default hover:border-accent hover:bg-accent-light/50 transition-all group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12  bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <IconKey className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold !text-primary group-hover:!text-accent-text transition-colors">
+                    {t('ai_api_keys') || 'Clés API IA'}
+                  </h3>
+                  <p className="!text-sm !text-muted">
+                    {t('ai_api_keys_desc') || 'Connectez OpenAI et Anthropic pour utiliser les fonctionnalités IA'}
+                  </p>
+                </div>
+                <IconChevronRight className="w-5 h-5 !text-muted group-hover:!text-accent-text transition-colors" />
+              </div>
+            </Link>
+
             {/* AI Features Management */}
             <Link
               href="/dashboard/settings/ai-features"

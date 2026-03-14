@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { generateText } from 'ai';
 import { selectModel } from '@/lib/ai/router';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPEN_API_KEY,
-});
+import { isOpenAIQuotaExceeded } from '@/lib/ai/openai-claude-fallback';
+import { getApiKeysForRequest } from '@/lib/ai/get-api-keys-for-request';
 
 type BusinessType = 'web_developer' | 'agency' | 'designer' | 'consultant' | 'photographer' | 'coach' | 'artisan' | 'other';
 
@@ -47,6 +47,19 @@ interface RequestBody {
 
 export async function POST(req: Request) {
   try {
+    const apiKeysResult = await getApiKeysForRequest(req.headers.get('authorization'));
+    if ('error' in apiKeysResult && apiKeysResult.error === 'NO_AUTH') {
+      return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+    if (!apiKeysResult.hasAnyKey) {
+      return NextResponse.json(
+        { error: 'Connectez votre clé API dans les paramètres pour utiliser l\'IA', code: 'AI_API_KEY_REQUIRED' },
+        { status: 402 }
+      );
+    }
+
+    const { keys } = apiKeysResult;
+
     const body: RequestBody = await req.json();
     const { 
       contractType, 
@@ -180,18 +193,52 @@ RETOURNE UN JSON VALIDE avec cette structure:
   "warnings": ["Point d'attention 1", "Point d'attention 2"]
 }`;
 
-    const completion = await openai.chat.completions.create({
-      model: model.id,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: `Génère un contrat de type: ${contractType}` },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.5, // Plus conservateur pour les contrats
-      max_tokens: 4000,
-    });
+    const openaiKey = keys.openaiKey || process.env.OPENAI_API_KEY || process.env.OPEN_API_KEY;
+    const anthropicKey = keys.anthropicKey || process.env.ANTHROPIC_API_KEY;
+    const anthropicProvider = anthropicKey ? createAnthropic({ apiKey: anthropicKey }) : null;
 
-    const responseContent = completion.choices[0].message.content;
+    let responseContent: string;
+    const userPrompt = `Génère un contrat de type: ${contractType}`;
+
+    if (openaiKey) {
+      const openai = new OpenAI({ apiKey: openaiKey });
+      try {
+        const completion = await openai.chat.completions.create({
+          model: model.id,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          response_format: { type: 'json_object' },
+          temperature: 0.5,
+          max_tokens: 4000,
+        });
+        responseContent = completion.choices[0].message.content || '';
+      } catch (openaiError) {
+        if (isOpenAIQuotaExceeded(openaiError) && anthropicProvider) {
+          const { text } = await generateText({
+            model: anthropicProvider('claude-sonnet-4-20250514'),
+            system: systemPrompt,
+            prompt: userPrompt,
+            temperature: 0.5,
+          });
+          responseContent = text;
+        } else {
+          throw openaiError;
+        }
+      }
+    } else if (anthropicProvider) {
+      const { text } = await generateText({
+        model: anthropicProvider('claude-sonnet-4-20250514'),
+        system: systemPrompt,
+        prompt: userPrompt,
+        temperature: 0.5,
+      });
+      responseContent = text;
+    } else {
+      throw new Error('Aucune clé API configurée');
+    }
+
     if (!responseContent) {
       throw new Error('L\'IA n\'a pas retourné de contenu');
     }

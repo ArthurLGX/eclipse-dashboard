@@ -56,6 +56,7 @@ import { MobileDrawer, MobileHeader, MobileBottomNav } from '@/app/components/mo
 import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
 import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
+import { ConnectAPIProvider } from '@/app/context/ConnectAPIContext';
 import { useAutomationActions } from '@/hooks/useSmartFollowUp';
 import { FALLBACK_AVATAR } from '@/lib/randomuser-avatar';
 
@@ -84,11 +85,13 @@ export default function DashboardLayout({
         <LenisProvider>
           <UserPreferencesProvider>
             <AIFeaturesProvider>
-              <OnboardingProvider>
-                <AIAssistantProvider>
-                  <DashboardLayoutContent>{children}</DashboardLayoutContent>
-                </AIAssistantProvider>
-              </OnboardingProvider>
+              <ConnectAPIProvider>
+                <OnboardingProvider>
+                  <AIAssistantProvider>
+                    <DashboardLayoutContent>{children}</DashboardLayoutContent>
+                  </AIAssistantProvider>
+                </OnboardingProvider>
+              </ConnectAPIProvider>
             </AIFeaturesProvider>
           </UserPreferencesProvider>
         </LenisProvider>

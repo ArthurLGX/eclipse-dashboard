@@ -30,8 +30,9 @@ import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { useConnectAPIModal } from '@/app/context/ConnectAPIContext';
 import { useUserPreferences } from '@/app/context/UserPreferencesContext';
-import { fetchClientsUser, fetchAllUserProjects, createContract, sendContractToClient, type Contract } from '@/lib/api';
+import { fetchClientsUser, fetchAllUserProjects, createContract, sendContractToClient, getToken, type Contract } from '@/lib/api';
 import { pdf } from '@react-pdf/renderer';
 import ContractPDF from './ContractPDF';
 import RichTextEditor from './RichTextEditor';
@@ -94,6 +95,7 @@ export default function AIContractGenerator({
   const { t } = useLanguage();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const connectAPIModal = useConnectAPIModal();
   const { businessType, businessConfig } = useUserPreferences();
 
   // Data states
@@ -512,9 +514,13 @@ export default function AIContractGenerator({
         businessType: businessType,
       };
 
+      const token = getToken();
       const response = await fetch('/api/ai/contract-generator', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           contractType,
           userProfile,
@@ -540,8 +546,12 @@ export default function AIContractGenerator({
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error((errorData as { error?: string })?.error || t('ai_generation_error'));
+        const errorData = await response.json().catch(() => ({})) as { error?: string; code?: string };
+        if (response.status === 402 && errorData.code === 'AI_API_KEY_REQUIRED' && connectAPIModal) {
+          connectAPIModal.showConnectAPIModal();
+          return;
+        }
+        throw new Error(errorData?.error || t('ai_generation_error'));
       }
 
       const data: GeneratedContract = await response.json();
@@ -772,7 +782,7 @@ ${user?.username || 'L\'équipe'}`;
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-page  shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col overscroll-contain"
+          className="bg-card  shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col overscroll-contain"
           onClick={e => e.stopPropagation()}
           onWheel={(e) => e.stopPropagation()}
         >
