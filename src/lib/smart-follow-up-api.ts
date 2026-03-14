@@ -79,8 +79,9 @@ export async function fetchFollowUpTasks(filters?: Record<string, unknown>): Pro
     'populate[contact][fields][1]': 'enterprise',
     'populate[contact][fields][2]': 'email',
     'populate[contact][fields][3]': 'documentId',
-    'populate[received_email][fields][0]': 'subject',
-    'populate[received_email][fields][1]': 'from_email',
+    'populate[received_email][fields][0]': 'id',
+    'populate[received_email][fields][1]': 'subject',
+    'populate[received_email][fields][2]': 'from_email',
     'sort[0]': 'scheduled_for:asc',
   });
 
@@ -132,6 +133,28 @@ export async function fetchAutomationActions(status?: string): Promise<Automatio
   return response.data;
 }
 
+export async function fetchAutomationActionDetail(id: string): Promise<AutomationAction | null> {
+  const params = new URLSearchParams({
+    'populate[user][fields][0]': 'username',
+    'populate[client][fields][0]': 'name',
+    'populate[client][fields][1]': 'email',
+    'populate[client][fields][2]': 'documentId',
+    'populate[follow_up_task][populate][received_email][fields][0]': 'subject',
+    'populate[follow_up_task][populate][received_email][fields][1]': 'from_email',
+    'populate[follow_up_task][populate][received_email][fields][2]': 'content_text',
+    'populate[follow_up_task][populate][received_email][fields][3]': 'content_html',
+    'populate[follow_up_task][populate][received_email][fields][4]': 'received_at',
+    'populate[approved_by][fields][0]': 'username',
+  });
+
+  try {
+    const response = await apiRequest<{ data: AutomationAction | null }>(`automation-actions/${id}?${params}`);
+    return response.data;
+  } catch {
+    return null;
+  }
+}
+
 export async function updateAutomationAction(id: string, data: Partial<AutomationAction>): Promise<AutomationAction> {
   const response = await apiRequest<{ data: AutomationAction }>(`automation-actions/${id}`, {
     method: 'PUT',
@@ -175,6 +198,43 @@ export async function fetchAutomationLogs(limit = 50): Promise<AutomationLog[]> 
 
   const response = await apiRequest<{ data: AutomationLog[] }>(`automation-logs?${params}`);
   return response.data;
+}
+
+// ============================================================================
+// Received Emails (test IA)
+// ============================================================================
+
+export interface ReceivedEmailToday {
+  id: number;
+  documentId?: string;
+  subject?: string;
+  from_email?: string;
+  from_name?: string;
+  received_at?: string;
+  content_text?: string;
+  content_html?: string;
+}
+
+export async function fetchReceivedEmailsToday(): Promise<ReceivedEmailToday[]> {
+  const now = new Date();
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0, 0, 0, 0);
+  const start = startOfDay.toISOString();
+  const end = now.toISOString();
+
+  const params = new URLSearchParams({
+    'filters[received_at][$gte]': start,
+    'filters[received_at][$lte]': end,
+    'sort[0]': 'received_at:desc',
+    'pagination[limit]': '50',
+  });
+
+  try {
+    const response = await apiRequest<{ data: ReceivedEmailToday[] }>(`received-emails?${params}`);
+    return response.data || [];
+  } catch {
+    return [];
+  }
 }
 
 // ============================================================================

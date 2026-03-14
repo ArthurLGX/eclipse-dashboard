@@ -17,14 +17,16 @@ import {
   IconBuilding,
   IconSearch,
   IconSparkles,
+  IconPlayerPlayFilled,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
-import QuickEmailReplyModal from '@/app/components/QuickEmailReplyModal';
+import LeadDetailModal from '@/app/components/LeadDetailModal';
 import TaskDetailModal from '@/app/components/TaskDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import InstructionIADrawer from '@/app/components/InstructionIADrawer';
+import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
@@ -37,7 +39,7 @@ import {
   rejectAutomationAction, 
   updateFollowUpTask,
   deleteFollowUpTask,
-  updateAutomationSettings 
+  updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
@@ -78,6 +80,7 @@ export default function SmartFollowUpPage() {
   const [taskSearch, setTaskSearch] = useState('');
   const [filterPrio, setFilterPrio] = useState<'Toutes' | 'Urgent' | 'Prioritaire' | 'Normal'>('Toutes');
   const [filterStatut, setFilterStatut] = useState<'Tous' | 'En attente' | 'Annulé' | 'Terminé'>('Tous');
+  const [showSimulationDrawer, setShowSimulationDrawer] = useState(false);
   
   // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
@@ -610,10 +613,10 @@ export default function SmartFollowUpPage() {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen w-full flex flex-col justify-center ">
         {/* Header épuré */}
-        <div className="bg-card border-b border-default">
-          <div className="max-w-7xl mx-auto px-8 py-5">
+        <div className="border-b flex justify-center border-default">
+          <div className="w-full py-5">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <div className="!text-xs !text-muted mb-1">Tableau de Bord → Smart-Follow-Up</div>
@@ -628,6 +631,14 @@ export default function SmartFollowUpPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowSimulationDrawer(true)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-accent/20 !text-accent border border-accent/30 hover:bg-accent/30 transition-colors"
+                  title="Simuler l'arrivée d'un email Walego pour tester l'extraction et l'IA"
+                >
+                  <IconPlayerPlayFilled className="w-3.5 h-3.5" />
+                  Simuler
+                </button>
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
                   className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
@@ -722,7 +733,7 @@ export default function SmartFollowUpPage() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className=" w-full py-6">
           {/* Bannière instruction IA active */}
           {hasAiInstruction && (
             <>
@@ -880,7 +891,7 @@ export default function SmartFollowUpPage() {
         </div>
       </div>
 
-      <QuickEmailReplyModal
+      <LeadDetailModal
         action={selectedAction}
         isOpen={showDetailModal}
         onClose={() => {
@@ -932,12 +943,23 @@ export default function SmartFollowUpPage() {
         aiInstruction={aiInstruction || undefined}
       />
 
+    
+      
       <InstructionIADrawer
         isOpen={showInstructionDrawer}
         onClose={() => setShowInstructionDrawer(false)}
         activeInstruction={aiInstruction || ''}
         history={aiInstructionHistory}
         onSave={handleSaveAiInstruction}
+      />
+
+      <WalegoSimulationDrawer
+        isOpen={showSimulationDrawer}
+        onClose={() => setShowSimulationDrawer(false)}
+        onOpenAsLead={(simulatedDetail) => {
+          setSelectedAction(simulatedDetail);
+          setShowDetailModal(true);
+        }}
       />
     </>
   );

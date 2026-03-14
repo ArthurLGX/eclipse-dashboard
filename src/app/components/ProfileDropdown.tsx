@@ -84,6 +84,7 @@ export default function ProfileDropdown({
             alt="Profile"
             src={profilePictureUrl || '/images/logo/eclipse-logo.png'}
             fill
+            sizes="40px"
             style={{ objectFit: 'cover' }}
           />
         </div>

@@ -300,6 +300,7 @@ export default function InvitationPage() {
               src="/images/logo/eclipse-logo.png"
               alt="Eclipse Studio"
               fill
+              sizes="80px"
               className="object-contain opacity-90"
               priority
             />

@@ -456,7 +456,7 @@ const PROJECT_TYPES = [
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl mx-auto"
+          className="w-full"
         >
           {/* En-tête du projet (infos basiques) */}
           <div className="bg-card p-8 !text-center mb-6">
@@ -550,7 +550,7 @@ const PROJECT_TYPES = [
     >
       {/* Header moderne épuré */}
       <div className="border-b border-default">
-        <div className="relative px-8 py-4">
+        <div className="relative py-4">
           {/* Breadcrumb & Actions */}
           <div className="flex items-center justify-between mb-4">
             {/* Breadcrumb simplifié */}
@@ -829,13 +829,14 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="bg-card p-4">
+                  <div className="p-4">
                     <ProjectTasks
                       projectDocumentId={project.documentId}
-                      userId={user?.id || 0}
-                      canEdit={canEdit}
+                      projectName={project.title}
                       projectStartDate={project.start_date || null}
                       projectEndDate={project.end_date || null}
+                      userId={user?.id || 0}
+                      canEdit={canEdit}
                       collaborators={collaborators}
                       ownerInfo={project.user ? {
                         id: project.user.id,
@@ -843,15 +844,14 @@ const PROJECT_TYPES = [
                         username: project.user.username,
                         email: project.user.email,
                       } : undefined}
+                      useListRedesign
                       onTaskAssigned={async (taskTitle, assignedTo) => {
-                        // TODO: Implémenter l'envoi d'email ici
                         showGlobalPopup(
-                          `${t('task_assigned_notification') || 'Notification envoyée à'} ${assignedTo.username}`, 
+                          `${t('task_assigned_notification') || 'Notification envoyée à'} ${assignedTo.username}`,
                           'success'
                         );
                       }}
                       onAllTasksCompleted={async () => {
-                        // Mettre le projet en statut "completed" automatiquement et synchroniser le pipeline
                         if (project.project_status !== 'completed') {
                           try {
                             await updateProjectStatusWithSync(
@@ -864,7 +864,7 @@ const PROJECT_TYPES = [
                               t('project_auto_completed') || 'Toutes les tâches terminées ! Projet marqué comme terminé.',
                               'success'
                             );
-                            clearCache('clients'); // Rafraîchir les clients (pipeline mis à jour)
+                            clearCache('clients');
                             await refetchProject();
                           } catch (error) {
                             console.error('Error auto-completing project:', error);
@@ -883,7 +883,7 @@ const PROJECT_TYPES = [
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                 >
-                  <div className="bg-card overflow-hidden">
+                  <div className="overflow-hidden">
                     <TaskWorkflowView
                       onRefresh={loadTasks}
                       tasks={tasks.filter(t => !t.parent_task).map((task): WorkflowTask => ({

@@ -37,6 +37,7 @@ import {
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
+import { TaskListRedesignView } from './TaskSectionRedesign';
 import DraggableGanttBar from './DraggableGanttBar';
 import type { User } from '@/types';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -81,6 +82,8 @@ interface ProjectTasksProps {
   };
   onTaskAssigned?: (taskTitle: string, assignedTo: { email: string; username: string }) => void;
   onAllTasksCompleted?: () => void;
+  /** Utilise le design redesign (cartes + progression) pour la vue Liste */
+  useListRedesign?: boolean;
 }
 
 type ViewMode = 'cards' | 'kanban' | 'table' | 'gantt';
@@ -184,17 +187,18 @@ function AvatarStack({
   );
 }
 
-export default function ProjectTasks({ 
+export default function ProjectTasks({
   projectDocumentId,
   projectName = 'Projet',
   projectStartDate,
   projectEndDate,
-  userId, 
-  canEdit, 
+  userId,
+  canEdit,
   collaborators = [],
   ownerInfo,
   onTaskAssigned,
   onAllTasksCompleted,
+  useListRedesign = false,
 }: ProjectTasksProps) {
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
@@ -1581,7 +1585,7 @@ export default function ProjectTasks({
             
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium !text-primary flex items-center gap-2">
+                <h4 className="!text-sm !text-primary font-medium flex items-center gap-2">
                   {parentTaskForSubtask && <IconSubtask className="w-4 h-4 !text-accent-text" />}
                   {parentTaskForSubtask 
                     ? `${t('new_subtask') || 'Nouvelle sous-tâche'}`
@@ -1751,7 +1755,19 @@ export default function ProjectTasks({
       </AnimatePresence>
 
       {/* Liste des tâches selon la vue */}
-      {filteredTasks.length === 0 ? (
+      {viewMode === 'cards' && useListRedesign ? (
+        <TaskListRedesignView
+          tasks={tasks}
+          filteredTasks={filteredTasks}
+          canEdit={canEdit}
+          projectDocumentId={projectDocumentId}
+          userId={userId}
+          allMembers={allMembers}
+          loadTasks={loadTasks}
+          onAllTasksCompleted={onAllTasksCompleted}
+          t={t}
+        />
+      ) : filteredTasks.length === 0 ? (
         <div className="!text-center py-12 bg-muted  border border-default">
           <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
           <p className="!text-muted">
@@ -1771,7 +1787,7 @@ export default function ProjectTasks({
         </div>
       ) : (
         <>
-          {/* Vue Cartes */}
+          {/* Vue Cartes (design classique) */}
           {viewMode === 'cards' && (
             <div className="space-y-2">
               {filteredTasks.map((task, index) => (
@@ -1874,13 +1890,15 @@ export default function ProjectTasks({
                 setParentTaskForSubtask(parentTask);
                 setShowNewTaskForm(true);
               }}
-              taskStatusOptions={TASK_STATUS_OPTIONS}
-              projectName={undefined}
-              t={t}
-              onTasksChange={() => {
-                // Recharger les tâches après modification des dates
-                loadTasks();
+              onAddTask={() => {
+                setParentTaskForSubtask(null);
+                setShowNewTaskForm(true);
               }}
+              taskStatusOptions={TASK_STATUS_OPTIONS}
+              projectName={projectName}
+              canEdit={canEdit}
+              t={t}
+              onTasksChange={() => loadTasks()}
             />
           )}
         </>
@@ -2139,7 +2157,7 @@ function TaskCard({
           {/* Contenu */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h4 className={`font-medium ${
+              <h4 className={`!text-sm font-medium ${
                 task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'
               }`}>
                 {task.title}
@@ -3387,23 +3405,34 @@ interface TaskGanttViewProps {
   tasks: ProjectTask[];
   onEdit: (task: ProjectTask) => void;
   onAddSubtask: (parentTask: ProjectTask) => void;
+  onAddTask?: () => void; // Nouvelle tâche (niveau racine)
   taskStatusOptions: TaskStatusOption[];
   projectName?: string;
+  canEdit?: boolean;
   t: (key: string) => string;
   onTasksChange?: () => void; // Callback pour recharger les tâches après modification
 }
+
+// ROW_H = 40 (réservé pour layout)
+const LEFT_W = 280;
+const COL_W_MIN = 16;
+const COL_W_MAX = 64;
+const COL_W_DEFAULT = 32;
 
 function TaskGanttView({
   tasks,
   onEdit,
   onAddSubtask,
+  onAddTask,
   taskStatusOptions,
   projectName,
+  canEdit = true,
   t,
   onTasksChange,
 }: TaskGanttViewProps) {
-  const ganttRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
+  const [colWidth, setColWidth] = useState(COL_W_DEFAULT);
+  const [tooltip, setTooltip] = useState<{ visible: boolean; x: number; y: number; task: ProjectTask; color: string; effectiveProgress: number; startDate: string; endDate: string; dur: string } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [exportMode, setExportMode] = useState<'light' | 'dark'>('light');
@@ -3445,48 +3474,8 @@ function TaskGanttView({
   // Calculer la plage de dates - normaliser aujourd'hui à minuit
   const today = useMemo(() => normalizeDate(new Date()), [normalizeDate]);
 
-  // Fonction pour scroller jusqu'à aujourd'hui avec animation
-  const scrollToToday = useCallback(() => {
-    if (!timelineRef.current) return;
-    
-    // Colonnes fixes: 260px + 90px + 60px = 410px, chaque jour = 32px
-    const fixedColumnsWidth = 410;
-    const dayWidth = 32;
-    const containerWidth = timelineRef.current.clientWidth;
-    
-    // Trouver la colonne d'aujourd'hui
-    const todayColumn = timelineRef.current.querySelector(`th[data-is-today="true"]`);
-    if (!todayColumn) return;
-    
-    const todayIndex = parseInt(todayColumn.getAttribute('data-day-index') || '0', 10);
-    
-    // Centrer la colonne d'aujourd'hui dans la vue visible
-    const targetScroll = (todayIndex * dayWidth) - (containerWidth / 2) + fixedColumnsWidth + (dayWidth / 2);
-    
-    // Animation smooth avec requestAnimationFrame
-    const startScroll = timelineRef.current.scrollLeft;
-    const distance = Math.max(0, targetScroll) - startScroll;
-    const duration = 600; // ms
-    let startTime: number | null = null;
-    
-    const easeOutCubic = (x: number): number => 1 - Math.pow(1 - x, 3);
-    
-    const animateScroll = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeProgress = easeOutCubic(progress);
-      
-      if (timelineRef.current) {
-        timelineRef.current.scrollLeft = startScroll + (distance * easeProgress);
-      }
-      
-      if (progress < 1) {
-        requestAnimationFrame(animateScroll);
-      }
-    };
-    
-    requestAnimationFrame(animateScroll);
+  const zoom = useCallback((delta: number) => {
+    setColWidth((w) => Math.max(COL_W_MIN, Math.min(COL_W_MAX, w + delta)));
   }, []);
 
   const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
@@ -3706,6 +3695,12 @@ function TaskGanttView({
       throw error; // Propager l'erreur pour que DraggableGanttBar puisse gérer l'échec
     }
   }, [tasks, onTasksChange]);
+
+  const scrollToToday = useCallback(() => {
+    if (!timelineRef.current || !ganttData) return;
+    const todayX = ganttData.todayIndex >= 0 ? ganttData.todayIndex * colWidth : 0;
+    timelineRef.current.scrollLeft = Math.max(0, todayX - timelineRef.current.clientWidth / 2);
+  }, [ganttData, colWidth]);
 
   // Fonction pour générer le HTML d'export (réutilisable pour aperçu et export)
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
@@ -3934,9 +3929,17 @@ function TaskGanttView({
   }
 
   const { dayHeaders, months, todayIndex } = ganttData;
+  const fmtDateShort = (s: string | null) => {
+    if (!s) return '—';
+    const d = new Date(s);
+    return `${d.getDate()}/${d.getMonth() + 1}`;
+  };
+
+  const doneCount = tasks.filter((ta) => ta.task_status === 'completed').length;
+  const progressPct = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col rounded-xl border border-default overflow-hidden bg-card">
       {/* Modal de sélection du mode d'export avec aperçu */}
       {showExportModal && (
         <div 
@@ -4058,123 +4061,108 @@ function TaskGanttView({
         </div>
       )}
 
-      {/* Boutons Today + Export */}
-      <div className="flex justify-end gap-2">
-        <motion.button
-          onClick={scrollToToday}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-accent !text-white  font-medium hover:bg-[var(--color-accent)] transition-colors shadow-sm"
-        >
-          <IconCalendarEvent className="w-4 h-4" />
-          {t('today') || "Aujourd'hui"}
-        </motion.button>
-        
-        <button
-          onClick={() => setShowExportModal(true)}
-          disabled={isExporting}
-          className="flex items-center gap-2 px-3 py-1.5 !text-sm bg-card border border-default  !text-primary hover:!text-primary hover:bg-hover transition-colors disabled:opacity-50"
-        >
-          <IconFileTypePdf className="w-4 h-4" />
-          {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
-        </button>
+      {/* Top bar Gantt redesign */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-default bg-card">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <IconTimeline className="w-4 h-4 !text-accent" />
+            <span className="font-semibold !text-sm !text-primary">{projectName || t('project_tasks') || 'Projet'}</span>
+          </div>
+          <span className="font-mono !text-[10px] px-2 py-0.5 rounded border border-default !text-muted bg-muted/30">{t('gantt') || 'Gantt'}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex border border-default rounded-lg overflow-hidden">
+            <button type="button" onClick={() => zoom(-4)} className="w-8 h-8 flex items-center justify-center !text-muted hover:bg-muted" title={t('zoom_out') || 'Zoom arrière'}>−</button>
+            <div className="w-px bg-default" />
+            <button type="button" onClick={() => zoom(4)} className="w-8 h-8 flex items-center justify-center !text-muted hover:bg-muted" title={t('zoom_in') || 'Zoom avant'}>+</button>
+          </div>
+          <button type="button" onClick={scrollToToday} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-warning/40 !text-warning hover:bg-warning/10 rounded-lg transition-colors">
+            <IconCalendarEvent className="w-4 h-4" />
+            {t('today') || "Aujourd'hui"}
+          </button>
+          {canEdit && onAddTask && (
+            <button type="button" onClick={onAddTask} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted rounded-lg transition-colors">
+              <IconPlus className="w-4 h-4" />
+              {t('new_task') || 'Nouvelle tâche'}
+            </button>
+          )}
+          <button type="button" onClick={() => setShowExportModal(true)} disabled={isExporting} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted rounded-lg transition-colors disabled:opacity-50">
+            <IconFileTypePdf className="w-4 h-4" />
+            {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
+          </button>
+        </div>
       </div>
 
-      {/* Design Gantt style Gamma - Structure unifiée */}
-      <div className="bg-card  border border-default overflow-hidden" ref={ganttRef}>
-        <div className="overflow-x-auto" ref={timelineRef}>
-          <table className="w-full border-collapse" style={{ minWidth: `${450 + dayHeaders.length * 32}px` }}>
-            {/* En-tête */}
-            <thead className="sticky top-0 z-20">
-              <tr>
-                {/* Colonnes fixes */}
-                <th className="!text-left py-3 px-4 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-0 z-30 w-[260px] min-w-[260px] bg-card border-b border-muted/30">
-                  {t('task_name') || 'Task Name'}
+      {/* Gantt - design redesign (table avec sticky cols) */}
+      <div className="overflow-x-auto overflow-y-auto" ref={timelineRef} style={{ maxHeight: 'min(600px, 70vh)' }}>
+        <table className="w-full border-collapse" style={{ minWidth: `${LEFT_W + 90 + 60 + dayHeaders.length * colWidth}px` }}>
+          <thead className="sticky top-0 z-20 bg-card">
+            <tr>
+              <th className="!text-left py-3 px-4 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky left-0 z-30 bg-card border-b border-default" style={{ width: LEFT_W, minWidth: LEFT_W }}>
+                {t('task_name') || 'Nom de la tâche'}
+              </th>
+              <th className="!text-center py-3 px-2 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky z-30 bg-card border-b border-default w-20">
+                {t('due_range') || 'Période'}
+              </th>
+              <th className="!text-center py-3 px-2 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky z-30 bg-card border-b border-default w-14">
+                {t('duration') || 'Durée'}
+              </th>
+              {months.map((month, i) => (
+                <th key={i} colSpan={month.days} className="!text-center py-2 !text-xs font-semibold !text-primary bg-muted/50 border-b border-default">
+                  {month.label}
                 </th>
-                <th className="!text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[260px] z-30 w-[90px] min-w-[90px] bg-card border-b border-muted/30">
-                  {t('due_range') || 'Due Range'}
+              ))}
+            </tr>
+            <tr>
+              <th className="sticky left-0 z-30 bg-card h-8 border-b border-default" style={{ width: LEFT_W }} />
+              <th className="sticky z-30 bg-card border-b border-default" />
+              <th className="sticky z-30 bg-card border-b border-default" />
+              {dayHeaders.map((day, j) => (
+                <th
+                  key={j}
+                  data-day-index={j}
+                  data-is-today={isToday(day) ? 'true' : 'false'}
+                  className={`!text-center py-1.5 font-mono !text-[10px] border-b border-default flex-shrink-0 ${
+                    isToday(day) ? '!text-warning font-semibold bg-warning/10' : day.getDay() === 0 || day.getDay() === 6 ? '!text-muted/60 bg-muted/20' : '!text-muted'
+                  }`}
+                  style={{ width: colWidth, minWidth: colWidth }}
+                >
+                  {day.getDate()}
                 </th>
-                <th className="!text-center py-3 px-2 !text-xs font-semibold !text-muted uppercase tracking-wider sticky left-[350px] z-30 w-[60px] min-w-[60px] bg-card border-b border-muted/30 shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
-                  {t('duration') || 'Duration'}
-                </th>
-                {/* Timeline header - Mois */}
-                {months.map((month, i) => (
-                  <th 
-                    key={i}
-                    colSpan={month.days}
-                    className="!text-center py-2 !text-xs font-semibold !text-primary bg-muted border-b border-muted"
-                  >
-                    {month.label}
-                  </th>
-                ))}
-              </tr>
-              <tr>
-                <th className="sticky left-0 z-30 bg-card h-7 border-b border-muted" />
-                <th className="sticky left-[260px] z-30 bg-card border-b border-muted" />
-                <th className="sticky left-[350px] z-30 bg-card border-b border-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" />
-                {/* Timeline header - Jours */}
-                {dayHeaders.map((day, j) => (
-                  <th 
-                    key={j}
-                    data-day-index={j}
-                    data-is-today={isToday(day) ? 'true' : 'false'}
-                    className={`text-center py-1.5 !text-[10px] font-medium w-8 min-w-[32px] border-b border-muted ${
-                      isToday(day) 
-                        ? 'bg-red-500/15 !text-red-500 font-bold' 
-                        : day.getDay() === 0 || day.getDay() === 6
-                          ? 'text-muted/60 bg-muted/5'
-                          : 'text-muted'
-                    }`}
-                  >
-                    {day.getDate()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {taskGroups.map((group) => {
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {taskGroups.map((group) => {
                 const isExpanded = !collapsedGroups.has(group.color);
                 const groupName = getColorName(group.color);
-                
+
                 return (
                   <React.Fragment key={group.color}>
                     {/* En-tête du groupe */}
-                    <tr 
-                      className="cursor-pointer hover:bg-muted transition-colors"
-                      onClick={() => toggleGroup(group.color)}
-                    >
-                      <td className="py-2.5 px-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                    <tr className="cursor-pointer hover:bg-muted/50 transition-colors bg-muted/20" onClick={() => toggleGroup(group.color)}>
+                      <td className="py-2.5 px-4 sticky left-0 z-20 bg-muted/20 border-b border-default" style={{ width: LEFT_W }}>
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
-                          <span className="font-medium !text-primary !text-sm">{groupName}</span>
-                          <span className="!text-xs !text-muted">({group.tasks.length})</span>
-                          {isExpanded ? <IconChevronUp className="w-4 h-4 !text-muted ml-auto" /> : <IconChevronDown className="w-4 h-4 !text-muted ml-auto" />}
+                          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: group.color }} />
+                          <span className="font-semibold !text-primary !text-sm">{groupName}</span>
+                          <span className="font-mono !text-[10px] !text-muted">({group.tasks.length})</span>
+                          <IconChevronDown className={`w-4 h-4 !text-muted ml-auto transition-transform ${isExpanded ? '' : '-rotate-90'}`} />
                         </div>
                       </td>
-                      <td className="sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
-                      <td className="sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
-                      {/* Barre de span du groupe */}
-                      <td colSpan={dayHeaders.length} className="h-[40px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                      <td className="py-2.5 px-2 border-b border-default bg-muted/20" />
+                      <td className="py-2.5 px-2 border-b border-default bg-muted/20" />
+                      <td colSpan={dayHeaders.length} className="h-9 p-0 overflow-hidden border-b border-default bg-muted/20">
                         <div className="relative w-full h-full">
-                          <div className="absolute inset-0 flex">
-                            {dayHeaders.map((day, i) => (
-                              <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
-                            ))}
-                          </div>
-                          {/* Ligne "aujourd'hui" */}
                           {todayIndex >= 0 && (
-                            <div 
-                              className="absolute top-0 bottom-0 w-0.5 bg-red-500"
-                              style={{ left: `${(todayIndex * 32) + 16}px` }}
-                            />
+                            <div className="absolute top-0 bottom-0 w-[1.5px] bg-warning z-[4] pointer-events-none" style={{ left: `${todayIndex * colWidth + colWidth / 2}px` }}>
+                              <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-warning" />
+                            </div>
                           )}
                         </div>
                       </td>
                     </tr>
 
-                    {/* Tâches du groupe */}
-                    {isExpanded && group.tasks.map((task, taskIndex) => {
+                    {isExpanded && group.tasks.map((task) => {
                       const { startOffset, duration } = getTaskPosition(task, true); // true = utiliser dates des sous-tâches
                       const hasSubtasks = task.subtasks && task.subtasks.length > 0;
                       const subtaskCount = task.subtasks?.length || 0;
@@ -4207,7 +4195,7 @@ function TaskGanttView({
                             onClick={() => onEdit(task)}
                           >
                             {/* Task Name */}
-                            <td className="py-2 px-4 sticky left-0 z-20 bg-card group-hover:bg-muted/5" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                            <td className="py-2 px-4 sticky left-0 z-20 bg-card group-hover:bg-muted/30 border-b border-default/60" style={{ width: LEFT_W }}>
                               <div className="flex items-center gap-2">
                                 <div 
                                   className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
@@ -4232,8 +4220,8 @@ function TaskGanttView({
                                 {uniqueUsers.length > 0 && <AvatarStack users={uniqueUsers} max={2} size="sm" />}
                               </div>
                             </td>
-                            {/* Due Range - utilise les dates effectives */}
-                            <td className="py-2 px-1 !text-center sticky left-[260px] z-20 bg-card group-hover:bg-muted" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                            {/* Due Range */}
+                            <td className="py-2 px-1 !text-center sticky z-20 bg-card group-hover:bg-muted/30 border-b border-default/60">
                               <span 
                                 className="!text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
@@ -4241,54 +4229,46 @@ function TaskGanttView({
                                 {formatDateRange(effectiveStartDate, effectiveEndDate)}
                               </span>
                             </td>
-                            {/* Duration - utilise les dates effectives */}
-                            <td className="py-2 px-1 !text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                            {/* Duration */}
+                            <td className="py-2 px-1 !text-center sticky z-20 bg-card group-hover:bg-muted/30 border-b border-default/60">
                               <span className="!text-xs !text-muted whitespace-nowrap">
                                 {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'd'}
                               </span>
                             </td>
-                            {/* Timeline - Barre de Gantt */}
-                            <td colSpan={dayHeaders.length} className="h-[44px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                            {/* Timeline - Barre de Gantt redesign */}
+                            <td colSpan={dayHeaders.length} className="h-11 p-0 overflow-hidden border-b border-default/60">
                               <div className="relative w-full h-full">
-                                {/* Grille des jours - très subtile */}
                                 <div className="absolute inset-0 flex">
                                   {dayHeaders.map((day, i) => (
-                                    <div 
-                                      key={i} 
-                                      className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted' : ''}`} 
-                                    />
+                                    <div key={i} className={`flex-shrink-0 ${isToday(day) ? 'bg-warning/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`} style={{ width: colWidth }} />
                                   ))}
                                 </div>
-                                {/* Ligne "aujourd'hui" */}
                                 {todayIndex >= 0 && (
-                                  <div 
-                                    className="absolute top-0 bottom-0 w-0.5 bg-red-500"
-                                    style={{ left: `${(todayIndex * 32) + 16}px` }}
-                                  />
+                                  <div className="absolute top-0 bottom-0 w-[1.5px] bg-warning z-[4] pointer-events-none" style={{ left: `${todayIndex * colWidth + colWidth / 2}px` }}>
+                                    <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-warning" />
+                                  </div>
                                 )}
-                                {/* Barre de la tâche - Draggable & Resizable */}
                                 {ganttData && (
                                   <DraggableGanttBar
                                     taskId={task.documentId}
                                     startOffset={startOffset}
                                     duration={duration}
-                                    dayWidth={32}
+                                    dayWidth={colWidth}
                                     minDate={ganttData.minDate}
                                     color={group.color}
                                     taskStatus={task.task_status}
                                     progress={effectiveProgress}
                                     onDateChange={handleTaskDateChange}
+                                    className="rounded-md"
                                   >
-                                    <div className="flex items-center justify-between px-2 overflow-hidden h-full">
-                                      <span className="!text-[11px] !text-white font-medium truncate">
-                                        {duration > 3 ? task.title : ''}
-                                      </span>
-                                      {/* Afficher le pourcentage effectif (moyenne des sous-tâches si présentes) */}
-                                      {duration > 2 && (
-                                        <span className="!text-[10px] !text-white/90 font-semibold ml-1 flex-shrink-0">
-                                          {effectiveProgress}%
-                                        </span>
-                                      )}
+                                    <div
+                                      className="flex items-center justify-between px-2.5 overflow-hidden h-full"
+                                      onMouseEnter={(e) => setTooltip({ visible: true, x: e.clientX, y: e.clientY, task, color: group.color, effectiveProgress, startDate: effectiveStartDate || '', endDate: effectiveEndDate || '', dur: `${getDurationDays(effectiveStartDate, effectiveEndDate) || 0}j` })}
+                                      onMouseMove={(e) => setTooltip((p) => p ? { ...p, x: e.clientX, y: e.clientY } : null)}
+                                      onMouseLeave={() => setTooltip(null)}
+                                    >
+                                      <span className="!text-[11px] font-semibold !text-white truncate">{duration > 3 ? task.title : ''}</span>
+                                      {duration > 2 && <span className="font-mono !text-[10px] !text-white/90 ml-2 flex-shrink-0">{effectiveProgress}%</span>}
                                     </div>
                                   </DraggableGanttBar>
                                 )}
@@ -4305,7 +4285,7 @@ function TaskGanttView({
                                   className="hover:bg-muted cursor-pointer h-[34px]"
                                 onClick={() => onEdit(task)}
                               >
-                                <td className="py-1 !pl-10 !pr-4 sticky left-0 z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td className="py-1 !pl-11 !pr-4 sticky left-0 z-20 bg-card border-b border-default/60" style={{ width: LEFT_W }}>
                                   <div className="flex items-center gap-2">
                                     <div 
                                       className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -4322,35 +4302,34 @@ function TaskGanttView({
                                     {subtask.assigned_to && <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />}
                                   </div>
                                 </td>
-                                <td className="py-1 px-1 !text-center sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td className="py-1 px-1 !text-center sticky z-20 bg-card border-b border-default/60">
                                   <span className="!text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
-                                <td className="py-1 px-1 !text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
+                                <td className="py-1 px-1 !text-center sticky z-20 bg-card border-b border-default/60">
                                   <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
                                 </td>
-                                <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
+                                <td colSpan={dayHeaders.length} className="h-10 p-0 overflow-hidden border-b border-default/60">
                                   <div className="relative w-full h-full">
                                     <div className="absolute inset-0 flex">
                                       {dayHeaders.map((day, i) => (
-                                        <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
+                                        <div key={i} className={`flex-shrink-0 ${isToday(day) ? 'bg-warning/5' : ''}`} style={{ width: colWidth }} />
                                       ))}
                                     </div>
                                     {todayIndex >= 0 && (
-                                      <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${(todayIndex * 32) + 16}px` }} />
+                                      <div className="absolute top-0 bottom-0 w-[1.5px] bg-warning z-[4]" style={{ left: `${todayIndex * colWidth + colWidth / 2}px` }} />
                                     )}
-                                    {/* Barre de sous-tâche - Draggable & Resizable */}
                                     {ganttData && (
                                       <DraggableGanttBar
                                         taskId={subtask.documentId}
                                         startOffset={subPos.startOffset}
                                         duration={subPos.duration}
-                                        dayWidth={32}
+                                        dayWidth={colWidth}
                                         minDate={ganttData.minDate}
                                         color={group.color}
                                         taskStatus={subtask.task_status}
                                         progress={subtask.progress || 0}
                                         onDateChange={handleTaskDateChange}
-                                        className="h-4 opacity-70 hover:opacity-100"
+                                        className="h-4 rounded opacity-85 hover:opacity-100"
                                       >
                                         <div />
                                       </DraggableGanttBar>
@@ -4361,58 +4340,90 @@ function TaskGanttView({
                             );
                           })}
 
-                          {/* Bouton Ajouter tâche */}
-                          {taskIndex === group.tasks.length - 1 && (
-                            <tr className="h-[30px]">
-                              <td 
-                                className="py-1 px-4 sticky left-0 z-20 bg-card hover:bg-muted/5 cursor-pointer transition-colors"
-                                onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
-                                style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}
-                              >
-                                  <div className="flex items-center gap-2 !text-muted hover:!text-accent-text">
-                                  <IconPlus className="w-3.5 h-3.5" />
-                                  <span className="!text-xs">{t('add_task') || 'Add task...'}</span>
-                                </div>
-                              </td>
-                              <td className="sticky left-[260px] z-20 bg-card" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }} />
-                              <td className="sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }} />
-                              <td colSpan={dayHeaders.length} className="h-[30px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
-                                <div className="relative w-full h-full">
-                                  <div className="absolute inset-0 flex">
-                                    {dayHeaders.map((day, i) => (
-                                      <div key={i} className={`w-8 min-w-[32px] ${isToday(day) ? 'bg-red-500/5' : ''}`} />
-                                    ))}
-                                  </div>
-                                  {todayIndex >= 0 && (
-                                    <div className="absolute top-0 bottom-0 w-0.5 bg-red-500" style={{ left: `${(todayIndex * 32) + 16}px` }} />
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          )}
+                          {/* Nouvelle sous-tâche */}
+                          <tr className="h-10">
+                            <td
+                              className="py-1 px-4 sticky left-0 z-20 bg-card hover:bg-muted/30 cursor-pointer border-b border-default/60 transition-colors"
+                              onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
+                              style={{ width: LEFT_W }}
+                            >
+                              <div className="flex items-center gap-2 !text-muted hover:!text-accent">
+                                <IconPlus className="w-3 h-3" />
+                                <span className="!text-xs">{t('add_subtask') || 'Nouvelle sous-tâche'}</span>
+                              </div>
+                            </td>
+                            <td className="py-1 border-b border-default/60" />
+                            <td className="py-1 border-b border-default/60" />
+                            <td colSpan={dayHeaders.length} className="h-10 p-0 border-b border-default/60" />
+                          </tr>
                         </React.Fragment>
                       );
                     })}
+                    {/* Nouvelle tâche (fin de groupe) */}
+                    {canEdit && onAddTask && (
+                      <tr className="h-10">
+                        <td className="py-1 px-4 sticky left-0 z-20 bg-card hover:bg-muted/30 cursor-pointer border-b border-default/60 transition-colors" onClick={onAddTask} style={{ width: LEFT_W }}>
+                          <div className="flex items-center gap-2 !text-muted hover:!text-accent">
+                            <IconPlus className="w-3 h-3" />
+                            <span className="!text-xs">{t('new_task') || 'Nouvelle tâche'}</span>
+                          </div>
+                        </td>
+                        <td className="py-1 border-b border-default/60" />
+                        <td className="py-1 border-b border-default/60" />
+                        <td colSpan={dayHeaders.length} className="h-10 p-0 border-b border-default/60" />
+                      </tr>
+                    )}
                   </React.Fragment>
                 );
               })}
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* Légende */}
-      <div className="flex flex-wrap items-center gap-4 mt-4 !text-xs !text-muted">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <span>{t('today') || "Today"}</span>
+      {/* Tooltip Gantt */}
+      {tooltip && (
+        <div
+          className="fixed z-[100] pointer-events-none bg-card border border-default rounded-xl p-3 shadow-xl min-w-[200px]"
+          style={{ left: Math.min(tooltip.x + 16, typeof window !== 'undefined' ? window.innerWidth - 220 : tooltip.x + 16), top: tooltip.y - 10 }}
+        >
+          <div className="font-semibold !text-sm !text-primary mb-2">{tooltip.task.title}</div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono !text-[10px] !text-muted w-14">Début</span>
+            <span className="font-mono !text-[11px] !text-primary">{fmtDateShort(tooltip.startDate)}</span>
+          </div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono !text-[10px] !text-muted w-14">Fin</span>
+            <span className="font-mono !text-[11px] !text-primary">{fmtDateShort(tooltip.endDate)}</span>
+          </div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="font-mono !text-[10px] !text-muted w-14">Durée</span>
+            <span className="font-mono !text-[11px] !text-primary">{tooltip.dur}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="font-mono !text-[10px] !text-muted w-14">Avance</span>
+            <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+              <div className="h-full rounded-full" style={{ width: `${tooltip.effectiveProgress}%`, backgroundColor: tooltip.color }} />
+            </div>
+            <span className="font-mono !text-[11px] !text-primary">{tooltip.effectiveProgress}%</span>
+          </div>
         </div>
-        {taskGroups.map(group => (
-          <div key={group.color} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded" style={{ backgroundColor: group.color }} />
-            <span>{getColorName(group.color)} ({group.tasks.length})</span>
+      )}
+
+      {/* Légende redesign */}
+      <div className="flex flex-wrap items-center gap-4 px-4 py-3 border-t border-default bg-card">
+        {taskGroups.map((g) => (
+          <div key={g.color} className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: g.color }} />
+            <span className="font-mono !text-[11px] !text-muted">{getColorName(g.color)}</span>
           </div>
         ))}
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-0.5 rounded bg-warning" />
+          <span className="font-mono !text-[11px] !text-muted">{t('today') || "Aujourd'hui"}</span>
+        </div>
+        <span className="font-mono !text-[11px] !text-muted ml-auto">
+          {doneCount}/{tasks.length} terminées · {progressPct}% progression
+        </span>
       </div>
     </div>
   );

@@ -639,7 +639,7 @@ export default function DataTable<T = unknown>({
             className="flex flex-wrap items-center justify-between gap-4 mb-4 p-3  bg-muted border border-muted"
           >
             <div className="flex items-center gap-3">
-              <span className="!text-sm !text-primary font-medium">
+              <span className="!text-sm !text-primary ">
                 {selectedIds.size} {t('items_selected') || 'élément(s) sélectionné(s)'}
               </span>
               {!allSelected && (
@@ -821,7 +821,7 @@ export default function DataTable<T = unknown>({
                       {columns.map((column, colIndex) => (
                         <td
                           key={colIndex}
-                          className={`py-3 px-2 lg:px-3 !text-muted !font-light text-sm ${column.className || ''}`}
+                          className={`py-3 px-2 lg:px-3 !text-muted !font-light !text-sm ${column.className || ''}`}
                         >
                           {column.render
                             ? column.render(
@@ -887,7 +887,7 @@ export default function DataTable<T = unknown>({
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`py-3 px-2 lg:px-3 !text-muted !font-light text-sm ${column.className || ''}`}
+                        className={`py-3 px-2 lg:px-3 !text-muted !font-light !text-sm ${column.className || ''}`}
                       >
                         {column.render
                           ? column.render(
@@ -908,7 +908,7 @@ export default function DataTable<T = unknown>({
                   colSpan={columns.length + (selectable ? 1 : 0) + (showFavorites ? 1 : 0)}
                   className="py-8 px-2 lg:px-4 !text-center !text-muted"
                 >
-                  {emptyMessage}
+                  <p className="!text-sm !text-muted">{emptyMessage}</p>
                 </td>
               </tr>
             )}
@@ -920,7 +920,7 @@ export default function DataTable<T = unknown>({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-4">
+        <div className="flex justify-center items-center gap-2 my-4">
           <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}

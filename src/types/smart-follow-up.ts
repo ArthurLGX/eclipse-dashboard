@@ -195,6 +195,16 @@ export interface AutomationAction {
     id: number;
     documentId: string;
     task_type: string;
+    context?: TaskContext;
+    ai_analysis?: TaskAIAnalysis;
+    received_email?: {
+      id: number;
+      subject?: string;
+      from_email?: string;
+      content_text?: string;
+      content_html?: string;
+      received_at?: string;
+    } | null;
   } | null;
   approved_by: {
     id: number;

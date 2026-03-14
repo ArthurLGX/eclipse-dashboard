@@ -15,6 +15,53 @@ export function extractWalegoLeadName(subject: string): string | null {
   return null;
 }
 
+/**
+ * Extrait le nom du lead depuis le corps HTML "New Lead Identified!".
+ * Cherche le h2 après l'avatar : <h2 ...>Rosa BELLEI</h2>
+ */
+export function extractWalegoLeadNameFromBody(html: string): string | null {
+  if (!html?.trim()) return null;
+  const match = html.match(/<h2[^>]*>([^<]+)<\/h2>/i);
+  return match ? match[1].trim() : null;
+}
+
+/**
+ * Extrait le titre/poste du lead depuis le corps HTML.
+ * Le titre est typiquement dans le premier <p> après le <h2> du nom.
+ */
+export function extractWalegoLeadTitleFromBody(html: string): string | null {
+  if (!html?.trim()) return null;
+  const match =
+    html.match(/<h2[^>]*>[^<]+<\/h2>\s*<p[^>]*>([^<]+)<\/p>/i) ||
+    html.match(/<p[^>]*(?:color:\s*#7f8c8d|color:\s*#666)[^>]*>([^<]+)<\/p>/i);
+  const raw = match ? match[1].trim() : null;
+  return raw ? raw.replace(/&amp;/g, '&').replace(/&#39;/g, "'") : null;
+}
+
+/**
+ * Extrait l'URL de l'avatar/photo du lead depuis le corps HTML.
+ * Première image 80x80 ou 80px (avatar principal du lead).
+ */
+export function extractWalegoAvatarFromBody(html: string): string | null {
+  if (!html?.trim()) return null;
+  const match =
+    html.match(/<img[^>]+src=["']([^"']+)["'][^>]*(?:width|height):\s*80(?:px)?/i) ||
+    html.match(/(?:width|height):\s*80(?:px)?[^>]*>[\s\S]*?<img[^>]+src=["']([^"']+)["']/i);
+  if (match) return match[1].trim();
+  const imgs = html.match(/<img[^>]+src=["']([^"']+)["']/g);
+  return imgs && imgs.length > 0 ? (imgs[0].match(/src=["']([^"']+)["']/)?.[1] ?? null) : null;
+}
+
+/**
+ * Extrait l'URL LinkedIn du lead depuis le corps HTML.
+ */
+export function extractWalegoLinkedInFromBody(html: string): string | null {
+  if (!html?.trim()) return null;
+  const match = html.match(/LinkedIn\s+Profile[\s\S]*?<a[^>]+href=["']([^"']+)["']/i)
+    || html.match(/href=["']([^"']+)["'][^>]*>[\s\S]*?LinkedIn\s+Profile/i);
+  return match ? match[1].trim() : null;
+}
+
 export interface WalegoLeadStatus {
   status?: string;
   reasoning?: string;
@@ -22,7 +69,8 @@ export interface WalegoLeadStatus {
 }
 
 function stripHtml(html: string): string {
-  return html
+  const text = html
+    .replace(/<img[^>]+data-emoji=["']([^"']+)["'][^>]*>/gi, '$1')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
     .replace(/<[^>]+>/g, '')
@@ -31,6 +79,7 @@ function stripHtml(html: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .trim();
+  return text;
 }
 
 /**
@@ -72,6 +121,53 @@ export function parseWalegoLeadStatus(htmlOrText: string): WalegoLeadStatus | nu
 
   if (result.reasoning || result.tips || result.status) {
     return result;
+  }
+
+  return null;
+}
+
+/**
+ * Extrait la réponse EXACTE du lead depuis un email Walego.
+ * Ne retourne que le message du lead, pas les messages sortants ni le Lead Status.
+ * Retourne null si aucune réponse identifiable.
+ */
+export function extractWalegoLeadResponse(htmlOrText: string): string | null {
+  if (!htmlOrText?.trim()) return null;
+
+  const text = htmlOrText.includes('<') ? stripHtml(htmlOrText) : htmlOrText;
+  const lower = text.toLowerCase();
+
+  // Exclure la zone Lead Status (tout ce qui suit)
+  const leadStatusIdx = lower.search(/\b(lead\s+status|status\s*:\s*lead|reasoning\s*:)/i);
+  const contentBeforeLeadStatus = leadStatusIdx >= 0 ? text.slice(0, leadStatusIdx) : text;
+
+  // Séparer par doubles sauts de ligne ou par lignes longues (blocs de citation)
+  const parts = contentBeforeLeadStatus
+    .split(/\n{2,}|\r\n\r\n/)
+    .map((p) => p.trim().replace(/\s+/g, ' '))
+    .filter((p) => p.length > 0);
+
+  // Prendre le dernier bloc substantiel (1-1000 chars) qui ressemble à une réponse humaine
+  // Min 1 pour accepter "👍", "Ok", etc.
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const block = parts[i];
+    if (block.length < 1 || block.length > 1000) continue;
+    // Exclure les blocs qui sont clairement des messages sortants (notre message)
+    if (/^(bonjour|hello|hi)\s+/i.test(block) && block.length > 150) continue;
+    if (/^(je\s+vous\s+contacte|i\'m\s+reaching\s+out)/i.test(block)) continue;
+    // Exclure les en-têtes techniques
+    if (/^(from:|to:|subject:|date:)/im.test(block)) continue;
+    // Exclure les blocs HTML/code restants
+    if (/^<[a-z]|{\s*"/i.test(block)) continue;
+    // Exclure les labels seuls (Arthur, Rosa) — le message suit
+    if (block.length < 20 && /^(Arthur|Rosa|Bonjour|Hello)\s*$/i.test(block.trim())) continue;
+    return block;
+  }
+
+  // Fallback : si le contenu est court et semble être une réponse directe (ex: emoji 👍)
+  const singleBlock = contentBeforeLeadStatus.trim().replace(/\s+/g, ' ');
+  if (singleBlock.length >= 1 && singleBlock.length <= 500 && !/^(from:|to:|subject:)/im.test(singleBlock)) {
+    return singleBlock;
   }
 
   return null;

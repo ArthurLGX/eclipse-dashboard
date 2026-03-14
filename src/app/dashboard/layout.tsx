@@ -524,7 +524,10 @@ function DashboardLayoutContent({
       {/* AI Chat Assistant - Fixed en bas à gauche */}
       {isFeatureEnabled('ai_assistant') && <AIChatAssistant />}
     
-      <div className="dashboard-wrapper flex min-h-screen w-full">
+      <div
+        className="dashboard-wrapper flex min-h-screen w-full"
+        style={{ '--dashboard-sidebar-width': `${isDesktop ? (isExpanded || isPinned ? 300 : 64) : 0}px` } as React.CSSProperties}
+      >
           {/* Sidebar Desktop - Fixed */}
           <motion.div
             className="sidebar hidden lg:flex fixed left-0 top-0 backdrop-blur-sm flex-col items-start justify-start gap-3 h-screen z-[1000] overflow-hidden transition-colors duration-300"

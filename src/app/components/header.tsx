@@ -247,6 +247,7 @@ export const Header = () => {
                         alt={'user profile picture'}
                         src={profilePictureUrl}
                         fill
+                        sizes="40px"
                         style={{ objectFit: 'cover' }}
                       />
                     </div>
