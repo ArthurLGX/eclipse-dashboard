@@ -57,6 +57,7 @@ import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
 import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
 import { useAutomationActions } from '@/hooks/useSmartFollowUp';
+import { FALLBACK_AVATAR } from '@/lib/randomuser-avatar';
 
 interface SidebarItem {
   id: string;
@@ -137,14 +138,17 @@ function DashboardLayoutContent({
   // Hook pour l'utilisateur avec profile_picture
   const { data: currentUserData } = useCurrentUser(user?.id);
   
-  // URL de la photo de profil
+  // URL de la photo de profil : profile_picture Strapi > avatar (randomuser) > fallback lego
   const profilePictureUrl = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userData = currentUserData as any;
     if (userData?.profile_picture?.url) {
       return process.env.NEXT_PUBLIC_STRAPI_URL + userData.profile_picture.url;
     }
-    return null;
+    if (userData?.avatar) {
+      return userData.avatar;
+    }
+    return FALLBACK_AVATAR;
   }, [currentUserData]);
 
   // Vérifier si l'utilisateur est admin

@@ -35,6 +35,10 @@ const nextConfig: NextConfig = {
                 protocol: 'https',
                 hostname: 't3.gstatic.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'randomuser.me',
+            },
         ],
     },
     async headers() {

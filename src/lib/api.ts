@@ -1635,6 +1635,7 @@ export async function updateUser(
     username?: string;
     email?: string;
     profile_picture?: { url: string };
+    avatar?: string; // URL randomuser.me stockée en base
     plan?: number;
     billing_type?: string;
   }
@@ -1643,6 +1644,11 @@ export async function updateUser(
     method: 'PUT',
     body: JSON.stringify(data),
   });
+}
+
+/** Met à jour l'avatar URL (randomuser.me) d'un utilisateur. À appeler après génération via /api/avatar/generate */
+export async function updateUserAvatar(userId: number, avatarUrl: string) {
+  return updateUser(userId, { avatar: avatarUrl });
 }
 
 /** Change le mot de passe d'un utilisateur (avec vérification de l'ancien) */

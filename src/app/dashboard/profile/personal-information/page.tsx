@@ -4,13 +4,14 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { IconEye, IconEyeOff } from '@tabler/icons-react';
 import { useAuth } from '@/app/context/AuthContext';
-import { updateUser, updateUserProfilePicture, changePassword } from '@/lib/api';
+import { updateUser, updateUserProfilePicture, updateUserAvatar, changePassword } from '@/lib/api';
 import { usePopup } from '@/app/context/PopupContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser, clearCache } from '@/hooks/useApi';
 import ImageUpload from '@/app/components/ImageUpload';
+import { FALLBACK_AVATAR } from '@/lib/randomuser-avatar';
 
 export default function PersonalInformationPage() {
   const { t } = useLanguage();
@@ -35,6 +36,7 @@ export default function PersonalInformationPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [generatingAvatar, setGeneratingAvatar] = useState(false);
 
   // Hook pour l'utilisateur courant
   const { data: profileData, loading, refetch: refetchProfile } = useCurrentUser(user?.id);
@@ -51,16 +53,40 @@ export default function PersonalInformationPage() {
     }
   }, [profile]);
 
-  // URL de la photo de profil
+  // URL de la photo de profil : profile_picture > avatar (randomuser) > fallback lego
   const profilePictureUrl = useMemo(() => {
     if (profile?.profile_picture?.url) {
       return process.env.NEXT_PUBLIC_STRAPI_URL + profile.profile_picture.url;
     }
-    return null;
+    if (profile?.avatar) {
+      return profile.avatar;
+    }
+    return FALLBACK_AVATAR;
   }, [profile]);
 
   // Handler pour l'upload de profile picture
-  const handleProfilePictureUpload = async (imageId: number) => {
+  const handleGenerateAvatar = async () => {
+    if (!user?.id) return;
+    setGeneratingAvatar(true);
+    try {
+      const gender = profile?.gender ?? undefined;
+      const res = await fetch(`/api/avatar/generate?gender=${gender || ''}`);
+      const { avatar } = await res.json();
+      if (avatar) {
+        await updateUserAvatar(user.id, avatar);
+        showGlobalPopup('Photo de profil générée', 'success');
+        clearCache('current-user');
+        await refetchProfile();
+      }
+    } catch (error) {
+      console.error('Error generating avatar:', error);
+      showGlobalPopup('Erreur lors de la génération', 'error');
+    } finally {
+      setGeneratingAvatar(false);
+    }
+  };
+
+  const handleProfilePictureUpload = async (imageId: number, _imageUrl?: string) => {
     if (!user?.id) return;
     try {
       await updateUserProfilePicture(user.id, imageId);
@@ -234,6 +260,16 @@ export default function PersonalInformationPage() {
                 <p className="!text-xs !text-muted !text-center">
                   {t('click_to_change_photo') || 'Cliquez pour changer la photo'}
                 </p>
+              )}
+              {!profile?.profile_picture?.url && editing && (
+                <button
+                  type="button"
+                  onClick={handleGenerateAvatar}
+                  disabled={generatingAvatar}
+                  className="!text-xs !text-accent hover:underline disabled:opacity-50"
+                >
+                  {generatingAvatar ? 'Génération...' : 'Générer une photo de profil'}
+                </button>
               )}
               <div className="!text-center">
                 <h3 className="!text-lg font-semibold !text-primary">

@@ -21,6 +21,7 @@ import { useRouter } from 'next/navigation';
 import { RegisterBtn } from '@/app/components/buttons/registerBtn';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCurrentUser } from '@/hooks/useApi';
+import { FALLBACK_AVATAR } from '@/lib/randomuser-avatar';
 
 export const Header = () => {
   const { t } = useLanguage();
@@ -41,7 +42,10 @@ export const Header = () => {
     if (userData?.profile_picture?.url) {
       return process.env.NEXT_PUBLIC_STRAPI_URL + userData.profile_picture.url;
     }
-    return '/images/logo/eclipse-logo.png';
+    if (userData?.avatar) {
+      return userData.avatar;
+    }
+    return FALLBACK_AVATAR;
   }, [currentUserData]);
 
   useEffect(() => {

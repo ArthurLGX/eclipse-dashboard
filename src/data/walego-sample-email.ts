@@ -5,7 +5,7 @@ export const WALEGO_SAMPLE_EMAIL_HTML = `<div style="font-family:'Segoe UI',Taho
   <h1 style="color:#2c3e50;font-size:24px;border-bottom:2px solid #3498db;padding-bottom:10px;margin-bottom:20px">New Lead Identified!</h1>
   
   <div style="display:flex;margin-bottom:20px">
-    <img src="https://ui-avatars.com/api/?name=Rosa+Bellei&size=80&background=3498db&color=fff" alt="Profile Picture" style="width:80px;height:80px;border-radius:50%;margin-right:15px;object-fit:cover">
+    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Profile Picture" style="width:80px;height:80px;border-radius:50%;margin-right:15px;object-fit:cover">
     <div>
       <h2 style="margin:0;color:#2c3e50;font-size:20px">Rosa BELLEI</h2>
       <p style="margin:5px 0;color:#7f8c8d">Investment Banker | Cross-Border Expertise | Neurosciences &amp; Psychanalysis</p>
@@ -46,7 +46,7 @@ export const WALEGO_SAMPLE_EMAIL_HTML = `<div style="font-family:'Segoe UI',Taho
     </div>
   </div>
   <div style="display:flex;margin-bottom:16px">
-    <img src="https://ui-avatars.com/api/?name=Rosa+Bellei&size=36&background=3498db&color=fff" alt="Avatar" style="width:36px;height:36px;border-radius:50%;margin-right:8px">
+    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Avatar" style="width:36px;height:36px;border-radius:50%;margin-right:8px">
     <div style="max-width:75%;padding:12px;border-radius:15px 15px 15px 0;background-color:#f0f4f8">
       <div style="font-size:12px;color:#666;margin-bottom:4px;font-weight:bold">Rosa</div>
       <div style="word-break:break-word"><img data-emoji="👍" alt="👍" src="https://fonts.gstatic.com/s/e/notoemoji/17.0/1f44d/72.png"></div>
