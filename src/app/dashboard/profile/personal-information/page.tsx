@@ -86,7 +86,8 @@ export default function PersonalInformationPage() {
     }
   };
 
-  const handleProfilePictureUpload = async (imageId: number, _imageUrl?: string) => {
+  const handleProfilePictureUpload = async (imageId: number, imageUrl?: string) => {
+    void imageUrl; // utilisé par ImageUpload, non nécessaire pour Strapi
     if (!user?.id) return;
     try {
       await updateUserProfilePicture(user.id, imageId);
