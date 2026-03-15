@@ -210,7 +210,9 @@ function EmailHistory() {
             </button>
             
             <h1 className="!text-xl font-semibold !text-primary flex items-center gap-2">
-              <IconMail className="w-6 h-6 !text-accent-text" />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <IconMail className="w-[18px] h-[18px] !text-white" />
+              </div>
               {t('email_history') || 'Historique des emails'}
             </h1>
           </div>

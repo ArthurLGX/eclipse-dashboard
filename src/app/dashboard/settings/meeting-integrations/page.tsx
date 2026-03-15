@@ -248,7 +248,9 @@ export default function MeetingIntegrationsPage() {
           </Link>
           <div>
             <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-              <FathomLogo size={28} />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <FathomLogo size={18} />
+              </div>
               {t('fathom_ai') || 'Fathom AI - Notes de réunion'}
             </h1>
             <p className="!text-muted !text-sm mt-1">

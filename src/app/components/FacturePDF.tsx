@@ -5,295 +5,364 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
 } from '@react-pdf/renderer';
 import { Facture, Company, InvoiceLine } from '../models/Models';
 
-// Styles professionnels pour le PDF
+// Enregistrer la police DM Sans si disponible (optionnel - Helvetica comme fallback)
+const fontFamily = 'Helvetica';
+
 const styles = StyleSheet.create({
   page: {
-    padding: 50,
-    paddingBottom: 80,
-    fontSize: 9,
-    fontFamily: 'Helvetica',
+    padding: 0,
+    paddingBottom: 0,
+    fontSize: 10,
+    fontFamily,
     backgroundColor: '#ffffff',
-    color: '#333333',
+    color: '#0a0a0a',
     display: 'flex',
     flexDirection: 'column',
   },
-  content: {
-    flex: 1,
+  // Barre accent noire
+  accentBar: {
+    height: 4,
+    backgroundColor: '#0a0a0a',
   },
-  
-  // En-tête avec deux colonnes
-  header: {
+  // Header
+  docHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 40,
-    paddingBottom: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: '#1a1a1a',
-  },
-  headerLeft: {
-    width: '55%',
-  },
-  headerRight: {
-    width: '40%',
-    textAlign: 'right',
-  },
-  companyName: {
-    fontSize: 16,
-    fontFamily: 'Helvetica-Bold',
-    color: '#1a1a1a',
-    marginBottom: 8,
-  },
-  companyDetails: {
-    fontSize: 8,
-    color: '#666666',
-    lineHeight: 1.5,
-  },
-  invoiceLabel: {
-    fontSize: 28,
-    fontFamily: 'Helvetica-Bold',
-    color: '#1a1a1a',
-    marginBottom: 15,
-    letterSpacing: 2,
-  },
-  invoiceMeta: {
-    fontSize: 9,
-    marginBottom: 4,
-  },
-  metaLabel: {
-    color: '#888888',
-  },
-  metaValue: {
-    fontFamily: 'Helvetica-Bold',
-    color: '#1a1a1a',
-  },
-
-  // Section deux colonnes (émetteur/destinataire)
-  addressSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 35,
-  },
-  addressBlock: {
-    width: '45%',
-  },
-  addressTitle: {
-    fontSize: 8,
-    fontFamily: 'Helvetica-Bold',
-    color: '#888888',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 8,
-  },
-  addressName: {
-    fontSize: 11,
-    fontFamily: 'Helvetica-Bold',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  addressLine: {
-    fontSize: 9,
-    color: '#444444',
-    marginBottom: 2,
-  },
-
-  // Projet
-  projectSection: {
-    marginBottom: 25,
-    padding: 12,
-    backgroundColor: '#f8f8f8',
-    borderLeftWidth: 3,
-    borderLeftColor: '#1a1a1a',
-  },
-  projectLabel: {
-    fontSize: 8,
-    color: '#888888',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  projectName: {
-    fontSize: 10,
-    fontFamily: 'Helvetica-Bold',
-    color: '#1a1a1a',
-    marginTop: 3,
-  },
-
-  // Tableau des prestations
-  table: {
-    marginBottom: 30,
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  tableHeaderCell: {
-    color: '#ffffff',
-    fontSize: 8,
-    fontFamily: 'Helvetica-Bold',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
+    alignItems: 'flex-start',
+    paddingVertical: 36,
+    paddingHorizontal: 48,
     borderBottomWidth: 1,
-    borderBottomColor: '#eeeeee',
+    borderBottomColor: '#e0ddd6',
   },
-  tableRowAlt: {
+  brandBlock: {
+    flexDirection: 'column',
+    gap: 16,
+  },
+  brandLogo: {
     flexDirection: 'row',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eeeeee',
-    backgroundColor: '#fafafa',
+    alignItems: 'center',
+    gap: 10,
   },
-  colDescription: {
-    width: '38%',
-    paddingRight: 10,
+  brandLogoMark: {
+    width: 38,
+    height: 38,
+    backgroundColor: '#0a0a0a',
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
-  colUnit: {
-    width: '12%',
-    textAlign: 'center',
+  brandLogoImage: {
+    width: 38,
+    height: 38,
+    objectFit: 'contain',
   },
-  colQuantity: {
-    width: '12%',
-    textAlign: 'center',
-  },
-  colPrice: {
-    width: '19%',
-    textAlign: 'right',
-  },
-  colTotal: {
-    width: '19%',
-    textAlign: 'right',
-  },
-  cellText: {
-    fontSize: 9,
-    color: '#333333',
-  },
-  cellTextBold: {
-    fontSize: 9,
-    fontFamily: 'Helvetica-Bold',
-    color: '#1a1a1a',
-  },
-
-  // Section totaux
-  totalsSection: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 30,
-  },
-  totalsTable: {
-    width: 220,
-  },
-  totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-  },
-  totalRowBorder: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#dddddd',
-  },
-  totalLabel: {
-    fontSize: 9,
-    color: '#666666',
-  },
-  totalValue: {
-    fontSize: 9,
-    color: '#333333',
-  },
-  grandTotalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: '#1a1a1a',
-    marginTop: 4,
-  },
-  grandTotalLabel: {
-    fontSize: 10,
-    fontFamily: 'Helvetica-Bold',
-    color: '#ffffff',
-  },
-  grandTotalValue: {
+  brandInitials: {
     fontSize: 12,
     fontFamily: 'Helvetica-Bold',
     color: '#ffffff',
   },
-
-  // Notes / Conditions
-  notesSection: {
-    marginBottom: 30,
-    padding: 15,
-    backgroundColor: '#f8f8f8',
-    borderWidth: 1,
-    borderColor: '#eeeeee',
-  },
-  notesTitle: {
-    fontSize: 8,
+  brandName: {
+    fontSize: 15,
     fontFamily: 'Helvetica-Bold',
+    color: '#0a0a0a',
+    letterSpacing: -0.5,
+    lineHeight: 1.2,
+  },
+  brandTagline: {
+    fontSize: 11,
     color: '#888888',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 8,
+    marginTop: 1,
   },
-  notesText: {
-    fontSize: 9,
+  brandContacts: {
+    flexDirection: 'column',
+    gap: 4,
+  },
+  brandContactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    fontSize: 11,
     color: '#444444',
-    lineHeight: 1.5,
   },
-
-  // Pied de page
-  footer: {
-    position: 'absolute',
-    bottom: 30,
-    left: 50,
-    right: 50,
-    paddingTop: 12,
+  invoiceIdBlock: {
+    textAlign: 'right',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: 10,
+  },
+  invLabel: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    color: '#888888',
+  },
+  invNum: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 28,
+    color: '#0a0a0a',
+    letterSpacing: -0.5,
+    lineHeight: 1,
+  },
+  invStatus: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    paddingVertical: 4,
+    paddingHorizontal: 11,
+    borderRadius: 20,
+    backgroundColor: '#e6f4ee',
+    color: '#166534',
+  },
+  invStatusPending: {
+    backgroundColor: '#fef9c3',
+    color: '#854d0e',
+  },
+  // Meta grid
+  metaGrid: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0ddd6',
+  },
+  metaCell: {
+    flex: 1,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    paddingLeft: 48,
+    borderRightWidth: 1,
+    borderRightColor: '#e0ddd6',
+  },
+  metaCellLast: {
+    borderRightWidth: 0,
+  },
+  metaCellLbl: {
+    fontSize: 9,
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    color: '#888888',
+    marginBottom: 5,
+  },
+  metaCellVal: {
+    fontSize: 13,
+    fontFamily: 'Helvetica-Bold',
+    color: '#0a0a0a',
+  },
+  metaCellValMono: {
+    fontFamily: 'Helvetica',
+  },
+  // Parties
+  parties: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0ddd6',
+    backgroundColor: '#f7f6f3',
+  },
+  party: {
+    flex: 1,
+    paddingVertical: 22,
+    paddingHorizontal: 48,
+    borderRightWidth: 1,
+    borderRightColor: '#e0ddd6',
+  },
+  partyLast: {
+    borderRightWidth: 0,
+  },
+  partyRole: {
+    fontSize: 9,
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    color: '#888888',
+    marginBottom: 10,
+  },
+  partyName: {
+    fontSize: 14,
+    fontFamily: 'Helvetica-Bold',
+    color: '#0a0a0a',
+    marginBottom: 5,
+    letterSpacing: -0.3,
+  },
+  partyDetail: {
+    fontSize: 12,
+    color: '#444444',
+    lineHeight: 1.7,
+  },
+  // Section title
+  sectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 48,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0ddd6',
+    gap: 10,
+  },
+  sectionTitle: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    color: '#888888',
+  },
+  // Table
+  tableHead: {
+    flexDirection: 'row',
+    backgroundColor: '#f7f6f3',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0ddd6',
+    paddingVertical: 9,
+    paddingHorizontal: 16,
+    paddingLeft: 48,
+  },
+  tableHeadCell: {
+    fontSize: 9,
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    color: '#888888',
+  },
+  tableHeadCellRight: {
+    textAlign: 'right',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    paddingLeft: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0ddd6',
+    alignItems: 'flex-start',
+  },
+  colDesc: { flex: 3, paddingRight: 10 },
+  colType: { width: 60 },
+  colQty: { width: 50, textAlign: 'right' },
+  colPrice: { width: 80, textAlign: 'right' },
+  colTotal: { width: 80, textAlign: 'right', paddingRight: 48 },
+  cellText: {
+    fontSize: 10,
+    color: '#0a0a0a',
+  },
+  cellTextBold: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    color: '#0a0a0a',
+  },
+  tdType: {
+    fontSize: 9,
+    fontFamily: 'Helvetica-Bold',
+    backgroundColor: '#f7f6f3',
+    borderWidth: 1,
+    borderColor: '#e0ddd6',
+    color: '#444444',
+    paddingVertical: 2,
+    paddingHorizontal: 7,
+    borderRadius: 4,
+  },
+  // Totals
+  totalsSection: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingVertical: 24,
+    paddingHorizontal: 48,
+    paddingTop: 24,
+    paddingBottom: 28,
     borderTopWidth: 1,
-    borderTopColor: '#dddddd',
+    borderTopColor: '#e0ddd6',
+    backgroundColor: '#f7f6f3',
   },
-  footerContent: {
+  totalsBlock: {
+    width: 280,
+  },
+  totRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 5,
+    fontSize: 12,
+    color: '#444444',
   },
-  footerColumn: {
-    width: '30%',
+  totVal: {
+    fontFamily: 'Helvetica',
+    fontSize: 11,
+    color: '#444444',
   },
-  footerTitle: {
-    fontSize: 7,
+  totSep: {
+    height: 1,
+    backgroundColor: '#e0ddd6',
+    marginVertical: 12,
+  },
+  totFinal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    paddingTop: 10,
+  },
+  totFinalLbl: {
+    fontSize: 13,
     fontFamily: 'Helvetica-Bold',
-    color: '#888888',
+    color: '#0a0a0a',
+  },
+  totFinalVal: {
+    fontFamily: 'Helvetica-Bold',
+    fontSize: 22,
+    color: '#0a0a0a',
+    letterSpacing: -0.5,
+  },
+  // Notes
+  notesSection: {
+    paddingVertical: 22,
+    paddingHorizontal: 48,
+    borderTopWidth: 1,
+    borderTopColor: '#e0ddd6',
+  },
+  notesLbl: {
+    fontSize: 9,
+    fontFamily: 'Helvetica-Bold',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 4,
+    letterSpacing: 1.5,
+    color: '#888888',
+    marginBottom: 7,
   },
-  footerText: {
-    fontSize: 8,
-    color: '#666666',
-    marginBottom: 2,
+  notesText: {
+    fontSize: 12,
+    color: '#444444',
+    lineHeight: 1.7,
   },
-  footerCenter: {
-    textAlign: 'center',
-    marginTop: 12,
+  // Footer
+  docFooter: {
+    borderTopWidth: 3,
+    borderTopColor: '#0a0a0a',
+    paddingVertical: 18,
+    paddingHorizontal: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f7f6f3',
+    flexWrap: 'wrap',
+    gap: 8,
   },
-  footerCenterText: {
-    fontSize: 7,
-    color: '#aaaaaa',
+  footerLeft: {
+    fontSize: 10,
+    color: '#444444',
+    lineHeight: 1.8,
   },
-
+  footerRight: {
+    textAlign: 'right',
+    fontSize: 10,
+    color: '#888888',
+    lineHeight: 1.8,
+  },
+  footerStrong: {
+    fontFamily: 'Helvetica-Bold',
+    color: '#0a0a0a',
+  },
 });
 
 interface FacturePDFProps {
@@ -305,6 +374,7 @@ interface FacturePDFProps {
   tvaAmount: number;
   subtotal: number;
   total: number;
+  logoUrl?: string | null;
 }
 
 const FacturePDF = ({
@@ -316,44 +386,28 @@ const FacturePDF = ({
   tvaAmount,
   subtotal,
   total,
+  logoUrl,
 }: FacturePDFProps) => {
-  // Déterminer si c'est un devis ou une facture
   const isQuote = facture.document_type === 'quote';
-  const documentTitle = isQuote ? 'DEVIS' : 'FACTURE';
-  const dateLabel = isQuote ? 'Valide jusqu\'au' : 'Échéance';
+  const documentTitle = isQuote ? 'Devis' : 'Facture';
+  const dateLabel = isQuote ? "Valide jusqu'au" : "Date d'échéance";
   const dateValue = isQuote ? facture.valid_until : facture.due_date;
-  const billToLabel = isQuote ? 'Destinataire' : 'Facturer à';
-  
+
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString('fr-FR', {
       day: '2-digit',
-      month: 'long',
+      month: 'short',
       year: 'numeric',
     });
   };
 
   const formatCurrency = (amount: number) => {
-    // Formatage manuel pour éviter les caractères Unicode problématiques dans @react-pdf/renderer
     const currency = facture.currency || 'EUR';
-    const currencySymbol = currency === 'EUR' ? 'EUR' : currency === 'USD' ? '$' : currency === 'GBP' ? 'GBP' : currency;
-    
-    // Formater le nombre avec 2 décimales et séparateur de milliers
+    const symbol = currency === 'EUR' ? '€' : currency === 'USD' ? '$' : currency;
     const parts = amount.toFixed(2).split('.');
-    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    const formattedAmount = `${integerPart},${parts[1]}`;
-    
-    return `${formattedAmount} ${currencySymbol}`;
-  };
-
-  const getUnitLabel = (unit?: string) => {
-    switch (unit) {
-      case 'hour': return 'h';
-      case 'day': return 'j';
-      case 'fixed': return '';
-      case 'unit': return 'u';
-      default: return 'h';
-    }
+    const int = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return `${int},${parts[1]} ${symbol}`;
   };
 
   const getUnitDisplay = (unit?: string) => {
@@ -367,155 +421,152 @@ const FacturePDF = ({
   };
 
   const formatQuantity = (line: InvoiceLine) => {
-    if (line.unit === 'fixed') {
-      return `${line.quantity}`;
-    }
-    return `${line.quantity}${getUnitLabel(line.unit)}`;
+    if (line.unit === 'fixed') return `${line.quantity}`;
+    const suffix = line.unit === 'hour' ? 'h' : line.unit === 'day' ? 'j' : 'u';
+    return `${line.quantity} ${suffix}`;
   };
+
+  const status = isQuote ? (facture.quote_status || 'draft') : (facture.facture_status || 'draft');
+  const initials = company?.name
+    ? company.name.trim().split(/\s+/).length >= 2
+      ? (company.name.split(/\s+/)[0][0] + company.name.split(/\s+/).pop()![0]).toUpperCase()
+      : company.name.slice(0, 2).toUpperCase()
+    : '?';
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        
-        {/* En-tête */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            {company?.name && (
-              <Text style={styles.companyName}>{company.name}</Text>
-            )}
-            <Text style={styles.companyDetails}>
-              {[
-                company?.location,
-                company?.phoneNumber,
-                company?.email,
-                company?.website,
-              ]
+        {/* Barre accent */}
+        <View style={styles.accentBar} fixed />
+
+        {/* Header */}
+        <View style={styles.docHeader} wrap={false}>
+          <View style={styles.brandBlock}>
+            <View style={styles.brandLogo}>
+              {logoUrl ? (
+                <View style={styles.brandLogoMark}>
+                  {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                  <Image src={logoUrl} style={styles.brandLogoImage} />
+                </View>
+              ) : (
+                <View style={styles.brandLogoMark}>
+                  <Text style={styles.brandInitials}>{initials}</Text>
+                </View>
+              )}
+              <View>
+                <Text style={styles.brandName}>{company?.name || 'Entreprise'}</Text>
+                {company?.domaine && (
+                  <Text style={styles.brandTagline}>{company.domaine}</Text>
+                )}
+              </View>
+            </View>
+            <View style={styles.brandContacts}>
+              {company?.email && (
+                <Text style={styles.brandContactRow}>{company.email}</Text>
+              )}
+              {company?.website && (
+                <Text style={styles.brandContactRow}>{company.website}</Text>
+              )}
+              {company?.phoneNumber && (
+                <Text style={styles.brandContactRow}>{company.phoneNumber}</Text>
+              )}
+            </View>
+          </View>
+          <View style={styles.invoiceIdBlock}>
+            <Text style={styles.invLabel}>{documentTitle}</Text>
+            <Text style={styles.invNum}>#{facture.reference || '-'}</Text>
+            <Text style={[styles.invStatus, (status === 'paid' || status === 'accepted') ? {} : styles.invStatusPending]}>
+              {status === 'paid' || status === 'accepted' ? 'Payée' : status === 'sent' ? 'Envoyée' : 'Brouillon'}
+            </Text>
+          </View>
+        </View>
+
+        {/* Meta grid */}
+        <View style={styles.metaGrid} wrap={false}>
+          <View style={styles.metaCell}>
+            <Text style={styles.metaCellLbl}>Référence</Text>
+            <Text style={[styles.metaCellVal, styles.metaCellValMono]}>{facture.reference || '-'}</Text>
+          </View>
+          <View style={styles.metaCell}>
+            <Text style={styles.metaCellLbl}>Date d&apos;émission</Text>
+            <Text style={styles.metaCellVal}>{formatDate(facture.date)}</Text>
+          </View>
+          <View style={styles.metaCell}>
+            <Text style={styles.metaCellLbl}>{dateLabel}</Text>
+            <Text style={styles.metaCellVal}>{dateValue ? formatDate(dateValue) : '-'}</Text>
+          </View>
+          <View style={[styles.metaCell, styles.metaCellLast]}>
+            <Text style={styles.metaCellLbl}>Devise</Text>
+            <Text style={styles.metaCellVal}>{facture.currency || 'EUR'} — Euro</Text>
+          </View>
+        </View>
+
+        {/* Parties */}
+        <View style={styles.parties} wrap={false}>
+          <View style={styles.party}>
+            <Text style={styles.partyRole}>Émetteur</Text>
+            <Text style={styles.partyName}>{company?.name || 'Entreprise'}</Text>
+            <Text style={styles.partyDetail}>
+              {[company?.email, company?.siret && `SIRET : ${company.siret}`, company?.siren && `SIREN : ${company.siren}`, company?.location]
                 .filter(Boolean)
                 .join('\n')}
             </Text>
           </View>
-          <View style={styles.headerRight}>
-            <Text style={styles.invoiceLabel}>{documentTitle}</Text>
-            <Text style={styles.invoiceMeta}>
-              <Text style={styles.metaLabel}>N° </Text>
-              <Text style={styles.metaValue}>{facture.reference || '-'}</Text>
+          <View style={[styles.party, styles.partyLast]}>
+            <Text style={styles.partyRole}>Destinataire</Text>
+            <Text style={styles.partyName}>{facture.client_id?.name || 'Client'}</Text>
+            <Text style={styles.partyDetail}>
+              {[facture.client_id?.email, facture.client_id?.enterprise, facture.client_id?.website, facture.client_id?.adress]
+                .filter(Boolean)
+                .join('\n')}
             </Text>
-            <Text style={styles.invoiceMeta}>
-              <Text style={styles.metaLabel}>Date : </Text>
-              <Text style={styles.metaValue}>{formatDate(facture.date)}</Text>
-            </Text>
-            {dateValue && (
-              <Text style={styles.invoiceMeta}>
-                <Text style={styles.metaLabel}>{dateLabel} : </Text>
-                <Text style={styles.metaValue}>{formatDate(dateValue)}</Text>
-              </Text>
-            )}
           </View>
         </View>
 
-        {/* Adresses émetteur / destinataire */}
-        <View style={styles.addressSection}>
-          <View style={styles.addressBlock}>
-            <Text style={styles.addressTitle}>De</Text>
-            {company?.name && (
-              <Text style={styles.addressName}>{company.name}</Text>
-            )}
-            {company?.location && (
-              <Text style={styles.addressLine}>{company.location}</Text>
-            )}
-            {company?.email && (
-              <Text style={styles.addressLine}>{company.email}</Text>
-            )}
-            {company?.phoneNumber && (
-              <Text style={styles.addressLine}>{company.phoneNumber}</Text>
-            )}
-          </View>
-          <View style={styles.addressBlock}>
-            <Text style={styles.addressTitle}>{billToLabel}</Text>
-            <Text style={styles.addressName}>
-              {facture.client_id?.name || 'Client non spécifié'}
-            </Text>
-            {facture.client_id?.enterprise && (
-              <Text style={styles.addressLine}>{facture.client_id.enterprise}</Text>
-            )}
-            {facture.client_id?.adress && (
-              <Text style={styles.addressLine}>{facture.client_id.adress}</Text>
-            )}
-            {facture.client_id?.email && (
-              <Text style={styles.addressLine}>{facture.client_id.email}</Text>
-            )}
-          </View>
+        {/* Prestations */}
+        <View style={styles.sectionTitleRow} wrap={false}>
+          <Text style={styles.sectionTitle}>Prestations</Text>
         </View>
-
-        {/* Projet */}
-        {facture.project?.title && (
-          <View style={styles.projectSection}>
-            <Text style={styles.projectLabel}>Projet concerné</Text>
-            <Text style={styles.projectName}>{facture.project.title}</Text>
-          </View>
-        )}
-
-        {/* Tableau des prestations */}
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.colDescription, styles.tableHeaderCell]}>
-              Description
-            </Text>
-            <Text style={[styles.colUnit, styles.tableHeaderCell]}>
-              Type
-            </Text>
-            <Text style={[styles.colQuantity, styles.tableHeaderCell]}>
-              Quantité
-            </Text>
-            <Text style={[styles.colPrice, styles.tableHeaderCell]}>
-              Prix unitaire
-            </Text>
-            <Text style={[styles.colTotal, styles.tableHeaderCell]}>
-              Montant
-            </Text>
-          </View>
-          {invoiceLines.map((line, index) => (
-            <View
-              key={line.id || index}
-              style={index % 2 === 0 ? styles.tableRow : styles.tableRowAlt}
-            >
-              <Text style={[styles.colDescription, styles.cellText]}>
-                {line.description || '-'}
-              </Text>
-              <Text style={[styles.colUnit, styles.cellText]}>
-                {getUnitDisplay(line.unit)}
-              </Text>
-              <Text style={[styles.colQuantity, styles.cellText]}>
-                {formatQuantity(line)}
-              </Text>
-              <Text style={[styles.colPrice, styles.cellText]}>
-                {formatCurrency(line.unit_price)}
-              </Text>
-              <Text style={[styles.colTotal, styles.cellTextBold]}>
-                {formatCurrency(line.total)}
-              </Text>
+        <View style={styles.tableHead} wrap={false}>
+          <Text style={[styles.tableHeadCell, styles.colDesc]}>Description</Text>
+          <Text style={[styles.tableHeadCell, styles.colType]}>Type</Text>
+          <Text style={[styles.tableHeadCell, styles.tableHeadCellRight, styles.colQty]}>Qté</Text>
+          <Text style={[styles.tableHeadCell, styles.tableHeadCellRight, styles.colPrice]}>Prix unitaire</Text>
+          <Text style={[styles.tableHeadCell, styles.tableHeadCellRight, styles.colTotal]}>Total HT</Text>
+        </View>
+        {invoiceLines.map((line, index) => (
+          <View key={line.id || index} style={styles.tableRow} wrap={false}>
+            <Text style={[styles.colDesc, styles.cellTextBold]}>{line.description || '-'}</Text>
+            <View style={styles.colType}>
+              <Text style={styles.tdType}>{getUnitDisplay(line.unit)}</Text>
             </View>
-          ))}
-        </View>
+            <Text style={[styles.colQty, styles.cellText]}>{formatQuantity(line)}</Text>
+            <Text style={[styles.colPrice, styles.cellText]}>
+              {line.unit === 'fixed' ? '—' : formatCurrency(line.unit_price)}
+            </Text>
+            <Text style={[styles.colTotal, styles.cellTextBold]}>
+              {line.total === 0 ? 'Offert' : formatCurrency(line.total)}
+            </Text>
+          </View>
+        ))}
 
         {/* Totaux */}
-        <View style={styles.totalsSection}>
-          <View style={styles.totalsTable}>
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Sous-total HT</Text>
-              <Text style={styles.totalValue}>{formatCurrency(subtotal)}</Text>
+        <View style={styles.totalsSection} wrap={false}>
+          <View style={styles.totalsBlock}>
+            <View style={styles.totRow}>
+              <Text>Sous-total HT</Text>
+              <Text style={styles.totVal}>{formatCurrency(subtotal)}</Text>
             </View>
-            {tvaApplicable && (
-              <View style={styles.totalRowBorder}>
-                <Text style={styles.totalLabel}>TVA ({tvaRate}%)</Text>
-                <Text style={styles.totalValue}>{formatCurrency(tvaAmount)}</Text>
-              </View>
-            )}
-            <View style={styles.grandTotalRow}>
-              <Text style={styles.grandTotalLabel}>
-                {tvaApplicable ? 'Total TTC' : 'Total'}
+            <View style={styles.totRow}>
+              <Text>TVA ({tvaApplicable ? `${tvaRate}%` : '0%'} — {tvaApplicable ? 'applicable' : 'non applicable'})</Text>
+              <Text style={!tvaApplicable ? { ...styles.totVal, color: '#bbbbbb' } : styles.totVal}>
+                {tvaApplicable ? formatCurrency(tvaAmount) : '—'}
               </Text>
-              <Text style={styles.grandTotalValue}>{formatCurrency(total)}</Text>
+            </View>
+            <View style={styles.totSep} />
+            <View style={styles.totFinal}>
+              <Text style={styles.totFinalLbl}>Total TTC</Text>
+              <Text style={styles.totFinalVal}>{formatCurrency(total)}</Text>
             </View>
           </View>
         </View>
@@ -523,54 +574,22 @@ const FacturePDF = ({
         {/* Notes */}
         {facture.notes && (
           <View style={styles.notesSection} wrap={false}>
-            <Text style={styles.notesTitle}>Notes et conditions</Text>
+            <Text style={styles.notesLbl}>Conditions de règlement</Text>
             <Text style={styles.notesText}>{facture.notes}</Text>
           </View>
         )}
 
-        {/* Pied de page */}
-        <View style={styles.footer} wrap={false}>
-          <View style={styles.footerContent}>
-            <View style={styles.footerColumn}>
-              <Text style={styles.footerTitle}>Informations légales</Text>
-              {company?.siret && (
-                <Text style={styles.footerText}>SIRET : {company.siret}</Text>
-              )}
-              {company?.siren && (
-                <Text style={styles.footerText}>SIREN : {company.siren}</Text>
-              )}
-              {company?.vat && (
-                <Text style={styles.footerText}>TVA : {company.vat}</Text>
-              )}
-            </View>
-            <View style={styles.footerColumn}>
-              <Text style={styles.footerTitle}>Coordonnées</Text>
-              {company?.email && (
-                <Text style={styles.footerText}>{company.email}</Text>
-              )}
-              {company?.phoneNumber && (
-                <Text style={styles.footerText}>{company.phoneNumber}</Text>
-              )}
-            </View>
-            <View style={styles.footerColumn}>
-              <Text style={styles.footerTitle}>{isQuote ? 'Validité' : 'Paiement'}</Text>
-              {isQuote ? (
-                <>
-                  <Text style={styles.footerText}>Devis valable</Text>
-                  <Text style={styles.footerText}>{"jusqu'au"} {formatDate(facture.valid_until || '')}</Text>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.footerText}>À régler avant le</Text>
-                  <Text style={styles.footerText}>{formatDate(facture.due_date || '')}</Text>
-                </>
-              )}
-            </View>
+        {/* Footer */}
+        <View style={styles.docFooter} fixed wrap={false}>
+          <View style={styles.footerLeft}>
+            <Text style={styles.footerStrong}>{company?.name || 'Entreprise'}</Text>
+            <Text>{(company?.siret ? `SIRET ${company.siret} · ` : '') + (company?.siren ? `SIREN ${company.siren}` : '')}</Text>
+            <Text>{(company?.email ? `${company.email} · ` : '') + (company?.phoneNumber || '')}</Text>
           </View>
-          <View style={styles.footerCenter}>
-            <Text style={styles.footerCenterText}>
-              Merci pour votre confiance
-            </Text>
+          <View style={styles.footerRight}>
+            <Text>{documentTitle} <Text style={styles.footerStrong}>#{facture.reference}</Text></Text>
+            <Text>Émise le {formatDate(facture.date)}</Text>
+            <Text>Page 1 / 1</Text>
           </View>
         </View>
       </Page>

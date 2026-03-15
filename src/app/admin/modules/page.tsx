@@ -83,7 +83,9 @@ export default function AdminModulesPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
-          <IconSettings className="w-7 h-7 !text-accent-text" />
+          <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+            <IconSettings className="w-[18px] h-[18px] !text-white" />
+          </div>
           {language === 'fr' ? 'Gestion des Modules' : 'Module Management'}
         </h1>
         <p className="!text-muted mt-2">

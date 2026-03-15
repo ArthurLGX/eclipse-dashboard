@@ -237,11 +237,11 @@ function DashboardLayoutContent({
     },
 
     // ═══════════════════════════════════════
-    // DESIGN DE PAGE (Élément standalone, comme Smart Follow-Up)
+    // WEB DESIGN (Élément standalone, comme Smart Follow-Up)
     // ═══════════════════════════════════════
     {
       id: 'growth_audit',
-      label: t('growth_audit') || 'Design de page',
+      label: t('growth_audit') || 'Web Design',
       icon: <IconPalette size={15} stroke={1} />,
       path: '/dashboard/growth-audit',
       moduleId: 'growth_audit',

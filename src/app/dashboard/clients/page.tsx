@@ -25,6 +25,72 @@ import { uploadImage } from '@/lib/api';
 import QuotaExceededModal from '@/app/components/QuotaExceededModal';
 import { useQuotaExceeded } from '@/hooks/useQuotaExceeded';
 
+// Contacts soul des années 70 – clin d'œil à la passion du créateur
+const SOUL_DEMO_CONTACTS: Client[] = [
+  {
+    id: 0,
+    documentId: 'soul-demo-aretha',
+    name: 'Aretha Franklin',
+    email: 'aretha@motown-soul.com',
+    number: '',
+    enterprise: 'Atlantic Records',
+    adress: null,
+    website: 'https://arethafranklin.net',
+    processStatus: 'client',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    image: { id: 0, url: '/images/aretha.png' },
+  },
+  {
+    id: 0,
+    documentId: 'soul-demo-otis',
+    name: 'Otis Redding',
+    email: 'otis@stax-soul.com',
+    number: '',
+    enterprise: 'Stax Records',
+    adress: null,
+    website: null,
+    processStatus: 'prospect',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    image: { id: 0, url: '/images/otis.png' },
+  },
+  {
+    id: 0,
+    documentId: 'soul-demo-ella',
+    name: 'Ella Fitzgerald',
+    email: 'ella@verve-jazz.com',
+    number: '',
+    enterprise: 'Verve Records',
+    adress: null,
+    website: null,
+    processStatus: 'client',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    image: { id: 0, url: '/images/ella.png' },
+  },
+  {
+    id: 0,
+    documentId: 'soul-demo-al',
+    name: 'Al Green',
+    email: 'al@hi-records.com',
+    number: '',
+    enterprise: 'Hi Records',
+    adress: null,
+    website: null,
+    processStatus: 'prospect',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    image: { id: 0, url: '/images/al.png' },
+  },
+];
+
+const SOUL_DEMOS_STORAGE_KEY = 'soul_demos_dismissed';
+
 export default function ClientsPage() {
   const { showGlobalPopup } = usePopup();
   const { t } = useLanguage();
@@ -65,6 +131,28 @@ export default function ClientsPage() {
   // Hooks avec cache
   const { data: clientsData, loading, refetch } = useClients(user?.id);
   const clients = useMemo(() => (clientsData as Client[]) || [], [clientsData]);
+
+  // Contacts soul démo – masqués après suppression (persisté dans localStorage)
+  const [dismissedSoulIds, setDismissedSoulIds] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set();
+    try {
+      const stored = localStorage.getItem(SOUL_DEMOS_STORAGE_KEY);
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  const dismissSoulContact = useCallback((documentId: string) => {
+    setDismissedSoulIds(prev => {
+      const next = new Set(prev);
+      next.add(documentId);
+      try {
+        localStorage.setItem(SOUL_DEMOS_STORAGE_KEY, JSON.stringify([...next]));
+      } catch {}
+      return next;
+    });
+  }, []);
   
 
   // Quota exceeded detection
@@ -132,20 +220,34 @@ export default function ClientsPage() {
   };
 
   const handleDeleteClient = async () => {
-    if (!deleteModal.client?.documentId) return;
-    
-    await deleteClient(deleteModal.client.documentId);
+    const client = deleteModal.client;
+    if (!client?.documentId) return;
+
+    if (client.documentId.startsWith('soul-demo-')) {
+      dismissSoulContact(client.documentId);
+      showGlobalPopup(t('client_deleted_success') || 'Client supprimé avec succès', 'success');
+      setDeleteModal({ isOpen: false, client: null });
+      return;
+    }
+
+    await deleteClient(client.documentId);
     showGlobalPopup(t('client_deleted_success') || 'Client supprimé avec succès', 'success');
     clearCache('clients');
     await refetch();
+    setDeleteModal({ isOpen: false, client: null });
   };
 
   // Handle multiple clients deletion
   const handleDeleteMultipleClients = async (clientsToDelete: Client[]) => {
-    let successCount = 0;
+    const soulDemos = clientsToDelete.filter(c => c.documentId?.startsWith('soul-demo-'));
+    const realClients = clientsToDelete.filter(c => !c.documentId?.startsWith('soul-demo-'));
+
+    soulDemos.forEach(c => c.documentId && dismissSoulContact(c.documentId));
+
+    let successCount = soulDemos.length;
     let errorCount = 0;
 
-    for (const client of clientsToDelete) {
+    for (const client of realClients) {
       if (!client.documentId) continue;
       try {
         await deleteClient(client.documentId);
@@ -170,8 +272,10 @@ export default function ClientsPage() {
       );
     }
 
-    clearCache('clients');
-    await refetch();
+    if (realClients.length > 0) {
+      clearCache('clients');
+      await refetch();
+    }
   };
 
   // Local state for optimistic favorite updates
@@ -179,6 +283,7 @@ export default function ClientsPage() {
   
   // Handle toggle favorite (optimistic update)
   const handleToggleFavorite = async (client: Client) => {
+    if (client.documentId?.startsWith('soul-demo-')) return;
     const currentState = localFavorites[client.documentId] ?? client.is_favorite ?? false;
     const newFavoriteState = !currentState;
     
@@ -234,10 +339,11 @@ export default function ClientsPage() {
 
   // Convertir les prospects/autres en clients
   const handleConvertToClient = async (clientsToConvert: Client[]) => {
+    const realClients = clientsToConvert.filter(c => !c.documentId?.startsWith('soul-demo-'));
     let successCount = 0;
     let errorCount = 0;
 
-    for (const client of clientsToConvert) {
+    for (const client of realClients) {
       if (!client.documentId) continue;
       // Ne pas convertir si déjà client
       if (client.processStatus === 'client') continue;
@@ -495,11 +601,18 @@ export default function ClientsPage() {
     }
   };
 
-  // Limiter les clients selon le quota
+  // Limiter les clients selon le quota ; quand aucun client, afficher les contacts soul démo
   const visibleClients = useMemo(() => {
     const visibleCount = getVisibleCount('clients');
-    return clients.slice(0, visibleCount);
-  }, [clients, getVisibleCount]);
+    if (clients.length > 0) {
+      return clients.slice(0, visibleCount);
+    }
+    if (!loading) {
+      const soulDemos = SOUL_DEMO_CONTACTS.filter(c => !dismissedSoulIds.has(c.documentId));
+      return soulDemos;
+    }
+    return [];
+  }, [clients, loading, getVisibleCount, dismissedSoulIds]);
 
   // Générer les options de statut (toujours afficher Client et Prospect + autres dynamiques)
   const statusOptions: FilterOption[] = useMemo(() => {
@@ -608,6 +721,13 @@ export default function ClientsPage() {
   }, [visibleClients, getVisibleCount, limits]);
 
   const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL;
+  const isSoulDemo = (c: Client) => c.documentId?.startsWith('soul-demo-');
+  const getImageUrl = (row: Client) => {
+    const url = row.image?.url;
+    if (!url) return null;
+    if (url.startsWith('/') || url.startsWith('http')) return url;
+    return apiUrl + url;
+  };
 
   const columns: Column<Client>[] = [
     {
@@ -616,11 +736,17 @@ export default function ClientsPage() {
       render: (value, row) => (
         <div
           className="flex items-center gap-3 cursor-pointer transition-colors"
-          onClick={() => router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`)}
+          onClick={() => {
+            if (isSoulDemo(row)) {
+              showGlobalPopup('Contact de démonstration – Hommage à la soul des années 70 🎵', 'info');
+              return;
+            }
+            router.push(`/dashboard/clients/${generateClientSlug(row.name, row.documentId)}`);
+          }}
         >
           <ClientAvatar
             name={row.name}
-            imageUrl={row.image?.url ? apiUrl + row.image.url : null}
+            imageUrl={getImageUrl(row)}
             website={row.website}
             size="sm"
           />
@@ -704,13 +830,14 @@ export default function ClientsPage() {
           );
         }
         
+        const soulDemo = isSoulDemo(row);
         return (
           <div className="flex items-center gap-2">
             <TableActions
-              onEdit={() => router.push(`/dashboard/clients/${clientSlug}?edit=1`)}
+              onEdit={soulDemo ? undefined : () => router.push(`/dashboard/clients/${clientSlug}?edit=1`)}
               onDelete={() => setDeleteModal({ isOpen: true, client: row })}
               onFactures={
-                (row.factures?.length ?? 0) > 0
+                !soulDemo && (row.factures?.length ?? 0) > 0
                   ? () => router.push(`/dashboard/clients/${clientSlug}/factures?name=${encodeURIComponent(row.name)}`)
                   : undefined
               }
@@ -835,6 +962,10 @@ export default function ClientsPage() {
               loading={loading}
               emptyMessage={t('no_client_found')}
               onRowClick={row => {
+                if (row.documentId?.startsWith('soul-demo-')) {
+                  showGlobalPopup('Contact de démonstration – Hommage à la soul des années 70 🎵', 'info');
+                  return;
+                }
                 if (row._isCollaborative && row._collaborativeProjects && row._collaborativeProjects.length > 0) {
                   const firstProject = row._collaborativeProjects[0];
                   showGlobalPopup(
@@ -856,7 +987,7 @@ export default function ClientsPage() {
               favoritesFirst={true}
               isFavorite={isClientFavorite}
               onToggleFavorite={handleToggleFavorite}
-              draggable={true}
+              draggable={!visibleClients.some(isSoulDemo)}
               onReorder={handleReorder}
               viewMode="table"
               onViewModeChange={() => {}}

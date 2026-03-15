@@ -24,8 +24,8 @@ export default function GrowthAuditPage() {
           </span>
         </div>
         <h1 className="text-2xl md:text-[28px] font-extrabold text-primary tracking-tight flex items-center gap-3">
-          <div className="w-9 h-9 bg-accent/15 border border-accent/40 flex items-center justify-center text-accent-text">
-            <IconSearch className="w-[18px] h-[18px]" />
+          <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+            <IconSearch className="w-[18px] h-[18px] !text-white" />
           </div>
           {t('growth_audit')}
         </h1>

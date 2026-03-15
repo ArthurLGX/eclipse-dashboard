@@ -115,6 +115,7 @@ export default function TimeTrackingPage() {
 
   // Update running timer
   useEffect(() => {
+    // timerInterval intentionally excluded - used for cleanup only when runningEntry becomes falsy
     if (runningEntry) {
       const startTime = new Date(runningEntry.start_time).getTime();
       
@@ -135,6 +136,7 @@ export default function TimeTrackingPage() {
         setTimerInterval(null);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- timerInterval used for cleanup, adding it would cause interval churn
   }, [runningEntry]);
 
   // Format duration
@@ -264,7 +266,9 @@ export default function TimeTrackingPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
           <div>
             <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-              <IconClock className="w-7 h-7 !text-accent-text" />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <IconClock className="w-[18px] h-[18px] !text-white" />
+              </div>
               {t('time_tracking') || 'Suivi du temps'}
             </h1>
             <p className="!text-muted !text-sm mt-1">

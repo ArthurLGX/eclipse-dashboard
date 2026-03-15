@@ -172,7 +172,9 @@ function DraftsContent() {
         </Link>
         
         <h1 className="!text-3xl font-bold !text-primary flex items-center gap-3">
-          <IconDeviceFloppy className="w-8 h-8 !text-accent-text" />
+          <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+            <IconDeviceFloppy className="w-[18px] h-[18px] !text-white" />
+          </div>
           {t('drafts') || 'Brouillons'}
         </h1>
         <p className="!text-muted mt-2">

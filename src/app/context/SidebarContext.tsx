@@ -11,6 +11,7 @@ export type SidebarLinkId =
   | 'projects'
   | 'mentors'
   | 'newsletters'
+  | 'emails'
   | 'media_library'
   | 'settings'
   | 'monitoring'

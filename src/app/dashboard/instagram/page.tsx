@@ -517,8 +517,8 @@ function InstagramPlanner() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 ">
-                <IconCamera className="w-6 h-6 !text-white" />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <IconCamera className="w-[18px] h-[18px] !text-white" />
               </div>
               {t('instagram_planner') || 'Instagram Planner'}
             </h1>

@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { 
   IconSettings, 
   IconPlayerPause, 
-  IconPlayerPlay, 
-  IconAlertCircle, 
+  IconPlayerPlay,
+  IconAlertCircle,
   IconFilter,
   IconCheck,
   IconX,
@@ -17,7 +18,6 @@ import {
   IconBuilding,
   IconSearch,
   IconSparkles,
-  IconPlayerPlayFilled,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -266,10 +266,13 @@ export default function SmartFollowUpPage() {
             >
               {avatarPath ? (
                 <>
-                  <img
+                  <Image
                     src={avatarPath}
                     alt={displayName}
+                    width={40}
+                    height={40}
                     className="w-full h-full object-cover"
+                    unoptimized
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                       const fallback = e.currentTarget.nextElementSibling as HTMLElement;
@@ -415,7 +418,7 @@ export default function SmartFollowUpPage() {
         </div>
       ),
     },
-  ], [minScoreThreshold, router, priorityKeywords]);
+  ], [minScoreThreshold, router, priorityKeywords, handleQualifyLead, isLeadFromPriorityDomain]);
 
   // Colonnes pour les tâches
   const taskColumns: Column<FollowUpTask>[] = useMemo(() => [
@@ -552,7 +555,7 @@ export default function SmartFollowUpPage() {
         </div>
       ),
     },
-  ], []);
+  ], [handleUpdateTask, setDeleteModal]);
 
   const handleDeleteMultipleTasks = async (tasksToDelete: FollowUpTask[]) => {
     let successCount = 0;
@@ -618,7 +621,7 @@ export default function SmartFollowUpPage() {
       },
       variant: 'success',
     },
-  ], []);
+  ], [handleUpdateTask]);
 
   return (
     <>

@@ -143,7 +143,9 @@ export default function AdminServerPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
           <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-            <IconServer className="w-7 h-7 !text-accent-text" />
+            <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+              <IconServer className="w-[18px] h-[18px] !text-white" />
+            </div>
             {t('server_monitoring') || 'Monitoring Serveur'}
           </h1>
           <p className="!text-sm !text-muted">{t('realtime_monitoring') || 'Surveillance en temps réel de votre infrastructure'}</p>

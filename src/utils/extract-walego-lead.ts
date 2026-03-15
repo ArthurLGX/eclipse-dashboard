@@ -107,7 +107,7 @@ export function extractWalegoLead(
     const paragraphs = parentDiv.find('p');
     const titleP = paragraphs.filter((_, el) => {
       const t = $(el).text().trim();
-      return t && !t.toLowerCase().includes('linkedin');
+      return !!t && !t.toLowerCase().includes('linkedin');
     }).first();
     result.title = getText($, titleP) || '';
 

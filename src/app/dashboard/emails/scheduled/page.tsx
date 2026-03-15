@@ -129,7 +129,9 @@ function ScheduledEmails() {
             </Link>
             
             <h1 className="!text-xl font-semibold !text-primary flex items-center gap-2">
-              <IconClock className="w-6 h-6 !text-purple-500" />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <IconClock className="w-[18px] h-[18px] !text-white" />
+              </div>
               {t('scheduled_emails') || 'Emails planifiés'}
             </h1>
           </div>

@@ -3278,9 +3278,9 @@ const translations = {
      open_fathom: 'Ouvrir Fathom',
     configure_webhook: 'Configurer webhook',
 
-    // Design de page (anciennement Growth Audit)
+    // Web Design (anciennement Growth Audit)
     growth_audit_tool_tag: "Outil de design",
-    growth_audit: 'Design de page',
+    growth_audit: 'Web Design',
     growth_audit_desc: 'Analysez et optimisez le design, le SEO et la structure de vos pages',
     analyze_page: 'Analyser la page',
     seo_structure_perf: 'SEO · Structure · Perf',
@@ -6883,7 +6883,7 @@ won: 'Won',
     
     // Page Design (formerly Growth Audit)
     growth_audit_tool_tag: 'Design tool',
-    growth_audit: 'Page Design',
+    growth_audit: 'Web Design',
     growth_audit_desc: 'Analyze and optimize the design, SEO and structure of your pages',
     analyze_page: 'Analyze page',
     seo_structure_perf: 'SEO · Structure · Perf',

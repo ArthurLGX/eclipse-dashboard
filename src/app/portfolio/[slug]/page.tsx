@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import useLenis from '@/utils/useLenis';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -274,10 +275,12 @@ function ProjectCard({ project, settings, onClick, index }: ProjectCardProps) {
       <div className={`relative ${getAspectRatio()} overflow-hidden`}>
         {coverMedia ? (
           <>
-            <img
+            <Image
               src={coverMedia.url}
               alt={project.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
             {coverMedia.type === 'video' && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/20">
@@ -368,9 +371,11 @@ function ProjectDetailModal({ project, onClose }: Omit<ProjectDetailModalProps, 
                 className="max-w-full max-h-full"
               />
             ) : (
-              <img
+              <Image
                 src={currentMedia?.url}
                 alt={project.title}
+                width={800}
+                height={600}
                 className="max-w-full max-h-full object-contain"
               />
             )}

@@ -315,7 +315,6 @@ export default function DashboardPage() {
                   {stats.revenueByMonth.map((month, i) => {
                     const maxValue = Math.max(...stats.revenueByMonth.map(m => m.value), 1);
                     const heightPercent = (month.value / maxValue) * 100;
-                    const isCurrent = i === stats.revenueByMonth.length - 1;
                     return (
                       <div key={i} className="flex-1 flex flex-col items-center gap-1">
                         <div 

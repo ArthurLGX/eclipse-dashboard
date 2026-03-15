@@ -211,7 +211,9 @@ export default function AIFeaturesSettingsPage() {
           </button>
           <div>
             <h1 className="text-3xl font-bold text-primary mb-2 flex items-center gap-3">
-              <IconBrain className="w-8 h-8 text-accent-text" />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <IconBrain className="w-[18px] h-[18px] !text-white" />
+              </div>
               Gestion des fonctionnalités IA
             </h1>
             <p className="text-muted">Activez/désactivez les features IA pour économiser vos tokens OpenAI</p>

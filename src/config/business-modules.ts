@@ -356,7 +356,7 @@ export const ALL_MODULES: Record<string, ModuleConfig> = {
   },
   growth_audit: {
     id: 'growth_audit',
-    label: 'Design de page',
+    label: 'Web Design',
     labelEn: 'Page Design',
     icon: 'IconTargetArrow',
     path: '/dashboard/growth-audit',

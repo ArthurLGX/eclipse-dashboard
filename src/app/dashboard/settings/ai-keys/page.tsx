@@ -82,7 +82,9 @@ export default function AIKeysSettingsPage() {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-primary mb-1 flex items-center gap-3">
-              <IconKey className="w-7 h-7 text-accent" />
+              <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                <IconKey className="w-[18px] h-[18px] !text-white" />
+              </div>
               Clés API IA
             </h1>
             <p className="text-muted text-sm">

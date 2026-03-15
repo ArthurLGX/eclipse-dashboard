@@ -34,6 +34,8 @@ interface ImageUploadProps {
   aspectRatio?: number;
   website?: string | null;
   name?: string;
+  /** 'cover' coupe l'image pour remplir, 'contain' affiche l'image entière */
+  objectFit?: 'cover' | 'contain';
 }
 
 const sizeClasses = {
@@ -168,6 +170,7 @@ export default function ImageUpload({
   aspectRatio = 1,
   website,
   name,
+  objectFit = 'cover',
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
@@ -448,7 +451,7 @@ export default function ImageUpload({
           alt="Image"
           fill
           sizes="128px"
-          style={{ objectFit: 'cover' }}
+          style={{ objectFit }}
           className={uploading ? 'opacity-50' : ''}
         />
       );

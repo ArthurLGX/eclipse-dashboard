@@ -480,7 +480,9 @@ export default function TimeTrackingAnalyticsPage() {
             </Link>
             <div>
               <h1 className="!text-2xl font-bold !text-primary flex items-center gap-2">
-                <IconChartBar className="w-7 h-7 !text-accent-text" />
+                <div className="w-9 h-9 bg-accent border border-accent flex items-center justify-center">
+                  <IconChartBar className="w-[18px] h-[18px] !text-white" />
+                </div>
                 {t('time_analytics') || 'Analyse du temps'}
               </h1>
               <p className="!text-muted !text-sm mt-1">

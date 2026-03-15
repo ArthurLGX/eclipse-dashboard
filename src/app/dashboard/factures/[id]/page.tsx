@@ -39,7 +39,6 @@ import {
   IconTrash,
   IconMail,
   IconDownload,
-  IconCalculator,
   IconSettings,
   IconRefresh,
   IconFileInvoice,
@@ -683,6 +682,18 @@ export default function FacturePage() {
     window.location.href = `/dashboard/emails/invoice?${params.toString()}`;
   };
 
+  // Logo pour le PDF : company logo ou photo de profil utilisateur en secours
+  const getLogoUrlForPDF = (): string | null => {
+    if (company?.logo) {
+      return company.logo.startsWith('http') ? company.logo : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${company.logo}`;
+    }
+    if (user?.profile_picture?.url) {
+      const url = user.profile_picture.url;
+      return url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${url}`;
+    }
+    return null;
+  };
+
   const handleDownloadPDF = async () => {
     if (!facture) {
       showGlobalPopup('Erreur: facture non trouvée', 'error');
@@ -691,6 +702,8 @@ export default function FacturePage() {
 
     try {
       showGlobalPopup('Génération du PDF en cours...', 'info');
+
+      const logoUrl = getLogoUrlForPDF();
 
       // Générer le PDF avec @react-pdf/renderer
       const blob = await pdf(
@@ -703,6 +716,7 @@ export default function FacturePage() {
           tvaAmount={tvaAmount}
           subtotal={subtotal}
           total={total}
+          logoUrl={logoUrl}
         />
       ).toBlob();
 
@@ -739,7 +753,7 @@ export default function FacturePage() {
       className="min-h-screen p-6"
     >
       {/* Header avec actions */}
-      <div className="max-w-4xl mx-auto  flex flex-col gap-4 overflow-hidden  ">
+      <div className="w-full flex flex-col gap-4 overflow-hidden">
         <div className="flex lg:flex-row flex-col gap-2 justify-between bg-accent-light h-fit rounded-full p-2">
           {/* Bouton paramètres de facturation */}
           <button
@@ -747,7 +761,7 @@ export default function FacturePage() {
             className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
             title={t('billing_settings') || 'Paramètres de facturation'}
           >
-            <IconSettings className="w-4 h-4" color="white" />
+            <IconSettings className="w-4 h-4 !text-white" />
           </button>
           
           <div className="flex lg:flex-row flex-col gap-2">
@@ -756,7 +770,7 @@ export default function FacturePage() {
               onClick={handleEdit}
               className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
             >
-              <IconEdit className="w-4 h-4" color="white" />
+              <IconEdit className="w-4 h-4 !text-white" />
             
             </button>
           ) : (
@@ -781,13 +795,13 @@ export default function FacturePage() {
                 onClick={handleSave}
                 className="flex items-center justify-center gap-2 bg-success !text-white border border-success px-4 py-2 rounded-full hover:bg-[var(--color-success)] hover:!text-white transition-colors"
               >
-                <IconDeviceFloppy className="w-4 h-4" color="black" />
+                <IconDeviceFloppy className="w-4 h-4 !text-white" />
                </button>
-              <button
-                onClick={handleCancel}
-                className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:!text-white transition-colors"
+                <button
+                  onClick={handleCancel}
+                  className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:!text-white transition-colors"
                   > 
-                <IconX className="w-4 h-4" color="white" />
+                <IconX className="w-4 h-4 !text-white" />
                </button>
             </>
           )}
@@ -799,333 +813,258 @@ export default function FacturePage() {
                   onClick={() => setShowConvertModal(true)}
                   className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
                 >
-                  <IconFileInvoice className="w-4 h-4" color="white" />
+                  <IconFileInvoice className="w-4 h-4 !text-white" />
                  </button>
               )}
               {/* Badge devis accepté */}
               {isQuote && facture?.quote_status === 'accepted' && (
-                <div className="flex items-center gap-2 bg-accent border border-accent px-4 py-2 rounded-full">
-                  <IconCheck className="w-4 h-4" color="white" />
+                <div className="flex items-center gap-2 bg-accent border border-accent px-4 py-2 rounded-full !text-white">
+                  <IconCheck className="w-4 h-4 !text-white" />
                  </div>
               )}
               <button
                 onClick={handleSendEmail}
-                className="flex !text-xs flex-1 w-full items-center justify-center gap-2 bg-warning !text-white border border-warning px-4 py-2 rounded-full hover:bg-[var(--color-warning)] hover:!text-white transition-colors"
+                className="flex !text-xs flex-1 w-full items-center justify-center gap-2 bg-warning !text-warning-text border border-warning px-4 py-2 rounded-full hover:bg-[var(--color-warning)] hover:!text-warning-text transition-colors"
               >
-                <IconMail className="w-4 h-4" color="white" />
+                <IconMail className="w-4 h-4 !text-white" />
                </button>
               <button
                 onClick={handleDownloadPDF}
                 className="flex items-center justify-center gap-2 bg-accent !text-white border border-accent px-4 py-2 rounded-full hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               >
-                <IconDownload className="w-4 h-4" color="white" />
+                <IconDownload className="w-4 h-4 !text-white" />
                </button>
               <button
                 onClick={handleDelete}
                 className="flex items-center justify-center gap-2 bg-danger !text-white border border-danger px-4 py-2 rounded-full hover:bg-[var(--color-danger)] hover:!text-white transition-colors"
               >
-                <IconTrash className="w-4 h-4" color="white" />
+                <IconTrash className="w-4 h-4 !text-white" />
                </button>
             </>
           )}
           </div>
         </div>
 
-        {/* Contenu de la facture */}
+        {/* Contenu de la facture - structure facture-detail_1.html (sans max-w, sans rounded) */}
         <div ref={factureRef} className="print-area">
-          <div className="p-8 !bg-white  flex flex-col gap-4 shadow-lg">
-            {/* Champs principaux modifiables */}
-            <div className="flex items-center gap-2 mb-4">
-              <label className="font-medium">{t('vat_applicable')}</label>
-              <input
-                type="checkbox"
-                checked={tvaApplicable}
-                onChange={e => {
-                  setTvaApplicable(e.target.checked);
-                  setFormData({
-                    ...formData!,
-                    tva_applicable: e.target.checked,
-                  });
-                }}
-                className="toggle toggle-success"
-              />
+          <div className="facture-doc invoice-doc border border-cell-facture overflow-hidden" style={{ background: 'var(--fd-white)' }}>
+            {/* Doc header - facture-detail_1 (padding 28px 32px) */}
+            <div className="doc-header flex items-start justify-between py-7 px-8 border-b border-cell-facture gap-6">
+              <div className="doc-brand flex flex-col gap-1">
+                <div className="flex items-center gap-2.5">
+                  {company?.logo ? (
+                    <div className="doc-brand-logo w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 mb-1.5" style={{ background: 'var(--fd-accent)' }}>
+                      <Image
+                        src={company.logo.startsWith('http') ? company.logo : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${company.logo}`}
+                        alt={company.name || 'Logo'}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 object-contain"
+                        unoptimized
+                      />
+                    </div>
+                  ) : user?.profile_picture?.url ? (
+                    <div className="doc-brand-logo w-10 h-10 rounded-lg overflow-hidden shrink-0 flex items-center justify-center mb-1.5" style={{ background: 'var(--fd-accent)' }}>
+                      <Image
+                        src={user.profile_picture.url.startsWith('http') ? user.profile_picture.url : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${user.profile_picture.url}`}
+                        alt="Profil"
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ) : (
+                    <div className="fd-brand-logo-mark w-[38px] h-[38px] rounded-lg flex items-center justify-center shrink-0 font-bold text-sm text-white" style={{ background: 'var(--fd-accent)' }}>
+                      {company?.name ? company.name.slice(0, 2).toUpperCase() : '?'}
+                    </div>
+                  )}
+                  <div>
+                    <div className="doc-brand-name text-[15px] font-bold" style={{ color: 'var(--fd-ink)' }}>{company?.name || t('company') || 'Entreprise'}</div>
+                    {company?.domaine && <div className="doc-brand-sub text-[11px]" style={{ color: 'var(--fd-ink3)' }}>{company.domaine}</div>}
+                  </div>
+                </div>
+                <div className="doc-brand-meta flex flex-col gap-0.5 mt-2">
+                  {company?.email && <span className="text-[11px] flex items-center gap-1.5" style={{ color: 'var(--fd-ink2)' }}>✉ {company.email}</span>}
+                  {company?.website && <span className="text-[11px] flex items-center gap-1.5" style={{ color: 'var(--fd-ink2)' }}>🌐 {company.website}</span>}
+                  {company?.siret && <span className="text-[11px] flex items-center gap-1.5" style={{ color: 'var(--fd-ink2)' }}>SIRET : {company.siret}</span>}
+                </div>
+              </div>
+              <div className="doc-invoice-id text-right">
+                <div className="doc-invoice-label text-[11px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>
+                  {isQuote ? (t('quote') || 'Devis') : (t('invoice') || 'Facture')}
+                </div>
+                <div className="doc-invoice-num text-[22px] font-extrabold tracking-tight mb-2.5" style={{ color: 'var(--fd-ink)' }}>
+                  #{facture?.reference || '-'}
+                </div>
+                <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                  (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
+                    ? 'bg-[#dcfce7] !text-[#166534] border border-[#bbf7d0]'
+                    : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
+                      ? 'bg-[#fef9c3] !text-[#854d0e] border border-[#fde68a]'
+                      : 'bg-muted !text-muted border border-default'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${
+                    (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
+                      ? 'bg-[#16a34a]'
+                      : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
+                        ? 'bg-[#ca8a04]'
+                        : 'bg-[var(--fd-pale)]'
+                  }`} />
+                  {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
+                </span>
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800 ">
-                  {t('reference')}
-                </label>
+
+            {/* Meta grid - facture-detail_1: 3 colonnes, 6 cellules */}
+            <div className="doc-meta grid grid-cols-3 border-b border-cell-facture">
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+                <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('reference')}</div>
                 {editing ? (
-                  <input
-                    type="text"
-                    name="reference"
-                    value={formData?.reference || ''}
-                    onChange={handleInputChange}
-                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  />
+                  <input type="text" name="reference" value={formData?.reference || ''} onChange={handleInputChange}
+                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
                 ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {facture?.reference}
-                  </p>
+                  <div className="meta-val font-semibold text-[13px]" style={{ color: 'var(--fd-ink)' }}>{facture?.reference}</div>
                 )}
               </div>
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {t('status')}
-                </label>
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+                <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('emission_date')}</div>
+                {editing ? (
+                  <input type="date" name="date" value={formData?.date ? formData.date.slice(0, 10) : ''} onChange={handleInputChange}
+                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
+                ) : (
+                  <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.date ? new Date(facture.date).toLocaleDateString('fr-FR') : ''}</div>
+                )}
+              </div>
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+                <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>
+                  {isQuote ? (t('valid_until') || 'Valide jusqu\'au') : t('due_date')}
+                </div>
                 {editing ? (
                   isQuote ? (
-                    <select
-                      name="quote_status"
-                      value={formData?.quote_status || ''}
-                      onChange={handleInputChange}
-                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                    >
-                      <option value="draft">{t('draft')}</option>
-                      <option value="sent">{t('sent')}</option>
-                      <option value="accepted">{t('accepted')}</option>
-                      <option value="rejected">{t('rejected')}</option>
-                      <option value="expired">{t('expired')}</option>
-                    </select>
+                    <input type="date" name="valid_until" value={formData?.valid_until ? formData.valid_until.slice(0, 10) : ''} onChange={handleInputChange}
+                      className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
                   ) : (
-                    <select
-                      name="facture_status"
-                      value={formData?.facture_status || ''}
-                      onChange={handleInputChange}
-                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                    >
-                      <option value="draft">{t('draft')}</option>
-                      <option value="sent">{t('sent')}</option>
-                      <option value="paid">{t('paid')}</option>
-                    </select>
+                    <input type="date" name="due_date" value={formData?.due_date ? formData.due_date.slice(0, 10) : ''} onChange={handleInputChange}
+                      className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
                   )
                 ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
-                  </p>
+                  <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>
+                    {isQuote ? (facture?.valid_until ? new Date(facture.valid_until).toLocaleDateString('fr-FR') : '-') : (facture?.due_date ? new Date(facture.due_date).toLocaleDateString('fr-FR') : '')}
+                  </div>
                 )}
               </div>
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {t('emission_date')}
-                </label>
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+                <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('client')}</div>
                 {editing ? (
-                  <input
-                    type="date"
-                    name="date"
-                    value={formData?.date ? formData.date.slice(0, 10) : ''}
-                    onChange={handleInputChange}
-                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  />
-                ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {facture?.date
-                      ? new Date(facture.date).toLocaleDateString('fr-FR')
-                      : ''}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {isQuote ? t('valid_until') || 'Valide jusqu\'au' : t('due_date')}
-                </label>
-                {editing ? (
-                  isQuote ? (
-                    <input
-                      type="date"
-                      name="valid_until"
-                      value={
-                        formData?.valid_until ? formData.valid_until.slice(0, 10) : ''
-                      }
-                      onChange={handleInputChange}
-                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                    />
-                  ) : (
-                    <input
-                      type="date"
-                      name="due_date"
-                      value={
-                        formData?.due_date ? formData.due_date.slice(0, 10) : ''
-                      }
-                      onChange={handleInputChange}
-                      className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                    />
-                  )
-                ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {isQuote 
-                      ? (facture?.valid_until
-                          ? new Date(facture.valid_until).toLocaleDateString('fr-FR')
-                          : '-')
-                      : (facture?.due_date
-                          ? new Date(facture.due_date).toLocaleDateString('fr-FR')
-                          : '')}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {t('currency')}
-                </label>
-                {editing ? (
-                  <select
-                    name="currency"
-                    value={formData?.currency || ''}
-                    onChange={handleInputChange}
-                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  >
-                    <option value="EUR">EUR</option>
-                    <option value="USD">USD</option>
-                    <option value="GBP">GBP</option>
-                  </select>
-                ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {facture?.currency}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {t('client')}
-                </label>
-                {editing ? (
-                  <select
-                    name="client_id"
-                    value={formData?.client_id?.id || ''}
-                    onChange={e => {
-                      const client = clients.find(
-                        c => c.id === Number(e.target.value)
-                      );
-                      // Réinitialiser le projet si on change de client
-                      const currentProjectClientId = formData?.project?.client?.id;
-                      const newClientId = client?.id;
-                      const shouldResetProject = currentProjectClientId && newClientId && currentProjectClientId !== newClientId;
-                      setFormData({ 
-                        ...formData!, 
-                        client_id: client!,
-                        project: shouldResetProject ? undefined : formData?.project
-                      });
-                    }}
-                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  >
+                  <select name="client_id" value={formData?.client_id?.id || ''} onChange={e => {
+                    const client = clients.find(c => c.id === Number(e.target.value));
+                    const currentProjectClientId = formData?.project?.client?.id;
+                    const newClientId = client?.id;
+                    const shouldResetProject = currentProjectClientId && newClientId && currentProjectClientId !== newClientId;
+                    setFormData({ ...formData!, client_id: client!, project: shouldResetProject ? undefined : formData?.project });
+                  }} className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900">
                     <option value="">{t('select_client')}</option>
-                    {clients.map(client => (
-                      <option key={client.id} value={client.id}>
-                        {client.name}
-                      </option>
-                    ))}
+                    {clients.map(client => <option key={client.id} value={client.id}>{client.name}</option>)}
                   </select>
                 ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {facture?.client_id?.name}
-                  </p>
+                  <div className="meta-val large text-[14px] font-semibold" style={{ color: 'var(--fd-ink)' }}>{facture?.client_id?.name || '—'}</div>
                 )}
               </div>
-              <div>
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {t('project')}
-                </label>
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+                <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('currency')}</div>
+                {editing ? (
+                  <select name="currency" value={formData?.currency || ''} onChange={handleInputChange}
+                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]">
+                    <option value="EUR">EUR — Euro</option>
+                    <option value="USD">USD — Dollar</option>
+                    <option value="GBP">GBP — Livre</option>
+                  </select>
+                ) : (
+                  <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.currency || 'EUR'} — {facture?.currency === 'USD' ? 'Dollar' : facture?.currency === 'GBP' ? 'Livre' : 'Euro'}</div>
+                )}
+              </div>
+              <div className="doc-meta-cell p-4 px-8">
+                <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('project')}</div>
                 {editing ? (
                   <div className="flex gap-2">
-                    <select
-                      name="project"
-                      value={formData?.project?.id || ''}
-                      onChange={e => {
-                        const project = filteredProjects.find(
-                          p => p.id === Number(e.target.value)
-                        );
-                        setFormData({ ...formData!, project: project! });
-                      }}
-                        className="input border flex-1  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                    >
+                    <select name="project" value={formData?.project?.id || ''} onChange={e => {
+                      const project = filteredProjects.find(p => p.id === Number(e.target.value));
+                      setFormData({ ...formData!, project: project! });
+                    }} className="input border flex-1 p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900">
                       <option value="">{t('select_project')}</option>
-                      {filteredProjects.map(project => (
-                        <option key={project.id} value={project.id}>
-                          {project.title} {project.client?.name ? `(${project.client.name})` : ''}
-                        </option>
-                      ))}
+                      {filteredProjects.map(project => <option key={project.id} value={project.id}>{project.title} {project.client?.name ? `(${project.client.name})` : ''}</option>)}
                     </select>
-                    <button
-                      type="button"
-                      onClick={refreshProjects}
-                      className="p-2 bg-blue-500/10 !text-blue-600 border border-blue-500/30  hover:bg-blue-500/20 transition-colors"
-                      title={t('refresh_projects') || 'Rafraîchir les projets'}
-                    >
-                      <IconRefresh className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => window.open('/dashboard/projects?new=1', '_blank')}
-                      className="px-3 py-2 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30  hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap"
-                      title={t('create_new_project') || 'Créer un nouveau projet'}
-                    >
-                      + {t('new_project') || 'Nouveau'}
-                    </button>
+                    <button type="button" onClick={refreshProjects} className="p-2 bg-blue-500/10 !text-blue-600 border border-blue-500/30 hover:bg-blue-500/20 transition-colors" title={t('refresh_projects') || 'Rafraîchir'}><IconRefresh className="w-4 h-4" /></button>
+                    <button type="button" onClick={() => window.open('/dashboard/projects?new=1', '_blank')} className="px-3 py-2 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap" title={t('create_new_project') || 'Nouveau'}>+ {t('new_project') || 'Nouveau'}</button>
                   </div>
                 ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {facture?.project?.title || '-'}
-                  </p>
-                )}
-              </div>
-              <div className="md:col-span-2">
-                <label className="block !text-sm font-medium mb-1 !text-zinc-800">
-                  {t('notes')}
-                </label>
-                {editing ? (
-                  <textarea
-                    name="notes"
-                    value={formData?.notes || ''}
-                    onChange={handleInputChange}
-                    className="input border w-full  p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900"
-                  />
-                ) : (
-                  <p className="!text-zinc-800 !text-sm font-semibold">
-                    {facture?.notes}
-                  </p>
+                  <div className="meta-val muted text-[13px] font-medium" style={{ color: 'var(--fd-ink3)' }}>{facture?.project?.title || '—'}</div>
                 )}
               </div>
             </div>
 
-            {/* Lignes de facture modifiables */}
-            <div className="bg-zinc-50  overflow-hidden mb-8 border border-zinc-100">
-              <div className="bg-zinc-700/20 px-6 py-4 flex lg:flex-row flex-col items-center justify-between">
-                <h3 className="!text-xl font-semibold !text-black">
-                  {t('services')}
-                </h3>
+            {/* TVA row - facture-detail_1 (toujours visible) */}
+            <div className="doc-tva py-3 px-8 border-b border-cell-facture flex items-center gap-2" style={{ background: 'var(--fd-surf)' }}>
+              <label className="flex items-center gap-1.5 text-[12px] cursor-pointer" style={{ color: 'var(--fd-ink2)' }}>
+                <input type="checkbox" id="tva-cb" checked={tvaApplicable}
+                  onChange={e => { setTvaApplicable(e.target.checked); setFormData({ ...formData!, tva_applicable: e.target.checked }); }}
+                  className="w-3.5 h-3.5 accent-[var(--fd-ink)] cursor-pointer" />
+                {t('vat_applicable')}
+              </label>
+              <span className="text-[11px] ml-1" style={{ color: 'var(--fd-ink3)' }}>— {t('vat_calc_info') || 'Si cochée, la TVA sera calculée sur le total HT'}</span>
+            </div>
+
+            {/* Notes - facture-detail_1 "Notes internes" */}
+            <div className="doc-notes p-4 px-8 border-b border-cell-facture">
+              <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1.5" style={{ color: 'var(--fd-ink3)' }}>{t('notes') || 'Notes internes'}</div>
+              {editing ? (
+                <textarea
+                  name="notes"
+                  value={formData?.notes || ''}
+                  onChange={handleInputChange}
+                  placeholder={t('notes_placeholder') || 'Ajouter une note visible sur la facture…'}
+                  className="w-full border-none outline-none resize-none min-h-9 text-[12.5px] leading-relaxed"
+                  style={{ background: 'transparent', color: 'var(--fd-ink2)' }}
+                />
+              ) : (
+                <p className="text-[12.5px] leading-relaxed" style={{ color: 'var(--fd-ink2)' }}>{facture?.notes || '—'}</p>
+              )}
+            </div>
+
+            {/* Prestations - facture-detail_1 */}
+            <div className="doc-prestations overflow-hidden">
+              <div className="prest-title-row flex items-center justify-between py-3.5 px-8 pb-3 border-b border-cell-facture">
+                <div className="prest-title text-[13px] font-bold" style={{ color: 'var(--fd-ink)' }}>{t('services')}</div>
                 {editing && (
-                  <button
-                    type="button"
-                    onClick={handleAddLine}
-                    className="bg-black !text-white border border-black px-3 py-1  hover:bg-black/80 transition-colors"
-                  >
+                  <button type="button" onClick={handleAddLine} className="prest-add inline-flex items-center gap-1.5 text-[11.5px] font-medium hover:underline" style={{ color: 'var(--color-accent)' }}>
                     + {t('add_line')}
                   </button>
                 )}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-zinc-700/10">
-                    <tr>
-                      <th className="!text-left !bg-zinc-200 p-4 !text-zinc-800 font-bold">
+                  <thead>
+                    <tr className="border-b border-cell-facture" style={{ background: 'var(--fd-surf)' }}>
+                      <th className="text-left p-4 text-[10.5px] font-bold uppercase tracking-wide" style={{ color: 'var(--fd-ink3)' }}>
                         {t('description')}
                       </th>
-                      <th className="!text-center !bg-zinc-200 p-4 !text-zinc-800 font-bold">
+                      <th className="!text-center p-4 !text-[10.5px] font-bold uppercase tracking-wide !text-muted">
                         {t('unit_type')}
                       </th>
-                      <th className="!text-right !bg-zinc-200 p-4 !text-zinc-800 font-bold">
+                      <th className="!text-right p-4 !text-[10.5px] font-bold uppercase tracking-wide !text-muted">
                         {t('quantity')}
                       </th>
-                      <th className="!text-right !bg-zinc-200 p-4 !text-zinc-800 font-bold">
+                      <th className="!text-right p-4 !text-[10.5px] font-bold uppercase tracking-wide !text-muted">
                         {t('unit_price')}
                       </th>
-                      <th className="!text-right !bg-zinc-200 p-4 !text-zinc-800 font-bold">
+                      <th className="!text-right p-4 !text-[10.5px] font-bold uppercase tracking-wide !text-muted">
                         {t('total')}
                       </th>
-                      {editing && <th className="!bg-zinc-200 p-4 !text-zinc-800 font-bold"></th>}
+                      {editing && <th className="p-4 !text-[10.5px] font-bold !text-muted w-10"></th>}
                     </tr>
                   </thead>
-                  <tbody className="!bg-zinc-100">
+                  <tbody>
                     {invoiceLines.map((line, index) => {
                       const getUnitLabel = (unit?: string) => {
                         switch (unit) {
@@ -1138,11 +1077,11 @@ export default function FacturePage() {
                       };
                       const getUnitDisplay = (unit?: string) => {
                         switch (unit) {
-                          case 'hour': return t('billing_hour');
-                          case 'day': return t('billing_day');
-                          case 'fixed': return t('billing_fixed');
-                          case 'unit': return t('billing_unit');
-                          default: return t('billing_hour');
+                          case 'hour': return t('billing_hour') || 'Heure';
+                          case 'day': return t('billing_day') || 'Jour';
+                          case 'fixed': return t('billing_fixed') || 'Forfait';
+                          case 'unit': return t('billing_unit') || 'Unité';
+                          default: return t('billing_hour') || 'Heure';
                         }
                       };
                       return (
@@ -1152,7 +1091,7 @@ export default function FacturePage() {
                           index % 2 === 0 ? '!bg-zinc-200/10' : '!bg-zinc-300/10'
                         }
                       >
-                        <td className="!bg-zinc-100 p-4 !text-zinc-900">
+                        <td className="p-4 border-b border-cell-facture" style={{ color: 'var(--fd-ink)' }}>
                           {editing ? (
                             <input
                               type="text"
@@ -1170,7 +1109,7 @@ export default function FacturePage() {
                             line.description
                           )}
                         </td>
-                        <td className="!bg-zinc-100 p-4 !text-center !text-zinc-900">
+                        <td className="p-4 !text-center border-b border-default !text-primary">
                           {editing ? (
                             <select
                               value={line.unit || 'hour'}
@@ -1192,7 +1131,7 @@ export default function FacturePage() {
                             getUnitDisplay(line.unit)
                           )}
                         </td>
-                        <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900">
+                        <td className="p-4 text-right border-b border-cell-facture" style={{ color: 'var(--fd-ink)' }}>
                           {editing ? (
                             <input
                               type="number"
@@ -1211,7 +1150,7 @@ export default function FacturePage() {
                             line.unit === 'fixed' ? line.quantity : `${line.quantity}${getUnitLabel(line.unit)}`
                           )}
                         </td>
-                        <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900">
+                        <td className="p-4 text-right border-b border-cell-facture" style={{ color: 'var(--fd-ink)' }}>
                           {editing ? (
                             <input
                               type="number"
@@ -1230,11 +1169,11 @@ export default function FacturePage() {
                             `${line.unit_price}€`
                           )}
                         </td>
-                        <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900 font-medium">
+                        <td className="p-4 text-right border-b border-cell-facture font-medium" style={{ color: 'var(--fd-ink)' }}>
                           {line.total}€
                         </td>
                         {editing && (
-                          <td className="!bg-zinc-100 p-4 !text-right !text-zinc-900">
+                          <td className="p-4 text-right border-b border-cell-facture" style={{ color: 'var(--fd-ink)' }}>
                             <button
                               type="button"
                               onClick={() => handleRemoveLine(index)}
@@ -1252,34 +1191,21 @@ export default function FacturePage() {
               </div>
             </div>
 
-            {/* Calculs et total */}
-            <div className="bg-zinc-50  p-6 border border-zinc-100">
-              <div className="flex items-center gap-2 mb-4">
-                <IconCalculator className="w-5 h-5 !text-orange-500" />
-                <h3 className="!text-lg font-semibold !text-black">
-                  {t('calculations')}
-                </h3>
-              </div>
-              <div className="flex justify-end">
-                <div className="w-80 !space-y-3">
-                  <div className="flex justify-between !text-zinc-400">
-                    <span>{t('subtotal')}:</span>
-                    <span>{subtotal}€</span>
-                  </div>
-                  {tvaApplicable && (
-                    <div className="flex justify-between !text-zinc-400">
-                      <span>
-                        {t('vat_applicable')} ({tvaRate}%):
-                      </span>
-                      <span>{tvaAmount.toFixed(2)}€</span>
-                    </div>
-                  )}
-                  <div className="border-t border-zinc-700 pt-3">
-                    <div className="flex justify-between !text-lg font-bold !text-zinc-900">
-                      <span>{t('total_ttc')}:</span>
-                      <span>{total.toFixed(2)}€</span>
-                    </div>
-                  </div>
+            {/* Totaux - facture-detail_1 */}
+            <div className="doc-totals py-5 px-8 pb-6 border-t border-cell-facture flex justify-end" style={{ background: 'var(--fd-surf)' }}>
+              <div className="totals-table w-80">
+                <div className="tot-row flex justify-between items-center py-1 text-[13px]" style={{ color: 'var(--fd-ink2)' }}>
+                  <span>Sous-total HT</span>
+                  <span>{subtotal.toFixed(2).replace('.', ',')} €</span>
+                </div>
+                <div className="tot-row flex justify-between items-center py-1 text-[13px]" style={{ color: 'var(--fd-ink2)' }}>
+                  <span>TVA ({tvaApplicable ? `${tvaRate}%` : '0%'})</span>
+                  <span style={{ color: tvaApplicable ? 'var(--fd-ink2)' : 'var(--fd-ink3)' }}>{tvaApplicable ? `${tvaAmount.toFixed(2).replace('.', ',')} €` : '—'}</span>
+                </div>
+                <div className="tot-divider h-px my-2.5" style={{ background: 'var(--fd-bdr)' }} />
+                <div className="tot-main flex justify-between items-baseline py-2">
+                  <span className="tot-main-lbl text-[14px] font-bold" style={{ color: 'var(--fd-ink)' }}>Total TTC</span>
+                  <span className="tot-main-val text-[22px] font-extrabold tracking-tight" style={{ color: 'var(--fd-ink)' }}>{total.toFixed(2).replace('.', ',')} €</span>
                 </div>
               </div>
             </div>
@@ -1299,94 +1225,24 @@ export default function FacturePage() {
               />
             )}
 
-            {/* Notes et conditions */}
-            {facture?.notes && (
-              <div className="mt-8 bg-zinc-50  p-6 border border-zinc-100">
-                <h3 className="!text-lg font-semibold !text-black mb-3">
-                  {t('notes')}
-                </h3>
-                <p className="!!text-primary">{facture.notes}</p>
+            {/* Footer - facture-detail_1 (1px border, fond blanc) */}
+            <div className="doc-footer py-4 px-8 flex items-center justify-between flex-wrap gap-2 border-t border-cell-facture" style={{ background: 'var(--fd-white)' }}>
+              <div className="doc-footer-info text-[11px] flex items-center gap-4 flex-wrap" style={{ color: 'var(--fd-ink3)' }}>
+                {company?.siret && <span>SIRET : {company.siret}</span>}
+                {company?.siren && <span>SIREN : {company.siren}</span>}
+                {company?.email && <span>{company.email}</span>}
               </div>
-            )}
-
-            {/* Pied de page - Informations entreprise */}
-            <div className="mt-8 pt-6 border-t border-zinc-200 !text-center !text-zinc-600 !text-sm">
-              <div className="space-y-3 !text-zinc-600">
-                {/* Logo et nom de l'entreprise */}
-                <div className="flex flex-col items-center gap-2">
-                  {company?.logo && (
-                    <Image 
-                      src={company.logo.startsWith('http') ? company.logo : `${process.env.NEXT_PUBLIC_STRAPI_URL}${company.logo}`}
-                      alt={company.name || 'Logo'}
-                      width={40}
-                      height={40}
-                      className="h-10 w-auto object-contain"
-                      unoptimized
-                    />
-                  )}
-                  {company?.name && (
-                    <p className="font-bold !text-zinc-800 !text-base">
-                      {company.name}
-                    </p>
-                  )}
-                  {company?.domaine && (
-                    <p className="!text-zinc-500 !text-xs italic">
-                      {company.domaine}
-                    </p>
-                  )}
-                </div>
-
-                {/* Coordonnées */}
-                <div className="flex flex-wrap justify-center gap-4 !text-xs">
-                  {company?.location && (
-                    <span className="!text-zinc-600">{company.location}</span>
-                  )}
-                  {company?.phoneNumber && (
-                    <span className="!text-zinc-600">
-                      📞 {company.phoneNumber}
-                    </span>
-                  )}
-                  {company?.email && (
-                    <span className="!text-zinc-600">
-                      ✉️ {company.email}
-                    </span>
-                  )}
-                  {company?.website && (
-                    <span className="!text-zinc-600">
-                      🌐 {company.website}
-                    </span>
-                  )}
-                </div>
-
-                {/* Informations légales */}
-                <div className="flex flex-wrap justify-center gap-4 !text-xs mt-2 pt-2 border-t border-zinc-200">
-                  {company?.siret && (
-                    <span className="!text-zinc-500">
-                      SIRET: {company.siret}
-                    </span>
-                  )}
-                  {company?.siren && (
-                    <span className="!text-zinc-500">
-                      SIREN: {company.siren}
-                    </span>
-                  )}
-                  {company?.vat && (
-                    <span className="!text-zinc-500">
-                      TVA: {company.vat}
-                    </span>
-                  )}
-                </div>
-
-                {/* Mentions légales depuis les préférences */}
-                {preferences.invoice.legalMentions && (
-                  <div className="mt-3 pt-3 border-t border-zinc-200">
-                    <p className="!text-zinc-500 !text-xs italic whitespace-pre-line">
-                      {preferences.invoice.legalMentions}
-                    </p>
-                  </div>
-                )}
+              <div className="text-[11px]" style={{ color: 'var(--fd-ink3)' }}>
+                Générée le {facture?.date ? new Date(facture.date).toLocaleDateString('fr-FR') : '-'} · {company?.name}
               </div>
             </div>
+            {preferences.invoice.legalMentions && (
+              <div className="px-8 py-3 border-t border-cell-facture" style={{ background: 'var(--fd-surf)' }}>
+                <p className="text-[11px] italic whitespace-pre-line" style={{ color: 'var(--fd-ink3)' }}>
+                  {preferences.invoice.legalMentions}
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex lg:flex-row flex-col gap-2 justify-end">
@@ -1419,6 +1275,7 @@ export default function FacturePage() {
           subtotal={subtotal}
           total={total}
           t={t}
+          userProfilePictureUrl={user?.profile_picture?.url ? (user.profile_picture.url.startsWith('http') ? user.profile_picture.url : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${user.profile_picture.url}`) : null}
         />
       </Modal>
 
