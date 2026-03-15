@@ -205,7 +205,7 @@ export default function AIFeaturesSettingsPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary  transition-colors"
           >
             <IconArrowLeft className="w-5 h-5" />
           </button>
@@ -253,13 +253,13 @@ export default function AIFeaturesSettingsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => toggleAll(category, true)}
-                className="px-3 py-1.5 text-xs bg-success/10 text-success rounded-lg hover:bg-success/20 transition-colors"
+                className="px-3 py-1.5 text-xs bg-success/10 text-success  hover:bg-success/20 transition-colors"
               >
                 Tout activer
               </button>
               <button
                 onClick={() => toggleAll(category, false)}
-                className="px-3 py-1.5 text-xs bg-error/10 text-error rounded-lg hover:bg-error/20 transition-colors"
+                className="px-3 py-1.5 text-xs bg-error/10 text-error  hover:bg-error/20 transition-colors"
               >
                 Tout désactiver
               </button>
@@ -274,7 +274,7 @@ export default function AIFeaturesSettingsPage() {
               return (
                 <div
                   key={feature.key}
-                  className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                  className={`p-4  border-2 transition-all cursor-pointer ${
                     isEnabled
                       ? 'bg-accent/5 border-accent/30'
                       : 'bg-secondary border-default hover:border-accent/20'
@@ -282,7 +282,7 @@ export default function AIFeaturesSettingsPage() {
                   onClick={() => setLocalFeatures({ ...localFeatures, [feature.key]: !isEnabled })}
                 >
                   <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                    <div className={`w-10 h-10  flex items-center justify-center flex-shrink-0 ${
                       isEnabled ? 'bg-accent/20' : 'bg-muted'
                     }`}>
                       <FeatureIcon className={`w-5 h-5 ${isEnabled ? 'text-accent' : 'text-muted'}`} />

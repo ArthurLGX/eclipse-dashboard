@@ -313,16 +313,25 @@ export default function SmartFollowUpPage() {
     {
       key: 'subject',
       label: 'Sujet',
-      render: (_, action) => (
-        <div className="min-w-0">
-          <p className="text-sm font-medium text-primary truncate mb-0.5">
-            {action.proposed_content.subject}
-          </p>
-          <p className="text-xs text-muted line-clamp-1">
-            {action.proposed_content.body}
-          </p>
-        </div>
-      ),
+      render: (_, action) => {
+        const name = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact';
+        const title = action.lead_title || '';
+        const preview = action.follow_up_task?.context?.lead_response_preview as string | undefined;
+        const subjectLine = [name, title].filter(Boolean).join(' · ');
+        const previewLine = preview ? `"${preview.length > 60 ? preview.slice(0, 57) + '...' : preview}"` : '';
+        return (
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-primary truncate mb-0.5">
+              {subjectLine || action.proposed_content.subject}
+            </p>
+            {previewLine ? (
+              <p className="text-xs text-muted line-clamp-1 italic">
+                {previewLine}
+              </p>
+            ) : null}
+          </div>
+        );
+      },
     },
     {
       key: 'type',
@@ -380,7 +389,7 @@ export default function SmartFollowUpPage() {
               className="px-2 py-1 bg-blue-500 text-white rounded text-xs font-medium hover:opacity-90"
               title="Créer fiche contact"
             >
-              <IconUser className="w-3.5 h-3.5" />
+              <IconUser className="w-3.5 h-3.5 !text-white" />
             </button>
           )}
           <button
@@ -391,17 +400,17 @@ export default function SmartFollowUpPage() {
             className="px-2 py-1 bg-success text-white rounded text-xs font-medium hover:opacity-90"
             title="Qualifier"
           >
-            <IconCheck className="w-3.5 h-3.5" />
+            <IconCheck className="w-3.5 h-3.5 !text-white" />
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               handleQualifyLead(action, 'rejected');
             }}
-            className="px-2 py-1 bg-error/10 text-error rounded text-xs font-medium hover:bg-error/20"
+            className="px-2 py-1 bg-danger rounded text-xs font-medium hover:bg-danger/20"
             title="Rejeter"
           >
-            <IconX className="w-3.5 h-3.5" />
+            <IconX className="w-3.5 h-3.5 !text-white" />
           </button>
         </div>
       ),
@@ -613,13 +622,12 @@ export default function SmartFollowUpPage() {
 
   return (
     <>
-      <div className="min-h-screen w-full flex flex-col justify-center ">
+      <div className="min-h-screen w-full flex flex-col justify-start ">
         {/* Header épuré */}
         <div className="border-b flex justify-center border-default">
           <div className="w-full py-5">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <div className="!text-xs !text-muted mb-1">Tableau de Bord → Smart-Follow-Up</div>
                 <div className="flex items-center gap-2.5">
                   <h1 className="!text-[20px] font-bold tracking-tight !text-primary">Smart Follow-Up</h1>
                   <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full !text-[11px] font-semibold ${
@@ -632,23 +640,15 @@ export default function SmartFollowUpPage() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setShowSimulationDrawer(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-accent/20 !text-accent border border-accent/30 hover:bg-accent/30 transition-colors"
-                  title="Simuler l'arrivée d'un email Walego pour tester l'extraction et l'IA"
-                >
-                  <IconPlayerPlayFilled className="w-3.5 h-3.5" />
-                  Simuler
-                </button>
-                <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium  !text-primary border border-default hover:bg-hover transition-colors"
                 >
                   <IconTarget className="w-3.5 h-3.5" />
                   ICP
                 </button>
                 <button
                   onClick={() => setShowInstructionDrawer(true)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-2  !text-xs font-medium transition-colors ${
                     showInstructionDrawer
                       ? 'bg-primary !text-white'
                       : 'bg-secondary !text-primary border border-default hover:bg-hover'
@@ -669,7 +669,7 @@ export default function SmartFollowUpPage() {
                 </button>
                 <button
                   onClick={() => setShowRulesModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
                 >
                   <IconFilter className="w-3.5 h-3.5" />
                   Filtres
@@ -678,7 +678,7 @@ export default function SmartFollowUpPage() {
                   <button
                     onClick={handleCleanNonICP}
                     disabled={cleaningNonICP}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-error/15 border border-error/30 !text-error hover:bg-error/25 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium bg-error/15 border border-error/30 !text-error hover:bg-error/25 transition-colors disabled:opacity-50"
                     title={`Nettoyer ${nonQualifiedActions.length} emails non qualifiés`}
                   >
                     <IconTrash className="w-3.5 h-3.5" />
@@ -687,9 +687,9 @@ export default function SmartFollowUpPage() {
                 )}
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-semibold bg-accent !text-accent-text hover:opacity-90 transition-colors"
+                  className="group flex items-center gap-1.5 px-3 py-2  !text-xs font-semibold btn-primary transition-all ease-in-out"
                 >
-                  <IconSettings className="w-3.5 h-3.5" />
+                  <IconSettings className="w-3.5 h-3.5 !text-white group-hover:!text-primary" />
                   Paramètres
                 </button>
                 <Switch
@@ -702,10 +702,10 @@ export default function SmartFollowUpPage() {
             </div>
 
             {/* Tabs pills */}
-            <div className="flex gap-0.5 bg-muted rounded-lg p-0.5 w-fit">
+            <div className="flex gap-0.5 bg-muted  p-0.5 w-fit">
               <button
                 onClick={() => setActiveTab('actions')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
                   activeTab === 'actions' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
                 }`}
               >
@@ -718,7 +718,7 @@ export default function SmartFollowUpPage() {
               </button>
               <button
                 onClick={() => setActiveTab('tasks')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
                   activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
                 }`}
               >
@@ -738,7 +738,7 @@ export default function SmartFollowUpPage() {
           {hasAiInstruction && (
             <>
             <p className="!text-xs !text-primary mb-2">Instruction IA :</p>  
-            <div className="p-3 bg-accent-light border border-accent rounded-lg flex items-center justify-between mb-4 w-fit">
+            <div className="p-3 bg-accent-light border border-accent  flex items-center justify-between mb-4 w-fit">
               <div className="flex items-center gap-2 !text-sm !text-primary min-w-0 flex-1">
                 <IconSparkles className="w-4 h-4 shrink-0 text-accent-text" />
                 <span className="truncate !text-xs text-primary">{aiInstruction}</span>
@@ -761,7 +761,7 @@ export default function SmartFollowUpPage() {
               { label: 'Cette semaine', value: statsLoading ? '...' : (stats?.sentThisWeek ?? 0), color: '!text-primary' },
               { label: 'Taux de succès', value: statsLoading ? '...' : `${stats?.successRate?.toFixed(0) ?? 0}%`, color: '!text-violet-500' },
             ].map(k => (
-              <div key={k.label} className="card flex-1 min-w-[140px] p-3.5">
+              <div key={k.label} className="bg-card flex-1 min-w-[140px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{k.label}</div>
                 <div className={`!text-[22px] font-bold tracking-tight ${k.color}`}>{k.value}</div>
               </div>
@@ -770,7 +770,7 @@ export default function SmartFollowUpPage() {
 
           {/* Bannière filtre ICP */}
           {activeTab === 'actions' && nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between mb-4">
+            <div className="p-3 bg-blue-50 border border-blue-200  flex items-center justify-between mb-4">
               <div className="flex items-center gap-2 !text-sm !text-blue-600">
                 <IconFilter className="w-4 h-4" />
                 <span>{nonQualifiedActions.length} emails filtrés (score ICP &lt; {Math.round(minScoreThreshold * 100)}%)</span>
@@ -781,7 +781,7 @@ export default function SmartFollowUpPage() {
             </div>
           )}
           {activeTab === 'actions' && showLowScoreEmails && nonQualifiedActions && nonQualifiedActions.length > 0 && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between mb-4">
+            <div className="p-3 bg-amber-50 border border-amber-200  flex items-center justify-between mb-4">
               <div className="flex items-center gap-2 !text-sm !text-amber-700">
                 <IconAlertCircle className="w-4 h-4" />
                 <span>{nonQualifiedActions.length} emails non qualifiés affichés</span>
@@ -803,7 +803,7 @@ export default function SmartFollowUpPage() {
                 </div>
               </div>
             ) : (
-              <div className="bg-card border border-default rounded-lg overflow-hidden">
+              <div className="bg-card border border-default  overflow-hidden">
                 <DataTable<AutomationAction>
                   columns={actionColumns}
                   data={actions || []}
@@ -825,7 +825,7 @@ export default function SmartFollowUpPage() {
                     value={taskSearch}
                     onChange={(e) => setTaskSearch(e.target.value)}
                     placeholder="Rechercher…"
-                    className="w-full pl-9 pr-3 py-2 !text-sm border border-default rounded-lg bg-card focus:outline-none focus:border-primary"
+                    className="w-full pl-9 pr-3 py-2 !text-sm border border-default  bg-card focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div className="flex gap-1">
@@ -833,7 +833,7 @@ export default function SmartFollowUpPage() {
                     <button
                       key={p}
                       onClick={() => setFilterPrio(p)}
-                      className={`px-2.5 py-1.5 rounded-lg !text-xs font-medium transition-all whitespace-nowrap ${
+                      className={`px-2.5 py-1.5  !text-xs font-medium transition-all whitespace-nowrap ${
                         filterPrio === p
                           ? 'bg-muted border border-default !text-primary'
                           : 'bg-card border border-default !text-muted hover:!text-primary'
@@ -851,7 +851,7 @@ export default function SmartFollowUpPage() {
                     <button
                       key={s}
                       onClick={() => setFilterStatut(s)}
-                      className={`px-2.5 py-1.5 rounded-lg !text-xs font-medium transition-all ${
+                      className={`px-2.5 py-1.5  !text-xs font-medium transition-all ${
                         filterStatut === s ? 'bg-muted border border-default !text-primary' : 'bg-card border border-default !text-muted hover:!text-primary'
                       }`}
                     >
@@ -865,7 +865,7 @@ export default function SmartFollowUpPage() {
                 </div>
               </div>
 
-              <div className="bg-card border border-default rounded-lg overflow-hidden">
+              <div className="bg-card border border-default  overflow-hidden">
                 <DataTable<FollowUpTask>
                   columns={taskColumns}
                   data={filteredTasks}

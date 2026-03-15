@@ -149,19 +149,10 @@ export default function NewslettersPage() {
           <div className="max-w-7xl mx-auto px-8 py-5">
             {/* Breadcrumb + Actions */}
             <div className="flex items-start justify-between mb-6">
-              <div>
-                <div className="!text-xs !text-muted mb-1">
-                  <span>{t('dashboard') || 'Tableau de Bord'}</span>
-                  <span className="mx-1.5">→</span>
-                  <span>{t('newsletters') || 'Newsletters'}</span>
-                </div>
-                <h1 className="!text-[22px] font-bold tracking-tight !text-primary">
-                  {t('newsletters') || 'Newsletters'}
-                </h1>
-              </div>
+
               <button
                 onClick={() => router.push('/dashboard/newsletters/compose')}
-                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2  !text-sm font-semibold hover:opacity-90 transition-all"
               >
                 <IconPlus className="w-4 h-4" />
                 {t('add_newsletter') || 'Nouvelle newsletter'}
@@ -170,19 +161,19 @@ export default function NewslettersPage() {
 
             {/* Stats inline */}
             <div className="flex gap-3 flex-wrap">
-              <div className="card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{t('total_newsletters') || 'Total'}</div>
                 <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : newsletters.length}</div>
               </div>
-              <div className="card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{t('sent') || 'Envoyées'}</div>
                 <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : sentCount}</div>
               </div>
-              <div className="card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{t('draft') || 'Brouillons'}</div>
                 <div className="!text-[22px] font-bold tracking-tight !text-secondary">{loading ? '...' : draftCount}</div>
               </div>
-              <div className="card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{t('scheduled') || 'Planifiées'}</div>
                 <div className="!text-[22px] font-bold tracking-tight text-blue-500">{loading ? '...' : scheduledCount}</div>
               </div>

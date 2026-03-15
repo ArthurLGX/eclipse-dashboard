@@ -117,7 +117,7 @@ export default function GlobalScoreDisplay({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="card p-6 relative overflow-hidden"
+      className="bg-card p-6 relative overflow-hidden"
     >
       {/* Background gradient decoration */}
       <div className={`absolute top-0 right-0 w-64 h-64 rounded-full bg-gradient-to-br ${getScoreGradient(score)} opacity-5 blur-3xl -translate-y-1/2 translate-x-1/2`} />

@@ -335,7 +335,7 @@ export default function TimeTrackingPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light ">
                 <IconClock className="w-5 h-5 !text-accent-text" />
@@ -346,7 +346,7 @@ export default function TimeTrackingPage() {
               </div>
             </div>
           </div>
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-success-light ">
                 <IconBriefcase className="w-5 h-5 !text-success-text -text" />
@@ -357,7 +357,7 @@ export default function TimeTrackingPage() {
               </div>
             </div>
           </div>
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
                 <div className="p-2 bg-warning-light ">
                 <IconCurrencyEuro className="w-5 h-5 !text-warning" />
@@ -408,11 +408,11 @@ export default function TimeTrackingPage() {
         {/* Entries List */}
         <div className="space-y-6">
           {isLoading ? (
-            <div className="card p-8 flex items-center justify-center">
+            <div className="bg-card p-8 flex items-center justify-center">
               <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />
             </div>
           ) : Object.keys(groupedEntries).length === 0 ? (
-            <div className="card p-8 !text-center">
+            <div className="bg-card p-8 !text-center">
               <IconClock className="w-12 h-12 !text-muted mx-auto mb-4" />
               <p className="!text-muted">{t('no_entries') || 'Aucune entrée de temps'}</p>
             </div>
@@ -425,7 +425,7 @@ export default function TimeTrackingPage() {
                     {formatDuration(dateEntries.reduce((acc, e) => acc + (e.duration || 0), 0))}
                   </span>
                 </div>
-                <div className="card">
+                <div className="bg-card">
                   {dateEntries.map((entry, index) => {
                     // Calculer la durée réelle (en temps réel pour les entrées en cours)
                     const isRunning = entry.is_running && entry.documentId === runningEntry?.documentId;
@@ -666,7 +666,7 @@ function TimeEntryModal({ entry, projects, onClose, onSave, onStartTimer }: Time
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="card w-full max-w-md p-6 m-4"
+        className="bg-card w-full max-w-md p-6 m-4"
       >
         <h2 className="!text-xl font-bold !text-primary mb-4">
           {entry ? (t('edit_entry') || 'Modifier l\'entrée') : (t('start_task') || 'Démarrer une tâche')}

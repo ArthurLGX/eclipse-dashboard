@@ -126,7 +126,7 @@ export default function ProjectProfitabilityCard({
   // Si pas d'estimations, afficher un message d'aide
   if (!profitabilityData.hasEstimates) {
     return (
-      <div className="card p-5">
+      <div className="bg-card p-5">
         <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
           <IconClock className="w-4 h-4" />
           {t('profitability') || 'Rentabilité'}
@@ -147,7 +147,7 @@ export default function ProjectProfitabilityCard({
   }
 
   return (
-    <div className="card p-5">
+    <div className="bg-card p-5">
       <h3 className="!text-xs font-semibold !text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
         <IconClock className="w-4 h-4" />
         {t('profitability') || 'Rentabilité'}

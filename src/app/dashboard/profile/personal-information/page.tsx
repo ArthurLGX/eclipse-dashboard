@@ -176,7 +176,7 @@ export default function PersonalInformationPage() {
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-1">
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <div className="flex flex-col items-center !space-y-4">
                   <div className="w-24 h-24 bg-muted rounded-full animate-pulse"></div>
                   <div className="h-6 bg-muted rounded w-32 animate-pulse"></div>
@@ -185,7 +185,7 @@ export default function PersonalInformationPage() {
               </div>
             </div>
             <div className="lg:col-span-2">
-              <div className="card p-4 !space-y-4">
+              <div className="bg-card p-4 !space-y-4">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="space-y-2">
                     <div className="h-4 bg-muted rounded w-20 animate-pulse"></div>

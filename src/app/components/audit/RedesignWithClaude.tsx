@@ -164,7 +164,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card overflow-hidden"
+      className="bg-card overflow-hidden"
     >
       <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">
         <div className="flex items-center gap-3">
@@ -189,7 +189,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
               <div
                 tabIndex={0}
                 onPaste={handlePaste}
-                className="border-2 border-dashed border-default rounded-lg p-8 !text-center focus:outline-none focus:ring-2 focus:ring-accent min-h-[160px] flex flex-col items-center justify-center gap-2"
+                className="border-2 border-dashed border-default  p-8 !text-center focus:outline-none focus:ring-2 focus:ring-accent min-h-[160px] flex flex-col items-center justify-center gap-2"
               >
                 {screenshot ? (
                   <>
@@ -290,7 +290,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
 
         {html && !isGenerating && (
           <div>
-            <div className="p-4 bg-success-light rounded-lg mb-4 !text-center">
+            <div className="p-4 bg-success-light  mb-4 !text-center">
               <IconSparkles className="w-8 h-8 mx-auto mb-2 !text-success-text -text" />
               <p className="!text-sm font-medium !text-success-text -text">{t('redesign_download_html')}</p>
             </div>

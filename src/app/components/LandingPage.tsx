@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTheme } from '@/app/context/ThemeContext';
 import useLenis from '@/utils/useLenis';
 import { motion } from 'motion/react';
@@ -56,11 +57,15 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page min-h-screen ">
-      <div className="landing-scroll-progress " style={{ width: `${scrollProgress}%` }} />
+      <motion.div
+        className="landing-scroll-progress"
+        animate={{ width: `${scrollProgress}%` }}
+        transition={{ type: 'tween', duration: 0.2, ease: 'easeOut' }}
+      />
 
       <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`} id="landing-nav">
         <Link href="/" className="landing-nav-logo">
-          <div className="landing-nav-logo-mark">ES</div>
+          <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={30} height={30} className="landing-nav-logo-mark object-contain" />
           <span>Eclipse Studio Dashboard</span>
         </Link>
         <ul className="landing-nav-links">
@@ -79,14 +84,33 @@ export default function LandingPage() {
             {resolvedMode === 'dark' ? '☀️' : '🌙'}
           </button>
           <Link href="/login" className="landing-btn-ghost">{t('landing_nav_login')}</Link>
-          <Link href="/pricing" className="landing-btn-primary">{t('landing_nav_free_trial')}</Link>
+          <Link href="/pricing" className="landing-btn-primary-lg">{t('landing_nav_free_trial')}</Link>
         </div>
       </nav>
 
-      <section className="landing-hero ">
+      <section className={`landing-hero ${resolvedMode === 'dark' ? 'landing-hero-with-video' : ''}`}>
+        {resolvedMode === 'dark' && (
+          <>
+            <div className="landing-hero-video-wrap">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="landing-hero-video"
+              >
+                <source src="/videos/background-video.mp4" type="video/mp4" />
+              </video>
+              <div className="landing-hero-video-overlay" />
+              <div className="landing-hero-video-gradient-top" />
+              <div className="landing-hero-video-gradient-bottom" />
+            </div>
+          </>
+        )}
         <div className="landing-hero-bg" />
         <div className="landing-hero-grid" />
 
+        <div className="landing-hero-content relative z-10">
         <motion.div className="landing-eyebrow" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="landing-eyebrow-dot" />
           {t('landing_hero_eyebrow')}
@@ -200,6 +224,7 @@ export default function LandingPage() {
             </div>
           </div>
         </motion.div>
+        </div>
       </section>
 
       <motion.div className="landing-logos-section" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}>
@@ -339,7 +364,7 @@ export default function LandingPage() {
                     <div key={i} className="h-4 rounded" style={{ background: 'var(--landing-border)' }} />
                   ))}
                 </div>
-                <div className="h-12 rounded-lg mt-6" style={{ background: 'var(--landing-border)' }} />
+                <div className="h-12  mt-6" style={{ background: 'var(--landing-border)' }} />
               </div>
             ))
           ) : plans.length > 0 ? (
@@ -455,7 +480,7 @@ export default function LandingPage() {
         <motion.p className="landing-cta-sub" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>{t('landing_cta_sub')}</motion.p>
         <motion.div className="flex gap-2 max-w-[400px] mx-auto" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
           <input type="email" className="landing-cta-input" placeholder={t('landing_cta_placeholder')} />
-          <Link href="/pricing" className="landing-btn-primary" style={{ padding: '14px 20px', fontSize: 14, whiteSpace: 'nowrap' }}>{t('landing_cta_button')}</Link>
+          <Link href="/pricing" className="landing-btn-primary-lg" style={{ padding: '14px 20px', fontSize: 14, whiteSpace: 'nowrap' }}>{t('landing_cta_button')}</Link>
         </motion.div>
         <motion.div className="text-xs mt-3" style={{ color: 'var(--landing-text-sm)' }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.3 }}>{t('landing_cta_badge')}</motion.div>
       </section>
@@ -463,7 +488,7 @@ export default function LandingPage() {
       <footer className="landing-footer">
         <div>
           <div className="landing-footer-logo">
-            <div className="landing-footer-logo-mark">ES</div>
+            <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={26} height={26} className="landing-footer-logo-mark object-contain" />
             <span className="font-bold text-[13px] tracking-tight" style={{ color: 'var(--landing-text)' }}>Eclipse Studio Dashboard</span>
           </div>
           <div className="landing-footer-tagline">{t('landing_footer_tagline')}</div>

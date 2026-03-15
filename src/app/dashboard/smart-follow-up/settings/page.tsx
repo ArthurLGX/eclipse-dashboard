@@ -226,7 +226,7 @@ export default function SmartFollowUpSettingsPage() {
   const settingRow = 'flex items-center gap-4 p-4 border-b border-default last:border-b-0 hover:bg-muted/30 transition-colors';
   const settingLabel = 'flex-1';
   const settingInput =
-    'bg-muted border border-default rounded-lg px-3 py-2 !text-sm !text-primary outline-none focus:border-primary transition-colors w-full';
+    'bg-muted border border-default  px-3 py-2 !text-sm !text-primary outline-none focus:border-primary transition-colors w-full';
 
   return (
     <>
@@ -270,7 +270,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'activation' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-success/10 border border-success/20 flex items-center justify-center !text-success">
+              <div className="w-8 h-8  bg-success/10 border border-success/20 flex items-center justify-center !text-success">
                 <IconCircleDot className="w-4 h-4" />
               </div>
               <div>
@@ -301,7 +301,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'domaines' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-muted border border-default flex items-center justify-center !text-muted">
+              <div className="w-8 h-8  bg-muted border border-default flex items-center justify-center !text-muted">
                 <IconBan className="w-4 h-4" />
               </div>
               <div>
@@ -321,7 +321,7 @@ export default function SmartFollowUpSettingsPage() {
                 />
                 <button
                   onClick={handleAddDomain}
-                  className="px-3.5 py-2 bg-primary !text-white rounded-lg !text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 flex-shrink-0"
+                  className="px-3.5 py-2 bg-primary !text-white  !text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 flex-shrink-0"
                 >
                   <IconPlus className="w-3 h-3" />
                   Ajouter
@@ -354,7 +354,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'icp' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center !text-accent">
+              <div className="w-8 h-8  bg-accent/10 border border-accent/20 flex items-center justify-center !text-accent">
                 <IconUsers className="w-4 h-4" />
               </div>
               <div>
@@ -385,7 +385,7 @@ export default function SmartFollowUpSettingsPage() {
                         max={15}
                         value={icpSettings.min_score_threshold}
                         onChange={(e) => setICPSettings({ ...icpSettings, min_score_threshold: parseInt(e.target.value) || 8 })}
-                        className="w-20 px-3 py-2 font-mono !text-sm font-semibold !text-primary bg-muted border border-default rounded-lg text-center focus:border-primary outline-none"
+                        className="w-20 px-3 py-2 font-mono !text-sm font-semibold !text-primary bg-muted border border-default  text-center focus:border-primary outline-none"
                       />
                       <span className="font-mono !text-xs !text-muted">/ 15 points</span>
                     </div>
@@ -397,7 +397,7 @@ export default function SmartFollowUpSettingsPage() {
                       {(['b2b', 'b2c', 'agence', 'freelance'] as const).map((type) => (
                         <label
                           key={type}
-                          className={`flex items-center gap-2.5 p-2.5 rounded-lg cursor-pointer transition-all border ${
+                          className={`flex items-center gap-2.5 p-2.5  cursor-pointer transition-all border ${
                             icpSettings.types_enabled[type] ? 'bg-success/10 border-success/20' : 'bg-muted border-default hover:border-[#ccc8c2]'
                           }`}
                         >
@@ -476,7 +476,7 @@ export default function SmartFollowUpSettingsPage() {
                         <div className="font-mono !text-[10px] !text-muted uppercase tracking-wider">{type}</div>
                         <button
                           onClick={() => { setEditingICPType(editingICPType === type ? null : type); setNewICPKeyword(''); }}
-                          className="px-2.5 py-1 rounded-lg bg-success !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1"
+                          className="px-2.5 py-1  bg-success !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1"
                         >
                           <IconPlus className="w-3 h-3" />
                           Ajouter
@@ -492,7 +492,7 @@ export default function SmartFollowUpSettingsPage() {
                             className={settingInput}
                             autoFocus
                           />
-                          <button onClick={() => handleAddICPKeyword(type)} className="px-3 py-2 bg-primary !text-white rounded-lg !text-xs font-semibold">
+                          <button onClick={() => handleAddICPKeyword(type)} className="px-3 py-2 bg-primary !text-white  !text-xs font-semibold">
                             Ajouter
                           </button>
                         </div>
@@ -535,7 +535,7 @@ export default function SmartFollowUpSettingsPage() {
                         />
                         <button
                           onClick={handleAddKeyword}
-                          className="px-2.5 py-1 rounded-lg bg-danger !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1"
+                          className="px-2.5 py-1  bg-danger !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1"
                         >
                           <IconPlus className="w-3 h-3" />
                           Ajouter
@@ -564,7 +564,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'mots-cles' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-center !text-warning">
+              <div className="w-8 h-8  bg-warning/10 border border-warning/20 flex items-center justify-center !text-warning">
                 <IconBolt className="w-4 h-4" />
               </div>
               <div>
@@ -574,7 +574,7 @@ export default function SmartFollowUpSettingsPage() {
             </div>
             <div className="p-4">
               <p className="!text-sm !text-muted mb-4">Configurez les mots-clés dans la section Profil ICP.</p>
-              <button onClick={() => setActiveSection('icp')} className="px-4 py-2 bg-accent !text-white rounded-lg !text-sm font-medium hover:opacity-90">
+              <button onClick={() => setActiveSection('icp')} className="px-4 py-2 bg-accent !text-white  !text-sm font-medium hover:opacity-90">
                 Aller au profil ICP
               </button>
             </div>
@@ -585,7 +585,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'delais' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-muted border border-default flex items-center justify-center !text-muted">
+              <div className="w-8 h-8  bg-muted border border-default flex items-center justify-center !text-muted">
                 <IconClock className="w-4 h-4" />
               </div>
               <div>
@@ -622,7 +622,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'heures' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-success/10 border border-success/20 flex items-center justify-center !text-success">
+              <div className="w-8 h-8  bg-success/10 border border-success/20 flex items-center justify-center !text-success">
                 <IconCalendar className="w-4 h-4" />
               </div>
               <div>
@@ -648,7 +648,7 @@ export default function SmartFollowUpSettingsPage() {
                     <button
                       key={d.value}
                       onClick={() => handleDayToggle(d.value)}
-                      className={`px-3 py-1.5 rounded-lg font-mono !text-[11px] transition-all ${
+                      className={`px-3 py-1.5  font-mono !text-[11px] transition-all ${
                         workHours.days.includes(d.value)
                           ? 'bg-primary !text-white border border-primary'
                           : 'bg-muted border border-default !text-muted hover:border-[#ccc8c2]'
@@ -668,7 +668,7 @@ export default function SmartFollowUpSettingsPage() {
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center justify-between gap-2.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center !text-accent">
+                <div className="w-8 h-8  bg-accent/10 border border-accent/20 flex items-center justify-center !text-accent">
                   <IconShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
@@ -680,7 +680,7 @@ export default function SmartFollowUpSettingsPage() {
               </div>
               <button
                 onClick={() => setShowRulesModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-default rounded-lg !text-xs font-medium !text-muted hover:!text-primary hover:border-[#ccc8c2] transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-default  !text-xs font-medium !text-muted hover:!text-primary hover:border-[#ccc8c2] transition-colors"
               >
                 <IconFilter className="w-3 h-3" />
                 Gérer les règles
@@ -692,7 +692,7 @@ export default function SmartFollowUpSettingsPage() {
                   {customRules.map((rule) => (
                     <div
                       key={rule.id}
-                      className="flex items-center gap-3 p-3 bg-muted border border-default rounded-lg hover:border-[#ccc8c2] transition-colors"
+                      className="flex items-center gap-3 p-3 bg-muted border border-default  hover:border-[#ccc8c2] transition-colors"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
                       <span className="flex-1 !text-[13px] font-medium !text-primary">{rule.name}</span>
@@ -713,7 +713,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'notifications' && (
           <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-muted border border-default flex items-center justify-center !text-muted">
+              <div className="w-8 h-8  bg-muted border border-default flex items-center justify-center !text-muted">
                 <IconBell className="w-4 h-4" />
               </div>
               <div>

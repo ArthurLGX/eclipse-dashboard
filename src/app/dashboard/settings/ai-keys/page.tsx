@@ -76,7 +76,7 @@ export default function AIKeysSettingsPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary  transition-colors"
           >
             <IconArrowLeft className="w-5 h-5" />
           </button>

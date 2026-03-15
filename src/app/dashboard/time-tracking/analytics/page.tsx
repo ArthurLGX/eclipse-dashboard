@@ -511,14 +511,14 @@ export default function TimeTrackingAnalyticsPage() {
         </div>
 
         {isLoading ? (
-          <div className="card p-12 flex items-center justify-center">
+          <div className="bg-card p-12 flex items-center justify-center">
             <div className="animate-spin w-10 h-10 border-3 border-accent border-t-transparent rounded-full" />
           </div>
         ) : (
           <>
             {/* KPIs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="card p-5">
+              <div className="bg-card p-5">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-accent-light ">
                     <IconClock className="w-6 h-6 !text-accent-text" />
@@ -530,7 +530,7 @@ export default function TimeTrackingAnalyticsPage() {
                 </div>
               </div>
               
-              <div className="card p-5">
+              <div className="bg-card p-5">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-warning-light ">
                     <IconCalendar className="w-6 h-6 !text-warning" />
@@ -542,7 +542,7 @@ export default function TimeTrackingAnalyticsPage() {
                 </div>
               </div>
               
-              <div className="card p-5">
+              <div className="bg-card p-5">
                 <div className="flex items-center gap-3">
                   <div className={`p-3  ${
                     analytics.avgAccuracy > 110 ? 'bg-danger-light' :
@@ -565,7 +565,7 @@ export default function TimeTrackingAnalyticsPage() {
                 </div>
               </div>
               
-              <div className="card p-5">
+              <div className="bg-card p-5">
                 <div className="flex items-center gap-3">
                   <div className="p-3 bg-success-light ">
                     <IconTrendingUp className="w-6 h-6 !text-success-text -text" />
@@ -581,7 +581,7 @@ export default function TimeTrackingAnalyticsPage() {
             {/* Charts Row 1 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Daily Time Chart */}
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('daily_comparison') || 'Comparaison journalière'}
                 </h3>
@@ -591,7 +591,7 @@ export default function TimeTrackingAnalyticsPage() {
               </div>
 
               {/* Project Time Chart */}
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('time_by_project') || 'Temps par projet'}
                 </h3>
@@ -610,7 +610,7 @@ export default function TimeTrackingAnalyticsPage() {
             {/* Charts Row 2 */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Accuracy Distribution */}
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('estimation_accuracy') || 'Précision des estimations'}
                 </h3>
@@ -634,7 +634,7 @@ export default function TimeTrackingAnalyticsPage() {
               </div>
 
               {/* Status Distribution */}
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('task_status') || 'Statut des tâches'}
                 </h3>
@@ -644,7 +644,7 @@ export default function TimeTrackingAnalyticsPage() {
               </div>
 
               {/* Top Deviated Tasks - Regroupées par projet */}
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <h3 className="!text-lg font-semibold !text-primary mb-4">
                   {t('biggest_deviations') || 'Plus grands écarts'}
                 </h3>
@@ -689,7 +689,7 @@ export default function TimeTrackingAnalyticsPage() {
             </div>
 
             {/* Insights */}
-            <div className="card p-4 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
+            <div className="bg-card p-4 bg-gradient-to-r from-accent/5 to-transparent border-accent-light">
               <h3 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
                 <IconTarget className="w-5 h-5 !text-accent-text" />
                 {t('insights') || 'Conseils'}

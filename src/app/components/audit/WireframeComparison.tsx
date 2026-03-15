@@ -64,7 +64,7 @@ export default function WireframeComparison({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="card overflow-hidden"
+      className="bg-card overflow-hidden"
     >
       {/* Header */}
       <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">

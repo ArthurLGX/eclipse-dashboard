@@ -69,7 +69,7 @@
   --color-accent-bg: #130501;
   --color-accent-muted: #ff5c29;
   --color-accent-subtle: #ff380b;
-  --color-accent-border: #501002;
+  --color-accent-border: #ff380b;
   --color-accent-text: #000000;
   
   /* Navigation active colors - Dark mode */
@@ -153,318 +153,104 @@
 }
 
 /* ============================================
-   LIGHT THEME - Texte noir sur fond blanc avec Glass Effect
+   LIGHT THEME - Noir sur blanc, boutons primary blanc sur noir
    ============================================ */
 :root.light {
-  /* Backgrounds */
-  --bg-page:        #F5F0E8;   /* beige écru style Anthropic */
-  --bg-card:        #F5F5EE;   /* blanc cassé pour les cards */
-  --bg-card-hover:  #EEF4F0;   /* légère teinte verte au hover */
-  --bg-input:       #FFFFFF;   /* blanc pur pour les champs */
-  --bg-sidebar:     #F5F5EE;
-  --bg-hover:       rgba(123, 174, 127, 0.10);
-  --bg-muted:       #F5F0E8;
+  /* Backgrounds - gris très léger */
+  --bg-page:        #FFFFFF;
+  --bg-card:        #F5F5F5;
+  --bg-card-hover:  #EEEEEE;
+  --bg-input:       #FFFFFF;
+  --bg-sidebar:     #FAFAFA;
+  --bg-hover:       rgba(0, 0, 0, 0.05);
+  --bg-muted:       #F5F5F5;
 
-  /* Borders */
-  --border-default: rgba(123, 174, 127, 0.25);
-  --border-input:   rgba(123, 174, 127, 0.40);
-  --border-muted:   rgba(123, 174, 127, 0.12);
+  /* Borders - gris léger */
+  --border-default: rgba(0, 0, 0, 0.12);
+  --border-input:   rgba(0, 0, 0, 0.2);
+  --border-muted:   rgba(0, 0, 0, 0.08);
 
-  /* Text — tous vérifiés WCAG AA (ratio ≥ 4.5:1 sur fond clair) */
-  --text-primary:     #2C3A2E;   /* quasi-noir vert, ratio ~12:1 */
-  --text-secondary:   #ff380b;   /* conserver l'accent rouge existant */
-  --text-muted:       #556B58;   /* ratio ~5.5:1 */
-  --text-placeholder: #9EB8A2;   /* usage placeholder uniquement */
+  /* Text - noir sur blanc */
+  --text-primary:     #000000;
+  --text-secondary:   #000000;
+  --text-muted:       #666666;
+  --text-placeholder: #999999;
 
   /* Register Button */
-  --bg-color-register:         #D6E8DF;
-  --text-color-register:       #2C3A2E;
-  --border-color-register:     rgba(123, 174, 127, 0.35);
-  --bg-color-register-hover:   #C2DECE;
-  --text-color-register-hover: #2C3A2E;
-  --border-color-register-hover: rgba(123, 174, 127, 0.55);
+  --bg-color-register:         rgba(0, 0, 0, 0.08);
+  --text-color-register:       #000000;
+  --border-color-register:     rgba(0, 0, 0, 0.15);
+  --bg-color-register-hover:   rgba(0, 0, 0, 0.12);
+  --text-color-register-hover: #000000;
+  --border-color-register-hover: rgba(0, 0, 0, 0.25);
 
-  /* Accent colors */
-  --color-accent:        #7BAE7F;
-  --color-accent-light:  #D6E8DF;
-  --color-accent-bg:     rgba(123, 174, 127, 0.12);
-  --color-accent-muted:  #96C49A;
-  --color-accent-subtle: rgba(123, 174, 127, 0.20);
-  --color-accent-border: rgba(123, 174, 127, 0.40);
-  --color-accent-text:   #FFFFFF;  /* blanc sur vert sauge, ratio ~4.6:1 ✅ */
+  /* Accent colors - noir pour cohérence */
+  --color-accent:        #000000;
+  --color-accent-light:  #333333;
+  --color-accent-bg:     rgba(0, 0, 0, 0.06);
+  --color-accent-muted:  #333333;
+  --color-accent-subtle: rgba(0, 0, 0, 0.1);
+  --color-accent-border: rgba(0, 0, 0, 0.2);
+  --color-accent-text:   #FFFFFF;
 
-  /* Navigation active */
-  --nav-active-bg:     #D6E8DF;
-  --nav-active-text:   #2C3A2E;
-  --nav-active-border: rgba(123, 174, 127, 0.50);
+  /* Navigation active - noir */
+  --nav-active-bg:     #000000;
+  --nav-active-text:   #FFFFFF;
+  --nav-active-border: #000000;
 
-  /* Primary */
-  --color-primary:        #7BAE7F;
-  --color-primary-bg:     rgba(123, 174, 127, 0.12);
-  --color-primary-border: rgba(123, 174, 127, 0.35);
-  --color-primary-text:   #2C3A2E;
+  /* Primary - blanc sur noir (boutons) */
+  --color-primary:        #000000;
+  --color-primary-bg:     rgba(0, 0, 0, 0.08);
+  --color-primary-border: #000000;
+  --color-primary-text:   #FFFFFF;
+  --color-primary-hover:  #333333;
 
-  /* Success — vert naturel cohérent avec la palette */
-  --color-success:        #4A9B5F;
-  --color-success-bg:     #D6E8DF;
-  --color-success-border: rgba(74, 155, 95, 0.35);
-  --color-success-text:   #1E4D2B;
+  /* Success */
+  --color-success:        #000000;
+  --color-success-bg:     rgba(0, 0, 0, 0.06);
+  --color-success-border: rgba(0, 0, 0, 0.2);
+  --color-success-text:   #000000;
 
-  /* Info — bleu désaturé doux */
-  --color-info:        #4A7FA5;
-  --color-info-bg:     #E0EAF4;
-  --color-info-border: rgba(74, 127, 165, 0.30);
-  --color-info-text:   #1E3D6B;
+  /* Info */
+  --color-info:        #333333;
+  --color-info-bg:     rgba(0, 0, 0, 0.06);
+  --color-info-border: rgba(0, 0, 0, 0.15);
+  --color-info-text:   #000000;
 
-  /* Warning — ambre chaud */
-  --color-warning:        #C48B2F;
-  --color-warning-light:  #FDF0DC;
-  --color-warning-bg:     #FDF0DC;
-  --color-warning-border: rgba(196, 139, 47, 0.35);
-  --color-warning-text:   #7A5A1E;
+  /* Warning */
+  --color-warning:        #333333;
+  --color-warning-light:  rgba(0, 0, 0, 0.06);
+  --color-warning-bg:     rgba(0, 0, 0, 0.06);
+  --color-warning-border: rgba(0, 0, 0, 0.2);
+  --color-warning-text:   #000000;
 
-  /* Danger — rouge doux (conserver cohérence avec --color-highlight) */
-  --color-danger:        #C45555;
-  --color-danger-bg:     #FAE0E0;
-  --color-danger-border: rgba(196, 85, 85, 0.35);
-  --color-danger-text:   #7A2A2A;
+  /* Danger */
+  --color-danger:        #000000;
+  --color-danger-bg:     rgba(0, 0, 0, 0.08);
+  --color-danger-border: rgba(0, 0, 0, 0.2);
+  --color-danger-text:   #000000;
 
-  /* Shadows — teintées vert foncé, jamais noires neutres */
-  --shadow-sm:     0 2px 8px  rgba(44, 58, 46, 0.08);
-  --shadow-md:     0 4px 16px rgba(44, 58, 46, 0.10);
-  --shadow-lg:     0 8px 32px rgba(44, 58, 46, 0.12);
-  --shadow-accent: 0 8px 32px rgba(123, 174, 127, 0.20);
+  /* Shadows */
+  --shadow-sm:     0 2px 8px  rgba(0, 0, 0, 0.06);
+  --shadow-md:     0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg:     0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-accent: 0 8px 32px rgba(0, 0, 0, 0.12);
 
   /* Gradients */
-  --gradient-sidebar: linear-gradient(180deg, #F5F0E8 0%, #F5F5EE 100%);
+  --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
 
-  /* Banners — variations douces de la palette */
-  --banner-blue:    linear-gradient(to bottom right, #E0EAF4, #F5F0E8, #F5F0E8);
-  --banner-emerald: linear-gradient(to bottom right, #D6E8DF, #F5F0E8, #F5F0E8);
-  --banner-amber:   linear-gradient(to bottom right, #FDF0DC, #F5F0E8, #F5F0E8);
-  --banner-purple:  linear-gradient(to bottom right, #EDE0F4, #F5F0E8, #F5F0E8);
-  --banner-rose:    linear-gradient(to bottom right, #FAE0E0, #F5F0E8, #F5F0E8);
-  --banner-cyan:    linear-gradient(to bottom right, #DCF0F4, #F5F0E8, #F5F0E8);
+  /* Banners */
+  --banner-blue:    linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
+  --banner-emerald: linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
+  --banner-amber:   linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
+  --banner-purple:  linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
+  --banner-rose:    linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
+  --banner-cyan:    linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
 
   /* Landing page - Light */
-  --landing-bg: #F5F0E8;
-  --landing-surface: #FFFFFF;
-  --landing-surface2: #F5F5EE;
-  --landing-border: rgba(44,58,46,0.12);
-  --landing-border2: rgba(44,58,46,0.2);
-  --landing-text: #2C3A2E;
-  --landing-text-md: #556B58;
-  --landing-text-sm: #7a8a7c;
-  --landing-accent: #7BAE7F;
-  --landing-accent-hover: #6a9d6e;
-  --landing-accent-text: #FFFFFF;
-  --landing-accent2: #6366f1;
-  --landing-green: #4A9B5F;
-  --landing-nav-scrolled: rgba(245,240,232,0.9);
-  --landing-grid: rgba(44,58,46,0.15);
-  --landing-star: #d4a012;
-}
-
-/* ============================================
-   BRUTALIST THEME - DARK MODE
-   ============================================ */
-:root.brutalist,
-:root.brutalist-dark {
-  /* Backgrounds - Raw blacks */
-  --bg-page: #0A0A0A;
-  --bg-card: #141414;
-  --bg-card-hover: #1C1C1C;
-  --bg-input: #0A0A0A;
-  --bg-sidebar: #000000;
-  --bg-hover: #1C1C1C;
-  --bg-muted: #0F0F0F;
-  
-  /* Borders - Strong, visible */
-  --border-default: #333333;
-  --border-input: #444444;
-  --border-muted: #222222;
-  
-  /* Text colors - High contrast */
-  --text-primary: #FFFFFF;
-  --text-secondary: #B0B0B0;
-  --text-muted: #707070;
-  --text-placeholder: #505050;
-  
-  /* Accent colors - Monochrome with white accent */
-  --color-accent: #FFFFFF;
-  --color-accent-light: #E0E0E0;
-  --color-accent-bg: #e0e0e0;
-  --color-accent-muted: #d0d0d0;
-  --color-accent-subtle: #d0d0d0;
-  --color-accent-border: #c0c0c0;
-  --color-accent-text: #000000;
-  
-  /* Navigation active colors */
-  --nav-active-bg: #e0e0e0;
-  --nav-active-text: #FFFFFF;
-  --nav-active-border: #d0d0d0;
-  
-  /* Semantic colors - Muted, industrial */
-  --color-primary: #FFFFFF;
-  --color-primary-bg: #e0e0e0;
-  --color-primary-border: #d0d0d0;
-  --color-primary-text: #FFFFFF;
-  
-  --color-success: #A0A0A0;
-  --color-success-bg: #e0e0e0;
-  --color-success-border: #d0d0d0;
-  --color-success-text: #C0C0C0;
-  
-  --color-info: #909090;
-        --color-info-bg: #e0e0e0;
-  --color-info-border: #d0d0d0;
-  --color-info-text: #B0B0B0;
-  
-  --color-warning: #ff380b;
-  --color-warning-light: #ffd7cb;
-  --color-warning-bg: #e0e0e0;
-  --color-warning-border: #d0d0d0;
-  --color-warning-text: #ff380b;
-  
-  --color-danger: #ff380b;
-  --color-danger-bg: #ff380b;
-  --color-danger-border: #ff380b;
-  --color-danger-text: #000000;
-  
-  /* Shadows - Minimal */
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
-  --shadow-accent: none;
-  
-  /* Gradients - Flat */
-  --gradient-sidebar: #000000;
-  
-  /* Banner gradients - Monochrome */
-  --banner-blue: linear-gradient(to bottom right, #1a1a1a, #0a0a0a, #0a0a0a);
-  --banner-emerald: linear-gradient(to bottom right, #181818, #0a0a0a, #0a0a0a);
-  --banner-amber: linear-gradient(to bottom right, #1c1c1c, #0a0a0a, #0a0a0a);
-  --banner-purple: linear-gradient(to bottom right, #161616, #0a0a0a, #0a0a0a);
-  --banner-rose: linear-gradient(to bottom right, #141414, #0a0a0a, #0a0a0a);
-  --banner-cyan: linear-gradient(to bottom right, #121212, #0a0a0a, #0a0a0a);
-
-  /* Landing page - Brutalist Dark (aligné au thème) */
-  --landing-bg: #000000;
-  --landing-surface: #0d0d0d;
-  --landing-surface2: #141414;
-  --landing-border: rgba(255,255,255,0.08);
-  --landing-border2: rgba(255,255,255,0.15);
-  --landing-text: #f5f5f5;
-  --landing-text-md: #b0b0b0;
-  --landing-text-sm: #888888;
-  --landing-accent: #ff380b;
-  --landing-accent-hover: #ff5c29;
-  --landing-accent-text: #000000;
-  --landing-accent2: #6366f1;
-  --landing-green: #7b9603;
-  --landing-nav-scrolled: rgba(0,0,0,0.9);
-  --landing-grid: rgba(255,56,11,0.08);
-  --landing-star: #ff380b;
-
-  /* Login - Brutalist Dark (same as default dark) */
-  --login-bg: #0a0a0a;
-  --login-surface: #181818;
-  --login-border: rgba(255,255,255,0.15);
-  --login-text: #f5f5f5;
-  --login-text-muted: #a3a3a3;
-  --login-input-bg: #111111;
-  --login-input-border: rgba(255,255,255,0.2);
-  --login-btn-bg: #ffffff;
-  --login-btn-text: #0a0a0a;
-  --login-link: #a5b4fc;
-}
-
-/* ============================================
-   BRUTALIST THEME - LIGHT MODE
-   ============================================ */
-:root.brutalist-light {
-  /* Backgrounds - Raw whites */
-  --bg-page: #FFFFFF;
-  --bg-card: #FAFAFA;
-  --bg-card-hover: #F0F0F0;
-  --bg-input: #FFFFFF;
-  --bg-sidebar: #FFFFFF;
-  --bg-hover: #F0F0F0;
-  --bg-muted: #F5F5F5;
-  
-  /* Borders - Strong, visible */
-  --border-default: #000000;
-  --border-input: #000000;
-  --border-muted: #333333;
-  
-  /* Text colors - High contrast */
-  --text-primary: #000000;
-  --text-secondary: #333333;
-  --text-muted: #666666;
-  --text-placeholder: #999999;
-  
-  /* Accent colors - Monochrome with black accent */
-  --color-accent: #000000;
-  --color-accent-light: #333333;
-  --color-accent-bg: #e0e0e0;
-  --color-accent-muted: #d0d0d0;
-  --color-accent-subtle: #d0d0d0;
-  --color-accent-border: #000000;
-  --color-accent-text: #1e418d;
-  
-  /* Navigation active colors */
-  --nav-active-bg: #e0e0e0;
-  --nav-active-text: #000000;
-  --nav-active-border: #000000;
-  
-  /* Semantic colors - Muted, industrial */
-  --color-primary: #000000;
-  --color-primary-bg: #e0e0e0;
-  --color-primary-border: #000000;
-  --color-primary-text: #000000;
-  
-  --color-success: #404040;
-  --color-success-bg: #e0e0e0;
-  --color-success-border: #404040;
-  --color-success-text: #404040;
-  
-  --color-info: #505050;
-      --color-info-bg: #e0e0e0;
-  --color-info-border: #505050;
-  --color-info-text: #505050;
-  
-  --color-warning: #ff380b;
-  --color-warning-light: #ffd7cb;
-  --color-warning-bg: #e0e0e0;
-  --color-warning-border: #ff380b;
-  --color-warning-text: #ff380b;
-  
-  --color-danger: #ff380b;
-    --color-danger-bg: #ff380b;
-  --color-danger-border: #ff380b;
-  --color-danger-text: #000000;
-  
-  /* Shadows - Minimal */
-  --shadow-sm: none;
-  --shadow-md: none;
-  --shadow-lg: none;
-  --shadow-accent: none;
-  
-  /* Gradients - Flat */
-  --gradient-sidebar: #FFFFFF;
-  
-  /* Banner gradients - Monochrome */
-  --banner-blue: linear-gradient(to bottom right, #F0F0F0, #FFFFFF, #FFFFFF);
-  --banner-emerald: linear-gradient(to bottom right, #F5F5F5, #FFFFFF, #FFFFFF);
-  --banner-amber: linear-gradient(to bottom right, #EBEBEB, #FFFFFF, #FFFFFF);
-  --banner-purple: linear-gradient(to bottom right, #F2F2F2, #FFFFFF, #FFFFFF);
-  --banner-rose: linear-gradient(to bottom right, #F8F8F8, #FFFFFF, #FFFFFF);
-  --banner-cyan: linear-gradient(to bottom right, #EDEDED, #FFFFFF, #FFFFFF);
-
-  /* Landing page - Brutalist Light */
   --landing-bg: #FFFFFF;
-  --landing-surface: #FAFAFA;
-  --landing-surface2: #F5F5F5;
+  --landing-surface: #FFFFFF;
+  --landing-surface2: #FAFAFA;
   --landing-border: rgba(0,0,0,0.12);
   --landing-border2: rgba(0,0,0,0.2);
   --landing-text: #000000;
@@ -474,15 +260,15 @@
   --landing-accent-hover: #333333;
   --landing-accent-text: #FFFFFF;
   --landing-accent2: #6366f1;
-  --landing-green: #22c55e;
-  --landing-nav-scrolled: rgba(255,255,255,0.9);
-  --landing-grid: rgba(0,0,0,0.15);
-  --landing-star: #d4a012;
+  --landing-green: #000000;
+  --landing-nav-scrolled: rgba(255,255,255,0.95);
+  --landing-grid: rgba(0,0,0,0.06);
+  --landing-star: #000000;
 
-  /* Login - Brutalist Light */
+  /* Login page - Light (noir sur blanc) */
   --login-bg: #FFFFFF;
   --login-surface: #FAFAFA;
-  --login-border: rgba(0,0,0,0.2);
+  --login-border: rgba(0,0,0,0.15);
   --login-text: #000000;
   --login-text-muted: #666666;
   --login-input-bg: #FFFFFF;
@@ -744,16 +530,31 @@ button {
 }
 
 
-.btn-primary {
-  background-color: var(--color-highlight);
-  color: white;
-  border: 1px solid var(--color-highlight);
+ :root.light .btn-primary {
+  background-color: var(--color-primary);
+  color: white !important;
+  border: 1px solid var(--color-primary-border);
+  transition: all 0.2s ease;
+}
+ :root.dark .btn-primary {
+  background-color: var(--color-accent);
+  color: white !important;
+  border: 1px solid var(--color-accent-border);
+  transition: all 0.2s ease;
 }
 
-.btn-primary:hover {
-  background-color: var(--color-highlight-hover);
-  color: white;
-  border-color: var(--color-highlight-hover);
+:root.light .btn-primary:hover {
+  background-color: #FFFFFF;
+  color: #000000 !important;
+  border: 1px solid #000000;
+  transition: all 0.2s ease;
+}
+
+:root.dark .btn-primary:hover {
+  background-color: var(--color-accent-hover);
+  color: var(--color-primary);
+  border-color: var(--color-accent-hover);
+  transition: all 0.2s ease;
 }
 
 /* Bouton important avec la couleur highlight */
@@ -861,15 +662,15 @@ button {
   color: white;
 }
 
-/* Mode light - Bouton success gris foncé */
+/* Mode light - Bouton success noir/gris */
 :root.light .btn-success {
-  background-color: rgba(63, 63, 63, 0.1);
-  color: #3F3F3F;
-  border: 1px solid rgba(63, 63, 63, 0.3);
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
 }
 
 :root.light .btn-success:hover {
-  background-color: rgba(63, 63, 63, 0.2);
+  background-color: rgba(0, 0, 0, 0.15);
   color: #000000;
 }
 
@@ -884,16 +685,16 @@ button {
   color: white;
 }
 
-/* Mode light - Bouton info gris moyen */
+/* Mode light - Bouton info noir/gris */
 :root.light .btn-info {
-  background-color: rgba(87, 87, 87, 0.1);
-  color: #575757;
-  border: 1px solid rgba(87, 87, 87, 0.3);
+  background-color: var(--color-info-bg);
+  color: var(--color-info-text);
+  border: 1px solid var(--color-info-border);
 }
 
 :root.light .btn-info:hover {
-  background-color: rgba(87, 87, 87, 0.2);
-  color: #000000;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: #FFFFFF;
 }
 
 .btn-warning {
@@ -907,15 +708,15 @@ button {
   color: var(--color-highlight-text);
 }
 
-/* Mode light - Bouton warning orange */
+/* Mode light - Bouton warning noir/gris */
 :root.light .btn-warning {
-  background-color: rgba(255, 56, 11, 0.1);
-  color: #ff380b;
-  border: 1px solid rgba(255, 56, 11, 0.3);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
 }
 
 :root.light .btn-warning:hover {
-  background-color: #ff380b;
+  background-color: #000000;
   color: #FFFFFF;
 }
 
@@ -994,7 +795,7 @@ button {
 
 .nav-item:hover {
   background-color: var(--bg-hover);
-  color: var(--color-highlight);
+  color: var(--color-accent-border);
 }
 
 .nav-item:hover svg {
@@ -1019,22 +820,22 @@ button {
 
 :root.light .nav-item:hover {
   background-color: rgba(0, 0, 0, 0.08);
-  color: var(--color-accent-text);
+  color: var(--color-accent-border);
 }
 
 :root.light .nav-item:hover svg {
-  color: var(--color-accent-text);
+  color: var(--color-accent-border);
 }
 
 :root.light .nav-item.active {
-  background-color: rgba(255, 56, 11, 0.1);
-  color: white;
-  border: 1px solid var(--color-accent-border);
+  background-color: var(--nav-active-bg);
+  color: white !important;
+  border: 1px solid var(--nav-active-border);
 }
 
 :root.light .nav-item.active svg,
 :root.light .nav-item.active span {
-  color: var(--color-accent) !important;
+  color: white !important;
 }
 
 :root.light .nav-item svg {
@@ -1043,7 +844,7 @@ button {
 
 /* Sidebar */
 .sidebar {
-  background: var(--bg-card);
+  background: var(--bg-page) !important;
   border-right: 1px solid var(--border-default);
 }
 
@@ -1059,13 +860,11 @@ button {
   background-color: var(--bg-muted);
   color: var(--text-primary);
   font-weight: 600;
-  padding: 0.75rem 1rem;
   text-align: left;
   border-bottom: 1px solid var(--border-default);
 }
 
 .table td {
-  padding: 0.75rem 1rem;
   font-size: 12px !important;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-default);
@@ -1098,9 +897,10 @@ button {
   color: var(--color-primary-text);
 }
 
-.badge-success {
-  background-color: var(--color-success);
-  color: var(--color-success-text);
+:root.light .badge-success {
+  background-color: var(--color-accent-light);
+  color: var(--color-accent) !important;
+  border: 1px solid var(--color-accent-border);
 }
 
 .badge-info {
@@ -1131,11 +931,6 @@ button {
   border: 1px solid var(--color-primary-border);
 }
 
-:root.light .badge-success {
-  background-color: var(--color-success);
-  color: var(--color-success-text);
-  border: 1px solid var(--color-success-border);
-}
 
 :root.light .badge-info {
   background-color: rgba(87, 87, 87, 0.1);
@@ -1711,7 +1506,7 @@ nav button:hover, nav a:hover {
 
 nav button:hover span, nav a:hover span,
 nav button:hover svg, nav a:hover svg {
-  color: var(--color-highlight);
+  color: var(--color-accent-border);
 }
 
 /* Mode light - Sidebar blanc avec texte noir */
@@ -1744,7 +1539,7 @@ nav button:hover svg, nav a:hover svg {
 :root.light nav a:hover span,
 :root.light nav button:hover svg, 
 :root.light nav a:hover svg {
-  color: var(--color-highlight);
+  color: var(--color-accent-border);
 }
 
 /* ============================================
@@ -1859,345 +1654,6 @@ nav button:hover svg, nav a:hover svg {
 
 :root.light .auth-link:hover {
   color: #1F1F1F;
-}
-
-/* ============================================
-   BRUTALIST THEME - SPECIAL STYLES
-   ============================================ */
-
- 
-
-/* Brutalist hover effect - 3D lift effect */
-:root.brutalist,
-:root.brutalist-dark,
-:root.brutalist-light {
-  --brutalist-shadow-offset: 4px;
-  --brutalist-shadow-color: #000000;
-  /* Lift effect: move up-right, shadow stays fixed below */
-  --brutalist-hover-x: 2px;
-  --brutalist-hover-y: -2px;
-}
-
-:root.brutalist-light {
-  --brutalist-shadow-color: #000000;
-}
-
-/* Brutalist buttons, links, and interactive elements */
-:root.brutalist button,
-:root.brutalist-dark button,
-:root.brutalist-light button,
-:root.brutalist a:not(.no-brutalist-effect),
-:root.brutalist-dark a:not(.no-brutalist-effect),
-:root.brutalist-light a:not(.no-brutalist-effect),
-:root.brutalist .btn,
-:root.brutalist-dark .btn,
-:root.brutalist-light .btn,
-:root.brutalist .card,
-:root.brutalist-dark .card,
-:root.brutalist-light .card,
-:root.brutalist .nav-item,
-:root.brutalist-dark .nav-item,
-:root.brutalist-light .nav-item {
-  position: relative;
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.15s ease,
-              border-color 0.15s ease;
-}
-
-/* Hover effect for buttons - 3D lift with fixed shadow below */
-:root.brutalist button:hover:not(:disabled),
-:root.brutalist-dark button:hover:not(:disabled),
-:root.brutalist-light button:hover:not(:disabled),
-:root.brutalist .btn:hover:not(:disabled),
-:root.brutalist-dark .btn:hover:not(:disabled),
-:root.brutalist-light .btn:hover:not(:disabled) {
-  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
-  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
-}
-
-/* Hover effect for links */
-:root.brutalist a:not(.no-brutalist-effect):hover,
-:root.brutalist-dark a:not(.no-brutalist-effect):hover,
-:root.brutalist-light a:not(.no-brutalist-effect):hover {
-  display: inline-block;
-  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
-  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
-}
-
-/* Hover effect for cards */
-:root.brutalist .card:hover,
-:root.brutalist-dark .card:hover,
-:root.brutalist-light .card:hover {
-  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
-  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
-}
-
-/* Hover effect for nav items */
-:root.brutalist .nav-item:hover,
-:root.brutalist-dark .nav-item:hover,
-:root.brutalist-light .nav-item:hover {
-  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
-  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
-}
-
-/* Active/pressed state */
-:root.brutalist button:active:not(:disabled),
-:root.brutalist-dark button:active:not(:disabled),
-:root.brutalist-light button:active:not(:disabled),
-:root.brutalist .btn:active:not(:disabled),
-:root.brutalist-dark .btn:active:not(:disabled),
-:root.brutalist-light .btn:active:not(:disabled),
-:root.brutalist a:not(.no-brutalist-effect):active,
-:root.brutalist-dark a:not(.no-brutalist-effect):active,
-:root.brutalist-light a:not(.no-brutalist-effect):active {
-  transform: translate(0, 0);
-  box-shadow: none;
-}
-
-/* Brutalist borders - stronger, more visible */
-:root.brutalist,
-:root.brutalist-dark {
-  --border-default: #444444;
-  --border-input: #555555;
-}
-
-:root.brutalist-light {
-  --border-default: #000000;
-  --border-input: #000000;
-}
-
-/* Brutalist inputs - sharp, industrial */
-:root.brutalist input,
-:root.brutalist-dark input,
-:root.brutalist-light input,
-:root.brutalist textarea,
-:root.brutalist-dark textarea,
-:root.brutalist-light textarea,
-:root.brutalist select,
-:root.brutalist-dark select,
-:root.brutalist-light select {
-  border-width: 2px;
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.15s ease;
-}
-
-:root.brutalist input:focus,
-:root.brutalist-dark input:focus,
-:root.brutalist-light input:focus,
-:root.brutalist textarea:focus,
-:root.brutalist-dark textarea:focus,
-:root.brutalist-light textarea:focus,
-:root.brutalist select:focus,
-:root.brutalist-dark select:focus,
-:root.brutalist-light select:focus {
-  transform: translate(var(--brutalist-hover-x), var(--brutalist-hover-y));
-  box-shadow: calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-x)) calc(var(--brutalist-shadow-offset) - var(--brutalist-hover-y)) 0 0 var(--brutalist-shadow-color);
-}
-
- 
-
-/* Brutalist badges - square */
-:root.brutalist .badge,
-:root.brutalist-dark .badge,
-:root.brutalist-light .badge {
-  border: 2px solid currentColor;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Brutalist table - heavy borders */
-:root.brutalist table,
-:root.brutalist-dark table,
-:root.brutalist-light table {
-  border: 2px solid var(--border-default);
-}
-
-:root.brutalist th,
-:root.brutalist-dark th,
-:root.brutalist-light th {
-  border-bottom: 2px solid var(--border-default);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 800;
-}
-
-:root.brutalist td,
-:root.brutalist-dark td,
-:root.brutalist-light td {
-  border-bottom: 1px solid var(--border-default);
-}
-
-/* Brutalist chart colors */
-:root.brutalist,
-:root.brutalist-dark {
-  --chart-1: #FFFFFF;
-  --chart-2: #B0B0B0;
-  --chart-3: #808080;
-  --chart-4: #505050;
-  --chart-5: #303030;
-}
-
-:root.brutalist-light {
-  --chart-1: #000000;
-  --chart-2: #333333;
-  --chart-3: #666666;
-  --chart-4: #999999;
-  --chart-5: #CCCCCC;
-}
-
-/* Brutalist typography - bolder */
-:root.brutalist h1,
-:root.brutalist-dark h1,
-:root.brutalist-light h1,
-:root.brutalist h2,
-:root.brutalist-dark h2,
-:root.brutalist-light h2,
-:root.brutalist h3,
-:root.brutalist-dark h3,
-:root.brutalist-light h3 {
-  font-weight: 900;
-  letter-spacing: -0.02em;
-}
-
-:root.brutalist-light h2 {
-  color: #000000;
-}
-
-/* ============================================
-   BRUTALIST COLOR OVERRIDES
-   Force grayscale on hardcoded Tailwind colors
-   ============================================ */
-
-/* Dark brutalist - convert colors to white/gray shades */
-:root.brutalist,
-:root.brutalist-dark {
-  /* Override colored backgrounds */
-  & .bg-violet-500\/10, & .from-violet-500\/10,
-  & .bg-emerald-500\/10, & .from-emerald-500\/10,
-  & .bg-blue-500\/10, & .from-blue-500\/10,
-  & .bg-purple-500\/10, & .from-purple-500\/10,
-  & .bg-red-500\/10, & .from-red-500\/10,
-  & .bg-gray-500\/10, & .from-gray-500\/10 {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    background-image: none !important;
-  }
-  
-  & .bg-violet-500\/20, & .bg-emerald-500\/20, & .bg-blue-500\/20,
-  & .bg-purple-500\/20, & .bg-red-500\/20, & .bg-gray-500\/20,
-  & .bg-green-500\/20, & .bg-orange-500\/20, & .bg-yellow-500\/20 {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-  }
-  
-  /* Override colored borders */
-  & .border-violet-500\/20, & .border-emerald-500\/20,
-  & .border-blue-500\/20, & .border-purple-500\/20,
-  & .border-red-500\/20, & .border-gray-500\/20 {
-    border-color: rgba(255, 255, 255, 0.2) !important;
-  }
-  
-  /* Override colored text - convert to white/gray */
-  & .text-violet-500, & .text-violet-400, & .text-violet-600,
-  & .text-emerald-500, & .text-emerald-400,
-  & .text-blue-500, & .text-blue-400,
-  & .text-purple-500, & .text-purple-400,
-  & .text-green-500, & .text-green-400,
-  & .text-orange-500, & .text-amber-500 {
-    color: #FFFFFF !important;
-  }
-  
-  & .text-red-500, & .text-red-400 {
-    color: #B0B0B0 !important;
-  }
-  
-  & .text-gray-500, & .text-gray-400 {
-    color: #808080 !important;
-  }
-  
-  /* Override chart/graph bar colors */
-  & .bg-violet-500\/80 {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-  }
-  
-  & .hover\:bg-violet-500:hover {
-    background-color: #FFFFFF !important;
-  }
-  
-  /* Activity item backgrounds */
-  & .bg-emerald-100, & .bg-blue-100, & .bg-green-100, & .bg-gray-100 {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-  }
-  
-  & .dark\:bg-emerald-900\/30, & .dark\:bg-blue-900\/30,
-  & .dark\:bg-green-900\/30, & .dark\:bg-gray-900\/30 {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-  }
-}
-
-/* Light brutalist - convert colors to black/gray shades */
-:root.brutalist-light {
-  /* Override colored backgrounds */
-  & .bg-violet-500\/10, & .from-violet-500\/10,
-  & .bg-emerald-500\/10, & .from-emerald-500\/10,
-  & .bg-blue-500\/10, & .from-blue-500\/10,
-  & .bg-purple-500\/10, & .from-purple-500\/10,
-  & .bg-red-500\/10, & .from-red-500\/10,
-  & .bg-gray-500\/10, & .from-gray-500\/10 {
-    background-color: rgba(0, 0, 0, 0.03) !important;
-    background-image: none !important;
-  }
-  
-  & .bg-violet-500\/20, & .bg-emerald-500\/20, & .bg-blue-500\/20,
-  & .bg-purple-500\/20, & .bg-red-500\/20, & .bg-gray-500\/20,
-  & .bg-green-500\/20, & .bg-orange-500\/20, & .bg-yellow-500\/20 {
-    background-color: rgba(0, 0, 0, 0.06) !important;
-  }
-  
-  /* Override colored borders */
-  & .border-violet-500\/20, & .border-emerald-500\/20,
-  & .border-blue-500\/20, & .border-purple-500\/20,
-  & .border-red-500\/20, & .border-gray-500\/20 {
-    border-color: rgba(0, 0, 0, 0.15) !important;
-  }
-  
-  /* Override colored text - convert to black/gray */
-  & .text-violet-500, & .text-violet-400, & .text-violet-600,
-  & .text-emerald-500, & .text-emerald-400,
-  & .text-blue-500, & .text-blue-400,
-  & .text-purple-500, & .text-purple-400,
-  & .text-green-500, & .text-green-400,
-  & .text-orange-500, & .text-amber-500 {
-    color: #000000 !important;
-  }
-  
-  & .text-red-500, & .text-red-400 {
-    color: #333333 !important;
-  }
-  
-  & .text-gray-500, & .text-gray-400 {
-    color: #666666 !important;
-  }
-  
-  /* Override chart/graph bar colors */
-  & .bg-violet-500\/80 {
-    background-color: rgba(0, 0, 0, 0.8) !important;
-  }
-  
-  & .hover\:bg-violet-500:hover {
-    background-color: #000000 !important;
-  }
-  
-  /* Activity item backgrounds */
-  & .bg-emerald-100, & .bg-blue-100, & .bg-green-100, & .bg-gray-100 {
-    background-color: rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  & .dark\:bg-emerald-900\/30, & .dark\:bg-blue-900\/30,
-  & .dark\:bg-green-900\/30, & .dark\:bg-gray-900\/30 {
-    background-color: rgba(0, 0, 0, 0.05) !important;
-  }
 }
 
 /* ============================================
@@ -2549,9 +2005,8 @@ nav button:hover svg, nav a:hover svg {
 }
 .landing-nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--landing-text); }
 .landing-nav-logo-mark {
-  width: 30px; height: 30px; background: var(--landing-accent); border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 11px; color: var(--landing-accent-text); letter-spacing: -0.02em;
+  width: 30px; height: 30px; border-radius: 7px;
+  object-fit: contain; flex-shrink: 0;
 }
 .landing-nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
 .landing-nav-links a { font-size: 13px; color: var(--landing-text-md); text-decoration: none; transition: color .15s; }
@@ -2566,9 +2021,9 @@ nav button:hover svg, nav a:hover svg {
 /* Dark mode : boutons mieux contrastés */
 :root:not(.light) .landing-btn-ghost { border-color: rgba(255,255,255,0.2); color: #c4c4c4; }
 :root:not(.light) .landing-btn-ghost:hover { border-color: rgba(255,255,255,0.35); color: #f5f5f5; }
-:root:not(.light) .landing-btn-primary { background: var(--landing-accent); color: var(--landing-accent-text); }
+:root:not(.light) .landing-btn-primary { background: var(--landing-accent); color: white !important; }
 :root:not(.light) .landing-btn-primary:hover { background: var(--landing-accent-hover); }
-:root:not(.light) .landing-btn-primary-lg { background: var(--landing-accent); color: var(--landing-accent-text); }
+:root:not(.light) .landing-btn-primary-lg { background: var(--landing-accent); color: white !important; }
 :root:not(.light) .landing-btn-primary-lg:hover { background: var(--landing-accent-hover); }
 :root:not(.light) .landing-btn-ghost-lg { border-color: rgba(255,255,255,0.25); color: #c4c4c4; }
 :root:not(.light) .landing-btn-ghost-lg:hover { border-color: rgba(255,255,255,0.4); color: #f5f5f5; }
@@ -2579,17 +2034,38 @@ nav button:hover svg, nav a:hover svg {
 }
 .landing-btn-primary:hover { background: var(--landing-accent-hover); transform: translateY(-1px); }
 .landing-hero {
-  min-height: 100vh; padding: 120px 48px 80px;
+  min-height: 100vh; padding: 0;
   display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;
 }
+.landing-hero-content {
+  padding: 120px 48px 80px;
+}
+.landing-hero-video-wrap {
+  position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
+}
+.landing-hero-video {
+  position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover;
+}
+.landing-hero-video-overlay {
+  position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); z-index: 1;
+}
+.landing-hero-video-gradient-top {
+  position: absolute; top: 0; left: 0; width: 100vw; height: 120px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent); z-index: 2;
+}
+.landing-hero-video-gradient-bottom {
+  position: absolute; bottom: 0; left: 0; width: 100vw; height: 120px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent); z-index: 2;
+}
 .landing-hero-bg {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(ellipse 60% 50% at 70% 40%, color-mix(in srgb, var(--landing-accent2) 8%, transparent) 0%, transparent 70%),
     radial-gradient(ellipse 40% 40% at 20% 70%, color-mix(in srgb, var(--landing-accent) 4%, transparent) 0%, transparent 60%);
   pointer-events: none;
 }
+.landing-hero-with-video .landing-hero-bg { opacity: 0.3; }
 .landing-hero-grid {
-  position: absolute; inset: 0; opacity: 0.025;
+  position: absolute; inset: 0; opacity: 0.025; z-index: 2;
   background-image: linear-gradient(var(--landing-grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--landing-grid) 1px, transparent 1px);
   background-size: 60px 60px; pointer-events: none;
@@ -2612,7 +2088,7 @@ nav button:hover svg, nav a:hover svg {
 .landing-actions { display: flex; align-items: center; gap: 14px; margin-bottom: 80px; }
 .landing-btn-primary-lg {
   display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--landing-accent);
-  border: none; border-radius: 10px; color: var(--landing-accent-text); font-size: 15px; font-weight: 700;
+  border: none; border-radius: 10px; color: white !important; font-size: 15px; font-weight: 700;
   text-decoration: none; transition: all .2s; cursor: pointer; font-family: inherit;
 }
 .landing-btn-primary-lg:hover { background: var(--landing-accent-hover); transform: translateY(-2px); }
@@ -2738,7 +2214,7 @@ nav button:hover svg, nav a:hover svg {
 .landing-cta-input::placeholder { color: var(--landing-text-sm); }
 .landing-footer { padding: 48px; border-top: 1px solid var(--landing-border); display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 40px; }
 .landing-footer-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.landing-footer-logo-mark { width: 26px; height: 26px; background: var(--landing-accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--landing-accent-text); }
+.landing-footer-logo-mark { width: 26px; height: 26px; border-radius: 6px; object-fit: contain; flex-shrink: 0; }
 .landing-footer-tagline { font-size: 12px; color: var(--landing-text-sm); line-height: 1.6; max-width: 200px; }
 .landing-footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--landing-text-sm); margin-bottom: 14px; }
 .landing-footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
@@ -2747,7 +2223,7 @@ nav button:hover svg, nav a:hover svg {
 .landing-footer-bottom { padding: 20px 48px; border-top: 1px solid var(--landing-border); display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--landing-text-sm); }
 .landing-reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
 .landing-reveal.visible { opacity: 1; transform: translateY(0); }
-.landing-scroll-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--landing-accent); z-index: 200; transition: width .1s linear; }
+.landing-scroll-progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--landing-accent); z-index: 200; }
 /* ============================================
    LOGIN PAGE - Theme-aware, full width
    ============================================ */
@@ -2841,7 +2317,7 @@ nav button:hover svg, nav a:hover svg {
 @media (max-width: 768px) {
   .landing-nav { padding: 0 20px; }
   .landing-nav-links { display: none; }
-  .landing-hero { padding: 100px 20px 60px; }
+  .landing-hero-content { padding: 100px 20px 60px; }
   .landing-section { padding: 60px 20px; }
   .landing-features-grid { grid-template-columns: 1fr; }
   .landing-pricing-grid { grid-template-columns: 1fr; }

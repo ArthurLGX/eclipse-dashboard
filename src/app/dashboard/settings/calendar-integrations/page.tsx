@@ -182,7 +182,7 @@ export default function CalendarIntegrationsPage() {
         </div>
 
         {/* Setup Instructions */}
-        <div className="card p-4 bg-info-light border-info">
+        <div className="bg-card p-4 bg-info-light border-info">
           <div className="flex items-start gap-3">
             <IconAlertCircle className="w-5 h-5 !text-info flex-shrink-0 mt-0.5" />
             <div className="!text-sm">
@@ -211,7 +211,7 @@ export default function CalendarIntegrationsPage() {
               key={provider.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="card p-5"
+              className="bg-card p-5"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-start gap-4">
@@ -302,7 +302,7 @@ export default function CalendarIntegrationsPage() {
         </div>
 
         {/* Documentation Links */}
-        <div className="card p-5">
+        <div className="bg-card p-5">
           <h3 className="font-semibold !text-primary mb-4">
             {t('setup_guides') || 'Guides de configuration'}
           </h3>

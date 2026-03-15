@@ -84,7 +84,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconCode',
     description: 'Freelance ou indépendant dans le développement web',
     descriptionEn: 'Freelance or independent web developer',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['newsletters', 'monitoring', 'calendar', 'growth_audit', 'instagram_planner'],
     terminology: {
       project: 'Projet',
@@ -99,7 +99,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconBuilding',
     description: 'Agence web, communication ou marketing',
     descriptionEn: 'Web, communication or marketing agency',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'team', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'team', 'contracts'],
     availableModules: ['newsletters', 'monitoring', 'calendar', 'planning', 'growth_audit', 'instagram_planner'],
     terminology: {
       project: 'Projet',
@@ -114,7 +114,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconPalette',
     description: 'Designer UI/UX, graphiste ou directeur artistique',
     descriptionEn: 'UI/UX designer, graphic artist or art director',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['portfolio', 'galleries', 'calendar', 'instagram_planner'],
     terminology: {
       project: 'Projet créatif',
@@ -129,7 +129,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconBriefcase',
     description: 'Consultant indépendant, coach business',
     descriptionEn: 'Independent consultant, business coach',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['calendar', 'meeting_notes', 'growth_audit'],
     terminology: {
       project: 'Mission',
@@ -144,7 +144,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconCamera',
     description: 'Photographe professionnel, vidéaste',
     descriptionEn: 'Professional photographer, videographer',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['galleries', 'calendar', 'delivery', 'booking', 'instagram_planner'],
     terminology: {
       project: 'Shooting',
@@ -159,7 +159,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconSchool',
     description: 'Coach personnel, formateur, professeur',
     descriptionEn: 'Personal coach, trainer, teacher',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['calendar', 'sessions', 'courses', 'certificates', 'subscriptions_management'],
     terminology: {
       project: 'Programme',
@@ -174,7 +174,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconHammer',
     description: 'Artisan, entrepreneur du bâtiment',
     descriptionEn: 'Craftsman, construction contractor',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['calendar', 'inventory', 'materials', 'instagram_planner'],
     terminology: {
       project: 'Chantier',
@@ -189,7 +189,7 @@ export const BUSINESS_CONFIGS: Record<BusinessType, BusinessConfig> = {
     icon: 'IconDots',
     description: 'Autre type d\'activité',
     descriptionEn: 'Other type of activity',
-    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'emails', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
+    defaultModules: ['clients', 'prospects', 'projects', 'invoices', 'smart_follow_up', 'time_tracking', 'quotes', 'contracts'],
     availableModules: ['newsletters', 'monitoring', 'calendar', 'growth_audit'],
     terminology: {
       project: 'Projet',
@@ -242,16 +242,6 @@ export const ALL_MODULES: Record<string, ModuleConfig> = {
     core: true,
     description: 'Création et suivi des factures',
     descriptionEn: 'Create and track invoices',
-  },
-  emails: {
-    id: 'emails',
-    label: 'Emails',
-    labelEn: 'Emails',
-    icon: 'IconMail',
-    path: '/dashboard/emails',
-    core: true,
-    description: 'Envoi d\'emails professionnels',
-    descriptionEn: 'Send professional emails',
   },
   smart_follow_up: {
     id: 'smart_follow_up',
@@ -366,8 +356,8 @@ export const ALL_MODULES: Record<string, ModuleConfig> = {
   },
   growth_audit: {
     id: 'growth_audit',
-    label: 'Growth Audit',
-    labelEn: 'Growth Audit',
+    label: 'Design de page',
+    labelEn: 'Page Design',
     icon: 'IconTargetArrow',
     path: '/dashboard/growth-audit',
     core: false,
@@ -385,6 +375,19 @@ export const ALL_MODULES: Record<string, ModuleConfig> = {
     descriptionEn: 'Plan and preview Instagram posts',
   },
 };
+
+// Modules liés au calcul du CA et à l'analyse financière
+export const REVENUE_RELATED_MODULES: string[] = [
+  'clients',    // Contacts/Clients - base des factures
+  'invoices',  // Facturation
+  'quotes',    // Devis - convertibles en factures
+  'projects',  // Projets - suivi CA par projet
+  'prospects', // Pipeline/Prospects
+];
+
+export function isRevenueRelatedModule(moduleId: string): boolean {
+  return REVENUE_RELATED_MODULES.includes(moduleId);
+}
 
 // Obtenir les modules par défaut pour un type de business
 export function getDefaultModules(businessType: BusinessType): string[] {

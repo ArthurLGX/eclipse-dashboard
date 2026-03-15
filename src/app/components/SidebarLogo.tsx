@@ -64,7 +64,7 @@ export default function SidebarLogo() {
   // Cas 1: Website existe et favicon disponible
   if (faviconUrl && !faviconError) {
     return (
-      <div className="w-8 h-8  overflow-hidden bg-card flex items-center justify-center">
+      <div className="w-8 h-8  overflow-hidden flex items-center justify-center">
         <Image
           src={faviconUrl}
           alt={companyData?.name || 'Company logo'}

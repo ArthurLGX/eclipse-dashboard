@@ -55,7 +55,7 @@ export function ConnectAPIProvider({ children }: { children: React.ReactNode }) 
                 </p>
                 <button
                   onClick={goToSettings}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-accent text-white rounded-lg hover:opacity-90 transition-opacity font-medium"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-accent text-white  hover:opacity-90 transition-opacity font-medium"
                 >
                   <IconExternalLink className="w-4 h-4" />
                   Aller aux paramètres

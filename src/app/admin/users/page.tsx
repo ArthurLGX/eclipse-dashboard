@@ -306,7 +306,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Filters */}
-      <div className="card p-4">
+      <div className="bg-card p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
@@ -370,7 +370,7 @@ export default function AdminUsersPage() {
       )}
 
       {/* Users Table */}
-      <div className="card overflow-hidden">
+      <div className="bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -567,7 +567,7 @@ export default function AdminUsersPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="card p-6 max-w-md w-full"
+              className="bg-card p-6 max-w-md w-full"
             >
               {/* View Modal */}
               {modalData.action === 'view' && (

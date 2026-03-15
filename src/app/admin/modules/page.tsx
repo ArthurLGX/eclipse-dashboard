@@ -97,7 +97,7 @@ export default function AdminModulesPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card flex flex-col gap-2 p-4"
+        className="bg-card flex flex-col gap-2 p-4"
       >
         <div className="p-4 border-b border-default">
           <h2 className="font-semibold !text-primary">
@@ -199,7 +199,7 @@ export default function AdminModulesPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="card mt-6 p-4 bg-accent-light border-accent"
+        className="bg-card mt-6 p-4 bg-accent-light border-accent"
       >
         <h3 className="font-semibold !text-accent-text mb-2">
           {language === 'fr' ? 'Comment ça marche ?' : 'How does it work?'}

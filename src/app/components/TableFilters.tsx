@@ -130,7 +130,7 @@ export default function TableFilters({
             placeholder={searchPlaceholder}
             value={searchValue}
             onChange={e => onSearchChangeAction(e.target.value)}
-            className="input w-full py-2.5 !pr-4 !pl-10 placeholder:!text-muted"
+            className="input h-full w-full py-2.5 !pr-4 !pl-10 placeholder:!text-muted"
           />
           {searchValue && (
             <button

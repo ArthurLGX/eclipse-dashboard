@@ -545,7 +545,7 @@ export default function RevenuePage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="card p-4"
+            className="bg-card p-4"
           >
             <div className="flex items-center gap-2 mb-1">
               <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
@@ -564,7 +564,7 @@ export default function RevenuePage() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartLine className="w-4 h-4 !text-accent-text" />
@@ -580,7 +580,7 @@ export default function RevenuePage() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartBar className="w-4 h-4 !text-accent-text" />
@@ -596,7 +596,7 @@ export default function RevenuePage() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="card p-4 md:col-span-2 lg:col-span-1"
+          className="bg-card p-4 md:col-span-2 lg:col-span-1"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartPie className="w-4 h-4 !text-accent-text" />
@@ -619,7 +619,7 @@ export default function RevenuePage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.5 }}
-        className="card p-4"
+        className="bg-card p-4"
       >
         <div className="flex items-center gap-2 mb-3">
           <IconReceipt className="w-4 h-4 !text-info" />

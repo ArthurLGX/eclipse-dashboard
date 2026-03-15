@@ -121,6 +121,7 @@ export async function fetchAutomationActions(status?: string): Promise<Automatio
     'populate[client][fields][2]': 'documentId',
     'populate[follow_up_task][fields][0]': 'task_type',
     'populate[follow_up_task][fields][1]': 'documentId',
+    'populate[follow_up_task][fields][2]': 'context',
     'populate[approved_by][fields][0]': 'username',
     'sort[0]': 'createdAt:desc',
   });
@@ -144,6 +145,10 @@ export async function fetchAutomationActionDetail(id: string): Promise<Automatio
     'populate[follow_up_task][populate][received_email][fields][2]': 'content_text',
     'populate[follow_up_task][populate][received_email][fields][3]': 'content_html',
     'populate[follow_up_task][populate][received_email][fields][4]': 'received_at',
+    'populate[follow_up_task][fields][0]': 'context',
+    'populate[follow_up_task][fields][1]': 'ai_analysis',
+    'populate[follow_up_task][fields][2]': 'task_type',
+    'populate[follow_up_task][fields][3]': 'documentId',
     'populate[approved_by][fields][0]': 'username',
   });
 

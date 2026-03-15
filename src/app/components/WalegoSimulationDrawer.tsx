@@ -93,7 +93,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
           <h3 className="!text-base font-semibold !text-primary">Simulation email Walego</h3>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary  transition-colors"
           >
             <IconX className="w-5 h-5" />
           </button>
@@ -104,7 +104,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
           </p>
 
           <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50 border border-default">
+            <div className="flex items-start gap-3 p-3  bg-secondary/50 border border-default">
               <IconUser className="w-4 h-4 mt-0.5 flex-shrink-0 !text-muted" />
               <div>
                 <p className="!text-[10px] font-mono uppercase !text-muted mb-1">Nom</p>
@@ -121,7 +121,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50 border border-default">
+            <div className="flex items-start gap-3 p-3  bg-secondary/50 border border-default">
               <IconUser className="w-4 h-4 mt-0.5 flex-shrink-0 !text-muted" />
               <div>
                 <p className="!text-[10px] font-mono uppercase !text-muted mb-1">Titre / Poste</p>
@@ -138,7 +138,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50 border border-default">
+            <div className="flex items-start gap-3 p-3  bg-secondary/50 border border-default">
               <IconPhoto className="w-4 h-4 mt-0.5 flex-shrink-0 !text-muted" />
               <div className="min-w-0 flex-1">
                 <p className="!text-[10px] font-mono uppercase !text-muted mb-1">Avatar</p>
@@ -158,7 +158,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50 border border-default">
+            <div className="flex items-start gap-3 p-3  bg-secondary/50 border border-default">
               <IconLink className="w-4 h-4 mt-0.5 flex-shrink-0 !text-muted" />
               <div>
                 <p className="!text-[10px] font-mono uppercase !text-muted mb-1">LinkedIn</p>
@@ -177,7 +177,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50 border border-default">
+            <div className="flex items-start gap-3 p-3  bg-secondary/50 border border-default">
               <IconMessageCircle className="w-4 h-4 mt-0.5 flex-shrink-0 !text-muted" />
               <div>
                 <p className="!text-[10px] font-mono uppercase !text-muted mb-1">Réponse du lead</p>
@@ -195,7 +195,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
             </div>
 
             {extracted.leadStatus && (
-              <div className="p-3 rounded-lg bg-secondary/50 border border-default">
+              <div className="p-3  bg-secondary/50 border border-default">
                 <p className="!text-[10px] font-mono uppercase !text-muted mb-2">Lead Status</p>
                 <p className="!text-xs !text-primary">
                   <strong>Status:</strong> {extracted.leadStatus.status || '—'}

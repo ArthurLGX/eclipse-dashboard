@@ -192,7 +192,7 @@ export default function UsageProgressBar() {
 
   if (loading || !usageData) {
     return (
-      <div className="card backdrop-blur-sm p-4 mb-6">
+      <div className="bg-card backdrop-blur-sm p-4 mb-6">
         <div className="flex flex-wrap gap-4">
           {[1, 2, 3, 4].map(i => (
             <div key={i} className="flex-1 min-w-48">

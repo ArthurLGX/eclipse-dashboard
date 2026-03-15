@@ -171,7 +171,7 @@ export default function QuickEmailReplyModal({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                className="p-2 hover:bg-secondary  transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -186,7 +186,7 @@ export default function QuickEmailReplyModal({
                 </p>
               </div>
               {walegoLeadStatus && (walegoLeadStatus.reasoning || walegoLeadStatus.tips) && (
-                <div className="rounded-lg p-3 bg-accent/10 border border-accent/20">
+                <div className=" p-3 bg-accent/10 border border-accent/20">
                   <p className="text-xs font-semibold text-accent-text uppercase mb-2">Lead Status (suggestions Walego)</p>
                   {walegoLeadStatus.reasoning && (
                     <p className="text-sm text-primary mb-2 whitespace-pre-wrap">{walegoLeadStatus.reasoning}</p>
@@ -197,7 +197,7 @@ export default function QuickEmailReplyModal({
                 </div>
               )}
               {!walegoLeadStatus && action.proposed_content.body?.trim() && (
-                <div className="rounded-lg p-3 bg-purple-500/10 border border-purple-500/20">
+                <div className=" p-3 bg-purple-500/10 border border-purple-500/20">
                   <p className="text-xs font-semibold text-purple-600 uppercase mb-2">Réponse suggérée par l&apos;IA</p>
                   <p className="text-sm text-primary whitespace-pre-wrap">{action.proposed_content.body}</p>
                 </div>

@@ -257,7 +257,7 @@ export default function AdminSubscriptionsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card p-6 bg-gradient-to-br from-accent to-accent-light border-accent"
+          className="bg-card p-6 bg-gradient-to-br from-accent to-accent-light border-accent"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-2  bg-accent-light">
@@ -275,7 +275,7 @@ export default function AdminSubscriptionsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 + index * 0.1 }}
-            className="card p-6"
+            className="bg-card p-6"
           >
             <div className="flex items-center justify-between mb-4">
               <div className={`p-2  bg-muted ${stat.color}`}>
@@ -290,7 +290,7 @@ export default function AdminSubscriptionsPage() {
       </div>
 
       {/* Plans Overview */}
-      <div className="card p-6">
+      <div className="bg-card p-6">
         <h2 className="!text-lg font-semibold !text-primary mb-4">{t('available_plans') || 'Plans disponibles'}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map((plan) => (
@@ -326,7 +326,7 @@ export default function AdminSubscriptionsPage() {
       </div>
 
       {/* Filters */}
-      <div className="card p-4">
+      <div className="bg-card p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
@@ -365,7 +365,7 @@ export default function AdminSubscriptionsPage() {
       </div>
 
       {/* Subscriptions Table */}
-      <div className="card overflow-hidden">
+      <div className="bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -487,7 +487,7 @@ export default function AdminSubscriptionsPage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="card p-6 w-full max-w-lg"
+              className="bg-card p-6 w-full max-w-lg"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">

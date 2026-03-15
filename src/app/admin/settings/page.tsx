@@ -150,7 +150,7 @@ export default function AdminSettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* General Settings */}
-        <div className="card p-6">
+        <div className="bg-card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconBuildingStore className="w-5 h-5 !text-accent-text" />
             {t('general_settings') || 'Paramètres généraux'}
@@ -218,7 +218,7 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Security Settings */}
-        <div className="card p-6">
+        <div className="bg-card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconShield className="w-5 h-5 !text-accent-text" />
             {t('security') || 'Sécurité'}
@@ -294,7 +294,7 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Notifications */}
-        <div className="card p-6">
+        <div className="bg-card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconBell className="w-5 h-5 !text-accent-text" />
             {t('notifications') || 'Notifications'}
@@ -348,7 +348,7 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Features */}
-        <div className="card p-6">
+        <div className="bg-card p-6">
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconPalette className="w-5 h-5 !text-accent-text" />
             {t('features') || 'Fonctionnalités'}

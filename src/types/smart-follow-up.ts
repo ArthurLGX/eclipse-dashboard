@@ -125,6 +125,8 @@ export interface TaskContext {
   extracted_entities?: string[];
   /** Corps de l'email reçu (pour extraction Lead Status Walego) */
   email_body?: string;
+  /** Preview (60 chars) de la réponse du lead — pour affichage tableau */
+  lead_response_preview?: string;
 }
 
 export interface TaskAIAnalysis {

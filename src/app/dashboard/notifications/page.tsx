@@ -485,7 +485,7 @@ export default function NotificationsPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-3">
             <div className="p-2  bg-info">
@@ -502,7 +502,7 @@ export default function NotificationsPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-3">
             <div className="p-2  bg-warning">
@@ -519,7 +519,7 @@ export default function NotificationsPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-3">
             <div className="p-2  bg-accent">
@@ -537,7 +537,7 @@ export default function NotificationsPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="card p-4"
+            className="bg-card p-4"
           >
             <div className="flex items-center gap-3">
               <div className="p-2  bg-danger">
@@ -626,7 +626,7 @@ export default function NotificationsPage() {
             exit={{ opacity: 0, height: 0 }}
             className="mb-6 overflow-hidden"
           >
-            <div className="card p-4">
+            <div className="bg-card p-4">
               <div className="flex flex-wrap gap-4">
                 <div>
                   <label className="block !text-sm font-medium !text-secondary mb-2">
@@ -651,7 +651,7 @@ export default function NotificationsPage() {
       </AnimatePresence>
 
       {/* Liste des notifications */}
-      <div className="card overflow-hidden">
+      <div className="bg-card overflow-hidden">
         {/* Header de la liste */}
         <div className="flex items-center justify-between p-4 border-b border-default">
           <div className="flex items-center gap-3">

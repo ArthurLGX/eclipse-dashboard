@@ -245,7 +245,7 @@ export default function Plans() {
                     <div key={i} className="h-4 rounded" style={{ background: 'var(--landing-border)' }} />
                   ))}
                 </div>
-                <div className="h-12 rounded-lg mt-6" style={{ background: 'var(--landing-border)' }} />
+                <div className="h-12  mt-6" style={{ background: 'var(--landing-border)' }} />
               </div>
             ))
           ) : plans.length > 0 ? (

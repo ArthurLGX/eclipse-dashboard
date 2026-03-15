@@ -1249,7 +1249,7 @@ export default function ShareProjectModal({
                           <div className="border-t border-default pt-3">
                             <p className="!text-xs !text-secondary mb-2">{t('preview') || 'Aperçu'}</p>
                             <div 
-                              className="rounded-lg overflow-hidden"
+                              className=" overflow-hidden"
                               style={{ 
                                 background: bannerType === 'color' ? bannerBackgroundColor : undefined,
                               }}

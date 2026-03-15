@@ -184,7 +184,7 @@ export default function MonitoringPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-accent-light ">
                 <IconWorld className="w-5 h-5 !text-accent-text" />
@@ -195,7 +195,7 @@ export default function MonitoringPage() {
               </div>
             </div>
           </div>
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-success-light ">
                 <IconCheck className="w-5 h-5 !text-success-text -text" />
@@ -206,7 +206,7 @@ export default function MonitoringPage() {
               </div>
             </div>
           </div>
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-error-light ">
                 <IconX className="w-5 h-5 !text-error" />
@@ -217,7 +217,7 @@ export default function MonitoringPage() {
               </div>
             </div>
           </div>
-          <div className="card p-4">
+          <div className="bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-warning-light ">
                 <IconClock className="w-5 h-5 !text-warning" />
@@ -258,7 +258,7 @@ export default function MonitoringPage() {
         </div>
 
         {/* Sites Table */}
-        <div className="card overflow-hidden">
+        <div className="bg-card overflow-hidden">
           {isLoading ? (
             <div className="p-8 flex items-center justify-center">
               <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full" />

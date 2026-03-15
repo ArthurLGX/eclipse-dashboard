@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   IconCode,
   IconBuilding,
@@ -12,9 +12,11 @@ import {
   IconHammer,
   IconDots,
   IconCheck,
+  IconAlertTriangle,
+  IconX,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { BusinessType, BUSINESS_CONFIGS, ALL_MODULES, getDefaultModules } from '@/config/business-modules';
+import { BusinessType, BUSINESS_CONFIGS, ALL_MODULES, getDefaultModules, isRevenueRelatedModule } from '@/config/business-modules';
 
 interface BusinessTypeSelectorProps {
   selectedType: BusinessType | null;
@@ -96,8 +98,26 @@ interface ModuleSelectorProps {
 
 export function ModuleSelector({ businessType, selectedModules, onToggle }: ModuleSelectorProps) {
   const { language, t } = useLanguage();
+  const [pendingUncheck, setPendingUncheck] = useState<{ moduleId: string; label: string } | null>(null);
   
   const defaultModules = getDefaultModules(businessType);
+
+  const handleToggle = (moduleId: string, label: string, isSelected: boolean) => {
+    if (isSelected && isRevenueRelatedModule(moduleId)) {
+      setPendingUncheck({ moduleId, label });
+      return;
+    }
+    onToggle(moduleId);
+  };
+
+  const confirmUncheck = () => {
+    if (pendingUncheck) {
+      onToggle(pendingUncheck.moduleId);
+      setPendingUncheck(null);
+    }
+  };
+
+  const cancelUncheck = () => setPendingUncheck(null);
 
   return (
     <div className="space-y-6">
@@ -121,7 +141,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
                 label={label}
                 isSelected={isSelected}
                 isCore={moduleConfig.core}
-                onToggle={onToggle}
+                onToggle={(id) => handleToggle(id, label, isSelected)}
               />
             );
           })}
@@ -149,13 +169,69 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
                   label={label}
                   isSelected={isSelected}
                   isCore={false}
-                  onToggle={onToggle}
+                  onToggle={(id) => handleToggle(id, label, isSelected)}
                 />
               );
             })}
           </div>
         </div>
       )}
+
+      {/* Modale de confirmation pour modules liés au CA */}
+      <AnimatePresence>
+        {pendingUncheck && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={cancelUncheck}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-card border border-default p-6 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
+                  <IconAlertTriangle className="w-6 h-6 text-warning" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="!text-lg font-semibold !text-primary">
+                    {t('module_disable_revenue_title') || 'Module lié au chiffre d\'affaires'}
+                  </h3>
+                  <p className="mt-2 !text-sm !text-muted">
+                    {(t('module_disable_revenue_desc') || 'En désactivant "{module}", les statistiques de revenus et l\'analyse financière pourront être incomplètes ou désactivées. Souhaitez-vous continuer ?').replace('{module}', pendingUncheck.label)}
+                  </p>
+                </div>
+                <button
+                  onClick={cancelUncheck}
+                  className="p-1 !text-muted hover:!text-primary transition-colors"
+                >
+                  <IconX size={15} />
+                </button>
+              </div>
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={cancelUncheck}
+                  className="btn-ghost flex-1 px-4 py-2.5 !text-sm font-medium"
+                >
+                  {t('no') || 'Non'}
+                </button>
+                <button
+                  onClick={confirmUncheck}
+                  className="btn-primary flex-1 px-4 py-2.5 !text-sm font-medium flex items-center justify-center gap-2"
+                >
+                  <IconCheck className="w-4 h-4" />
+                  {t('yes') || 'Oui'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -173,26 +249,23 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
   
   return (
     <button
-      onClick={() => !isCore && onToggle(moduleId)}
-      disabled={isCore}
+      onClick={() => onToggle(moduleId)}
       className={`
-        relative flex items-center gap-3 p-4  border transition-all
-        ${isCore 
-            ? 'border-success bg-success-light cursor-not-allowed' 
-          : isSelected 
-            ? 'border-accent bg-accent-light cursor-pointer' 
-            : 'border-default bg-card hover:border-accent-light cursor-pointer'
+        relative flex items-center gap-3 p-4  border transition-all cursor-pointer
+        ${isSelected 
+          ? 'border-accent bg-accent-light' 
+          : 'border-default bg-card hover:border-accent-light'
         }
       `}
     >
       <div className={`
         w-5 h-5  border-2 flex items-center justify-center shrink-0
-        ${isCore || isSelected 
+        ${isSelected 
           ? 'border-accent bg-accent' 
           : 'border-muted'
         }
       `}>
-        {(isCore || isSelected) && (
+        {isSelected && (
           <IconCheck className="w-3 h-3 !text-white" />
         )}
       </div>
@@ -200,7 +273,7 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
       <div className="flex-1 !text-left">
         <span className={`
           font-medium !text-sm
-          ${isCore || isSelected ? 'text-primary' : 'text-muted'}
+          ${isSelected ? 'text-primary' : 'text-muted'}
         `}>
           {label}
         </span>

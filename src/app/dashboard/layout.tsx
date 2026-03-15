@@ -237,6 +237,18 @@ function DashboardLayoutContent({
     },
 
     // ═══════════════════════════════════════
+    // DESIGN DE PAGE (Élément standalone, comme Smart Follow-Up)
+    // ═══════════════════════════════════════
+    {
+      id: 'growth_audit',
+      label: t('growth_audit') || 'Design de page',
+      icon: <IconPalette size={15} stroke={1} />,
+      path: '/dashboard/growth-audit',
+      moduleId: 'growth_audit',
+      status: getModuleStatus('growth_audit', moduleStatuses) || undefined,
+    },
+
+    // ═══════════════════════════════════════
     // RELATIONS (Menu déroulant)
     // ═══════════════════════════════════════
     {
@@ -347,15 +359,6 @@ function DashboardLayoutContent({
           path: '/dashboard/monitoring',
           moduleId: 'monitoring',
           status: getModuleStatus('monitoring', moduleStatuses) || undefined,
-        },
-        // Audit & Analyse (modules optionnels - OFF par défaut)
-        {
-          id: 'growth_audit',
-          label: t('growth_audit') || 'Growth Audit',
-          icon: <IconTargetArrow size={15} stroke={1} />,
-          path: '/dashboard/growth-audit',
-          moduleId: 'growth_audit',
-          status: getModuleStatus('growth_audit', moduleStatuses) || undefined,
         },
         // NOTE: Templates retirés de la sidebar - accessibles uniquement via onboarding et création de projet
       ],

@@ -478,7 +478,7 @@ const PROJECT_TYPES = [
           </div>
 
           {/* Message d'accès limité */}
-          <div className="card p-8 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent border-warning">
+          <div className="bg-card p-8 bg-gradient-to-r from-warning/10 via-warning/5 to-transparent border-warning">
             {collaborationRequestStatus === 'pending' ? (
               <div className="!text-center">
                 <div className="w-16 h-16 bg-warning-light rounded-full flex items-center justify-center mx-auto mb-4">
@@ -632,7 +632,7 @@ const PROJECT_TYPES = [
 
           {/* Title Row: Icon + Title + Badges */}
           <div className="flex items-center gap-3 mb-5 flex-wrap">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-primary  flex items-center justify-center flex-shrink-0">
               <ProjectTypeIcon type={project.type} className="w-4 h-4 !text-white" />
             </div>
             
@@ -699,7 +699,7 @@ const PROJECT_TYPES = [
           </div>
 
           {/* Tabs - Pills style */}
-          <div className="flex gap-1 bg-muted rounded-lg p-1 w-fit overflow-x-auto">
+          <div className="flex gap-1 bg-muted  p-1 w-fit overflow-x-auto">
             {[
               { id: 'overview' as TabType, label: t('overview') || 'Aperçu' },
               { id: 'tasks' as TabType, label: t('tasks') || 'Tâches', count: totalTasks },
@@ -710,7 +710,7 @@ const PROJECT_TYPES = [
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 !text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-4 py-2 !text-sm font-medium  transition-all whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-card !text-primary shadow-sm'
                     : '!text-secondary hover:!text-primary'
@@ -762,7 +762,7 @@ const PROJECT_TYPES = [
                           [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                           [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                           [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                          [&_a]:!text-accent-text [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                          [&_a]:!text-accent-text [&_a]:underline [&_img]: [&_img]:max-w-full"
                         dangerouslySetInnerHTML={{ __html: project.description }}
                       />
                     ) : (
@@ -793,7 +793,7 @@ const PROJECT_TYPES = [
                             [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                             [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                             [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                            [&_a]:!text-accent-text [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                            [&_a]:!text-accent-text [&_a]:underline [&_img]: [&_img]:max-w-full"
                           dangerouslySetInnerHTML={{ __html: project.notes || '' }}
                         />
                       )}

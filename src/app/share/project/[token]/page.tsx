@@ -302,14 +302,14 @@ export default function SharedProjectPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="card p-6 mb-6"
+            className="bg-card p-6 mb-6"
           >
             <div 
               className="!text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
                 [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
                 [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
                 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                [&_a]:!text-accent-text [&_a]:underline [&_img]:rounded-lg [&_img]:max-w-full"
+                [&_a]:!text-accent-text [&_a]:underline [&_img]: [&_img]:max-w-full"
               dangerouslySetInnerHTML={{ __html: project.description }}
             />
           </motion.div>
@@ -323,7 +323,7 @@ export default function SharedProjectPage() {
             transition={{ delay: 0.1 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
           >
-            <div className="card p-5">
+            <div className="bg-card p-5">
               <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconChartBar className="w-4 h-4" />
                 {t('progression')}
@@ -337,7 +337,7 @@ export default function SharedProjectPage() {
               </div>
             </div>
 
-            <div className="card p-5">
+            <div className="bg-card p-5">
               <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconCheck className="w-4 h-4" />
                 {t('tasks_completed')}
@@ -346,7 +346,7 @@ export default function SharedProjectPage() {
               <div className="!text-sm !text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
             </div>
 
-            <div className="card p-5">
+            <div className="bg-card p-5">
               <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconProgress className="w-4 h-4" />
                 {t('in_progress')}
@@ -357,7 +357,7 @@ export default function SharedProjectPage() {
               <div className="!text-sm !text-muted">{t('active_tasks')}</div>
             </div>
 
-            <div className="card p-5">
+            <div className="bg-card p-5">
               <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
                 <IconCalendar className="w-4 h-4" color="white"/>
                 {t('deadline')}
@@ -385,7 +385,7 @@ export default function SharedProjectPage() {
             transition={{ delay: 0.15 }}
             className="mb-6"
           >
-            <div className="card p-4">
+            <div className="bg-card p-4">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex items-center gap-2 !text-primary">
                   <IconFilter className="w-5 h-5" />
@@ -471,7 +471,7 @@ export default function SharedProjectPage() {
                 projectName={project.title}
               />
             ) : (
-              <div className="card p-8 !text-center">
+              <div className="bg-card p-8 !text-center">
                 <IconTimeline className="w-12 h-12 !text-muted mx-auto mb-3" />
                 <p className="!text-primary">
                   {statusFilter !== 'all' 
@@ -500,7 +500,7 @@ export default function SharedProjectPage() {
               )}
             </h2>
             {filteredTasks.length > 0 ? (
-              <div className="card overflow-hidden">
+              <div className="bg-card overflow-hidden">
                 <div className="space-y-1 bg-page p-1">
                   {filteredTasks.map((task, index) => (
                     <TaskRow 
@@ -512,7 +512,7 @@ export default function SharedProjectPage() {
                 </div>
               </div>
             ) : (
-              <div className="card p-8 !text-center">
+              <div className="bg-card p-8 !text-center">
                 <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
                 <p className="!text-primary">
                   {t('no_tasks_with_status') || 'Aucune tâche avec ce statut'}
@@ -656,7 +656,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
                   [&_a]:!text-accent-text [&_a]:underline
                   [&_strong]:font-semibold [&_strong]:!text-primary
                   [&_em]:italic
-                  [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2
+                  [&_img]: [&_img]:max-w-full [&_img]:my-2
                   ${!isExpanded ? 'line-clamp-2' : ''}`}
                 dangerouslySetInnerHTML={{ __html: task.description }}
               />
@@ -1241,7 +1241,7 @@ function PublicGanttView({ tasks, projectName }: {
 
               <div className="flex-1 p-4 overflow-auto bg-muted">
                 <div 
-                  className="rounded-lg shadow-lg overflow-hidden transform scale-75 origin-top-left"
+                  className=" shadow-lg overflow-hidden transform scale-75 origin-top-left"
                   style={{ width: '133%' }}
                   dangerouslySetInnerHTML={{ __html: previewHTML }}
                 />

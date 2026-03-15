@@ -593,19 +593,9 @@ export default function FacturesPage() {
           <div className="max-w-7xl mx-auto px-8 py-5">
             {/* Breadcrumb + Actions */}
             <div className="flex items-start justify-between mb-6">
-              <div>
-                <div className="!text-xs !text-muted mb-1">
-                  <span>{t('dashboard') || 'Tableau de Bord'}</span>
-                  <span className="mx-1.5">→</span>
-                  <span>{t('invoices_and_quotes') || 'Factures / Devis'}</span>
-                </div>
-                <h1 className="!text-[22px] font-bold tracking-tight !text-primary">
-                  {t('invoices_and_quotes') || 'Factures & Devis'}
-                </h1>
-              </div>
               <button
                 onClick={() => router.push(`/dashboard/factures/new${isQuoteMode ? '?type=quote' : ''}`)}
-                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2  !text-sm font-semibold hover:opacity-90 transition-all"
               >
                 <IconFileInvoice className="w-4 h-4" />
                 {isQuoteMode ? (t('create_quote') || 'Créer un devis') : (t('create_facture') || 'Créer une facture')}
@@ -616,38 +606,38 @@ export default function FacturesPage() {
             <div className="flex gap-3 mb-5 flex-wrap">
               {isQuoteMode ? (
                 <>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('total_quotes') || 'Total'}</div>
                     <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.total}</div>
                   </div>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('accepted_quotes') || 'Acceptés'}</div>
                     <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : stats.accepted}</div>
                   </div>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('pending_quotes') || 'En attente'}</div>
                     <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.pending}</div>
                   </div>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('total_amount') || 'Montant'}</div>
                     <div className="!text-[22px] font-bold tracking-tight text-violet-500">{loading ? '...' : formatCurrency(stats.totalAmount || 0)}</div>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('total_invoices') || 'Total factures'}</div>
                     <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.total}</div>
                   </div>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('paid_invoices') || 'Payées'}</div>
                     <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : stats.paid}</div>
                   </div>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('revenue') || 'Chiffre d\'affaires'}</div>
                     <div className="!text-[22px] font-bold tracking-tight text-violet-500">{loading ? '...' : formatCurrency(stats.paidAmount || 0)}</div>
                   </div>
-                  <div className="card flex-1 min-w-[140px] p-3.5">
+                  <div className="bg-card flex-1 min-w-[140px] p-3.5">
                     <div className="!text-xs !text-muted mb-1">{t('this_month') || 'Ce mois'}</div>
                     <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : stats.newThisMonth}</div>
                   </div>
@@ -656,10 +646,10 @@ export default function FacturesPage() {
             </div>
 
             {/* Tabs pills */}
-            <div className="flex gap-0.5 bg-muted rounded-lg p-0.5 w-fit">
+            <div className="flex gap-0.5 bg-muted  p-0.5 w-fit">
               <button
                 onClick={() => router.push('/dashboard/factures')}
-                className={`px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                className={`px-3.5 py-1.5  !text-sm font-medium transition-all ${
                   !isQuoteMode
                     ? 'bg-card !text-primary shadow-sm'
                     : '!text-muted hover:!text-primary'
@@ -669,7 +659,7 @@ export default function FacturesPage() {
               </button>
               <button
                 onClick={() => router.push('/dashboard/factures?type=quote')}
-                className={`px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all ${
+                className={`px-3.5 py-1.5  !text-sm font-medium transition-all ${
                   isQuoteMode
                     ? 'bg-card !text-primary shadow-sm'
                     : '!text-muted hover:!text-primary'

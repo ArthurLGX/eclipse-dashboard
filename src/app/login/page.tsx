@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -159,7 +160,7 @@ function LoginContent() {
           <button
             type="button"
             onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
-            className="px-2.5 py-1.5 rounded-lg border text-xs font-medium transition-colors"
+            className="px-2.5 py-1.5  border text-xs font-medium transition-colors"
             style={{
               background: 'var(--login-surface)',
               borderColor: 'var(--login-border)',
@@ -172,7 +173,7 @@ function LoginContent() {
           <button
             type="button"
             onClick={() => setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark')}
-            className="p-2 rounded-lg border transition-colors"
+            className="p-2  border transition-colors"
             style={{
               background: 'var(--login-surface)',
               borderColor: 'var(--login-border)',
@@ -186,12 +187,7 @@ function LoginContent() {
 
         <div className="login-fade-up mb-8">
           <div className="flex items-center gap-2.5 mb-6">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--color-accent)', color: 'var(--login-btn-text)' }}
-            >
-              <span className="text-sm font-extrabold">ES</span>
-            </div>
+            <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={36} height={36} className="w-9 h-9 object-contain flex-shrink-0 rounded-lg" />
             <span className="text-sm font-bold" style={{ color: 'var(--login-text)' }}>Eclipse Studio Dashboard</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight mb-1.5" style={{ color: 'var(--login-text)' }}>
@@ -231,7 +227,7 @@ function LoginContent() {
 
         <form onSubmit={handleSubmit} className="login-fade-up login-fade-up-3">
           {error && (
-            <div className="mb-4 p-3 rounded-lg" style={{ background: 'color-mix(in srgb, var(--color-danger) 15%, transparent)', borderColor: 'var(--color-danger)' }}>
+            <div className="mb-4 p-3 " style={{ background: 'color-mix(in srgb, var(--color-danger) 15%, transparent)', borderColor: 'var(--color-danger)' }}>
               <p className="text-sm" style={{ color: 'var(--color-danger)' }}>{error}</p>
             </div>
           )}

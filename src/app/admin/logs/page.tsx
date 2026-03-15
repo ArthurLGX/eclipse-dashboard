@@ -223,7 +223,7 @@ export default function AdminLogsPage() {
           { label: t('errors') || 'Erreurs', value: logStats.errors, color: 'text-danger' },
           { label: t('warnings') || 'Avertissements', value: logStats.warnings, color: 'text-warning' },
         ].map((stat) => (
-          <div key={stat.label} className="card p-4">
+          <div key={stat.label} className="bg-card p-4">
             <p className="!text-sm !text-muted">{stat.label}</p>
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
           </div>
@@ -231,7 +231,7 @@ export default function AdminLogsPage() {
       </div>
 
       {/* Filters */}
-      <div className="card p-4">
+      <div className="bg-card p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div className="relative lg:col-span-2">
@@ -287,7 +287,7 @@ export default function AdminLogsPage() {
       </div>
 
       {/* Logs List */}
-      <div className="card overflow-hidden">
+      <div className="bg-card overflow-hidden">
         <div >
           {filteredLogs.length > 0 ? (
             filteredLogs.slice(0, 50).map((log) => (

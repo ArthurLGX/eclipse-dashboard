@@ -71,43 +71,15 @@ const THEME_COLORS = {
     bgCard: '#FFFFFF',
     borderDefault: '#E5E7EB',
   },
-  brutalistDark: {
-    textPrimary: '#FFFFFF',
-    textSecondary: '#B0B0B0',
-    textMuted: '#707070',
-    accent: '#FFFFFF',
-    success: '#B0B0B0',
-    info: '#909090',
-    warning: '#808080',
-    danger: '#FFFFFF',
-    bgCard: '#141414',
-    borderDefault: '#444444',
-  },
-  brutalistLight: {
-    textPrimary: '#000000',
-    textSecondary: '#333333',
-    textMuted: '#666666',
-    accent: '#000000',
-    success: '#404040',
-    info: '#505050',
-    warning: '#606060',
-    danger: '#000000',
-    bgCard: '#FAFAFA',
-    borderDefault: '#000000',
-  },
 };
 
 // Hook pour récupérer les couleurs du thème
 function useThemeColors() {
-  const { resolvedMode, themeStyle } = useTheme();
-  
-  // Retourne directement les couleurs basées sur le thème résolu
+  const { resolvedMode } = useTheme();
+
   const colors = useMemo(() => {
-    if (themeStyle === 'brutalist') {
-      return resolvedMode === 'light' ? THEME_COLORS.brutalistLight : THEME_COLORS.brutalistDark;
-    }
     return resolvedMode === 'light' ? THEME_COLORS.light : THEME_COLORS.dark;
-  }, [resolvedMode, themeStyle]);
+  }, [resolvedMode]);
 
   return colors;
 }
@@ -271,7 +243,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="card p-8 !text-center"
+        className="bg-card p-8 !text-center"
       >
         <IconActivity className="w-12 h-12 mx-auto mb-4 !text-muted opacity-50" />
         <p className="!text-muted">{t('no_monitoring_data') || 'Aucune donnée de monitoring disponible'}</p>
@@ -295,7 +267,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="card p-4"
+            className="bg-card p-4"
           >
             <div className="flex items-center gap-2 mb-1">
               <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
@@ -319,7 +291,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 + i * 0.05 }}
-            className="card p-4"
+            className="bg-card p-4"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="!text-xs !text-muted">Uptime {item.period}</span>
@@ -348,7 +320,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartLine className="w-4 h-4 !text-accent-text" />
@@ -406,7 +378,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartBar className="w-4 h-4 !text-success-text -text" />
@@ -459,7 +431,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="card p-4 md:col-span-2 lg:col-span-1"
+          className="bg-card p-4 md:col-span-2 lg:col-span-1"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconChartPie className="w-4 h-4 !text-info" />
@@ -513,7 +485,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.6 }}
-        className="card p-4"
+        className="bg-card p-4"
       >
         <div className="flex items-center gap-2 mb-3">
           <IconClock className="w-4 h-4 !text-warning" />
@@ -563,7 +535,7 @@ export default function MonitoringCharts({ logs }: MonitoringChartsProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.7 }}
-          className="card p-4"
+          className="bg-card p-4"
         >
           <div className="flex items-center gap-2 mb-3">
             <IconX className="w-4 h-4 !text-danger" />

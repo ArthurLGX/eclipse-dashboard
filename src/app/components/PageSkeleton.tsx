@@ -55,7 +55,7 @@ export default function PageSkeleton({
               {[1, 2, 3].map(i => (
                 <div
                   key={i}
-                  className="card p-6"
+                  className="bg-card p-6"
                 >
                   <div className="h-6 bg-muted rounded w-48 animate-pulse mb-4"></div>
                   <div className="space-y-3">
@@ -69,7 +69,7 @@ export default function PageSkeleton({
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="card p-6 !space-y-4">
+              <div className="bg-card p-6 !space-y-4">
                 <div className="h-6 bg-muted rounded w-32 animate-pulse mb-4"></div>
                 {[1, 2, 3].map(i => (
                   <div

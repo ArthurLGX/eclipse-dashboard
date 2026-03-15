@@ -101,7 +101,7 @@ export default function ScreenshotViewer({
 
   if (!hasImages) {
     return (
-      <div className="card p-8 flex flex-col items-center justify-center !text-center">
+      <div className="bg-card p-8 flex flex-col items-center justify-center !text-center">
         <div className="w-16 h-16 rounded-full bg-warning-light flex items-center justify-center mb-4">
           <IconPhotoOff className="w-8 h-8 !text-warning" />
         </div>
@@ -121,7 +121,7 @@ export default function ScreenshotViewer({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="card overflow-hidden"
+        className="bg-card overflow-hidden"
       >
         {/* Header */}
         <div className="px-4 py-3 bg-muted flex items-center justify-between border-b border-default">

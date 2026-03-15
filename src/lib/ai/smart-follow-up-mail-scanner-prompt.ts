@@ -58,6 +58,8 @@ Avant toute analyse, identifie le type de mail parmi ces 3 cas :
 💬 DRAFT : [message prêt à envoyer, max 3 phrases — uniquement si 🔴 ou 🟠]
 \`\`\`
 
+**RÈGLE ABSOLUE DRAFT** : Le DRAFT est TOUJOURS adressé au lead (prénom/nom extrait du mail), JAMAIS à Walego ni à un système. Exemple : "Bonjour Raphaël,..." — jamais "Bonjour Walego".
+
 ---
 
 ## PROCESS RDV CONFIRMÉ (CAS 2)

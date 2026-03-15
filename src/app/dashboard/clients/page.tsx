@@ -734,16 +734,7 @@ export default function ClientsPage() {
           <div className="max-w-7xl mx-auto px-8 py-5">
             {/* Breadcrumb + Title Row */}
             <div className="flex items-start justify-between mb-5">
-              <div>
-                <div className="flex items-center gap-1.5 mb-1">
-                  <span className="!text-muted !text-xs">{t('dashboard') || 'Tableau de bord'}</span>
-                  <span className="!text-border-default !text-xs">→</span>
-                  <span className="!text-secondary !text-xs font-medium">{t('contacts') || 'Contacts'}</span>
-                </div>
-                <h1 className="!text-[22px] font-bold tracking-tight !text-primary">
-                  {t('contacts') || 'Contacts'}
-                </h1>
-              </div>
+
               
               {/* Actions */}
               <div className="flex gap-2">
@@ -767,10 +758,10 @@ export default function ClientsPage() {
             {/* Filters + Stats Row */}
             <div className="flex items-center justify-between">
               {/* Filter pills */}
-              <div className="flex gap-1 bg-muted rounded-lg p-1">
+              <div className="flex gap-1 bg-muted  p-1">
                 <button
                   onClick={() => setStatusFilter('')}
-                  className={`px-4 py-1.5 !text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                  className={`px-4 py-1.5 !text-sm font-medium  transition-all whitespace-nowrap ${
                     statusFilter === '' ? 'bg-card !text-primary shadow-sm' : '!text-secondary hover:!text-primary'
                   }`}
                 >
@@ -783,7 +774,7 @@ export default function ClientsPage() {
                   <button
                     key={option.value}
                     onClick={() => setStatusFilter(option.value)}
-                    className={`px-4 py-1.5 !text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                    className={`px-4 py-1.5 !text-sm font-medium  transition-all whitespace-nowrap ${
                       statusFilter === option.value ? 'bg-card !text-primary shadow-sm' : '!text-secondary hover:!text-primary'
                     }`}
                   >

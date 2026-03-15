@@ -105,22 +105,10 @@ export default function MentorsPage() {
           <div className="max-w-7xl mx-auto px-8 py-5">
             {/* Breadcrumb + Actions */}
             <div className="flex items-start justify-between mb-6">
-              <div>
-                <div className="!text-xs !text-muted mb-1">
-                  <span>{t('dashboard') || 'Tableau de Bord'}</span>
-                  <span className="mx-1.5">→</span>
-                  <span>{t('mentors') || 'Mentors'}</span>
-                </div>
-                <h1 className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
-                  {t('mentors') || 'Mentors'}
-                </h1>
-                <p className="!text-sm !text-secondary">
-                  {t('manage_mentors_desc') || 'Gérez vos collaborateurs et mentors de projet'}
-                </p>
-              </div>
+
               <button
                 onClick={() => {}}
-                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2  !text-sm font-semibold hover:opacity-90 transition-all"
               >
                 <IconPlus className="w-4 h-4" />
                 {t('add_mentor') || 'Ajouter un mentor'}
@@ -129,11 +117,11 @@ export default function MentorsPage() {
 
             {/* Stats inline */}
             <div className="flex gap-3 flex-wrap">
-              <div className="card min-w-[160px] p-3.5">
+              <div className="bg-card min-w-[160px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{t('total_mentors') || 'Total mentors'}</div>
                 <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : mentors.length}</div>
               </div>
-              <div className="card min-w-[160px] p-3.5">
+              <div className="bg-card min-w-[160px] p-3.5">
                 <div className="!text-xs !text-muted mb-1">{t('available') || 'Disponibles'}</div>
                 <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : mentors.length}</div>
               </div>
@@ -145,7 +133,7 @@ export default function MentorsPage() {
         <div className="max-w-7xl mx-auto px-8 py-6">
           {mentors.length === 0 && !loading ? (
             /* Empty state actionnable */
-            <div className="card p-16 text-center">
+            <div className="bg-card p-16 text-center">
               <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
                 <IconUserCircle className="w-7 h-7 !text-muted" />
               </div>
@@ -157,7 +145,7 @@ export default function MentorsPage() {
               </div>
               <button
                 onClick={() => {}}
-                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2 rounded-lg !text-sm font-semibold hover:opacity-90 transition-all mx-auto"
+                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2  !text-sm font-semibold hover:opacity-90 transition-all mx-auto"
               >
                 <IconPlus className="w-4 h-4" />
                 {t('add_first_mentor') || 'Ajouter le premier mentor'}

@@ -20,10 +20,8 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useModalFocus, useModalScroll } from '@/hooks/useModalFocus';
 import { getToken } from '@/lib/api';
 import { fetchAutomationActionDetail } from '@/lib/smart-follow-up-api';
-import {
-  extractWalegoLeadName,
-  extractWalegoLeadResponse,
-} from '@/utils/walego-lead-status';
+import { extractWalegoLeadName } from '@/utils/walego-lead-status';
+import { extractWalegoLead } from '@/utils/extract-walego-lead';
 import type { AutomationAction } from '@/types/smart-follow-up';
 
 export interface ParsedAnalysis {
@@ -223,7 +221,11 @@ export default function LeadDetailModal({
         ''
     ) ||
     'Contact';
-  const leadResponse = emailBody ? extractWalegoLeadResponse(emailBody) : null;
+  const extractedLead = emailBody ? extractWalegoLead(emailBody, {
+    receivedAt: detail?.follow_up_task?.received_email?.received_at,
+    rawEmailSubject: detail?.follow_up_task?.received_email?.subject,
+  }) : null;
+  const leadResponse = extractedLead?.leadResponse ?? null;
   const parsed = analysis ? parseMailScannerOutput(analysis.reasoning, analysis.suggestion) : {};
   const confScore = detail?.confidence_score ?? 0;
   const score = parsed.score || (confScore >= 0.8 ? 'hot' : confScore >= 0.6 ? 'warm' : 'neutral');
@@ -350,14 +352,24 @@ export default function LeadDetailModal({
               <div className="sticky top-0 z-10 bg-white border-b border-[#e2ddd8] px-7 pt-6 pb-5 rounded-t-[20px]">
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="flex items-center gap-3.5">
-                    {detail?.avatar_path ? (
-                      <img
-                        src={detail.avatar_path}
-                        alt={displayName}
-                        className="w-[52px] h-[52px] rounded-full object-cover border-2 border-[#e2ddd8] flex-shrink-0"
-                      />
-                    ) : (
-                      <div className="w-[52px] h-[52px] rounded-full bg-gradient-to-br from-[#ff5c3a] to-[#e8441f] flex items-center justify-center text-white font-bold text-lg flex-shrink-0 border-2 border-[#e2ddd8]">
+                    <div className="relative w-[52px] h-[52px] flex-shrink-0">
+                      {detail?.avatar_path ? (
+                        <img
+                          src={detail.avatar_path}
+                          alt={displayName}
+                          className="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-[#e2ddd8]"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fb = e.currentTarget.parentElement?.querySelector('[data-avatar-fallback]');
+                            if (fb) (fb as HTMLElement).style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        data-avatar-fallback
+                        className="w-[52px] h-[52px] rounded-full bg-gradient-to-br from-[#ff5c3a] to-[#e8441f] flex items-center justify-center text-white font-bold text-lg border-2 border-[#e2ddd8]"
+                        style={{ display: !detail?.avatar_path ? 'flex' : 'none' }}
+                      >
                         {displayName
                           .split(' ')
                           .map((n) => n[0])
@@ -365,7 +377,7 @@ export default function LeadDetailModal({
                           .join('')
                           .toUpperCase()}
                       </div>
-                    )}
+                    </div>
                     <div>
                       <h2 className="font-[family-name:var(--font-instrument-serif)] text-[22px] font-normal text-[#1a1714] leading-tight">
                         {displayName}
@@ -388,7 +400,7 @@ export default function LeadDetailModal({
                   </div>
                   <button
                     onClick={onClose}
-                    className="w-8 h-8 rounded-lg border border-[#e2ddd8] flex items-center justify-center text-[#8a8178] hover:bg-[#f0ede8] hover:text-[#1a1714] transition-colors flex-shrink-0"
+                    className="w-8 h-8  border border-[#e2ddd8] flex items-center justify-center text-[#8a8178] hover:bg-[#f0ede8] hover:text-[#1a1714] transition-colors flex-shrink-0"
                   >
                     <IconX className="w-3.5 h-3.5" />
                   </button>
@@ -464,7 +476,7 @@ export default function LeadDetailModal({
                   </div>
                   <div className="bg-[#f0ede8] border border-[#e2ddd8] rounded-xl overflow-hidden">
                     <div className="flex items-start gap-3 px-4 py-3.5 border-b border-[#e2ddd8] last:border-b-0">
-                      <div className="w-7 h-7 rounded-lg bg-red-500/10 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-7 h-7  bg-red-500/10 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <IconActivity className="w-3.5 h-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -475,7 +487,7 @@ export default function LeadDetailModal({
                       </div>
                     </div>
                     <div className="flex items-start gap-3 px-4 py-3.5 border-b border-[#e2ddd8] last:border-b-0">
-                      <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-7 h-7  bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <IconAlertTriangle className="w-3.5 h-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -491,7 +503,7 @@ export default function LeadDetailModal({
                       </div>
                     </div>
                     <div className="flex items-start gap-3 px-4 py-3.5">
-                      <div className="w-7 h-7 rounded-lg bg-green-500/10 text-green-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-7 h-7  bg-green-500/10 text-green-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <IconUser className="w-3.5 h-3.5" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -515,7 +527,7 @@ export default function LeadDetailModal({
                       onClick={scrollToDraft}
                       className="flex items-center gap-3 px-4 py-3.5 bg-primary  rounded-xl border-none cursor-pointer transition-all hover:bg-[#2d2924] hover:-translate-y-0.5 hover:shadow-lg w-full text-left"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                      <div className="w-9 h-9  bg-white/10 flex items-center justify-center flex-shrink-0">
                         <IconSend className="w-4 h-4 !text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -531,7 +543,7 @@ export default function LeadDetailModal({
 
                     <div className="grid grid-cols-2 gap-2">
                       <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
-                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7  bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0">
                           <IconClock className="w-3.5 h-3.5" />
                         </div>
                         <div>
@@ -540,7 +552,7 @@ export default function LeadDetailModal({
                         </div>
                       </button>
                       <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
-                        <div className="w-7 h-7 rounded-lg bg-[#25d366]/10 text-[#25d366] flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7  bg-[#25d366]/10 text-[#25d366] flex items-center justify-center flex-shrink-0">
                           <IconBrandWhatsapp className="w-3.5 h-3.5" />
                         </div>
                         <div>
@@ -554,7 +566,7 @@ export default function LeadDetailModal({
                         rel="noopener noreferrer"
                         className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left no-underline"
                       >
-                        <div className="w-7 h-7 rounded-lg bg-[#0077b5]/10 text-[#0077b5] flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7  bg-[#0077b5]/10 text-[#0077b5] flex items-center justify-center flex-shrink-0">
                           <IconBrandLinkedin className="w-3.5 h-3.5" />
                         </div>
                         <div>
@@ -563,7 +575,7 @@ export default function LeadDetailModal({
                         </div>
                       </a>
                       <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
-                        <div className="w-7 h-7 rounded-lg bg-gray-500/10 text-gray-500 flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7  bg-gray-500/10 text-gray-500 flex items-center justify-center flex-shrink-0">
                           <IconArchive className="w-3.5 h-3.5" />
                         </div>
                         <div>
@@ -626,7 +638,7 @@ export default function LeadDetailModal({
                       <button
                         onClick={handleRegenerate}
                         disabled={regenerating}
-                        className="py-2 px-3.5 rounded-lg border border-[#e2ddd8] font-sans text-xs font-medium text-[#8a8178] hover:border-[#d0cbc4] hover:text-[#1a1714] hover:bg-[#f0ede8] transition-colors disabled:opacity-50"
+                        className="py-2 px-3.5  border border-[#e2ddd8] font-sans text-xs font-medium text-[#8a8178] hover:border-[#d0cbc4] hover:text-[#1a1714] hover:bg-[#f0ede8] transition-colors disabled:opacity-50"
                       >
                         {regenerating ? (
                           <IconLoader2 className="w-3.5 h-3.5 animate-spin inline" />
@@ -637,7 +649,7 @@ export default function LeadDetailModal({
                       <button
                         onClick={handleSend}
                         disabled={sending || !draft.trim()}
-                        className="py-2 px-4 rounded-lg bg-[#e5381a] text-white font-sans text-xs font-semibold flex items-center gap-1.5 hover:bg-[#cc2e12] hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
+                        className="py-2 px-4 btn-primary font-sans text-xs font-semibold flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
                       >
                         {sending ? (
                           <IconLoader2 className="w-3.5 h-3.5 animate-spin" />

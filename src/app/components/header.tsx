@@ -87,7 +87,7 @@ export const Header = () => {
       <>
         <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`} id="landing-nav">
           <Link href="/" className="landing-nav-logo">
-            <div className="landing-nav-logo-mark">ES</div>
+            <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={30} height={30} className="landing-nav-logo-mark object-contain" />
             <span>Eclipse Studio Dashboard</span>
           </Link>
           <ul className="landing-nav-links">
@@ -110,7 +110,7 @@ export const Header = () => {
             {!authenticated ? (
               <>
                 <Link href="/login" className="landing-btn-ghost">{t('landing_nav_login')}</Link>
-                <Link href="/pricing" className="landing-btn-primary">{t('landing_nav_free_trial')}</Link>
+                <Link href="/pricing" className="landing-btn-primary-lg">{t('landing_nav_free_trial')}</Link>
               </>
             ) : (
               <div className="flex items-center gap-2">
@@ -167,7 +167,7 @@ export const Header = () => {
                   {!authenticated ? (
                     <div className="flex gap-2 mt-4">
                       <Link href="/login" onClick={closeMenu} className="landing-btn-ghost flex-1 text-center">{t('landing_nav_login')}</Link>
-                      <Link href="/pricing" onClick={closeMenu} className="landing-btn-primary flex-1 text-center">{t('landing_nav_free_trial')}</Link>
+                      <Link href="/pricing" onClick={closeMenu} className="landing-btn-primary-lg flex-1 text-center">{t('landing_nav_free_trial')}</Link>
                     </div>
                   ) : (
                     <button type="button" onClick={handleLogout} className="landing-btn-ghost mt-4">{t('logout')}</button>

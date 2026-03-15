@@ -821,7 +821,7 @@ export default function DataTable<T = unknown>({
                       {columns.map((column, colIndex) => (
                         <td
                           key={colIndex}
-                          className={`py-3 px-2 lg:px-3 !text-muted !font-light !text-sm ${column.className || ''}`}
+                          className={`py-1 px-2 lg:px-3 !text-muted !font-light !text-sm ${column.className || ''}`}
                         >
                           {column.render
                             ? column.render(
@@ -887,7 +887,7 @@ export default function DataTable<T = unknown>({
                     {columns.map((column, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`py-3 px-2 lg:px-3 !text-muted !font-light !text-sm ${column.className || ''}`}
+                        className={`py-1 px-2 lg:px-3 !text-muted !font-light !text-sm ${column.className || ''}`}
                       >
                         {column.render
                           ? column.render(

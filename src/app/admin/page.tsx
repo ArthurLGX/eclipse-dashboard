@@ -273,7 +273,7 @@ export default function AdminOverviewPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="card p-6"
+        className="bg-card p-6"
       >
         <div className="flex items-center justify-between mb-4">
           <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
@@ -389,7 +389,7 @@ export default function AdminOverviewPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + index * 0.1 }}
-              className="card p-6"
+              className="bg-card p-6"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-2.5  ${stat.bgColor}`}>
@@ -422,7 +422,7 @@ export default function AdminOverviewPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="card p-6"
+          className="bg-card p-6"
         >
           <h2 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
             <IconActivity className="w-5 h-5 !text-accent-text" />
@@ -465,7 +465,7 @@ export default function AdminOverviewPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="card p-6"
+          className="bg-card p-6"
         >
           <h2 className="!text-lg font-semibold !text-primary mb-4">{t('quick_actions') || 'Actions rapides'}</h2>
           <div className="grid grid-cols-2 gap-3">

@@ -299,7 +299,7 @@ export default function TaskSectionRedesign({
               <button
                 type="button"
                 onClick={() => setShowExcelImport(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg !text-xs font-medium bg-card border border-default !text-muted hover:border-[#ccc8c2] hover:!text-primary transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2  !text-xs font-medium bg-card border border-default !text-muted hover:border-[#ccc8c2] hover:!text-primary transition-colors"
               >
                 <IconUpload className="w-3.5 h-3.5" />
                 Importer
@@ -307,7 +307,7 @@ export default function TaskSectionRedesign({
               <button
                 type="button"
                 onClick={() => setShowAIGenerator(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg !text-xs font-medium bg-card border border-default !text-primary font-semibold hover:border-primary transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2  !text-xs font-medium bg-card border border-default !text-primary font-semibold hover:border-primary transition-colors"
               >
                 <IconSparkles className="w-3.5 h-3.5" />
                 Assistant IA Eclipse
@@ -315,7 +315,7 @@ export default function TaskSectionRedesign({
               <button
                 type="button"
                 onClick={() => document.getElementById('newTaskInput')?.focus()}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg !text-xs font-medium bg-primary !text-white hover:opacity-90 transition-opacity"
+                className="flex items-center gap-1.5 px-3.5 py-2  !text-xs font-medium bg-primary !text-white hover:opacity-90 transition-opacity"
               >
                 <IconPlus className="w-3.5 h-3.5" />
                 Nouvelle tâche
@@ -750,7 +750,7 @@ function TaskCardRedesign({
                     <input
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      className="w-full bg-card border border-default rounded-lg px-3 py-2 !text-sm font-medium !text-primary outline-none focus:border-primary"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-sm font-medium !text-primary outline-none focus:border-primary"
                     />
                   </div>
                   <div className="col-span-2">
@@ -792,7 +792,7 @@ function TaskCardRedesign({
                       type="date"
                       value={editDueDate}
                       onChange={(e) => setEditDueDate(e.target.value)}
-                      className="w-full bg-card border border-default rounded-lg px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
                     />
                   </div>
                   <div>
@@ -801,7 +801,7 @@ function TaskCardRedesign({
                       value={editEstimated}
                       onChange={(e) => setEditEstimated(e.target.value)}
                       placeholder="Ex: 10h"
-                      className="w-full bg-card border border-default rounded-lg px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
                     />
                   </div>
                   <div>
@@ -809,7 +809,7 @@ function TaskCardRedesign({
                     <select
                       value={editAssigned}
                       onChange={(e) => setEditAssigned(e.target.value)}
-                      className="w-full bg-card border border-default rounded-lg px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary appearance-none cursor-pointer"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary appearance-none cursor-pointer"
                     >
                       <option value="">Non assigné</option>
                       {allMembers.map((m) => (
@@ -832,7 +832,7 @@ function TaskCardRedesign({
                     type="button"
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-primary !text-white rounded-lg font-medium !text-xs hover:opacity-90 disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-4 py-2 bg-primary !text-white  font-medium !text-xs hover:opacity-90 disabled:opacity-50"
                   >
                     <IconCheck className="w-3.5 h-3.5" /> Sauvegarder
                   </button>
@@ -855,7 +855,7 @@ function TaskCardRedesign({
                     subtasks.map((st) => (
                       <div
                         key={st.documentId}
-                        className="flex items-center gap-2.5 py-2 px-3 bg-card border border-default rounded-lg hover:border-[#ccc8c2] transition-colors group"
+                        className="flex items-center gap-2.5 py-2 px-3 bg-card border border-default  hover:border-[#ccc8c2] transition-colors group"
                       >
                         <button
                           type="button"
@@ -879,7 +879,7 @@ function TaskCardRedesign({
                   )}
                 </div>
                 {canEdit && (
-                  <div className={`flex items-center gap-2.5 py-2 px-3 border-2 border-dashed rounded-lg cursor-text transition-colors ${subtaskInputFocused || newSubtaskTitle ? 'border-[#ccc8c2] bg-card' : 'border-default hover:border-[#ccc8c2]'}`}>
+                  <div className={`flex items-center gap-2.5 py-2 px-3 border-2 border-dashed  cursor-text transition-colors ${subtaskInputFocused || newSubtaskTitle ? 'border-[#ccc8c2] bg-card' : 'border-default hover:border-[#ccc8c2]'}`}>
                     <div className="w-[15px] h-[15px] rounded-full border-[1.5px] border-dashed border-[#ccc8c2] flex items-center justify-center flex-shrink-0 !text-muted2">
                       <IconPlus className="w-2 h-2" />
                     </div>

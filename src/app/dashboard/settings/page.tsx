@@ -33,7 +33,6 @@ import {
   IconCheck,
   IconPlugConnected,
   IconChevronRight,
-  IconSquare,
   IconRocket,
   IconKey,
 } from '@tabler/icons-react';
@@ -48,7 +47,7 @@ type SettingsTab = 'appearance' | 'notifications' | 'format' | 'invoice' | 'side
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useLanguage();
-  const { themeStyle, themeMode, resolvedMode, setThemeStyle, setThemeMode } = useTheme();
+  const { themeMode, resolvedMode, setThemeMode } = useTheme();
   const { visibleLinks, toggleLink, resetToDefault } = useSidebar();
   const { preferences, updateNotifications, updateInvoice, updateFormat } = usePreferences();
   const { 
@@ -159,7 +158,6 @@ export default function SettingsPage() {
       links: [
         { id: 'projects', label: t('projects') || 'Projets', icon: <IconBuilding className="w-4 h-4" /> },
         { id: 'newsletters', label: t('newsletters') || 'Newsletters', icon: <IconMail className="w-4 h-4" /> },
-        { id: 'emails', label: t('emails') || 'Emails', icon: <IconMail className="w-4 h-4" /> },
       ],
     },
     {
@@ -223,29 +221,19 @@ export default function SettingsPage() {
       {/* Header épuré */}
       <div className="bg-card border-b border-default">
         <div className="max-w-5xl mx-auto px-8 py-5">
-          <div className="mb-1">
-            <span className="!text-xs !text-muted">{t('dashboard') || 'Tableau de Bord'}</span>
-            <span className="mx-1.5 !text-muted">→</span>
-            <span className="!text-xs !text-muted">{t('settings') || 'Paramètres'}</span>
-          </div>
-          <h1 className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
-            {t('settings') || 'Paramètres'}
-          </h1>
-          <p className="!text-sm !text-secondary">
-            {t('settings_description') || 'Personnalisez votre expérience'}
-          </p>
+
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-8 py-6">
         {/* Tabs pills */}
-        <div className="flex flex-wrap gap-0.5 bg-muted rounded-lg p-0.5 mb-6 w-fit">
+        <div className="flex flex-wrap gap-0.5 bg-muted  p-0.5 mb-6 w-fit">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`
-                px-3.5 py-1.5 rounded-lg !text-sm font-medium transition-all whitespace-nowrap
+                px-3.5 py-1.5  !text-sm font-medium transition-all whitespace-nowrap
                 ${activeTab === tab.id
                   ? 'bg-card !text-primary shadow-sm'
                   : '!text-muted hover:!text-primary'
@@ -258,7 +246,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Content */}
-        <div className="card p-1 pt-6 px-6 space-y-6">
+        <div className="bg-card p-1 pt-6 px-6 space-y-6">
         {/* APPARENCE */}
         {activeTab === 'appearance' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
@@ -267,29 +255,14 @@ export default function SettingsPage() {
               description={t('appearance_desc') || 'Choisissez le mode d\'affichage'}
             >
               <div className="space-y-4">
-                {/* Style de thème */}
-                <div>
-                  <p className="!text-sm !text-secondary mb-2">{t('theme_style') || 'Style'}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { value: 'default', icon: <IconSettings className="w-4 h-4" />, label: t('theme_default') || 'Défaut' },
-                      { value: 'brutalist', icon: <IconSquare className="w-4 h-4" />, label: t('theme_brutalist') || 'Brutaliste' },
-                    ].map((opt) => (
-                      <OptionButton key={opt.value} selected={themeStyle === opt.value} onClick={() => setThemeStyle(opt.value as 'default' | 'brutalist')}>
-                        {opt.icon} {opt.label}
-                      </OptionButton>
-                    ))}
-                  </div>
-                </div>
-                
                 {/* Mode clair/sombre */}
                 <div>
                   <p className="!text-sm !text-secondary mb-2">{t('theme_mode') || 'Mode'}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { value: 'light', icon: <IconSun stroke={'#ffd700'} className="!text-warning-text w-4 h-4" />, label: t('theme_light') || 'Clair' },
-                      { value: 'dark', icon: <IconMoon className="!text-warning-text w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
-                      { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4" />, label: t('theme_system') || 'Système' },
+                      { value: 'light', icon: <IconSun stroke={'#ffd700'} className="!text-primary w-4 h-4" />, label: t('theme_light') || 'Clair' },
+                      { value: 'dark', icon: <IconMoon className="!text-primary w-4 h-4" />, label: t('theme_dark') || 'Sombre' },
+                      { value: 'system', icon: <IconDeviceDesktop className="w-4 h-4 !text-primary" />, label: t('theme_system') || 'Système' },
                     ].map((opt) => (
                       <OptionButton key={opt.value} selected={themeMode === opt.value} onClick={() => setThemeMode(opt.value as 'light' | 'dark' | 'system')}>
                         {opt.icon} {opt.label}
@@ -299,11 +272,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               <p className="!text-xs !text-muted mt-2">
-                {t('current_theme') || 'Actuel'}: {
-                  themeStyle === 'brutalist' ? (t('theme_brutalist') || 'Brutaliste') : (t('theme_default') || 'Défaut')
-                } - {
-                  resolvedMode === 'dark' ? (t('theme_dark') || 'Sombre') : (t('theme_light') || 'Clair')
-                }
+                {t('current_theme') || 'Actuel'}: {resolvedMode === 'dark' ? (t('theme_dark') || 'Sombre') : (t('theme_light') || 'Clair')}
               </p>
             </SettingsRow>
 

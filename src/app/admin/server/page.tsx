@@ -283,7 +283,7 @@ export default function AdminServerPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * index }}
-              className="card p-5"
+              className="bg-card p-5"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-3  ${
@@ -316,7 +316,7 @@ export default function AdminServerPage() {
       </div>
 
       {/* Response Time Graph (Simple) */}
-      <div className="card p-6">
+      <div className="bg-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="!text-lg font-semibold !text-primary flex items-center gap-2">
             <IconActivity className="w-5 h-5 !text-accent-text" />
@@ -380,7 +380,7 @@ export default function AdminServerPage() {
       </div>
 
       {/* Recent History */}
-      <div className="card p-6">
+      <div className="bg-card p-6">
         <h2 className="!text-lg font-semibold !text-primary mb-4">{t('recent_history') || 'Historique récent'}</h2>
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {healthHistory.slice(0, 10).map((h, i) => (
@@ -414,7 +414,7 @@ export default function AdminServerPage() {
       </div>
 
       {/* API Endpoint */}
-      <div className="card p-6">
+      <div className="bg-card p-6">
         <h2 className="!text-lg font-semibold !text-primary mb-4">{t('health_endpoint') || 'Endpoint de santé'}</h2>
         <div className="flex items-center gap-4 p-4 bg-muted/5  border border-muted">
           <code className="flex-1 !text-sm !text-accent-text font-mono">

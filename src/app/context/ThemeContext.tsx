@@ -1,25 +1,20 @@
 'use client';
 import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 
-export type ThemeStyle = 'default' | 'brutalist';
 export type ThemeMode = 'dark' | 'light' | 'system';
 export type ResolvedMode = 'dark' | 'light';
 
 interface ThemeContextType {
-  themeStyle: ThemeStyle;
   themeMode: ThemeMode;
   resolvedMode: ResolvedMode;
-  setThemeStyle: (style: ThemeStyle) => void;
   setThemeMode: (mode: ThemeMode) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const STORAGE_KEY_STYLE = 'eclipse-theme-style';
 const STORAGE_KEY_MODE = 'eclipse-theme-mode';
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeStyle, setThemeStyleState] = useState<ThemeStyle>('default');
   const [themeMode, setThemeModeState] = useState<ThemeMode>('dark');
   const [resolvedMode, setResolvedMode] = useState<ResolvedMode>('dark');
   const [mounted, setMounted] = useState(false);
@@ -35,57 +30,35 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return mode;
   }, []);
 
-  // Appliquer le thème au document
-  const applyTheme = useCallback((style: ThemeStyle, resolved: ResolvedMode) => {
+  // Appliquer le thème au document (mode clair/sombre uniquement)
+  const applyTheme = useCallback((resolved: ResolvedMode) => {
     const root = document.documentElement;
-    // Retirer toutes les classes de thème
-    root.classList.remove('light', 'dark', 'brutalist', 'brutalist-light', 'brutalist-dark', 'default-light', 'default-dark');
-    
-    // Appliquer les nouvelles classes
-    if (style === 'brutalist') {
-      root.classList.add('brutalist');
-      root.classList.add(resolved === 'light' ? 'brutalist-light' : 'brutalist-dark');
-    } else {
-      root.classList.add(resolved);
-    }
-    
-    // Mettre à jour les meta tags pour mobile
+    root.classList.remove('light', 'dark', 'brutalist', 'brutalist-light', 'brutalist-dark');
+    root.classList.add(resolved);
+
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (metaTheme) {
       metaTheme.setAttribute('content', resolved === 'light' ? '#ffffff' : '#000000');
     }
   }, []);
 
-  // Changer le style de thème
-  const setThemeStyle = useCallback((newStyle: ThemeStyle) => {
-    setThemeStyleState(newStyle);
-    localStorage.setItem(STORAGE_KEY_STYLE, newStyle);
-    applyTheme(newStyle, resolvedMode);
-  }, [resolvedMode, applyTheme]);
-
-  // Changer le mode (clair/sombre)
   const setThemeMode = useCallback((newMode: ThemeMode) => {
     setThemeModeState(newMode);
     localStorage.setItem(STORAGE_KEY_MODE, newMode);
     const resolved = getResolvedMode(newMode);
     setResolvedMode(resolved);
-    applyTheme(themeStyle, resolved);
-  }, [themeStyle, getResolvedMode, applyTheme]);
+    applyTheme(resolved);
+  }, [getResolvedMode, applyTheme]);
 
   // Initialisation
   useEffect(() => {
-    const storedStyle = localStorage.getItem(STORAGE_KEY_STYLE) as ThemeStyle | null;
     const storedMode = localStorage.getItem(STORAGE_KEY_MODE) as ThemeMode | null;
-    
-    const initialStyle = storedStyle || 'default';
     const initialMode = storedMode || 'dark';
-    
-    setThemeStyleState(initialStyle);
+
     setThemeModeState(initialMode);
-    
     const resolved = getResolvedMode(initialMode);
     setResolvedMode(resolved);
-    applyTheme(initialStyle, resolved);
+    applyTheme(resolved);
     setMounted(true);
   }, [getResolvedMode, applyTheme]);
 
@@ -97,12 +70,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const handleChange = (e: MediaQueryListEvent) => {
       const resolved: ResolvedMode = e.matches ? 'dark' : 'light';
       setResolvedMode(resolved);
-      applyTheme(themeStyle, resolved);
+      applyTheme(resolved);
     };
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [themeMode, themeStyle, applyTheme]);
+  }, [themeMode, applyTheme]);
 
   // Éviter le flash de contenu non stylisé
   if (!mounted) {
@@ -110,7 +83,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{ themeStyle, themeMode, resolvedMode, setThemeStyle, setThemeMode }}>
+    <ThemeContext.Provider value={{ themeMode, resolvedMode, setThemeMode }}>
       {children}
     </ThemeContext.Provider>
   );

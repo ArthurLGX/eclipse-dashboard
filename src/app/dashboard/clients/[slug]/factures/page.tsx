@@ -221,7 +221,7 @@ export default function ClientFacturesPage() {
       </div>
 
       {/* Table des factures */}
-      <div className="card overflow-hidden">
+      <div className="bg-card overflow-hidden">
         <DataTable
           columns={columns}
           data={factures}

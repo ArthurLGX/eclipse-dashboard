@@ -199,7 +199,7 @@ export default function DashboardPageTemplate<T>({
           {children}
 
           {/* Filtres + Table */}
-          <div className="bg-card border border-default rounded-lg">
+          <div className="bg-card border border-default ">
             <div className="p-4">
               <TableFilters
                 searchPlaceholder={searchPlaceholder}

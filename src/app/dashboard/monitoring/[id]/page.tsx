@@ -212,7 +212,7 @@ export default function MonitoringDetailPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="card p-3"
+              className="bg-card p-3"
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className={item.color}>{item.icon}</span>
@@ -229,7 +229,7 @@ export default function MonitoringDetailPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
-            className="card p-4"
+            className="bg-card p-4"
           >
             <div className="flex items-center gap-2 mb-3">
               <IconServer className="w-4 h-4 !text-accent-text" />
@@ -280,12 +280,12 @@ export default function MonitoringDetailPage() {
 
         {/* Charts */}
         {logsError ? (
-          <div className="card p-4 !text-center">
+          <div className="bg-card p-4 !text-center">
             <IconAlertTriangle className="w-8 h-8 !text-warning-text mx-auto mb-2" />
             <p className="!text-muted">{t('error_loading_logs') || 'Erreur lors du chargement des logs'}</p>
           </div>
         ) : !logs ? (
-          <div className="card p-4 flex items-center justify-center">
+          <div className="bg-card p-4 flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent"></div>
           </div>
         ) : (

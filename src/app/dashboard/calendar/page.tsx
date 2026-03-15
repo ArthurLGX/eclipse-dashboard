@@ -641,7 +641,7 @@ export default function CalendarPage() {
 
           {/* Sidebar - Upcoming Events */}
           <div className="space-y-4">
-            <div className="card p-4">
+            <div className="bg-card p-4">
               <h3 className="font-semibold !text-primary mb-4">
                 {t('upcoming_events') || 'Événements à venir'}
               </h3>
@@ -727,7 +727,7 @@ export default function CalendarPage() {
 
             {/* Selected Day Details */}
             {selectedDate && (
-              <div className="card p-4">
+              <div className="bg-card p-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold !text-primary">
                     {selectedDate.toLocaleDateString('fr-FR', {

@@ -1436,11 +1436,11 @@ export default function RichTextEditor({
             [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:!text-secondary
             [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:!text-secondary
             [&_a]:!text-accent-text [&_a]:underline
-            [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
+            [&_img]: [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
             [&_.color-code]:inline-flex [&_.color-code]:items-center [&_.color-code]:gap-1 [&_.color-code]:px-1 [&_.color-code]:rounded [&_.color-code]:bg-muted/40
             [&_.color-swatch]:inline-block [&_.color-swatch]:w-3 [&_.color-swatch]:h-3 [&_.color-swatch]:rounded-sm [&_.color-swatch]:border [&_.color-swatch]:border-default
             [&_.editor-block]:relative [&_.editor-block]:transition-all
-            [&_.editor-image-block]:my-2 [&_.editor-image-block]:rounded-lg
+            [&_.editor-image-block]:my-2 [&_.editor-image-block]:
             [&_.editor-image-block:hover]:ring-1 [&_.editor-image-block:hover]:ring-accent/30
             empty:before:content-[attr(data-placeholder)] empty:before:!text-muted empty:before:pointer-events-none"
           style={{ 

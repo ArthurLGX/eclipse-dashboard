@@ -2298,7 +2298,7 @@ function TaskCard({
                     [&_a]:!text-accent-text [&_a]:underline
                     [&_strong]:font-semibold [&_strong]:!text-primary
                     [&_em]:italic
-                    [&_img]:rounded-lg [&_img]:max-w-full [&_img]:my-2"
+                    [&_img]: [&_img]:max-w-full [&_img]:my-2"
                   dangerouslySetInnerHTML={{ __html: task.description || '' }}
                 />
               )}
@@ -4071,22 +4071,22 @@ function TaskGanttView({
           <span className="font-mono !text-[10px] px-2 py-0.5 rounded border border-default !text-muted bg-muted/30">{t('gantt') || 'Gantt'}</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex border border-default rounded-lg overflow-hidden">
+          <div className="flex border border-default  overflow-hidden">
             <button type="button" onClick={() => zoom(-4)} className="w-8 h-8 flex items-center justify-center !text-muted hover:bg-muted" title={t('zoom_out') || 'Zoom arrière'}>−</button>
             <div className="w-px bg-default" />
             <button type="button" onClick={() => zoom(4)} className="w-8 h-8 flex items-center justify-center !text-muted hover:bg-muted" title={t('zoom_in') || 'Zoom avant'}>+</button>
           </div>
-          <button type="button" onClick={scrollToToday} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-warning/40 !text-warning hover:bg-warning/10 rounded-lg transition-colors">
+          <button type="button" onClick={scrollToToday} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-warning/40 !text-warning hover:bg-warning/10  transition-colors">
             <IconCalendarEvent className="w-4 h-4" />
             {t('today') || "Aujourd'hui"}
           </button>
           {canEdit && onAddTask && (
-            <button type="button" onClick={onAddTask} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted rounded-lg transition-colors">
+            <button type="button" onClick={onAddTask} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted  transition-colors">
               <IconPlus className="w-4 h-4" />
               {t('new_task') || 'Nouvelle tâche'}
             </button>
           )}
-          <button type="button" onClick={() => setShowExportModal(true)} disabled={isExporting} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted rounded-lg transition-colors disabled:opacity-50">
+          <button type="button" onClick={() => setShowExportModal(true)} disabled={isExporting} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted  transition-colors disabled:opacity-50">
             <IconFileTypePdf className="w-4 h-4" />
             {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
           </button>

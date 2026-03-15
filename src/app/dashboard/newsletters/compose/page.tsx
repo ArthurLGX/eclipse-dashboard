@@ -242,7 +242,7 @@ function EmailPreview({
           <div className="grid grid-cols-2 gap-4 mb-6">
             {contentImages.map((img, idx) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={idx} src={img} alt="" className="rounded-lg w-full object-cover" />
+              <img key={idx} src={img} alt="" className=" w-full object-cover" />
             ))}
           </div>
         )}
@@ -1303,8 +1303,8 @@ function RichTextEditor({
             [&_ul]:list-disc [&_ul]:pl-5
             [&_ol]:list-decimal [&_ol]:pl-5
             [&_a]:!text-accent-text [&_a]:underline
-            [&_img]:rounded-lg [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
-            [&_video]:rounded-lg [&_video]:cursor-pointer [&_video]:transition-all [&_video]:max-w-full
+            [&_img]: [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
+            [&_video]: [&_video]:cursor-pointer [&_video]:transition-all [&_video]:max-w-full
             empty:before:content-[attr(data-placeholder)] empty:before:!text-gray-400 empty:before:pointer-events-none"
           style={{ 
             fontFamily: editorFontFamily,

@@ -178,7 +178,7 @@ function EmailPreviewContent({
               [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-3 [&_ol]:space-y-1
               [&_li]:!text-gray-700
               [&_a]:!text-blue-600 [&_a]:underline [&_a]:hover:!text-blue-800
-              [&_img]:rounded-lg [&_img]:max-w-full [&_img]:h-auto [&_img]:my-3
+              [&_img]: [&_img]:max-w-full [&_img]:h-auto [&_img]:my-3
               [&_strong]:font-bold [&_b]:font-bold
               [&_em]:italic [&_i]:italic"
             style={{ fontFamily: emailFontFamily }}

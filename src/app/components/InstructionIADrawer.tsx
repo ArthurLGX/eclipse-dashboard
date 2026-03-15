@@ -84,7 +84,7 @@ export default function InstructionIADrawer({
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-hover rounded-lg transition-colors"
+                className="p-2 hover:bg-hover  transition-colors"
                 aria-label="Fermer"
               >
                 <IconX className="w-5 h-5" />
@@ -101,7 +101,7 @@ export default function InstructionIADrawer({
                   onChange={(e) => setValue(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ex: Pour les leads Walego, utiliser les suggestions du bloc Lead Status..."
-                  className="w-full min-h-[120px] p-3 rounded-lg border border-default bg-secondary text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 resize-y"
+                  className="w-full min-h-[120px] p-3  border border-default bg-secondary text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent/50 resize-y"
                   rows={5}
                 />
                 <p className="mt-1.5 text-xs text-muted">⌘ + Entrée pour enregistrer</p>
@@ -117,7 +117,7 @@ export default function InstructionIADrawer({
                       <button
                         key={i}
                         onClick={() => setValue(h)}
-                        className="w-full text-left p-2.5 rounded-lg bg-secondary border border-default hover:bg-hover text-sm text-primary line-clamp-2 transition-colors"
+                        className="w-full text-left p-2.5  bg-secondary border border-default hover:bg-hover text-sm text-primary line-clamp-2 transition-colors"
                       >
                         {h}
                       </button>
@@ -135,7 +135,7 @@ export default function InstructionIADrawer({
                     <button
                       key={i}
                       onClick={() => setValue((v) => (v ? `${v}\n\n${prompt}` : prompt))}
-                      className="w-full text-left p-2.5 rounded-lg bg-accent-light border border-default hover:bg-card-hover text-sm text-primary line-clamp-2 transition-colors"
+                      className="w-full text-left p-2.5  bg-accent-light border border-default hover:bg-card-hover text-sm text-primary line-clamp-2 transition-colors"
                     >
                       {prompt}
                     </button>
@@ -148,7 +148,7 @@ export default function InstructionIADrawer({
               <button
                 onClick={handleSubmit}
                 disabled={saving || !value.trim()}
-                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-medium transition-all ${
+                className={`w-full flex items-center justify-center gap-2 py-2.5  font-medium transition-all ${
                   success
                     ? 'bg-green-500/20 text-green-600'
                     : 'bg-accent text-accent-text hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed'

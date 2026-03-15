@@ -364,7 +364,7 @@ export default function GeneratedMockup({
                       </span>
                     </div>
                     {currentScreenshot ? (
-                      <div className="rounded-lg overflow-hidden border border-default">
+                      <div className=" overflow-hidden border border-default">
                         <img
                           src={`data:image/png;base64,${currentScreenshot}`}
                           alt="Current page"
@@ -372,7 +372,7 @@ export default function GeneratedMockup({
                         />
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-default bg-muted p-12 !text-center">
+                      <div className=" border border-default bg-muted p-12 !text-center">
                         <IconPhoto className="w-8 h-8 mx-auto mb-2 !text-muted opacity-50" />
                         <p className="!text-sm !text-muted">{t('no_screenshot') || 'Pas de capture'}</p>
                       </div>
@@ -389,7 +389,7 @@ export default function GeneratedMockup({
                         <span className="!text-xs !text-muted">({t('cached') || 'cache'})</span>
                       )}
                     </div>
-                    <div className="rounded-lg overflow-hidden border border-success">
+                    <div className=" overflow-hidden border border-success">
                       <img
                         src={loadedImageUrl}
                         alt="Ideal mockup"

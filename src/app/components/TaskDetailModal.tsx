@@ -127,7 +127,7 @@ export default function TaskDetailModal({
               </h2>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-hover rounded-lg transition-colors"
+                className="p-2 hover:bg-hover  transition-colors"
               >
                 <IconX className="w-5 h-5" />
               </button>
@@ -137,7 +137,7 @@ export default function TaskDetailModal({
               {/* Contexte */}
               <section>
                 <h3 className="text-sm font-semibold text-primary mb-3">Contexte</h3>
-                <div className="bg-secondary rounded-lg p-4 space-y-2 text-sm">
+                <div className="bg-secondary  p-4 space-y-2 text-sm">
                   <p><span className="text-muted">Email :</span> {ctx.from_email || task.contact?.email || 'N/A'}</p>
                   <p><span className="text-muted">Sujet :</span> {ctx.original_subject || task.received_email?.subject || 'N/A'}</p>
                   <p><span className="text-muted">Reçu le :</span> {ctx.received_at ? new Date(ctx.received_at).toLocaleString('fr-FR') : 'N/A'}</p>
@@ -204,7 +204,7 @@ export default function TaskDetailModal({
                   </div>
                 )}
                 {error && (
-                  <div className="p-4 bg-error-light text-error rounded-lg flex items-center justify-between">
+                  <div className="p-4 bg-error-light text-error  flex items-center justify-between">
                     <span>{error}</span>
                     <button
                       onClick={fetchAnalysis}
@@ -217,11 +217,11 @@ export default function TaskDetailModal({
                 )}
                 {analysis && !loading && (
                   <div className="!space-y-4 !p-0 ">
-                    <div className="bg-secondary rounded-lg p-4">
+                    <div className="bg-secondary  p-4">
                       <p className="text-xs font-medium text-muted uppercase mb-2">Raisonnement</p>
                       <p className="text-sm text-primary whitespace-pre-wrap">{analysis.reasoning}</p>
                     </div>
-                    <div className="bg-green-500/5 border border-default rounded-lg p-4">
+                    <div className="bg-green-500/5 border border-default  p-4">
                       <p className="text-xs !text-green-600 font-medium !text-accent-text uppercase mb-2">Suggestion d&apos;action</p>
                       <p className="text-sm text-primary font-medium whitespace-pre-wrap">{analysis.suggestion}</p>
                     </div>

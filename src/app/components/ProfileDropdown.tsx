@@ -97,7 +97,7 @@ export default function ProfileDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 w-56 bg-card border border-default shadow-2xl overflow-hidden rounded-lg z-[1003]"
+            className="absolute right-0 top-full mt-2 w-56 bg-card border border-default shadow-2xl overflow-hidden  z-[1003]"
           >
             <div className="py-2">
               {visibleItems.map(item => (
