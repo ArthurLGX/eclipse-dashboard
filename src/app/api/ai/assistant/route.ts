@@ -319,16 +319,19 @@ function buildSystemPrompt(context: UserContext | null): string {
 
 ## Outils disponibles
 - generateRelanceEmail: Génère un email de relance personnalisé
-- createTask: Crée une tâche dans un projet (IMPORTANT: l'utilisateur devra confirmer)
-- createQuote: Prépare un devis pré-rempli pour un client (IMPORTANT: l'utilisateur devra confirmer)
+- createTask: Crée une tâche dans un projet (CRUD réel)
+- createQuote: Prépare un devis pré-rempli pour un client
 - suggestNextSteps: Suggère les prochaines étapes prioritaires
+- updateTask, deleteTask: Modifier ou supprimer une tâche
+- updateClient, createClient: Modifier ou créer un client
+- updateProject: Modifier un projet
 
-## Règles IMPORTANTES
-- Ne jamais inventer de données - utilise UNIQUEMENT les données du contexte
-- Si tu n'as pas l'info, dis-le clairement
+## Règles IMPORTANTES - SÉCURITÉ
+- Ne jamais inventer de données - utilise UNIQUEMENT les IDs du contexte fourni
+- Pour createTask, updateTask, deleteTask, updateClient, createQuote, updateProject : utilise UNIQUEMENT les IDs (projectId, clientId, taskId) qui figurent dans le contexte. Jamais d'ID inventé ou fourni par l'utilisateur sans vérification.
+- Si l'utilisateur donne un ID, vérifie qu'il est bien dans le contexte avant de l'utiliser
 - Propose toujours une prochaine étape actionnable
-- Pour les actions (créer tâche, devis...), demande TOUJOURS confirmation
-- Quand tu utilises un tool, explique pourquoi`;
+- Quand tu utilises un tool CRUD, explique brièvement l'action`;
 
   if (!context) {
     return basePrompt + '\n\n⚠️ Contexte utilisateur non disponible. Demande à l\'utilisateur les informations nécessaires.';
@@ -405,6 +408,56 @@ ${overdueTasks.length > 0 ? `\n⚠️ ALERTE: ${overdueTasks.length} tâches son
 }
 
 // ============================================================================
+// SÉCURITÉ : Validation anti-usurpation
+// Tous les IDs doivent provenir du contexte utilisateur (fetchUserContext).
+// Jamais faire confiance à un ID fourni par le modèle sans vérification.
+// ============================================================================
+
+function isProjectInContext(ctx: UserContext | null, projectId: string): boolean {
+  return !!ctx?.projects?.some((p) => p.id === projectId);
+}
+function isClientInContext(ctx: UserContext | null, clientId: string): boolean {
+  return !!ctx?.clients?.some((c) => c.id === clientId);
+}
+function isTaskInContext(ctx: UserContext | null, taskId: string): boolean {
+  return !!ctx?.tasks?.some((t) => t.id === taskId);
+}
+function isInvoiceInContext(ctx: UserContext | null, invoiceId: string): boolean {
+  return !!ctx?.invoices?.some((i) => i.id === invoiceId);
+}
+
+async function strapiFetch(
+  endpoint: string,
+  token: string,
+  options: { method?: string; body?: unknown } = {}
+): Promise<{ ok: boolean; data?: unknown; error?: string }> {
+  const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
+  const url = endpoint.startsWith('http') ? endpoint : `${apiUrl}/api/${endpoint}`;
+  try {
+    const fetchOptions: RequestInit = {
+      method: options.method || 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    if (options.body !== undefined) {
+      fetchOptions.body = JSON.stringify({ data: options.body });
+    }
+    const res = await fetch(url, fetchOptions);
+    const text = await res.text();
+    const data = text ? JSON.parse(text) : null;
+    if (!res.ok) {
+      const msg = data?.error?.message || `Erreur ${res.status}`;
+      return { ok: false, error: msg };
+    }
+    return { ok: true, data };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Erreur réseau' };
+  }
+}
+
+// ============================================================================
 // TOOL SCHEMAS
 // ============================================================================
 
@@ -450,11 +503,47 @@ const createContractSchema = z.object({
   title: z.string().optional().describe('Titre du contrat (sera généré automatiquement si non fourni)'),
 });
 
+const updateTaskSchema = z.object({
+  taskId: z.string().describe('ID de la tâche (documentId)'),
+  title: z.string().optional().describe('Nouveau titre'),
+  status: z.enum(['todo', 'in_progress', 'completed', 'cancelled', 'archived']).optional().describe('Nouveau statut'),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']).optional().describe('Nouvelle priorité'),
+  dueDate: z.string().optional().describe('Nouvelle date d\'échéance YYYY-MM-DD'),
+  description: z.string().optional().describe('Nouvelle description'),
+});
+
+const deleteTaskSchema = z.object({
+  taskId: z.string().describe('ID de la tâche à supprimer (documentId)'),
+});
+
+const updateClientSchema = z.object({
+  clientId: z.string().describe('ID du client (documentId)'),
+  name: z.string().optional().describe('Nouveau nom'),
+  email: z.string().optional().describe('Nouvel email'),
+  pipelineStatus: z.string().optional().describe('Nouveau statut pipeline'),
+});
+
+const createClientSchema = z.object({
+  name: z.string().describe('Nom du client'),
+  email: z.string().describe('Email du client (requis)'),
+  company: z.string().optional().describe('Entreprise ou nom de société'),
+});
+
+const updateProjectSchema = z.object({
+  projectId: z.string().describe('ID du projet (documentId)'),
+  title: z.string().optional().describe('Nouveau titre'),
+  status: z.enum(['planning', 'in_progress', 'development', 'review', 'completed', 'on_hold', 'archived']).optional().describe('Nouveau statut'),
+});
+
 // ============================================================================
 // TOOL EXECUTE FUNCTIONS
 // ============================================================================
 
-async function executeGenerateRelanceEmail(params: z.infer<typeof relanceEmailSchema>) {
+async function executeGenerateRelanceEmail(
+  params: z.infer<typeof relanceEmailSchema>,
+  _context: UserContext | null,
+  _token: string | null
+) {
   const { clientName, context, tone, additionalContext, daysSinceLastContact } = params;
   
   const toneStyles = {
@@ -534,44 +623,65 @@ ${toneStyle.closing}`,
   };
 }
 
-async function executeCreateTask(params: z.infer<typeof createTaskSchema>) {
+async function executeCreateTask(
+  params: z.infer<typeof createTaskSchema>,
+  context: UserContext | null,
+  token: string | null
+) {
   const { title, projectId, projectName, priority, dueDate, description } = params;
-  
-  return {
-    success: true,
-    task: {
+  if (!context || !token) return { success: false, error: 'Authentification requise' };
+  if (!projectId) return { success: false, error: 'Un projet doit être choisi pour créer une tâche.' };
+  if (!isProjectInContext(context, projectId))
+    return { success: false, error: 'Ce projet n\'appartient pas à ton espace. Utilise uniquement les IDs du contexte.' };
+  const res = await strapiFetch('project-tasks', token, {
+    method: 'POST',
+    body: {
+      project: { connect: [{ documentId: projectId }] },
       title,
-      projectId,
-      projectName,
-      priority,
-      dueDate,
-      description,
-      created: false,
+      description: description || '',
+      task_status: 'todo',
+      priority: priority || 'medium',
+      progress: 0,
+      start_date: null,
+      due_date: dueDate || null,
+      completed_date: null,
+      estimated_hours: null,
+      actual_hours: null,
+      order: 0,
+      created_user: { connect: [{ id: context.userId }] },
+      tags: [],
+      parent_task: null,
+      color: '#8B5CF6',
     },
-    message: `Tâche "${title}" prête à être créée${projectName ? ` dans le projet "${projectName}"` : ''}. Confirme pour la créer.`,
-  };
+  });
+  if (!res.ok) return { success: false, error: res.error || 'Erreur création tâche' };
+  return { success: true, task: { title, projectId, projectName, created: true }, message: `Tâche "${title}" créée.` };
 }
 
-async function executeCreateQuote(params: z.infer<typeof createQuoteSchema>) {
+async function executeCreateQuote(
+  params: z.infer<typeof createQuoteSchema>,
+  context: UserContext | null,
+  _token: string | null
+) {
   const { clientId, clientName, projectId, projectName, estimatedAmount, description } = params;
-  
+  if (!context) return { success: false, error: 'Contexte non disponible' };
+  if (!isClientInContext(context, clientId))
+    return { success: false, error: 'Ce client n\'appartient pas à ton espace. Utilise uniquement les IDs du contexte.' };
+  if (projectId && !isProjectInContext(context, projectId))
+    return { success: false, error: 'Ce projet n\'appartient pas à ton espace.' };
   return {
     success: true,
-    quote: {
-      clientId,
-      clientName,
-      projectId,
-      projectName,
-      amount: estimatedAmount,
-      description,
-      created: false,
-    },
+    quote: { clientId, clientName, projectId, projectName, amount: estimatedAmount, description, created: false },
     actionUrl: `/dashboard/factures/new?type=quote&client=${clientId}${projectId ? `&project=${projectId}` : ''}`,
-    message: `Devis prêt pour ${clientName}${estimatedAmount ? ` (~${estimatedAmount.toLocaleString('fr-FR')}€)` : ''}. Clique pour ouvrir l'éditeur de devis.`,
+    message: `Devis prêt pour ${clientName}${estimatedAmount ? ` (~${estimatedAmount.toLocaleString('fr-FR')}€)` : ''}. Clique pour ouvrir l'éditeur.`,
   };
 }
 
-async function executeSuggestNextSteps(params: z.infer<typeof suggestNextStepsSchema>) {
+async function executeSuggestNextSteps(
+  params: z.infer<typeof suggestNextStepsSchema>,
+  _context: UserContext | null,
+  _token: string | null
+) {
   const { focus } = params;
   
   const suggestions: Record<string, string[]> = {
@@ -608,9 +718,17 @@ async function executeSuggestNextSteps(params: z.infer<typeof suggestNextStepsSc
   };
 }
 
-async function executeCreateContract(params: z.infer<typeof createContractSchema>) {
+async function executeCreateContract(
+  params: z.infer<typeof createContractSchema>,
+  context: UserContext | null,
+  _token: string | null
+) {
   const { clientId, clientName, projectId, projectName, contractType, title } = params;
-  
+  if (!context) return { success: false, error: 'Contexte non disponible' };
+  if (!isClientInContext(context, clientId))
+    return { success: false, error: 'Ce client n\'appartient pas à ton espace.' };
+  if (projectId && !isProjectInContext(context, projectId))
+    return { success: false, error: 'Ce projet n\'appartient pas à ton espace.' };
   const contractTypeLabels: Record<string, string> = {
     freelance: 'Contrat freelance',
     service: 'Contrat de prestation de services',
@@ -618,22 +736,104 @@ async function executeCreateContract(params: z.infer<typeof createContractSchema
     confidentiality: 'Accord de confidentialité (NDA)',
     other: 'Contrat',
   };
-  
   const generatedTitle = title || `${contractTypeLabels[contractType]} - ${clientName}${projectName ? ` - ${projectName}` : ''}`;
-  
   return {
     success: true,
-    contract: {
-      clientId,
-      clientName,
-      projectId,
-      projectName,
-      contractType,
-      title: generatedTitle,
-    },
+    contract: { clientId, clientName, projectId, projectName, contractType, title: generatedTitle },
     message: `Contrat "${generatedTitle}" prêt à être créé pour ${clientName}.`,
     actionUrl: `/dashboard/contracts/new?client=${clientId}${projectId ? `&project=${projectId}` : ''}&type=${contractType}&title=${encodeURIComponent(generatedTitle)}`,
   };
+}
+
+async function executeUpdateTask(
+  params: z.infer<typeof updateTaskSchema>,
+  context: UserContext | null,
+  token: string | null
+) {
+  if (!context || !token) return { success: false, error: 'Authentification requise' };
+  if (!isTaskInContext(context, params.taskId))
+    return { success: false, error: 'Cette tâche n\'appartient pas à ton espace. Utilise uniquement les IDs du contexte.' };
+  const payload: Record<string, unknown> = {};
+  if (params.title) payload.title = params.title;
+  if (params.status) {
+    payload.task_status = params.status;
+    if (params.status === 'completed') payload.completed_date = new Date().toISOString();
+  }
+  if (params.priority) payload.priority = params.priority;
+  if (params.dueDate) payload.due_date = params.dueDate;
+  if (params.description) payload.description = params.description;
+  if (Object.keys(payload).length === 0) return { success: false, error: 'Aucune modification fournie.' };
+  const res = await strapiFetch(`project-tasks/${params.taskId}`, token, { method: 'PUT', body: payload });
+  if (!res.ok) return { success: false, error: res.error || 'Erreur mise à jour' };
+  return { success: true, message: 'Tâche mise à jour.' };
+}
+
+async function executeDeleteTask(
+  params: z.infer<typeof deleteTaskSchema>,
+  context: UserContext | null,
+  token: string | null
+) {
+  if (!context || !token) return { success: false, error: 'Authentification requise' };
+  if (!isTaskInContext(context, params.taskId))
+    return { success: false, error: 'Cette tâche n\'appartient pas à ton espace.' };
+  const res = await strapiFetch(`project-tasks/${params.taskId}`, token, { method: 'DELETE' });
+  if (!res.ok) return { success: false, error: res.error || 'Erreur suppression' };
+  return { success: true, message: 'Tâche supprimée.' };
+}
+
+async function executeUpdateClient(
+  params: z.infer<typeof updateClientSchema>,
+  context: UserContext | null,
+  token: string | null
+) {
+  if (!context || !token) return { success: false, error: 'Authentification requise' };
+  if (!isClientInContext(context, params.clientId))
+    return { success: false, error: 'Ce client n\'appartient pas à ton espace.' };
+  const payload: Record<string, unknown> = {};
+  if (params.name) payload.name = params.name;
+  if (params.email) payload.email = params.email;
+  if (params.pipelineStatus) payload.pipeline_status = params.pipelineStatus;
+  if (Object.keys(payload).length === 0) return { success: false, error: 'Aucune modification fournie.' };
+  const res = await strapiFetch(`clients/${params.clientId}`, token, { method: 'PUT', body: payload });
+  if (!res.ok) return { success: false, error: res.error || 'Erreur mise à jour' };
+  return { success: true, message: 'Client mis à jour.' };
+}
+
+async function executeCreateClient(
+  params: z.infer<typeof createClientSchema>,
+  context: UserContext | null,
+  token: string | null
+) {
+  if (!context || !token) return { success: false, error: 'Authentification requise' };
+  const res = await strapiFetch('clients', token, {
+    method: 'POST',
+    body: {
+      name: params.name,
+      email: params.email,
+      enterprise: params.company || 'Non spécifié',
+      processStatus: 'prospect',
+      users: { connect: [{ id: context.userId }] },
+    },
+  });
+  if (!res.ok) return { success: false, error: res.error || 'Erreur création client' };
+  return { success: true, message: `Client "${params.name}" créé.` };
+}
+
+async function executeUpdateProject(
+  params: z.infer<typeof updateProjectSchema>,
+  context: UserContext | null,
+  token: string | null
+) {
+  if (!context || !token) return { success: false, error: 'Authentification requise' };
+  if (!isProjectInContext(context, params.projectId))
+    return { success: false, error: 'Ce projet n\'appartient pas à ton espace.' };
+  const payload: Record<string, unknown> = {};
+  if (params.title) payload.title = params.title;
+  if (params.status) payload.project_status = params.status;
+  if (Object.keys(payload).length === 0) return { success: false, error: 'Aucune modification fournie.' };
+  const res = await strapiFetch(`projects/${params.projectId}`, token, { method: 'PUT', body: payload });
+  if (!res.ok) return { success: false, error: res.error || 'Erreur mise à jour' };
+  return { success: true, message: 'Projet mis à jour.' };
 }
 
 // ============================================================================
@@ -663,27 +863,52 @@ export async function POST(req: Request) {
         generateRelanceEmail: {
           description: 'Génère un email de relance personnalisé pour un client ou un devis en attente.',
           inputSchema: relanceEmailSchema,
-          execute: executeGenerateRelanceEmail,
+          execute: (p) => executeGenerateRelanceEmail(p, context, token),
         },
         createTask: {
-          description: 'Prépare une nouvelle tâche à créer dans un projet. L\'utilisateur devra confirmer.',
+          description: 'Crée une tâche dans un projet. Le projet doit appartenir à l\'utilisateur.',
           inputSchema: createTaskSchema,
-          execute: executeCreateTask,
+          execute: (p) => executeCreateTask(p, context, token),
         },
         createQuote: {
-          description: 'Prépare un devis pré-rempli pour un client. L\'utilisateur sera redirigé vers l\'éditeur.',
+          description: 'Prépare un devis pour un client. Le client doit appartenir à l\'utilisateur.',
           inputSchema: createQuoteSchema,
-          execute: executeCreateQuote,
+          execute: (p) => executeCreateQuote(p, context, token),
         },
         suggestNextSteps: {
           description: 'Suggère les prochaines étapes prioritaires basées sur le contexte actuel.',
           inputSchema: suggestNextStepsSchema,
-          execute: executeSuggestNextSteps,
+          execute: (p) => executeSuggestNextSteps(p, context, token),
         },
         createContract: {
-          description: 'Prépare un contrat pour un client. Utilise ce tool quand un devis est accepté ou quand le client demande un contrat.',
+          description: 'Prépare un contrat pour un client. Le client doit appartenir à l\'utilisateur.',
           inputSchema: createContractSchema,
-          execute: executeCreateContract,
+          execute: (p) => executeCreateContract(p, context, token),
+        },
+        updateTask: {
+          description: 'Met à jour une tâche existante (titre, statut, priorité, date).',
+          inputSchema: updateTaskSchema,
+          execute: (p) => executeUpdateTask(p, context, token),
+        },
+        deleteTask: {
+          description: 'Supprime une tâche.',
+          inputSchema: deleteTaskSchema,
+          execute: (p) => executeDeleteTask(p, context, token),
+        },
+        updateClient: {
+          description: 'Met à jour un client (nom, email, statut pipeline).',
+          inputSchema: updateClientSchema,
+          execute: (p) => executeUpdateClient(p, context, token),
+        },
+        createClient: {
+          description: 'Crée un nouveau client.',
+          inputSchema: createClientSchema,
+          execute: (p) => executeCreateClient(p, context, token),
+        },
+        updateProject: {
+          description: 'Met à jour un projet (titre, statut).',
+          inputSchema: updateProjectSchema,
+          execute: (p) => executeUpdateProject(p, context, token),
         },
       },
     });

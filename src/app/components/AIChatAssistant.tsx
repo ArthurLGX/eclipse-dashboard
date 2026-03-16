@@ -20,6 +20,8 @@ import {
   IconExternalLink,
   IconCommand,
   IconFileText,
+  IconUser,
+  IconFolder,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useAuth } from '@/app/context/AuthContext';
@@ -103,6 +105,8 @@ const ToolResultCard: React.FC<{
       case 'generateRelanceEmail':
         return <IconMail size={16} className="!text-info" />;
       case 'createTask':
+      case 'updateTask':
+      case 'deleteTask':
         return <IconListCheck size={16} className="!text-success-text" />;
       case 'createQuote':
         return <IconFileInvoice size={16} className="!text-accent-text" />;
@@ -110,6 +114,11 @@ const ToolResultCard: React.FC<{
         return <IconFileText size={16} className="!text-warning" />;
       case 'suggestNextSteps':
         return <IconArrowRight size={16} className="!text-warning" />;
+      case 'updateClient':
+      case 'createClient':
+        return <IconUser size={16} className="!text-accent-text" />;
+      case 'updateProject':
+        return <IconFolder size={16} className="!text-accent-text" />;
       default:
         return <IconSparkles size={16} className="!text-accent-text" />;
     }
@@ -133,6 +142,16 @@ const ToolResultCard: React.FC<{
           : (t('contract_ready') || 'Contrat prêt à créer');
       case 'suggestNextSteps':
         return t('next_steps') || 'Prochaines étapes';
+      case 'updateTask':
+        return t('task_updated') || 'Tâche mise à jour ✓';
+      case 'deleteTask':
+        return t('task_deleted') || 'Tâche supprimée ✓';
+      case 'updateClient':
+        return t('client_updated') || 'Client mis à jour ✓';
+      case 'createClient':
+        return t('client_created') || 'Client créé ✓';
+      case 'updateProject':
+        return t('project_updated') || 'Projet mis à jour ✓';
       default:
         return toolName;
     }
@@ -296,6 +315,14 @@ const ToolResultCard: React.FC<{
           ))}
         </ul>
       )}
+
+      {/* CRUD tools (updateTask, deleteTask, updateClient, createClient, updateProject) */}
+      {['updateTask', 'deleteTask', 'updateClient', 'createClient', 'updateProject'].includes(toolName) && result.message && (
+        <p className="!text-xs !text-success-text flex items-center gap-1 mt-1">
+          <IconCheck size={12} />
+          {result.message}
+        </p>
+      )}
     </div>
   );
 };
@@ -319,6 +346,14 @@ const TypingIndicator: React.FC<{ toolName?: string }> = ({ toolName }) => {
         return t('ai_preparing_contract') || 'Préparation du contrat...';
       case 'suggestNextSteps':
         return t('ai_assistant_analyzing') || 'Analyse en cours...';
+      case 'updateTask':
+      case 'deleteTask':
+        return t('ai_updating_task') || 'Mise à jour de la tâche...';
+      case 'updateClient':
+      case 'createClient':
+        return t('ai_updating_client') || 'Mise à jour du client...';
+      case 'updateProject':
+        return t('ai_updating_project') || 'Mise à jour du projet...';
       default:
         return t('ai_thinking') || 'Réflexion en cours...';
     }
