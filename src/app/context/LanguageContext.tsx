@@ -925,6 +925,7 @@ const translations = {
     error_updating: 'Erreur lors de la mise à jour',
     login_success: 'Connexion réussie',
     invalid_credentials: 'Identifiants invalides',
+    email_already_taken_use_password: 'Vous avez déjà un compte avec cet email. Connectez-vous avec votre mot de passe ci-dessous.',
     register_success: 'Inscription réussie, veuillez vous connecter',
     register_failed: "Échec de l'inscription",
 
@@ -4120,6 +4121,7 @@ const translations = {
     error_updating: 'Error updating',
     login_success: 'Login successful',
     invalid_credentials: 'Invalid credentials',
+    email_already_taken_use_password: 'You already have an account with this email. Sign in with your password below.',
     register_success: 'Register successful, please login',
     register_failed: 'Register failed',
 

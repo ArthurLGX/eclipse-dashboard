@@ -43,10 +43,22 @@ function LoginContent() {
   useEffect(() => {
     const urlError = searchParams.get('error');
     if (urlError) {
-      setError(urlError);
-      showGlobalPopup(urlError, 'error');
+      const isEmailAlreadyTaken =
+        /already taken|email.*taken|Email.*already/i.test(urlError) ||
+        urlError.includes('ApplicationError');
+      if (isEmailAlreadyTaken) {
+        const friendlyMessage =
+          t('email_already_taken_use_password') ||
+          'Vous avez déjà un compte avec cet email. Connectez-vous avec votre mot de passe ci-dessous.';
+        setError(friendlyMessage);
+        showGlobalPopup(friendlyMessage, 'error');
+        setIsLogin(true);
+      } else {
+        setError(urlError);
+        showGlobalPopup(urlError, 'error');
+      }
     }
-  }, [searchParams, showGlobalPopup]);
+  }, [searchParams, showGlobalPopup, t]);
 
   useEffect(() => {
     const newType = (searchParams.get('type') as 'login' | 'register') || 'login';
