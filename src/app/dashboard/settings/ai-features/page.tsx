@@ -278,16 +278,16 @@ export default function AIFeaturesSettingsPage() {
                   key={feature.key}
                   className={`p-4  border-2 transition-all cursor-pointer ${
                     isEnabled
-                      ? 'bg-accent/5 border-accent/30'
-                      : 'bg-secondary border-default hover:border-accent/20'
+                      ? 'bg-success-light border-success'
+                      : 'bg-secondary border-default hover:border-success'
                   }`}
                   onClick={() => setLocalFeatures({ ...localFeatures, [feature.key]: !isEnabled })}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-10 h-10  flex items-center justify-center flex-shrink-0 ${
-                      isEnabled ? 'bg-accent/20' : 'bg-muted'
+                      isEnabled ? 'bg-success-light' : 'bg-muted'
                     }`}>
-                      <FeatureIcon className={`w-5 h-5 ${isEnabled ? 'text-accent' : 'text-muted'}`} />
+                      <FeatureIcon className={`w-5 h-5 ${isEnabled ? 'text-success' : 'text-muted'}`} />
                     </div>
 
                     <div className="flex-1 min-w-0">
@@ -303,7 +303,7 @@ export default function AIFeaturesSettingsPage() {
                         </span>
                       </div>
                       <p className="text-sm text-muted mb-2">{feature.description}</p>
-                      <span className="text-xs font-mono text-accent-text bg-accent/10 px-2 py-1 rounded">
+                      <span className="text-xs font-mono text-success-text bg-success-light px-2 py-1 rounded">
                         {feature.tokenCost}
                       </span>
                     </div>

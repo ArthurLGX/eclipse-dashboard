@@ -551,7 +551,6 @@ export default function ProjectsPage() {
       
       try {
         const updates = reorderedProjects.map((p, index) => ({
-          id: p.id,
           documentId: p.documentId,
           sort_order: index,
         }));

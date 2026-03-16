@@ -34,14 +34,11 @@ import { deriveWebsite } from '@/lib/favicon';
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 /**
- * Identifiant pour les routes API projets.
- * Strapi 5 : documentId (string) — doc https://docs.strapi.io/cms/api/rest
- * Strapi v4 : id (number) — définir NEXT_PUBLIC_STRAPI_USE_NUMERIC_ID=true
+ * Identifiant pour les routes API projets (Strapi 5).
+ * Doc: https://docs.strapi.io/cms/api/rest#update — PUT /api/:pluralApiId/:documentId
  */
-function getProjectRouteId(project: { id: number; documentId: string }): string | number {
-  return process.env.NEXT_PUBLIC_STRAPI_USE_NUMERIC_ID === 'true'
-    ? project.id
-    : project.documentId;
+function getProjectRouteId(project: { documentId: string }): string {
+  return project.documentId;
 }
 
 /** Récupère le token d'authentification */
@@ -663,7 +660,7 @@ export const fetchUnassignedProjects = (userId: number) =>
   get(`projects?populate=*&filters[user][id][$eq]=${userId}&filters[client][$null]=true`);
 
 export async function updateProject(
-  project: { id: number; documentId: string },
+  project: { documentId: string },
   data: {
     title?: string;
     description?: string;
@@ -684,7 +681,7 @@ export async function updateProject(
  * Met à jour le statut d'un projet et synchronise automatiquement le statut pipeline du client
  */
 export async function updateProjectStatusWithSync(
-  project: { id: number; documentId: string },
+  project: { documentId: string },
   newProjectStatus: 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
   clientDocumentId?: string
 ): Promise<void> {
@@ -724,12 +721,12 @@ export async function updateProjectStatusWithSync(
 }
 
 /** Toggle le statut favori d'un projet */
-export async function toggleProjectFavorite(project: { id: number; documentId: string }, isFavorite: boolean) {
+export async function toggleProjectFavorite(project: { documentId: string }, isFavorite: boolean) {
   return put(`projects/${getProjectRouteId(project)}`, { is_favorite: isFavorite });
 }
 
 /** Met à jour l'ordre de plusieurs projets en une fois (séquentiel pour éviter les deadlocks) */
-export async function updateProjectsOrder(projects: { id: number; documentId: string; sort_order: number }[]) {
+export async function updateProjectsOrder(projects: { documentId: string; sort_order: number }[]) {
   for (const p of projects) {
     await put(`projects/${getProjectRouteId(p)}`, { sort_order: p.sort_order });
   }
@@ -812,7 +809,7 @@ export async function assignProjectToClient(
 }
 
 /** Supprime un projet */
-export const deleteProject = (project: { id: number; documentId: string }) =>
+export const deleteProject = (project: { documentId: string }) =>
   del(`projects/${getProjectRouteId(project)}`);
 
 // ============================================================================

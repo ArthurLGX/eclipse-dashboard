@@ -202,7 +202,7 @@
   --color-accent-muted:  #333333;
   --color-accent-subtle: rgba(0, 0, 0, 0.1);
   --color-accent-border: rgba(0, 0, 0, 0.2);
-  --color-accent-text:   #FFFFFF;
+  --color-accent-text:   #9b9b9b;
 
   /* Navigation active - noir */
   --nav-active-bg:     #000000;
