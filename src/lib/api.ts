@@ -556,9 +556,18 @@ export async function updateClientsOrder(clients: { documentId: string; sort_ord
   }
 }
 
-/** Supprime un client par son documentId */
-export const deleteClient = (documentId: string) =>
-  del(`clients/${documentId}`);
+/** Supprime un client par son documentId. Ne lance pas si 404 (déjà supprimé). */
+export async function deleteClient(documentId: string): Promise<void> {
+  try {
+    await del(`clients/${documentId}`);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes('404') || msg.includes('Not Found')) {
+      return;
+    }
+    throw err;
+  }
+}
 
 // ============================================================================
 // PROJECTS

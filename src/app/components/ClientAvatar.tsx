@@ -26,7 +26,7 @@ export default function ClientAvatar({
   size = 'sm',
   className = '',
 }: ClientAvatarProps) {
-  const [faviconService, setFaviconService] = useState<'duckduckgo' | 'google' | 'direct' | 'failed'>('duckduckgo');
+  const [faviconService, setFaviconService] = useState<'google' | 'duckduckgo' | 'direct' | 'failed'>('google');
   const [imageError, setImageError] = useState(false);
   const config = sizeConfig[size];
   
@@ -36,11 +36,11 @@ export default function ClientAvatar({
     ? FAVICON_SERVICES[faviconService](domain)
     : null;
   
-  // Gère le fallback des favicons
+  // Gère le fallback des favicons (Google → DuckDuckGo → direct → échec)
   const handleFaviconError = () => {
-    if (faviconService === 'duckduckgo') {
-      setFaviconService('google');
-    } else if (faviconService === 'google') {
+    if (faviconService === 'google') {
+      setFaviconService('duckduckgo');
+    } else if (faviconService === 'duckduckgo') {
       setFaviconService('direct');
     } else {
       setFaviconService('failed');
