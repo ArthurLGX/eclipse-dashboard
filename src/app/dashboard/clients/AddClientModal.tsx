@@ -27,6 +27,7 @@ export default function AddClientModal({
   onClose,
   onAdd,
   t,
+  initialData,
 }: AddClientModalProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
