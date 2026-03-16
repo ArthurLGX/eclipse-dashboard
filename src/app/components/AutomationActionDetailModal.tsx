@@ -195,11 +195,11 @@ export default function AutomationActionDetailModal({
                     <IconUser className="w-4 h-4" />
                     <span>Contact</span>
                   </div>
-                  <p className="!text-primary font-medium pl-6">
+                  <p className="!text-primary font-medium !pl-6">
                     {action.client?.name || 'Contact inconnu'}
                   </p>
                   {action.client?.email && (
-                    <p className="!text-sm !text-muted pl-6">{action.client.email}</p>
+                    <p className="!text-sm !text-muted !pl-6">{action.client.email}</p>
                   )}
                 </div>
 
@@ -208,7 +208,7 @@ export default function AutomationActionDetailModal({
                     <IconCalendar className="w-4 h-4" />
                     <span>Créé</span>
                   </div>
-                  <p className="!text-primary pl-6">
+                  <p className="!text-primary !pl-6">
                     {new Date(action.createdAt).toLocaleDateString('fr-FR', {
                       day: 'numeric',
                       month: 'long',

@@ -159,7 +159,7 @@ export default function FactureApercu({
 
       {/* Meta grid - 4 colonnes facture-pdf.html */}
       <div className="grid grid-cols-4 border-b border-cell-facture">
-        <div className="py-4 px-6 pl-12 border-r border-cell-facture">
+        <div className="py-4 px-6 !pl-12 border-r border-cell-facture">
           <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--fd-ink3)' }}>
             {t('reference') || 'Référence'}
           </div>
@@ -181,7 +181,7 @@ export default function FactureApercu({
             {(isQuote ? facture.valid_until : facture.due_date) ? formatDate((isQuote ? facture.valid_until : facture.due_date) || '') : '-'}
           </div>
         </div>
-        <div className="py-4 px-6 pl-6">
+        <div className="py-4 px-6 !pl-6">
           <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--fd-ink3)' }}>
             {t('currency') || 'Devise'}
           </div>
@@ -231,7 +231,7 @@ export default function FactureApercu({
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-cell-facture" style={{ background: 'var(--fd-pale)' }}>
-            <th className="text-left py-2 px-4 pl-12 text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--fd-ink3)' }}>
+            <th className="text-left py-2 px-4 !pl-12 text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--fd-ink3)' }}>
               {t('description') || 'Description'}
             </th>
             <th className="text-left py-2 px-4 text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--fd-ink3)' }}>
@@ -243,7 +243,7 @@ export default function FactureApercu({
             <th className="text-right py-2 px-4 text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--fd-ink3)' }}>
               {t('unit_price') || 'Prix unitaire'}
             </th>
-            <th className="text-right py-2 px-4 pr-12 text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--fd-ink3)' }}>
+            <th className="text-right py-2 px-4 !pr-12 text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--fd-ink3)' }}>
               {t('total') || 'Total HT'}
             </th>
           </tr>
@@ -251,7 +251,7 @@ export default function FactureApercu({
         <tbody>
           {invoiceLines.map((line, index) => (
             <tr key={line.id || index} className="border-b border-cell-facture last:border-b-0">
-              <td className="py-3.5 px-4 pl-12 text-[13px] align-top" style={{ color: 'var(--fd-ink)' }}>
+              <td className="py-3.5 px-4 !pl-12 text-[13px] align-top" style={{ color: 'var(--fd-ink)' }}>
                 <div className="font-semibold">{line.description || '-'}</div>
               </td>
               <td className="py-3.5 px-4">
@@ -263,7 +263,7 @@ export default function FactureApercu({
               <td className="py-3.5 px-4 text-right font-mono text-[12.5px]" style={{ color: 'var(--fd-ink)' }}>
                 {line.unit === 'fixed' ? '—' : formatCurrency(line.unit_price)}
               </td>
-              <td className="py-3.5 px-4 pr-12 text-right font-semibold font-mono text-[12.5px]" style={{ color: 'var(--fd-ink)' }}>
+              <td className="py-3.5 px-4 !pr-12 text-right font-semibold font-mono text-[12.5px]" style={{ color: 'var(--fd-ink)' }}>
                 {line.total === 0 ? 'Offert' : formatCurrency(line.total)}
               </td>
             </tr>

@@ -185,7 +185,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className=" mx-auto px-4 py-4 flex items-center justify-between">
           <div>
             <h1 className="!text-xl font-bold !text-slate-800">{data.project.title}</h1>
             {data.project.client && (
@@ -198,7 +198,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className=" mx-auto px-4 py-8">
         {/* Progress */}
         {data.show_progress && data.project.progress !== undefined && (
           <div className="bg-white  shadow-sm p-6 mb-6">

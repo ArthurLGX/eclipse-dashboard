@@ -214,6 +214,14 @@ function DashboardLayoutContent({
            status: getModuleStatus('home', moduleStatuses) || undefined,
         },
         {
+          id: 'factures',
+          label: t('invoices_and_quotes') || 'Factures / Devis',
+          icon: <IconFileInvoice size={15} stroke={1} />,
+          path: '/dashboard/factures',
+          moduleId: 'invoices',
+          status: getModuleStatus('invoices', moduleStatuses) || undefined,
+        },
+        {
           id: 'global_revenue_stats',
           label: t('global_revenue_stats'),
           icon: <IconChartLine size={15} stroke={1} />,

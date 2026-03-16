@@ -187,7 +187,7 @@ function LoginContent() {
 
         <div className="login-fade-up mb-8">
           <div className="flex items-center gap-2.5 mb-6">
-            <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={36} height={36} className="w-9 h-9 object-contain flex-shrink-0 rounded-lg" />
+            <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={36} height={36} className="w-9 h-9 object-contain flex-shrink-0 " />
             <span className="text-sm font-bold" style={{ color: 'var(--login-text)' }}>Eclipse Studio Dashboard</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight mb-1.5" style={{ color: 'var(--login-text)' }}>
@@ -262,7 +262,7 @@ function LoginContent() {
               </div>
               <div className="relative">
                 <input
-                  className="login-input pr-12"
+                  className="login-input !pr-12"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={password}
@@ -284,7 +284,7 @@ function LoginContent() {
                 <label className="login-label">{t('confirm_password') || 'Confirmer le mot de passe'}</label>
                 <div className="relative">
                   <input
-                    className="login-input pr-12"
+                    className="login-input !pr-12"
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={confirmPassword}

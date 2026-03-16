@@ -266,15 +266,15 @@ export default function ClientDetailsPage() {
   if (clientLoading && !client) {
     return (
       <ProtectedRoute>
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className=" mx-auto px-6 py-6">
           <div className="animate-pulse space-y-6">
-            <div className="h-40 bg-card rounded-xl border border-default" />
+            <div className="h-40 bg-card  border border-default" />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-24 bg-card rounded-lg border border-default" />
+                <div key={i} className="h-24 bg-card  border border-default" />
               ))}
             </div>
-            <div className="h-96 bg-card rounded-xl border border-default" />
+            <div className="h-96 bg-card  border border-default" />
           </div>
         </div>
       </ProtectedRoute>
@@ -284,7 +284,7 @@ export default function ClientDetailsPage() {
   if (!client) {
     return (
       <ProtectedRoute>
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className=" mx-auto px-6 py-6">
           <p className="!text-center !text-secondary !text-lg">
             {t('client_not_found') || 'Client non trouvé'}
           </p>
@@ -318,10 +318,10 @@ export default function ClientDetailsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-5">
+      <div className=" mx-auto px-6 py-6 flex flex-col gap-5">
         {/* Hero */}
-        <div className="bg-card border border-default rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-start gap-6">
-          <div className="w-[86px] h-[86px] rounded-xl flex-shrink-0 border border-default overflow-hidden bg-muted">
+        <div className="bg-card border border-default  p-6 md:p-8 flex flex-col md:flex-row items-start gap-6">
+          <div className="w-32 h-32 flex-shrink-0 rounded-full overflow-hidden border border-default bg-muted">
             <ImageUpload
               currentImageUrl={getImageUrl(client.image?.url) ?? null}
               onUpload={handleClientImageUpload}
@@ -377,7 +377,7 @@ export default function ClientDetailsPage() {
               <span className="badge badge-success !text-[10px] !font-bold !uppercase !tracking-wider">
                 {statusLabel}
               </span>
-              <span className="!text-xs !text-muted px-3 py-1 rounded-full bg-muted border border-default">
+              <span className="!text-xs !text-muted px-3 py-1 bg-muted border border-default">
                 Créé le {new Date(client.createdAt).toLocaleDateString('fr-FR')}
               </span>
             </div>
@@ -428,7 +428,7 @@ export default function ClientDetailsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="bg-card border border-default rounded-lg p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="!text-[10px] font-semibold uppercase tracking-wider !text-muted mb-1">
               Projets actifs
             </div>
@@ -437,14 +437,14 @@ export default function ClientDetailsPage() {
               {stats.completedCount} terminé{stats.completedCount > 1 ? 's' : ''}
             </div>
           </div>
-          <div className="bg-card border border-default rounded-lg p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="!text-[10px] font-semibold uppercase tracking-wider !text-muted mb-1">
               CA total
             </div>
             <div className="!text-xl font-extrabold !text-success-text">{stats.totalCA.toLocaleString('fr-FR')} €</div>
             <div className="!text-xs !text-muted mt-0.5">depuis le début</div>
           </div>
-          <div className="bg-card border border-default rounded-lg p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="!text-[10px] font-semibold uppercase tracking-wider !text-muted mb-1">
               Factures en attente
             </div>
@@ -453,7 +453,7 @@ export default function ClientDetailsPage() {
               {stats.pendingAmount > 0 ? `${stats.pendingAmount.toLocaleString('fr-FR')} € à encaisser` : '-'}
             </div>
           </div>
-          <div className="bg-card border border-default rounded-lg p-4">
+          <div className="bg-card border border-default  p-4">
             <div className="!text-[10px] font-semibold uppercase tracking-wider !text-muted mb-1">
               Dernière activité
             </div>
@@ -463,7 +463,7 @@ export default function ClientDetailsPage() {
 
         {/* Edit Form */}
         {isEditMode && (
-          <div className="bg-card border border-default rounded-xl p-6">
+          <div className="bg-card border border-default  p-6">
             <h2 className="!text-lg font-bold !text-primary mb-4">
               {t('edit')} — {client.name}
             </h2>
@@ -523,7 +523,7 @@ export default function ClientDetailsPage() {
         )}
 
         {/* Section card with tabs */}
-        <div className="bg-card border border-default rounded-xl overflow-hidden">
+        <div className="bg-card border border-default  overflow-hidden">
           {/* Tabs bar - underline style */}
           <div className="flex items-center border-b border-default">
             <button
@@ -538,7 +538,7 @@ export default function ClientDetailsPage() {
               {t('projects') || 'Projets'}
               <span
                 className={`!text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                  activeTab === 'projects' ? 'bg-accent !text-accent-text' : 'bg-muted !text-muted'
+                  activeTab === 'projects' ? 'bg-accent !text-white' : 'bg-muted !text-muted'
                 }`}
               >
                 {clientProjects.length}
@@ -569,7 +569,7 @@ export default function ClientDetailsPage() {
               {t('invoices') || 'Factures'}
               <span
                 className={`!text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                  activeTab === 'factures' ? 'bg-accent !text-accent-text' : 'bg-muted !text-muted'
+                  activeTab === 'factures' ? 'bg-accent !text-white' : 'bg-muted !text-muted'
                 }`}
               >
                 {clientFactures.length}
@@ -582,7 +582,7 @@ export default function ClientDetailsPage() {
             <div className="p-5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-muted border border-default rounded-lg px-3 py-2 w-full sm:w-[220px]">
+                  <div className="flex items-center gap-2 bg-muted px-3 py-2 w-full sm:w-[220px]">
                     <IconSearch className="w-4 h-4 !text-muted flex-shrink-0" />
                     <input
                       type="text"
@@ -689,7 +689,7 @@ export default function ClientDetailsPage() {
                 <h3 className="!text-base font-bold !text-primary">{t('invoices') || 'Factures'}</h3>
                 <Link
                   href={`/dashboard/clients/${currentSlug}/factures?name=${encodeURIComponent(client.name || '')}`}
-                  className="btn-primary flex items-center gap-2 px-4 py-2 !text-sm !text-white"
+                  className="btn-primary flex items-center gap-2 px-4 py-2 !text-sm"
                 >
                   {(t('view_all_invoices') !== 'view_all_invoices' ? t('view_all_invoices') : null) || 'Voir toutes les factures'}
                 </Link>

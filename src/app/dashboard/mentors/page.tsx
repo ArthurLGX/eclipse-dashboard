@@ -102,7 +102,7 @@ export default function MentorsPage() {
       <div className="min-h-screen">
         {/* Header épuré */}
         <div className="bg-card border-b border-default">
-          <div className="max-w-7xl mx-auto px-8 py-5">
+          <div className=" mx-auto px-8 py-5">
             {/* Breadcrumb + Actions */}
             <div className="flex items-start justify-between mb-6">
 
@@ -130,11 +130,11 @@ export default function MentorsPage() {
         </div>
 
         {/* Content */}
-        <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className=" mx-auto px-8 py-6">
           {mentors.length === 0 && !loading ? (
             /* Empty state actionnable */
             <div className="bg-card p-16 text-center">
-              <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 bg-muted  flex items-center justify-center mx-auto mb-4">
                 <IconUserCircle className="w-7 h-7 !text-muted" />
               </div>
               <div className="!text-base font-semibold !text-primary mb-1.5">

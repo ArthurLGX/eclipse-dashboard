@@ -11,6 +11,8 @@ interface TaskDetailModalProps {
   onClose: () => void;
   task: FollowUpTask | null;
   aiInstruction?: string | null;
+  /** Mots-clés qui, s'ils apparaissent dans le sujet/corps, signent un lead chaud */
+  hotLeadKeywords?: string[];
 }
 
 const urgencyLabels: Record<string, string> = {
@@ -31,6 +33,7 @@ export default function TaskDetailModal({
   onClose,
   task,
   aiInstruction,
+  hotLeadKeywords,
 }: TaskDetailModalProps) {
   const [analysis, setAnalysis] = useState<{ reasoning: string; suggestion: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,6 +54,7 @@ export default function TaskDetailModal({
           task,
           ai_instruction: aiInstruction || undefined,
           email_body: task.context?.email_body,
+          hot_lead_keywords: hotLeadKeywords,
         }),
       });
       if (!res.ok) throw new Error('Erreur génération');
@@ -119,7 +123,7 @@ export default function TaskDetailModal({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-card border w-full max-h-[90vh] max-w-5xl border-default rounded-xl shadow-xl z-50 flex flex-col overflow-hidden outline-none"
+            className="bg-card border w-full max-h-[90vh] max-w-5xl border-default  shadow-xl z-50 flex flex-col overflow-hidden outline-none"
           >
             <div className="flex items-center justify-between p-4 border-b border-default">
               <h2 className="text-lg font-semibold text-primary">

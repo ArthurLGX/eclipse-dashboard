@@ -25,6 +25,7 @@ import type {
   CreateMeetingNoteData,
   UpdateMeetingNoteData,
 } from '@/types';
+import { deriveWebsite } from '@/lib/favicon';
 
 // ============================================================================
 // CONFIGURATION & HELPERS
@@ -334,6 +335,9 @@ export async function addClientUser(
     delete cleanedData.next_action_date;
   }
 
+  // Si pas de website, dériver depuis le domaine de l'email (https://domaine)
+  cleanedData.website = deriveWebsite(data.website, data.email);
+
   return post('clients', { ...cleanedData, users: userId });
 }
 
@@ -522,7 +526,8 @@ export async function updateClientById(
     processStatus: string;
   }
 ) {
-  return put(`clients/${clientId}`, data);
+  const website = deriveWebsite(data.website, data.email);
+  return put(`clients/${clientId}`, { ...data, website });
 }
 
 /** Met à jour le statut d'un client */

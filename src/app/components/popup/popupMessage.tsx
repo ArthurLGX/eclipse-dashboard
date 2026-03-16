@@ -21,10 +21,10 @@ const PopupMessage = ({
       >
         <p className="!text-primary">{message}</p>
         <div className="flex gap-4 mt-4">
-          <button className="btn-success font-bold py-2 px-4  hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="btn-success font-bold py-2 px-4  hover: transition-all ease-in-out delay-50">
             YES
           </button>
-          <button className="btn-danger font-bold py-2 px-4  hover:rounded-sm transition-all ease-in-out delay-50">
+          <button className="btn-danger font-bold py-2 px-4  hover: transition-all ease-in-out delay-50">
             NO
           </button>
         </div>

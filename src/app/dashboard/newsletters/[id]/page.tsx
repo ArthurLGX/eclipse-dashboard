@@ -233,7 +233,7 @@ export default function NewsletterDetailPage() {
       <div className="min-h-screen bg-page">
         {/* Header */}
         <div className="border-b border-default sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+          <div className=" mx-auto px-4 sm:px-6 py-4">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/dashboard/newsletters')}
@@ -262,7 +262,7 @@ export default function NewsletterDetailPage() {
         </div>
 
         {/* Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className=" mx-auto px-4 sm:px-6 py-8">
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <div className="!text-center">

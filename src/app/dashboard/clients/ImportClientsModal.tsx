@@ -668,10 +668,11 @@ marie@example.com,Marie Dupont,Tech Corp,tech.com`}
                         >
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
-                              <ClientAvatar 
+                              <ClientAvatar
                                 name={client.name}
                                 imageUrl={client.image || null}
                                 website={client.website || null}
+                                email={client.email || null}
                                 size="sm"
                               />
                               <div className="flex items-center gap-2">

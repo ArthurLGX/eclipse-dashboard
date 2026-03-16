@@ -953,7 +953,7 @@ Cordialement`);
       {/* Header */}
       {!compact && (
         <div className="sticky top-0 z-40 border-b border-default px-6 py-4">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className=" mx-auto flex items-center justify-between">
             <div className="flex items-center gap-4 p-4">
               <button
                 onClick={() => router.back()}
@@ -1129,7 +1129,7 @@ Cordialement`);
                     >
                       <div className="p-4 border-b border-default">
                         <div className="flex items-center gap-3">
-                          <IconSearch className="w-5 h-5 !text-muted" />
+                          <IconSearch className="w-5 h-5 !text-muted z-10" />
                           <input
                             type="text"
                             value={documentSearch}

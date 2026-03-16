@@ -661,7 +661,7 @@ export default function ThemeCustomizer({
       <div className="pt-4 border-t border-default">
         <p className="!text-sm !text-secondary mb-3">{t('color_preview') || 'Aperçu'}</p>
         <div 
-          className="rounded-xl overflow-hidden border border-default"
+          className=" overflow-hidden border border-default"
         >
           <div 
             className="h-20 flex items-center justify-center"

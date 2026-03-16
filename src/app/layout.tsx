@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   },
   description: 'Gère ton entreprise de manière efficace et rapide',
   applicationName: 'Eclipse Dashboard',
+  icons: {
+    icon: [{ url: '/icon', sizes: '32x32', type: 'image/png' }],
+    shortcut: [{ url: '/icon', sizes: '32x32', type: 'image/png' }],
+  },
   robots: {
     index: true,
     follow: true,

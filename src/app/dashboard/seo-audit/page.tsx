@@ -233,7 +233,7 @@ export default function SEOAuditPage() {
           <div className="flex-1">
             <label className="block !text-sm font-medium mb-2">{t('website_url') || 'URL du site'}</label>
             <div className="relative">
-              <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
+              <IconSearch size={18} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground z-10" />
               <input
                 type="url"
                 value={url}

@@ -22,6 +22,7 @@ import { getToken } from '@/lib/api';
 import { fetchAutomationActionDetail } from '@/lib/smart-follow-up-api';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { extractWalegoLead } from '@/utils/extract-walego-lead';
+import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import type { AutomationAction } from '@/types/smart-follow-up';
 
 export interface ParsedAnalysis {
@@ -78,6 +79,8 @@ interface LeadDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   action: AutomationAction | null;
+  /** Mots-clés qui, s'ils apparaissent dans le sujet/corps, signent un lead chaud */
+  hotLeadKeywords?: string[];
   onSuccess?: () => void;
 }
 
@@ -86,6 +89,7 @@ export default function LeadDetailModal({
   onClose,
   action,
   onSuccess,
+  hotLeadKeywords,
 }: LeadDetailModalProps) {
   const { showGlobalPopup } = usePopup();
   const modalRef = useModalFocus(isOpen);
@@ -167,6 +171,7 @@ export default function LeadDetailModal({
       body: JSON.stringify({
         task,
         email_body: emailBody,
+        hot_lead_keywords: hotLeadKeywords,
       }),
     })
       .then((res) => res.json())
@@ -353,30 +358,32 @@ export default function LeadDetailModal({
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="flex items-center gap-3.5">
                     <div className="relative w-[52px] h-[52px] flex-shrink-0">
-                      {detail?.avatar_path ? (
-                        <img
-                          src={detail.avatar_path}
-                          alt={displayName}
-                          className="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-[#e2ddd8]"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                            const fb = e.currentTarget.parentElement?.querySelector('[data-avatar-fallback]');
-                            if (fb) (fb as HTMLElement).style.display = 'flex';
-                          }}
-                        />
-                      ) : null}
-                      <div
-                        data-avatar-fallback
-                        className="w-[52px] h-[52px] rounded-full bg-gradient-to-br from-[#ff5c3a] to-[#e8441f] flex items-center justify-center text-white font-bold text-lg border-2 border-[#e2ddd8]"
-                        style={{ display: !detail?.avatar_path ? 'flex' : 'none' }}
-                      >
-                        {displayName
-                          .split(' ')
-                          .map((n) => n[0])
-                          .slice(0, 2)
-                          .join('')
-                          .toUpperCase()}
-                      </div>
+                      {detail && (
+                        <>
+                          <img
+                            src={detail.avatar_path ?? getDefaultContactAvatar(detail.client?.documentId ?? detail.documentId).avatarUrl}
+                            alt={displayName}
+                            className="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-[#e2ddd8]"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const fb = e.currentTarget.parentElement?.querySelector('[data-avatar-fallback]');
+                              if (fb) (fb as HTMLElement).style.display = 'flex';
+                            }}
+                          />
+                          <div
+                            data-avatar-fallback
+                            className="absolute inset-0 w-[52px] h-[52px] rounded-full bg-gradient-to-br from-[#ff5c3a] to-[#e8441f] flex items-center justify-center text-white font-bold text-lg border-2 border-[#e2ddd8]"
+                            style={{ display: 'none' }}
+                          >
+                            {displayName
+                              .split(' ')
+                              .map((n) => n[0])
+                              .slice(0, 2)
+                              .join('')
+                              .toUpperCase()}
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div>
                       <h2 className="font-[family-name:var(--font-instrument-serif)] text-[22px] font-normal text-[#1a1714] leading-tight">
@@ -408,13 +415,13 @@ export default function LeadDetailModal({
 
                 {/* Signal bar */}
                 {(loading || analysisLoading) ? (
-                  <div className="flex items-center gap-2 py-2.5 px-3.5 rounded-xl bg-[#f0ede8] border border-[#e2ddd8]">
+                  <div className="flex items-center gap-2 py-2.5 px-3.5  bg-[#f0ede8] border border-[#e2ddd8]">
                     <IconLoader2 className="w-4 h-4 animate-spin text-[#8a8178]" />
                     <span className="text-[13px] text-[#8a8178]">Analyse en cours...</span>
                   </div>
                 ) : (
                   <div
-                    className={`flex items-center gap-2 py-2.5 px-3.5 rounded-xl border text-[13px] font-medium ${signalBarClass}`}
+                    className={`flex items-center gap-2 py-2.5 px-3.5  border text-[13px] font-medium ${signalBarClass}`}
                   >
                     <div className="w-2 h-2 rounded-full bg-current animate-pulse flex-shrink-0" />
                     <span className="flex-1">
@@ -439,10 +446,10 @@ export default function LeadDetailModal({
                     <span>Réponse reçue</span>
                     <div className="flex-1 h-px bg-[#e2ddd8]" />
                   </div>
-                  <div className="bg-[#f0ede8] border border-[#e2ddd8] rounded-xl p-4">
+                  <div className="bg-[#f0ede8] border border-[#e2ddd8]  p-4">
                     {leadResponse ? (
                       <>
-                        <blockquote className="font-[family-name:var(--font-instrument-serif)] italic text-[15px] text-[#1a1714] leading-relaxed pl-3.5 border-l-2 border-red-500 mb-2">
+                        <blockquote className="font-[family-name:var(--font-instrument-serif)] italic text-[15px] text-[#1a1714] leading-relaxed !pl-3.5 border-l-2 border-red-500 mb-2">
                           &ldquo;{leadResponse}&rdquo;
                         </blockquote>
                         <p className="font-mono text-[11px] text-[#b5afa9]">
@@ -452,7 +459,7 @@ export default function LeadDetailModal({
                     ) : emailBody ? (
                       <>
                         <p className="text-[11px] text-[#b5afa9] mb-2 font-mono uppercase tracking-wider">Aperçu brut (extraction non reconnue)</p>
-                        <blockquote className="text-[13px] text-[#1a1714] leading-relaxed pl-3.5 border-l-2 border-[#d0cbc4] max-h-32 overflow-y-auto">
+                        <blockquote className="text-[13px] text-[#1a1714] leading-relaxed !pl-3.5 border-l-2 border-[#d0cbc4] max-h-32 overflow-y-auto">
                           {emailBody.slice(0, 600)}
                           {emailBody.length > 600 && '…'}
                         </blockquote>
@@ -474,7 +481,7 @@ export default function LeadDetailModal({
                     <span>Analyse</span>
                     <div className="flex-1 h-px bg-[#e2ddd8]" />
                   </div>
-                  <div className="bg-[#f0ede8] border border-[#e2ddd8] rounded-xl overflow-hidden">
+                  <div className="bg-[#f0ede8] border border-[#e2ddd8]  overflow-hidden">
                     <div className="flex items-start gap-3 px-4 py-3.5 border-b border-[#e2ddd8] last:border-b-0">
                       <div className="w-7 h-7  bg-red-500/10 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                         <IconActivity className="w-3.5 h-3.5" />
@@ -525,7 +532,7 @@ export default function LeadDetailModal({
                   <div className="flex flex-col gap-2">
                     <button
                       onClick={scrollToDraft}
-                      className="flex items-center gap-3 px-4 py-3.5 bg-primary  rounded-xl border-none cursor-pointer transition-all hover:bg-[#2d2924] hover:-translate-y-0.5 hover:shadow-lg w-full text-left"
+                      className="flex items-center gap-3 px-4 py-3.5 bg-primary   border-none cursor-pointer transition-all hover:bg-[#2d2924] hover:-translate-y-0.5 hover:shadow-lg w-full text-left"
                     >
                       <div className="w-9 h-9  bg-white/10 flex items-center justify-center flex-shrink-0">
                         <IconSend className="w-4 h-4 !text-white" />
@@ -542,7 +549,7 @@ export default function LeadDetailModal({
                     </button>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
+                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
                         <div className="w-7 h-7  bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0">
                           <IconClock className="w-3.5 h-3.5" />
                         </div>
@@ -551,7 +558,7 @@ export default function LeadDetailModal({
                           <p className="font-mono text-[10px] text-[#8a8178]">Si pas de réponse</p>
                         </div>
                       </button>
-                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
+                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
                         <div className="w-7 h-7  bg-[#25d366]/10 text-[#25d366] flex items-center justify-center flex-shrink-0">
                           <IconBrandWhatsapp className="w-3.5 h-3.5" />
                         </div>
@@ -564,7 +571,7 @@ export default function LeadDetailModal({
                         href={detail?.linkedin_url || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left no-underline"
+                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left no-underline"
                       >
                         <div className="w-7 h-7  bg-[#0077b5]/10 text-[#0077b5] flex items-center justify-center flex-shrink-0">
                           <IconBrandLinkedin className="w-3.5 h-3.5" />
@@ -574,7 +581,7 @@ export default function LeadDetailModal({
                           <p className="font-mono text-[10px] text-[#8a8178]">Contexte avant call</p>
                         </div>
                       </a>
-                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] rounded-xl cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
+                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
                         <div className="w-7 h-7  bg-gray-500/10 text-gray-500 flex items-center justify-center flex-shrink-0">
                           <IconArchive className="w-3.5 h-3.5" />
                         </div>
@@ -626,7 +633,7 @@ export default function LeadDetailModal({
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                     placeholder="Message adressé au lead..."
-                    className="w-full min-h-[110px] bg-[#f0ede8] border border-[#e2ddd8] rounded-xl px-4 py-3.5 text-[13px] text-[#1a1714] leading-relaxed resize-y outline-none focus:border-[#d0cbc4] transition-colors font-sans"
+                    className="w-full min-h-[110px] bg-[#f0ede8] border border-[#e2ddd8]  px-4 py-3.5 text-[13px] text-[#1a1714] leading-relaxed resize-y outline-none focus:border-[#d0cbc4] transition-colors font-sans"
                     rows={5}
                   />
 

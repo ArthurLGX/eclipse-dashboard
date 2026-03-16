@@ -251,7 +251,7 @@ export default function SharedProjectPage() {
 
   return (
     <div className="min-h-screen bg-page w-full px-8 pt-32 pb-8">
-      <div className="max-w-7xl mx-auto">
+      <div className=" mx-auto">
         {/* Header du projet */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

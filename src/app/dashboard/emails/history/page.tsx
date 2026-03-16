@@ -200,7 +200,7 @@ function EmailHistory() {
     <div className="min-h-screen bg-page">
       {/* Header */}
       <div className="sticky top-0 z-40 border-b border-default p-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className=" mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push('/dashboard/emails')}
@@ -236,7 +236,7 @@ function EmailHistory() {
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto p-6">
+      <div className=" mx-auto p-6">
         <div className="flex gap-6">
           {/* Sidebar - Categories */}
           <div className="w-64 flex-shrink-0">
@@ -382,7 +382,7 @@ function EmailHistory() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card  shadow-xl w-full max-w-7xl max-h-[90vh] overflow-hidden"
+              className="bg-card  shadow-xl w-full  max-h-[90vh] overflow-hidden"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}

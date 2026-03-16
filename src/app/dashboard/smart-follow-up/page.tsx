@@ -42,6 +42,7 @@ import {
   updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
+import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
 
 function formatRelativeTime(date: Date): string {
@@ -254,14 +255,14 @@ export default function SmartFollowUpPage() {
         const ContactIcon = contactType.icon;
         const isLowScore = action.confidence_score < minScoreThreshold;
         const fromPriorityDomain = isLeadFromPriorityDomain(action);
-        const avatarPath = action.avatar_path;
+        const avatarPath = action.avatar_path ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
         const displayName = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact inconnu';
 
         return (
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
-                !avatarPath && (fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
+                !action.avatar_path && (fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
               }`}
             >
               {avatarPath ? (
@@ -307,7 +308,7 @@ export default function SmartFollowUpPage() {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-muted truncate">{action.client?.email || 'N/A'}</p>
+              <p className="text-xs text-muted truncate">{action.client?.email || 'aucun email'}</p>
             </div>
           </div>
         );
@@ -799,7 +800,7 @@ export default function SmartFollowUpPage() {
             /* LEADS */
             (actions?.length ?? 0) === 0 ? (
               <div className="bg-card p-16 text-center">
-                <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
+                <div className="w-14 h-14 bg-muted  flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
                 <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead en attente</div>
                 <div className="!text-sm !text-muted max-w-xs mx-auto">
                   Les leads qualifiés ICP apparaîtront ici une fois reçus et analysés.
@@ -822,13 +823,13 @@ export default function SmartFollowUpPage() {
               {/* Toolbar */}
               <div className="flex items-center gap-2 flex-wrap mb-4">
                 <div className="relative w-64">
-                  <IconSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted" />
+                  <IconSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted z-10" />
                   <input
                     type="text"
                     value={taskSearch}
                     onChange={(e) => setTaskSearch(e.target.value)}
                     placeholder="Rechercher…"
-                    className="w-full pl-9 pr-3 py-2 !text-sm border border-default  bg-card focus:outline-none focus:border-primary"
+                    className="w-full !pl-9 !pr-3 py-2 !text-sm border border-default  bg-card focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div className="flex gap-1">
@@ -906,6 +907,7 @@ export default function SmartFollowUpPage() {
           setShowDetailModal(false);
           setSelectedAction(null);
         }}
+        hotLeadKeywords={settings?.priority_keywords}
       />
 
       <RuleManagementModal
@@ -944,6 +946,7 @@ export default function SmartFollowUpPage() {
         }}
         task={selectedTask}
         aiInstruction={aiInstruction || undefined}
+        hotLeadKeywords={settings?.priority_keywords}
       />
 
     

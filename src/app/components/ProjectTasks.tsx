@@ -3939,7 +3939,7 @@ function TaskGanttView({
   const progressPct = tasks.length > 0 ? Math.round((doneCount / tasks.length) * 100) : 0;
 
   return (
-    <div className="flex flex-col rounded-xl border border-default overflow-hidden bg-card">
+    <div className="flex flex-col  border border-default overflow-hidden bg-card">
       {/* Modal de sélection du mode d'export avec aperçu */}
       {showExportModal && (
         <div 
@@ -4383,7 +4383,7 @@ function TaskGanttView({
       {/* Tooltip Gantt */}
       {tooltip && (
         <div
-          className="fixed z-[100] pointer-events-none bg-card border border-default rounded-xl p-3 shadow-xl min-w-[200px]"
+          className="fixed z-[100] pointer-events-none bg-card border border-default  p-3 shadow-xl min-w-[200px]"
           style={{ left: Math.min(tooltip.x + 16, typeof window !== 'undefined' ? window.innerWidth - 220 : tooltip.x + 16), top: tooltip.y - 10 }}
         >
           <div className="font-semibold !text-sm !text-primary mb-2">{tooltip.task.title}</div>

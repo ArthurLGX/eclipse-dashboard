@@ -618,7 +618,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
     >
       {/* Top Navigation Bar */}
       <header className="px-6 lg:px-12 py-4 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className=" mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
           <span className="!text-sm !text-info  font-medium tracking-wide">
             {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
@@ -665,7 +665,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
 
       {/* Hero Section */}
       <section className="px-6 lg:px-12 py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+        <div className=" mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           {/* Left - Big Title */}
           <div>
             <h1
@@ -711,7 +711,7 @@ export default function PublicPortfolioPage({ params }: { params: Promise<{ slug
 
       {/* Projects Grid */}
       <main className="px-6 lg:px-12 pb-24 !bg-white">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           {projects.length === 0 ? (
             <div className="!text-center py-20">
               <p className="!text-info">{t('portfolio_no_projects')}</p>

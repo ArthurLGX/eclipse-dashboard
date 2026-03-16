@@ -689,7 +689,7 @@ function SettingsPanel({ isOpen, onClose, settings, onSettingsChange, googleFont
             <div className="bg-muted/30  p-3 border border-default">
               <label className="block !text-xs font-medium !text-secondary mb-2">{t('portfolio_search_font')}</label>
               <div className="relative">
-                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted" />
+                <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted z-10" />
                 <input
                   type="text"
                   value={fontSearch}
@@ -1244,7 +1244,7 @@ function ImportModal({ isOpen, onClose, onImport }: ImportModalProps) {
                       </>
                     ) : (
                       <>
-                        <IconSearch size={18} />
+                        <IconSearch size={18} className="z-10" />
                         {t('portfolio_import_analyze')}
                       </>
                     )}
@@ -2503,7 +2503,7 @@ export default function PortfolioPage() {
 
       {/* Top Navigation Bar */}
       <header className="px-6 lg:px-12 py-4 border border-default ">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className=" mx-auto flex items-center justify-between">
           {/* Left - Site Name */}
           <span className="!text-sm !text-secondary font-medium tracking-wide">
             {settings.portfolioName.toLowerCase().replace(/\s+/g, '-')}.com
@@ -2601,7 +2601,7 @@ export default function PortfolioPage() {
 
       {/* Hero Section */}
       <section className="px-6 lg:px-12 py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+        <div className=" mx-auto flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           {/* Left - Big Title */}
           <div>
             <h1
@@ -2647,7 +2647,7 @@ export default function PortfolioPage() {
 
       {/* Projects Grid */}
       <main className="px-6 lg:px-12 pb-24">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           {projects.length === 0 ? (
             <EmptyState onAddProject={() => setIsFormModalOpen(true)} />
           ) : (

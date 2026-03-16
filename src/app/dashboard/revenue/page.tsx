@@ -211,9 +211,17 @@ export default function RevenuePage() {
     return { labels, data };
   }, [clientCA]);
 
-  // Options communes pour grilles légères (utilise les couleurs du thème)
-  const lightGridColor = `${themeColors.borderDefault}33`; // 20% opacity
+  // Options communes : grilles très légères, couleurs vives pour charts
+  const lightGridColor = `${themeColors.borderDefault}15`; // ~8% opacity
   const tickColor = themeColors.textMuted;
+  const chartColors = useMemo(() => ({
+    accent: '#8b5cf6',
+    info: '#3b82f6',
+    success: '#22c55e',
+    warning: '#f59e0b',
+    danger: '#ef4444',
+    muted: '#94a3b8',
+  }), []);
 
   const lineChartData = useMemo(() => ({
     labels: monthLabels,
@@ -221,18 +229,18 @@ export default function RevenuePage() {
       {
         label: 'CA (€)',
         data: revenueValues,
-        borderColor: themeColors.accent,
-        backgroundColor: `${themeColors.accent}14`, // 8% opacity
+        borderColor: chartColors.accent,
+        backgroundColor: `${chartColors.accent}26`, // 15% opacity
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: themeColors.accent,
+        pointBackgroundColor: chartColors.accent,
         pointBorderColor: 'transparent',
         pointRadius: 3,
         pointHoverRadius: 5,
         borderWidth: 2,
       },
     ],
-  }), [monthLabels, revenueValues, themeColors.accent]);
+  }), [monthLabels, revenueValues, chartColors.accent]);
 
   const lineChartOptions = useMemo(() => ({
     responsive: true,
@@ -279,21 +287,23 @@ export default function RevenuePage() {
     labels: monthLabels,
     datasets: [
       {
-        label: 'Émises',
+        label: t('invoices_emitted') || 'Émises',
         data: invoiceValues,
-        backgroundColor: `${themeColors.info}99`, // 60% opacity
+        backgroundColor: `${chartColors.info}CC`,
+        borderColor: chartColors.info,
         borderRadius: 3,
         barThickness: 8,
       },
       {
-        label: 'Payées',
+        label: t('paid') || 'Payées',
         data: Object.values(monthlyData).map(d => d.paid),
-        backgroundColor: `${themeColors.success}99`, // 60% opacity
+        backgroundColor: `${chartColors.success}CC`,
+        borderColor: chartColors.success,
         borderRadius: 3,
         barThickness: 8,
       },
     ],
-  }), [monthLabels, invoiceValues, monthlyData, themeColors.info, themeColors.success]);
+  }), [monthLabels, invoiceValues, monthlyData, chartColors.info, chartColors.success, t]);
 
   const barChartOptions = useMemo(() => ({
     responsive: true,
@@ -304,11 +314,22 @@ export default function RevenuePage() {
         position: 'top' as const,
         align: 'end' as const,
         labels: {
-          color: tickColor,
           usePointStyle: true,
           pointStyle: 'circle',
           padding: 12,
           font: { size: 10, family: 'Manrope' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          generateLabels: (chart: any) => {
+            const ds = (chart.data?.datasets ?? []) as Array<{ label?: string; borderColor?: string; backgroundColor?: string }>;
+            return ds.map((d, i) => ({
+              text: d.label ?? '',
+              fillStyle: d.borderColor ?? d.backgroundColor ?? chartColors.info,
+              strokeStyle: d.borderColor ?? d.backgroundColor ?? chartColors.info,
+              fontColor: d.borderColor ?? d.backgroundColor ?? chartColors.info,
+              hidden: false,
+              index: i,
+            }));
+          },
         },
       },
       tooltip: {
@@ -334,7 +355,7 @@ export default function RevenuePage() {
         border: { display: false },
       },
     },
-  }), [themeColors, tickColor, lightGridColor]);
+  }), [themeColors, tickColor, lightGridColor, chartColors.info]);
 
   const doughnutChartData = useMemo(() => ({
     labels: clientChartData.labels,
@@ -342,19 +363,19 @@ export default function RevenuePage() {
       {
         data: clientChartData.data,
         backgroundColor: [
-          `${themeColors.accent}CC`, // 80% opacity
-          `${themeColors.info}CC`,
-          `${themeColors.success}CC`,
-          `${themeColors.warning}CC`,
-          `${themeColors.danger}CC`,
-          `${themeColors.textMuted}99`, // 60% opacity
+          `${chartColors.accent}CC`,
+          `${chartColors.info}CC`,
+          `${chartColors.success}CC`,
+          `${chartColors.warning}CC`,
+          `${chartColors.danger}CC`,
+          `${chartColors.muted}99`,
         ],
         borderColor: 'transparent',
         borderWidth: 0,
         hoverOffset: 6,
       },
     ],
-  }), [clientChartData, themeColors]);
+  }), [clientChartData, chartColors]);
 
   const doughnutChartOptions = useMemo(() => ({
     responsive: true,
@@ -364,12 +385,28 @@ export default function RevenuePage() {
       legend: {
         position: 'right' as const,
         labels: {
-          color: tickColor,
           usePointStyle: true,
           pointStyle: 'circle',
           padding: 8,
           font: { size: 10, family: 'Manrope' },
           boxWidth: 8,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          generateLabels: (chart: any) => {
+            const ds = chart.data?.datasets?.[0];
+            const labels = (chart.data?.labels ?? []) as string[];
+            const colors = (ds?.backgroundColor as string[] | undefined) ?? [];
+            return labels.map((label: string, i: number) => {
+              const color = colors[i] ?? chartColors.muted;
+              return {
+                text: label,
+                fillStyle: color,
+                strokeStyle: color,
+                fontColor: color,
+                hidden: false,
+                index: i,
+              };
+            });
+          },
         },
       },
       tooltip: {
@@ -393,7 +430,7 @@ export default function RevenuePage() {
       },
     },
     cutout: '65%',
-  }), [themeColors, tickColor]);
+  }), [themeColors, tickColor, chartColors.muted]);
 
   const columns: Column<Facture>[] = [
     {

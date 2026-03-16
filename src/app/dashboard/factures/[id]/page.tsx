@@ -753,8 +753,8 @@ export default function FacturePage() {
       className="min-h-screen p-6"
     >
       {/* Header avec actions */}
-      <div className="w-full flex flex-col gap-4 overflow-hidden">
-        <div className="flex lg:flex-row flex-col gap-2 justify-between bg-accent-light h-fit rounded-full p-2">
+      <div className="w-full flex flex-col gap-4 overflow-x-auto min-w-0">
+        <div className="flex lg:flex-row flex-col gap-2 justify-between h-fit rounded-full p-2">
           {/* Bouton paramètres de facturation */}
           <button
             onClick={() => window.open('/dashboard/settings?tab=invoice', '_blank')}
@@ -847,13 +847,13 @@ export default function FacturePage() {
 
         {/* Contenu de la facture - structure facture-detail_1.html (sans max-w, sans rounded) */}
         <div ref={factureRef} className="print-area">
-          <div className="facture-doc invoice-doc border border-cell-facture overflow-hidden" style={{ background: 'var(--fd-white)' }}>
+          <div className="facture-doc invoice-doc border border-cell-facture" style={{ background: 'var(--fd-white)' }}>
             {/* Doc header - facture-detail_1 (padding 28px 32px) */}
             <div className="doc-header flex items-start justify-between py-7 px-8 border-b border-cell-facture gap-6">
               <div className="doc-brand flex flex-col gap-1">
                 <div className="flex items-center gap-2.5">
                   {company?.logo ? (
-                    <div className="doc-brand-logo w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden shrink-0 mb-1.5" style={{ background: 'var(--fd-accent)' }}>
+                    <div className="doc-brand-logo w-10 h-10  flex items-center justify-center overflow-hidden shrink-0 mb-1.5" style={{ background: 'var(--fd-accent)' }}>
                       <Image
                         src={company.logo.startsWith('http') ? company.logo : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${company.logo}`}
                         alt={company.name || 'Logo'}
@@ -864,7 +864,7 @@ export default function FacturePage() {
                       />
                     </div>
                   ) : user?.profile_picture?.url ? (
-                    <div className="doc-brand-logo w-10 h-10 rounded-lg overflow-hidden shrink-0 flex items-center justify-center mb-1.5" style={{ background: 'var(--fd-accent)' }}>
+                    <div className="doc-brand-logo w-10 h-10  overflow-hidden shrink-0 flex items-center justify-center mb-1.5" style={{ background: 'var(--fd-accent)' }}>
                       <Image
                         src={user.profile_picture.url.startsWith('http') ? user.profile_picture.url : `${process.env.NEXT_PUBLIC_STRAPI_URL || ''}${user.profile_picture.url}`}
                         alt="Profil"
@@ -875,7 +875,7 @@ export default function FacturePage() {
                       />
                     </div>
                   ) : (
-                    <div className="fd-brand-logo-mark w-[38px] h-[38px] rounded-lg flex items-center justify-center shrink-0 font-bold text-sm text-white" style={{ background: 'var(--fd-accent)' }}>
+                    <div className="fd-brand-logo-mark w-[38px] h-[38px]  flex items-center justify-center shrink-0 font-bold text-sm text-white" style={{ background: 'var(--fd-accent)' }}>
                       {company?.name ? company.name.slice(0, 2).toUpperCase() : '?'}
                     </div>
                   )}
@@ -899,26 +899,26 @@ export default function FacturePage() {
                 </div>
                 <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
                   (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
-                    ? 'bg-[#dcfce7] !text-[#166534] border border-[#bbf7d0]'
+                    ? 'pastille-success'
                     : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
-                      ? 'bg-[#fef9c3] !text-[#854d0e] border border-[#fde68a]'
-                      : 'bg-muted !text-muted border border-default'
+                      ? 'pastille-sent'
+                      : 'pastille-info'
                 }`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${
                     (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
                       ? 'bg-[#16a34a]'
                       : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
-                        ? 'bg-[#ca8a04]'
-                        : 'bg-[var(--fd-pale)]'
+                        ? 'bg-[#2563eb]'
+                        : 'bg-[#6366f1]'
                   }`} />
                   {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
                 </span>
               </div>
             </div>
 
-            {/* Meta grid - facture-detail_1: 3 colonnes, 6 cellules */}
-            <div className="doc-meta grid grid-cols-3 border-b border-cell-facture">
-              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+            {/* Meta grid - facture-detail_1: responsive 1/2/3 colonnes, 6 cellules */}
+            <div className="doc-meta grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 border-b border-cell-facture">
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('reference')}</div>
                 {editing ? (
                   <input type="text" name="reference" value={formData?.reference || ''} onChange={handleInputChange}
@@ -927,7 +927,7 @@ export default function FacturePage() {
                   <div className="meta-val font-semibold text-[13px]" style={{ color: 'var(--fd-ink)' }}>{facture?.reference}</div>
                 )}
               </div>
-              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('emission_date')}</div>
                 {editing ? (
                   <input type="date" name="date" value={formData?.date ? formData.date.slice(0, 10) : ''} onChange={handleInputChange}
@@ -936,7 +936,7 @@ export default function FacturePage() {
                   <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.date ? new Date(facture.date).toLocaleDateString('fr-FR') : ''}</div>
                 )}
               </div>
-              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>
                   {isQuote ? (t('valid_until') || 'Valide jusqu\'au') : t('due_date')}
                 </div>
@@ -954,7 +954,7 @@ export default function FacturePage() {
                   </div>
                 )}
               </div>
-              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('client')}</div>
                 {editing ? (
                   <select name="client_id" value={formData?.client_id?.id || ''} onChange={e => {
@@ -971,7 +971,7 @@ export default function FacturePage() {
                   <div className="meta-val large text-[14px] font-semibold" style={{ color: 'var(--fd-ink)' }}>{facture?.client_id?.name || '—'}</div>
                 )}
               </div>
-              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture">
+              <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('currency')}</div>
                 {editing ? (
                   <select name="currency" value={formData?.currency || ''} onChange={handleInputChange}
@@ -984,19 +984,19 @@ export default function FacturePage() {
                   <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.currency || 'EUR'} — {facture?.currency === 'USD' ? 'Dollar' : facture?.currency === 'GBP' ? 'Livre' : 'Euro'}</div>
                 )}
               </div>
-              <div className="doc-meta-cell p-4 px-8">
+              <div className="doc-meta-cell p-4 px-8 min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('project')}</div>
                 {editing ? (
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2 min-w-0">
                     <select name="project" value={formData?.project?.id || ''} onChange={e => {
                       const project = filteredProjects.find(p => p.id === Number(e.target.value));
                       setFormData({ ...formData!, project: project! });
-                    }} className="input border flex-1 p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900">
+                    }} className="input border flex-1 min-w-0 p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900">
                       <option value="">{t('select_project')}</option>
                       {filteredProjects.map(project => <option key={project.id} value={project.id}>{project.title} {project.client?.name ? `(${project.client.name})` : ''}</option>)}
                     </select>
-                    <button type="button" onClick={refreshProjects} className="p-2 bg-blue-500/10 !text-blue-600 border border-blue-500/30 hover:bg-blue-500/20 transition-colors" title={t('refresh_projects') || 'Rafraîchir'}><IconRefresh className="w-4 h-4" /></button>
-                    <button type="button" onClick={() => window.open('/dashboard/projects?new=1', '_blank')} className="px-3 py-2 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap" title={t('create_new_project') || 'Nouveau'}>+ {t('new_project') || 'Nouveau'}</button>
+                    <button type="button" onClick={refreshProjects} className="p-2 shrink-0 bg-blue-500/10 !text-blue-600 border border-blue-500/30 hover:bg-blue-500/20 transition-colors" title={t('refresh_projects') || 'Rafraîchir'}><IconRefresh className="w-4 h-4" /></button>
+                    <button type="button" onClick={() => window.open('/dashboard/projects?new=1', '_blank')} className="px-3 py-2 shrink-0 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap" title={t('create_new_project') || 'Nouveau'}>+ {t('new_project') || 'Nouveau'}</button>
                   </div>
                 ) : (
                   <div className="meta-val muted text-[13px] font-medium" style={{ color: 'var(--fd-ink3)' }}>{facture?.project?.title || '—'}</div>

@@ -15,6 +15,45 @@ export const extractDomain = (url: string): string => {
 };
 
 /**
+ * Extrait le domaine d'un email (partie après le @)
+ * Ex: contact@nordicnexus.com → nordicnexus.com
+ */
+export const extractDomainFromEmail = (email: string): string | null => {
+  if (!email || !email.includes('@')) return null;
+  const part = email.split('@')[1]?.trim().toLowerCase();
+  if (!part || part.length < 3) return null;
+  return part;
+};
+
+/**
+ * Domaine pour favicon : site web en priorité, sinon domaine de l'email
+ */
+export const getFaviconDomain = (
+  website?: string | null,
+  email?: string | null
+): string | null => {
+  if (website) {
+    const domain = extractDomain(website);
+    if (domain) return domain;
+  }
+  if (email) return extractDomainFromEmail(email);
+  return null;
+};
+
+/**
+ * Website à enregistrer : si vide, dérive depuis le domaine de l'email (https://domaine)
+ */
+export const deriveWebsite = (
+  website?: string | null,
+  email?: string | null
+): string => {
+  const trimmed = (website ?? '').trim();
+  if (trimmed) return trimmed;
+  const domain = email ? extractDomainFromEmail(email) : null;
+  return domain ? `https://${domain}` : '';
+};
+
+/**
  * Services de favicon disponibles (par ordre de fiabilité)
  */
 export const FAVICON_SERVICES = {

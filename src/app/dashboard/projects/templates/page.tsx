@@ -339,7 +339,7 @@ export default function ProjectTemplatesPage() {
       {/* Search */}
       <div className="flex gap-3 p-4 bg-card  border border-muted">
         <div className="relative flex-1">
-          <IconSearch size={10} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
+          <IconSearch size={10} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground z-10" />
           <input
             type="text"
             value={searchTerm}

@@ -99,7 +99,7 @@ export default function GmailStyleComposer({
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className={`fixed z-[100] bg-card border border-default shadow-2xl flex flex-col ${
-              isMaximized ? 'max-w-7xl max-h-[90vh] mx-auto' : ''
+              isMaximized ? ' max-h-[90vh] mx-auto' : ''
             }`}
             style={{
               bottom: isMaximized ? 0 : 0,

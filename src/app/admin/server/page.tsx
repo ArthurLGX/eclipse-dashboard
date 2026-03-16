@@ -188,7 +188,7 @@ export default function AdminServerPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className={`rounded-xl p-8 border-2 ${getStatusBgColor(health.status)}`}
+        className={` p-8 border-2 ${getStatusBgColor(health.status)}`}
       >
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6">

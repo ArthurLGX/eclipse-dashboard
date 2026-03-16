@@ -525,7 +525,7 @@ export default function CalendarPage() {
             alt="Fathom"
             width={20}
             height={20}
-            className="rounded-sm"
+            className=""
             unoptimized
           />
           <Link href="/dashboard/settings/meeting-integrations" target="_blank" className="!text-primary group-hover:!text-accent-text transition-colors">
@@ -622,7 +622,7 @@ export default function CalendarPage() {
                                 alt="Fathom"
                                 width={12}
                                 height={12}
-                                className="rounded-sm"
+                                className=""
                                 unoptimized
                               />
                             </div>
@@ -690,7 +690,7 @@ export default function CalendarPage() {
                                 alt="Fathom"
                                 width={12}
                                 height={12}
-                                className="rounded-sm"
+                                className=""
                                 unoptimized
                               />
                               <span className="!text-[10px] font-medium">

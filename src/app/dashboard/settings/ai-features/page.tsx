@@ -223,7 +223,7 @@ export default function AIFeaturesSettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
+          className="flex items-center gap-2 px-6 py-3 bg-accent text-white  hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
         >
           <IconDeviceFloppy className="w-5 h-5" />
           {saving ? 'Enregistrement...' : 'Enregistrer'}
@@ -231,7 +231,7 @@ export default function AIFeaturesSettingsPage() {
       </div>
 
       {/* Warning */}
-      <div className="mb-6 p-4 bg-warning/10 border border-warning/20 rounded-xl flex items-start gap-3">
+      <div className="mb-6 p-4 bg-warning/10 border border-warning/20  flex items-start gap-3">
         <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
         <div>
           <h3 className="font-semibold text-warning mb-1">Optimisez votre consommation de tokens</h3>
@@ -244,7 +244,7 @@ export default function AIFeaturesSettingsPage() {
 
       {/* Categories */}
       {(Object.entries(categoryGroups) as Array<[FeatureCategory, AIFeatureInfo[]]>).map(([category, categoryFeatures]) => (
-        <div key={category} className="bg-card border border-default rounded-xl p-6 mb-6">
+        <div key={category} className="bg-card border border-default  p-6 mb-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-primary">
               {getCategoryLabel(category)}
@@ -316,7 +316,7 @@ export default function AIFeaturesSettingsPage() {
       ))}
 
       {/* Info Card */}
-      <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6">
+      <div className="bg-blue-500/10 border border-blue-500/20  p-6">
         <h3 className="font-semibold text-blue-600 mb-2 flex items-center gap-2">
           <IconBrain className="w-5 h-5" />
           {t('ai_how_it_works') || 'Comment ça fonctionne ?'}

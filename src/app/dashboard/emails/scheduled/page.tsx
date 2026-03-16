@@ -119,7 +119,7 @@ function ScheduledEmails() {
     <div className="min-h-screen bg-page">
       {/* Header */}
       <div className="sticky top-0 z-40 border-b border-default px-6 py-8">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className=" mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/emails"
@@ -147,7 +147,7 @@ function ScheduledEmails() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto p-6">
+      <div className=" mx-auto p-6">
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <IconLoader2 className="w-8 h-8 animate-spin !text-accent-text" />
@@ -164,7 +164,7 @@ function ScheduledEmails() {
             <h2 className="!text-xl font-semibold !text-primary mb-2">
               {t('no_scheduled_emails') || 'Aucun email planifié'}
             </h2>
-            <p className="!text-muted max-w-7xl mx-auto">
+            <p className="!text-muted  mx-auto">
               {t('no_scheduled_emails_desc') || 'Vous n\'avez aucun email en attente d\'envoi. Créez un nouvel email et utilisez la planification pour l\'envoyer plus tard.'}
             </p>
             <Link
@@ -280,7 +280,7 @@ function ScheduledEmails() {
       </div>
 
       {/* Info banner */}
-      <div className="max-w-7xl mx-auto px-6 pb-6">
+      <div className=" mx-auto px-6 pb-6">
         <div className="flex items-start gap-3 p-4 bg-purple-500/10 border border-purple-500/30 ">
           <IconAlertTriangle className="w-5 h-5 !text-purple-400 flex-shrink-0 mt-0.5" />
           <div className="!text-sm !text-purple-300">

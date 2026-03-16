@@ -326,7 +326,7 @@ export default function TaskSectionRedesign({
       </div>
 
       {/* Progress */}
-      <div className="bg-card border border-default rounded-xl py-3.5 px-5 flex items-center gap-4">
+      <div className="bg-card border border-default  py-3.5 px-5 flex items-center gap-4">
         <span className="!text-[13px] font-medium !text-muted whitespace-nowrap">Progression globale</span>
         <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
           <motion.div
@@ -451,7 +451,7 @@ export default function TaskSectionRedesign({
       {/* New task row */}
       {canEdit && (
         <div
-          className={`flex items-center gap-3 p-3 bg-card border-2 border-dashed rounded-xl cursor-text transition-colors ${
+          className={`flex items-center gap-3 p-3 bg-card border-2 border-dashed  cursor-text transition-colors ${
             newTaskFocused || newTaskTitle ? 'border-primary' : 'border-default hover:border-[#ccc8c2]'
           }`}
         >
@@ -622,7 +622,7 @@ function TaskCardRedesign({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: 8 }}
       transition={{ delay: animateIndex * 0.05 }}
-      className={`bg-card border border-default rounded-xl overflow-hidden transition-all ${
+      className={`bg-card border border-default  overflow-hidden transition-all ${
         isExpanded ? 'border-[#ccc8c2] shadow-lg' : 'hover:border-[#ccc8c2]'
       }`}
     >
@@ -1085,7 +1085,7 @@ export function TaskListRedesignView({
   return (
     <div className="space-y-4">
       {/* Barre de progression */}
-      <div className="bg-card border border-default rounded-xl py-3.5 px-5 flex items-center gap-4">
+      <div className="bg-card border border-default  py-3.5 px-5 flex items-center gap-4">
         <span className="!text-[13px] font-medium !text-muted whitespace-nowrap">Progression globale</span>
         <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
           <motion.div
@@ -1157,7 +1157,7 @@ export function TaskListRedesignView({
       {/* Ligne nouvelle tâche */}
       {canEdit && (
         <div
-          className={`flex items-center gap-3 p-3 bg-card border-2 border-dashed rounded-xl cursor-text transition-colors ${
+          className={`flex items-center gap-3 p-3 bg-card border-2 border-dashed  cursor-text transition-colors ${
             newTaskFocused || newTaskTitle ? 'border-primary' : 'border-default hover:border-[#ccc8c2]'
           }`}
         >

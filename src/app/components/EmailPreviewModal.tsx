@@ -145,7 +145,7 @@ export default function EmailPreviewModal({
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white  shadow-2xl overflow-hidden flex flex-col outline-none overscroll-contain"
+            className="absolute inset-4 md:inset-8  mx-auto bg-white  shadow-2xl overflow-hidden flex flex-col outline-none overscroll-contain"
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
@@ -205,7 +205,7 @@ export default function EmailPreviewModal({
                 {/* Search bar */}
                 <div className="p-3 border-b border-gray-200">
                   <div className="relative">
-                    <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-gray-400" />
+                    <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-gray-400 z-10" />
                     <input 
                       type="text" 
                       placeholder={t.search_placeholder}

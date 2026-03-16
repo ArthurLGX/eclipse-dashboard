@@ -146,7 +146,7 @@ export default function NewslettersPage() {
       <div className="min-h-screen">
         {/* Header épuré */}
         <div className="bg-card border-b border-default">
-          <div className="max-w-7xl mx-auto px-8 py-5">
+          <div className=" mx-auto px-8 py-5">
             {/* Breadcrumb + Actions */}
             <div className="flex items-start justify-between mb-6">
 
@@ -182,7 +182,7 @@ export default function NewslettersPage() {
         </div>
 
         {/* Content */}
-        <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className=" mx-auto px-8 py-6">
           {/* Filtres */}
           <div className="mb-4">
             <TableFilters

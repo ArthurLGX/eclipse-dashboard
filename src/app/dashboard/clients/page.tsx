@@ -748,6 +748,7 @@ export default function ClientsPage() {
             name={row.name}
             imageUrl={getImageUrl(row)}
             website={row.website}
+            email={row.email}
             size="sm"
           />
           <div className="flex items-center gap-2">
@@ -858,7 +859,7 @@ export default function ClientsPage() {
       <div className="min-h-screen">
         {/* Header épuré */}
         <div className="border-b border-default">
-          <div className="max-w-7xl mx-auto px-8 py-5">
+          <div className=" mx-auto px-8 py-5">
             {/* Breadcrumb + Title Row */}
             <div className="flex items-start justify-between mb-5">
 
@@ -935,7 +936,7 @@ export default function ClientsPage() {
         </div>
 
         {/* Content */}
-        <div className="max-w-7xl mx-auto px-8 py-6">
+        <div className=" mx-auto px-8 py-6">
           {/* Search + Advanced Filters */}
           <div className="mb-4">
             <TableFilters
@@ -1050,6 +1051,7 @@ export default function ClientsPage() {
             name={client.name} 
             imageUrl={client.image?.url ? apiUrl + client.image.url : null}
             website={client.website}
+            email={client.email}
             size="sm"
           />
         )}

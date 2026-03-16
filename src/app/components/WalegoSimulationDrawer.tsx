@@ -209,7 +209,7 @@ export default function WalegoSimulationDrawer({ isOpen, onClose, onOpenAsLead }
 
           <button
             onClick={handleOpenAsLead}
-            className="w-full py-3 rounded-xl font-medium !text-white bg-primary hover:opacity-90 transition-opacity"
+            className="w-full py-3  font-medium !text-white bg-primary hover:opacity-90 transition-opacity"
           >
             Ouvrir comme lead (simulation)
           </button>

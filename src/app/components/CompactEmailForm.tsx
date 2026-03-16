@@ -348,7 +348,7 @@ export default function CompactEmailForm({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="!text-xs !text-muted border-l-2 border-muted pl-3 py-2"
+                className="!text-xs !text-muted border-l-2 border-muted !pl-3 py-2"
               >
                 <div className="mb-2">
                   <strong className="!text-primary">{replyToEmail.from_name || replyToEmail.from_email}</strong>

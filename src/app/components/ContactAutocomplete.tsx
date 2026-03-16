@@ -169,7 +169,7 @@ export default function ContactAutocomplete({
   return (
     <div className="relative flex-1">
       <div className="relative">
-        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none" />
+        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none z-10" />
         <input
           ref={inputRef}
           type="text"

@@ -95,7 +95,7 @@ export default function AIKeysSettingsPage() {
       </div>
 
       <div className="space-y-6">
-        <div className="bg-card border border-default rounded-xl p-6">
+        <div className="bg-card border border-default  p-6">
           <div className="flex items-start gap-3 mb-4">
             <IconLock className="w-5 h-5 text-muted flex-shrink-0 mt-0.5" />
             <div>
@@ -107,7 +107,7 @@ export default function AIKeysSettingsPage() {
           </div>
         </div>
 
-        <div className="bg-card border border-default rounded-xl p-6 space-y-6">
+        <div className="bg-card border border-default  p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-primary mb-2">
               Clé API OpenAI
@@ -145,14 +145,14 @@ export default function AIKeysSettingsPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
+            className="flex items-center gap-2 px-6 py-3 bg-accent text-white  hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
           >
             <IconDeviceFloppy className="w-5 h-5" />
             {saving ? 'Enregistrement...' : 'Enregistrer'}
           </button>
         </div>
 
-        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex items-start gap-3">
+        <div className="bg-amber-500/10 border border-amber-500/20  p-4 flex items-start gap-3">
           <IconAlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="font-semibold text-amber-700 dark:text-amber-400 mb-1">

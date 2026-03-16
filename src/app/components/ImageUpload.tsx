@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -36,6 +37,8 @@ interface ImageUploadProps {
   name?: string;
   /** 'cover' coupe l'image pour remplir, 'contain' affiche l'image entière */
   objectFit?: 'cover' | 'contain';
+  /** Rendre le menu déroulant dans un portail (évite le clipping par overflow:hidden des parents) */
+  menuPortal?: boolean;
 }
 
 const sizeClasses = {
@@ -171,10 +174,14 @@ export default function ImageUpload({
   website,
   name,
   objectFit = 'cover',
+  menuPortal = false,
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [menuRect, setMenuRect] = useState({ top: 0, left: 0, width: 0 });
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const menuPortalRef = useRef<HTMLDivElement>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
@@ -200,10 +207,21 @@ export default function ImageUpload({
   // Initiale du nom
   const initial = name?.charAt(0)?.toUpperCase() || '?';
 
+  // Position du menu pour le portail (useLayoutEffect = avant paint, évite flash à 0,0)
+  useLayoutEffect(() => {
+    if (showMenu && menuPortal && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setMenuRect({ top: rect.bottom + 8, left: rect.left, width: rect.width });
+    }
+  }, [showMenu, menuPortal]);
+
   // Fermer le menu si on clique en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const inTrigger = triggerRef.current?.contains(target);
+      const inMenu = menuPortal ? menuPortalRef.current?.contains(target) : menuRef.current?.contains(target);
+      if (!inTrigger && !inMenu) {
         setShowMenu(false);
       }
     };
@@ -212,7 +230,7 @@ export default function ImageUpload({
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showMenu]);
+  }, [showMenu, menuPortal]);
 
   const handleAvatarClick = () => {
     if (uploading) return;
@@ -497,9 +515,10 @@ export default function ImageUpload({
     <>
       <div className={`relative group ${className}`} ref={menuRef}>
         <div
+          ref={triggerRef}
           className={`
             ${sizeClasses[size]}
-            ${shape === 'circle' ? 'rounded-full' : 'rounded-xl'}
+            ${shape === 'circle' ? 'rounded-full' : ''}
             relative overflow-hidden
             bg-card border-2 border-default
             transition-all duration-200
@@ -526,7 +545,7 @@ export default function ImageUpload({
 
         {/* Menu de choix */}
         <AnimatePresence>
-          {showMenu && (
+          {showMenu && !menuPortal && (
             <motion.div
               initial={{ opacity: 0, y: -10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -637,6 +656,71 @@ export default function ImageUpload({
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Menu en portail (pour éviter le clipping) */}
+        {showMenu && menuPortal && typeof document !== 'undefined' && createPortal(
+          <AnimatePresence>
+            <motion.div
+              ref={menuPortalRef}
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.15 }}
+              className="fixed w-64 bg-card border border-default shadow-xl shadow-black/50 z-[9999] overflow-hidden rounded-lg"
+              style={{ top: menuRect.top, left: menuRect.left }}
+            >
+              {disabled && (
+                <div className="px-4 py-3 bg-muted border-b border-default !text-center">
+                  <p className="!text-warning-text !text-xs font-medium">
+                    ⚠️ Passez en mode édition pour modifier l&apos;image
+                  </p>
+                </div>
+              )}
+              {website && (
+                <button
+                  onClick={handleUseFavicon}
+                  disabled={disabled}
+                  className={`w-full px-4 py-3 flex items-center gap-3 transition-colors !text-left border-b border-default ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'}`}
+                >
+                  <div className="w-8 h-8 bg-info-light border border-info flex items-center justify-center overflow-hidden">
+                    {faviconUrl ? (
+                      <Image src={faviconUrl} alt="Favicon" width={24} height={24} className="object-contain" unoptimized onError={() => setFaviconError(true)} />
+                    ) : (
+                      <IconWorld size={18} className="!text-info" />
+                    )}
+                  </div>
+                  <div>
+                    <p className="!text-primary font-medium !text-sm">Utiliser le favicon</p>
+                    <p className="!text-muted !text-xs truncate max-w-[160px]">{extractDomain(website)}</p>
+                  </div>
+                </button>
+              )}
+              <button onClick={handleChooseFile} disabled={disabled} className={`w-full px-4 py-3 flex items-center gap-3 transition-colors !text-left border-b border-default ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'}`}>
+                <div className="w-8 h-8 bg-accent-light border border-accent-light flex items-center justify-center"><IconUpload size={18} className="!text-accent-text" /></div>
+                <div>
+                  <p className="!text-primary font-medium !text-sm">Depuis l&apos;ordinateur</p>
+                  <p className="!text-muted !text-xs">Importer un fichier</p>
+                </div>
+              </button>
+              <button onClick={handleOpenLibrary} disabled={disabled} className={`w-full px-4 py-3 flex items-center gap-3 transition-colors !text-left border-b border-default ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'}`}>
+                <div className="w-8 h-8 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center"><IconPhoto size={18} className="!text-purple-400" /></div>
+                <div>
+                  <p className="!text-primary font-medium !text-sm">Depuis la bibliothèque</p>
+                  <p className="!text-muted !text-xs">Images déjà uploadées</p>
+                </div>
+              </button>
+              <button onClick={handleOpenUrlInput} disabled={disabled} className={`w-full px-4 py-3 flex items-center gap-3 transition-colors !text-left ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-hover'}`}>
+                <div className="w-8 h-8 bg-info-light border border-info flex items-center justify-center"><IconLink size={18} className="!text-info" /></div>
+                <div>
+                  <p className="!text-primary font-medium !text-sm">Depuis une URL</p>
+                  <p className="!text-muted !text-xs">Lien vers une image</p>
+                </div>
+              </button>
+              <button onClick={() => setShowMenu(false)} className="w-full px-4 py-2 !text-muted !text-xs hover:bg-hover transition-colors !text-center border-t border-default">Fermer</button>
+            </motion.div>
+          </AnimatePresence>,
+          document.body
+        )}
 
         <input
           ref={fileInputRef}

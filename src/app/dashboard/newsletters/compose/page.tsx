@@ -2754,7 +2754,7 @@ export default function ComposeNewsletterPage() {
       <div className="min-h-screen bg-page">
         {/* Header */}
         <header className="sticky top-0 z-40 border-b border-default py-8 rounded-t-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className=" mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Link 
@@ -2817,7 +2817,7 @@ export default function ComposeNewsletterPage() {
 
         {/* Progress Steps */}
         <div className="border-b border-default rounded-b-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center justify-between">
               {steps.map((step, index) => (
                 <React.Fragment key={step.id}>
@@ -2854,7 +2854,7 @@ export default function ComposeNewsletterPage() {
         </div>
 
         {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className=" mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex gap-8 w-full">
             {/* Editor Panel */}
             <div className={`flex-1 w-full ${showPreview ? 'hidden lg:block' : ''}`}>
@@ -3885,7 +3885,7 @@ export default function ComposeNewsletterPage() {
                         disabled={sending}
                       />
 
-                      <div className={`rounded-xl p-6 border ${scheduledAt ? 'bg-purple-600 border-purple-500' : 'bg-accent border-muted'}`}>
+                      <div className={` p-6 border ${scheduledAt ? 'bg-purple-600 border-purple-500' : 'bg-accent border-muted'}`}>
                         <div className="flex items-center justify-between">
                           <div>
                             <h3 className="font-semibold !text-white mb-1">
@@ -4034,7 +4034,7 @@ export default function ComposeNewsletterPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="absolute inset-4 md:inset-8 max-w-7xl mx-auto bg-white  shadow-2xl overflow-hidden flex flex-col"
+                className="absolute inset-4 md:inset-8  mx-auto bg-white  shadow-2xl overflow-hidden flex flex-col"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Mailbox Header */}

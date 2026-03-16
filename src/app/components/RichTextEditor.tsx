@@ -1438,7 +1438,7 @@ export default function RichTextEditor({
             [&_a]:!text-accent-text [&_a]:underline
             [&_img]: [&_img]:cursor-pointer [&_img]:transition-all [&_img]:max-w-full
             [&_.color-code]:inline-flex [&_.color-code]:items-center [&_.color-code]:gap-1 [&_.color-code]:px-1 [&_.color-code]:rounded [&_.color-code]:bg-muted/40
-            [&_.color-swatch]:inline-block [&_.color-swatch]:w-3 [&_.color-swatch]:h-3 [&_.color-swatch]:rounded-sm [&_.color-swatch]:border [&_.color-swatch]:border-default
+            [&_.color-swatch]:inline-block [&_.color-swatch]:w-3 [&_.color-swatch]:h-3 [&_.color-swatch]: [&_.color-swatch]:border [&_.color-swatch]:border-default
             [&_.editor-block]:relative [&_.editor-block]:transition-all
             [&_.editor-image-block]:my-2 [&_.editor-image-block]:
             [&_.editor-image-block:hover]:ring-1 [&_.editor-image-block:hover]:ring-accent/30
@@ -1552,7 +1552,7 @@ export default function RichTextEditor({
               onMouseDown={(e) => startResize(e, 's')}
             />
             <div
-              className="absolute w-3 h-8 bg-accent-light0 rounded-sm cursor-w-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
+              className="absolute w-3 h-8 bg-accent-light0  cursor-w-resize z-30 hover:bg-[var(--color-accent)] hover:!text-white transition-colors"
               style={{
                 top: selectedMedia.offsetTop + selectedMedia.offsetHeight / 2 - 16,
                 left: selectedMedia.offsetLeft - 4,

@@ -476,7 +476,7 @@ function InstagramPlanner() {
     <div className="min-h-screen bg-page p-6">
       {/* Error Banner */}
       {error && (
-        <div className="max-w-7xl mx-auto mb-4">
+        <div className=" mx-auto mb-4">
           <div className="bg-danger-light border border-danger !text-danger px-4 py-3  flex items-center justify-between">
             <span>{error}</span>
             <button onClick={() => setError(null)} className="!text-danger hover:!text-danger/80">
@@ -488,7 +488,7 @@ function InstagramPlanner() {
 
       {/* Success Banner */}
       {success && (
-        <div className="max-w-7xl mx-auto mb-4">
+        <div className=" mx-auto mb-4">
           <div className="bg-success-light border border-success !text-success-text -text px-4 py-3  flex items-center justify-between">
             <span className="flex items-center gap-2">
               <IconCheck className="w-5 h-5" />
@@ -513,7 +513,7 @@ function InstagramPlanner() {
       )}
 
       {/* Header */}
-      <div className="max-w-7xl mx-auto mb-8">
+      <div className=" mx-auto mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="!text-2xl font-bold !text-primary flex items-center gap-3">
@@ -668,7 +668,7 @@ function InstagramPlanner() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto">
+      <div className=" mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Feed Preview (Instagram Grid) */}
           <div className="lg:col-span-2">

@@ -466,7 +466,7 @@ export default function SubscriptionsPage() {
       {/* Filters */}
       <div className="flex flex-wrap gap-3 p-4 bg-card  border border-muted">
         <div className="relative flex-1 min-w-[200px]">
-          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground" />
+          <IconSearch size={16} className="absolute left-3 top-1/2 -translate-y-1/2 !text-muted-foreground z-10" />
           <input
             type="text"
             value={searchTerm}

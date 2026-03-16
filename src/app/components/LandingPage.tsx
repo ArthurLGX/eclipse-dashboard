@@ -347,7 +347,7 @@ export default function LandingPage() {
         </div>
 
         <motion.div
-          className={`landing-pricing-grid ${!plansLoading && plans.length >= 4 ? 'cols-4' : ''}`}
+          className="landing-pricing-grid"
           initial="hidden"
           animate="visible"
           variants={stagger}
@@ -370,6 +370,7 @@ export default function LandingPage() {
           ) : plans.length > 0 ? (
             plans.map((plan) => {
               const featured = plan.name === 'pro';
+              const expert = plan.name === 'expert';
               const price = togglePlan ? plan.price_yearly : plan.price_monthly;
               let features: string[] = [];
               try {
@@ -400,9 +401,9 @@ export default function LandingPage() {
               return (
                 <motion.div
                   key={plan.name}
-                  className={`landing-pricing-card ${featured ? 'featured' : ''}`}
+                  className={`landing-pricing-card ${featured ? 'featured' : ''} ${expert ? 'expert' : ''}`}
                   variants={cardVariants}
-                  whileHover={featured ? { y: -8, scale: 1.02, transition: { duration: 0.2 } } : { y: -6, transition: { duration: 0.2 } }}
+                  whileHover={featured || expert ? { y: -8, scale: 1.02, transition: { duration: 0.2 } } : { y: -6, transition: { duration: 0.2 } }}
                 >
                   {featured && <div className="landing-pricing-badge">⚡ {t('most_popular')}</div>}
                   <div className="landing-pricing-name">{displayName}</div>
@@ -412,7 +413,10 @@ export default function LandingPage() {
                   {displayFeatures.map((f, idx) => (
                     <div key={`${plan.name}-${idx}`} className="landing-pricing-feature"><span className="landing-pricing-check">✓</span> {f}</div>
                   ))}
-                  <Link href={href} className={featured ? 'landing-btn-pricing-dark' : 'landing-btn-pricing-outline'}>
+                  <Link
+                    href={href}
+                    className={expert ? 'landing-btn-pricing-expert' : featured ? 'landing-btn-pricing-dark' : 'landing-btn-pricing-outline'}
+                  >
                     {cta}
                   </Link>
                 </motion.div>

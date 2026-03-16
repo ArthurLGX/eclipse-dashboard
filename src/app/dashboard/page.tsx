@@ -203,7 +203,7 @@ export default function DashboardPage() {
       >
         {/* Header épuré */}
         <div className="border-b border-default">
-          <div className="max-w-7xl mx-auto px-8 py-5">
+          <div className=" mx-auto px-8 py-5">
             <div className="mb-1">
               <span className="!text-xs !text-muted">{t('dashboard') || 'Tableau De Bord'}</span>
             </div>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-8 py-6 space-y-5">
+        <div className=" mx-auto px-8 py-6 space-y-5">
           <UsageProgressBar />
 
           {/* KPIs compacts avec dot coloré */}

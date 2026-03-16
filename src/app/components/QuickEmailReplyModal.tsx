@@ -156,7 +156,7 @@ export default function QuickEmailReplyModal({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl bg-card border border-default rounded-2xl shadow-2xl z-[9999] max-h-[90vh] flex flex-col"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl bg-card border border-default  shadow-2xl z-[9999] max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -216,7 +216,7 @@ export default function QuickEmailReplyModal({
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder="Tapez votre réponse ici..."
                     rows={12}
-                    className="w-full px-4 py-3 bg-secondary border border-default rounded-xl text-primary placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
+                    className="w-full px-4 py-3 bg-secondary border border-default  text-primary placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none"
                   />
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function QuickEmailReplyModal({
                   <button
                     onClick={handleGenerateAIReply}
                     disabled={generatingAI}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-purple-500/10 text-purple-600 rounded-xl hover:bg-purple-500/20 transition-colors disabled:opacity-50 border border-purple-500/20"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-purple-500/10 text-purple-600  hover:bg-purple-500/20 transition-colors disabled:opacity-50 border border-purple-500/20"
                   >
                     {generatingAI ? (
                       <IconLoader2 className="w-5 h-5 animate-spin" />
@@ -251,7 +251,7 @@ export default function QuickEmailReplyModal({
                 <button
                   onClick={handleSend}
                   disabled={sending || !replyContent.trim()}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-accent text-white  hover:opacity-90 transition-opacity disabled:opacity-50 font-medium"
                 >
                   {sending ? (
                     <>

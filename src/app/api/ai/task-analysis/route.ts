@@ -47,7 +47,7 @@ function isQuotaExceeded(error: unknown): boolean {
 
 export async function POST(req: Request) {
   try {
-    const { task, ai_instruction, email_body } = await req.json();
+    const { task, ai_instruction, email_body, hot_lead_keywords } = await req.json();
 
     if (!task) {
       return NextResponse.json({ error: 'Task data is required' }, { status: 400 });
@@ -70,7 +70,12 @@ export async function POST(req: Request) {
       ? `\n\n---\nINSTRUCTION PERSONNALISÉE (à respecter en priorité) :\n${ai_instruction}\n`
       : '';
 
-    const systemPrompt = SMART_FOLLOW_UP_MAIL_SCANNER_PROMPT + instructionBlock;
+    const hotKeywordsBlock =
+      hot_lead_keywords && Array.isArray(hot_lead_keywords) && hot_lead_keywords.length > 0
+        ? `\n\n---\nMOTS-CLÉS LEAD CHAUD (configurés par l'utilisateur) : ${hot_lead_keywords.join(', ')}\nSi l'un de ces mots apparaît dans le sujet ou le corps → traiter comme LEAD CHAUD (🔴).\n`
+        : '';
+
+    const systemPrompt = SMART_FOLLOW_UP_MAIL_SCANNER_PROMPT + hotKeywordsBlock + instructionBlock;
 
     const userMessage = `Analyse ce mail entrant et applique le process adapté (Walego / RDV confirmé / Lead entrant).
 

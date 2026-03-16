@@ -214,7 +214,7 @@ export default function EmailSidebar({
                     <button
                       key={item.id}
                       onClick={() => onViewChange(item.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-2 pl-11 rounded-r-full transition-colors !text-left mb-1 ${
+                      className={`w-full flex items-center gap-3 px-4 py-2 !pl-11 rounded-r-full transition-colors !text-left mb-1 ${
                         isActive
                           ? 'bg-accent-light !text-accent-text font-medium'
                           : 'hover:bg-hover !text-primary'
@@ -263,7 +263,7 @@ export default function EmailSidebar({
                   {labels.map((label) => (
                     <button
                       key={label.id}
-                      className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors !text-left mb-1"
+                      className="w-full flex items-center gap-3 px-4 py-2 !pl-11 hover:bg-hover rounded-r-full transition-colors !text-left mb-1"
                     >
                       <div
                         className="w-3 h-3 rounded-full"
@@ -272,7 +272,7 @@ export default function EmailSidebar({
                       <span className="flex-1 !text-sm !text-primary">{label.name}</span>
                     </button>
                   ))}
-                  <button className="w-full flex items-center gap-3 px-4 py-2 pl-11 hover:bg-hover rounded-r-full transition-colors !text-left !text-muted">
+                  <button className="w-full flex items-center gap-3 px-4 py-2 !pl-11 hover:bg-hover rounded-r-full transition-colors !text-left !text-muted">
                     <IconPlus className="w-4 h-4" />
                     <span className="!text-sm">Créer un libellé</span>
                   </button>

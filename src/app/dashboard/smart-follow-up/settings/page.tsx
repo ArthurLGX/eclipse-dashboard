@@ -230,8 +230,8 @@ export default function SmartFollowUpSettingsPage() {
 
   return (
     <>
-    <main className="p-8 max-w-[860px] overflow-y-auto">
-        <div className="flex items-start justify-between gap-4 mb-9">
+    <main className="p-8 max-w-7xl w-full overflow-y-auto">
+        <div className="flex items-start justify-between gap-4 mb-9 w-full">
           <div>
             <h1 className="font-serif !text-[28px] !text-primary leading-tight mb-1">Paramètres</h1>
             <p className="font-mono !text-xs !text-muted">Smart Follow-Up · Automatisation des relances</p>
@@ -239,7 +239,7 @@ export default function SmartFollowUpSettingsPage() {
           <button
             onClick={handleSave}
             disabled={loading}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold !text-[13px] transition-all flex-shrink-0 ${
+            className={`flex items-center gap-2 px-5 py-2.5  font-semibold !text-[13px] transition-all flex-shrink-0 ${
               saved
                 ? 'bg-success !text-white'
                 : 'bg-primary !text-white hover:opacity-90 disabled:opacity-50'
@@ -268,10 +268,10 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 1. ACTIVATION */}
         {activeSection === 'activation' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-success/10 border border-success/20 flex items-center justify-center !text-success">
-                <IconCircleDot className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-md bg-success border border-success flex items-center justify-center !text-white">
+                <IconCircleDot className="w-4 h-4 !text-white" />
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Activation du système</div>
@@ -299,10 +299,10 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 2. DOMAINES EXCLUS */}
         {activeSection === 'domaines' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-muted border border-default flex items-center justify-center !text-muted">
-                <IconBan className="w-4 h-4" />
+               <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <IconBan className="w-4 h-4 !text-white" />
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Domaines exclus</div>
@@ -312,7 +312,7 @@ export default function SmartFollowUpSettingsPage() {
             <div className="p-4">
               <div className="flex gap-2 mb-3">
                 <input
-                  type="text"
+                  type="text" 
                   value={newDomain}
                   onChange={(e) => setNewDomain(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddDomain()}
@@ -352,10 +352,10 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 3. ICP */}
         {activeSection === 'icp' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-accent/10 border border-accent/20 flex items-center justify-center !text-accent">
-                <IconUsers className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <IconUsers className="w-4 h-4 !text-white" />
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Configuration Ideal Client Profile (ICP)</div>
@@ -522,7 +522,7 @@ export default function SmartFollowUpSettingsPage() {
                     <div className="flex items-center justify-between w-full">
                       <div>
                         <div className="!text-[13px] font-semibold !text-primary">Mots-clés prioritaires</div>
-                        <div className="font-mono !text-[11px] !text-muted">Les emails contenant ces mots seront traités en priorité absolue</div>
+                        <div className="font-mono !text-[11px] !text-muted">Domaine de l&apos;expéditeur + si ces mots apparaissent dans sujet/corps → lead chaud (ex: rfp, consultation, refonte, budget)</div>
                       </div>
                       <div className="flex gap-2">
                         <input
@@ -530,7 +530,7 @@ export default function SmartFollowUpSettingsPage() {
                           value={newKeyword}
                           onChange={(e) => setNewKeyword(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && handleAddKeyword()}
-                          placeholder="ex: walego, urgent"
+                          placeholder="ex: rfp, consultation, refonte, budget, walego"
                           className={`${settingInput} w-28`}
                         />
                         <button
@@ -562,10 +562,10 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 4. MOTS-CLÉS (section dédiée si séparée) */}
         {activeSection === 'mots-cles' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-warning/10 border border-warning/20 flex items-center justify-center !text-warning">
-                <IconBolt className="w-4 h-4" />
+               <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <IconBolt className="w-4 h-4 !text-white" />
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Mots-clés de détection</div>
@@ -583,10 +583,10 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 5. DÉLAIS */}
         {activeSection === 'delais' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full   overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-muted border border-default flex items-center justify-center !text-muted">
-                <IconClock className="w-4 h-4" />
+               <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <IconClock className="w-4 h-4 !text-white" />
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Délais de relance</div>
@@ -620,10 +620,10 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 6. HEURES */}
         {activeSection === 'heures' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-success/10 border border-success/20 flex items-center justify-center !text-success">
-                <IconCalendar className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-md bg-success border border-success flex items-center justify-center !text-white">
+                <IconCalendar className="w-4 h-4 !text-white" />
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Heures de travail</div>
@@ -665,11 +665,11 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 7. RÈGLES */}
         {activeSection === 'regles' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center justify-between gap-2.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8  bg-accent/10 border border-accent/20 flex items-center justify-center !text-accent">
-                  <IconShieldCheck className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                  <IconShieldCheck className="w-4 h-4 !text-white" />
                 </div>
                 <div>
                   <div className="!text-sm font-semibold !text-primary">Règles de filtrage personnalisées</div>
@@ -711,11 +711,11 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* 8. NOTIFICATIONS */}
         {activeSection === 'notifications' && (
-          <section className="bg-card border border-default rounded-2xl overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8  bg-muted border border-default flex items-center justify-center !text-muted">
-                <IconBell className="w-4 h-4" />
-              </div>
+              <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <IconBell className="w-4 h-4 !text-white" />
+              </div>  
               <div>
                 <div className="!text-sm font-semibold !text-primary">Préférences de notification</div>
                 <div className="font-mono !text-[11px] !text-muted">Comment et quand être alerté</div>

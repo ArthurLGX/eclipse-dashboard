@@ -341,7 +341,7 @@ export default function Plans() {
             <h2 className="landing-section-title max-w-full !text-center mb-8">{t('compare_plans')}</h2>
             <div
               id="pricing-table"
-              className="rounded-2xl overflow-hidden border"
+              className=" overflow-hidden border"
               style={{ background: 'var(--landing-surface)', borderColor: 'var(--landing-border2)' }}
             >
               <div className="overflow-x-auto">

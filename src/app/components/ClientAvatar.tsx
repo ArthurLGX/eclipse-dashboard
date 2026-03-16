@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { FAVICON_SERVICES, extractDomain } from '@/lib/favicon';
+import { FAVICON_SERVICES, getFaviconDomain } from '@/lib/favicon';
 
 interface ClientAvatarProps {
   name: string;
   imageUrl?: string | null;
   website?: string | null;
+  email?: string | null;
   size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -23,6 +24,7 @@ export default function ClientAvatar({
   name,
   imageUrl,
   website,
+  email,
   size = 'sm',
   className = '',
 }: ClientAvatarProps) {
@@ -30,9 +32,9 @@ export default function ClientAvatar({
   const [imageError, setImageError] = useState(false);
   const config = sizeConfig[size];
   
-  // URL du favicon si disponible, avec fallback chain
-  const domain = website ? extractDomain(website) : null;
-  const faviconUrl = website && domain && faviconService !== 'failed' 
+  // Domaine pour favicon : site web en priorité, sinon partie après @ dans l'email
+  const domain = getFaviconDomain(website, email);
+  const faviconUrl = domain && faviconService !== 'failed' 
     ? FAVICON_SERVICES[faviconService](domain)
     : null;
   

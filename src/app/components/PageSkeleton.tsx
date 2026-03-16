@@ -16,7 +16,7 @@ export default function PageSkeleton({
       {/* Skeleton pour le header */}
       {showHeader && (
         <div className="bg-card backdrop-blur-sm border-b border-default">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className=" mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="h-8 bg-muted rounded w-32 animate-pulse"></div>
               <div className="flex items-center space-x-4">
@@ -30,7 +30,7 @@ export default function PageSkeleton({
       )}
 
       {/* Skeleton pour le contenu principal */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Skeleton pour la barre de progression */}
         <div className="bg-card backdrop-blur-sm border border-default  p-4 mb-6">
           <div className="flex flex-wrap gap-4">
@@ -86,7 +86,7 @@ export default function PageSkeleton({
       {/* Skeleton pour le footer */}
       {showFooter && (
         <div className="bg-card backdrop-blur-sm border-t border-default mt-auto">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex flex-col md:flex-row justify-between items-center !space-y-4 md:space-y-0">
               <div className="h-6 bg-muted rounded w-48 animate-pulse"></div>
               <div className="flex space-x-4">
