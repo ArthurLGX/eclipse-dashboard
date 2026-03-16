@@ -1793,7 +1793,7 @@ a.link-highlight:hover {
 label {
     font-family: var(--font-funnel-display);
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 /* Mode light - Labels en gris */

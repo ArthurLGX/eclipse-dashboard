@@ -716,7 +716,7 @@ function TaskCardRedesign({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-t border-default bg-[#faf9f7] overflow-hidden"
+            className="border-t border-default overflow-hidden"
           >
             <div className="flex border-b border-default px-4">
               <button
