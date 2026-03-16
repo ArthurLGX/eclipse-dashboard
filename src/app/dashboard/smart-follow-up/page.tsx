@@ -426,7 +426,16 @@ export default function SmartFollowUpPage() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                router.push(`/dashboard/clients/new?email=${encodeURIComponent(action.proposed_content.to[0] || '')}&name=${encodeURIComponent(action.proposed_content.to[0]?.split('@')[0] || '')}`);
+                const email = action.proposed_content?.to?.[0] || '';
+                const nameFromSubject = extractWalegoLeadName(action.proposed_content?.subject || '');
+                setAddClientModal({
+                  isOpen: true,
+                  initialData: {
+                    name: nameFromSubject || email?.split('@')[0] || '',
+                    email,
+                    enterprise: action.lead_title || '',
+                  },
+                });
               }}
               className="px-2 py-1 bg-blue-500 text-white rounded text-xs font-medium hover:opacity-90"
               title="Créer fiche contact"
