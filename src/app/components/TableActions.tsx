@@ -74,7 +74,7 @@ export default function TableActions({
     const placeAbove = spaceBelow < menuRect.height + 12 && spaceAbove > spaceBelow;
 
     let top = placeAbove ? buttonRect.top - menuRect.height - 8 : buttonRect.bottom + 8;
-    let left = buttonRect.left - menuRect.width - 8; // left of the button
+    let left = buttonRect.left; // align menu left with button (sous les trois points)
 
     // Clamp within viewport
     left = Math.max(8, Math.min(left, viewportWidth - menuRect.width - 8));
@@ -92,6 +92,16 @@ export default function TableActions({
 
   useEffect(() => {
     if (!open) return;
+    // Position initiale immédiate depuis le bouton (évite flash à 0,0)
+    const btn = buttonRef.current;
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      setMenuPosition(prev => ({
+        ...prev,
+        top: rect.bottom + 8,
+        left: rect.left,
+      }));
+    }
     const handleResize = () => updateMenuPosition();
     const handleScroll = () => updateMenuPosition();
 
@@ -131,7 +141,7 @@ export default function TableActions({
       {open && (
         <div
           ref={menuRef}
-          className="fixed  z-[1000] p-2 w-fit bg-card border border-default shadow-lg py-1 animate-fade-in overflow-y-auto"
+          className="fixed z-[1000] p-2 w-fit min-w-[140px] bg-card border border-default shadow-lg py-1 animate-fade-in overflow-y-auto rounded-md"
           style={{
             top: menuPosition.top,
             left: menuPosition.left,

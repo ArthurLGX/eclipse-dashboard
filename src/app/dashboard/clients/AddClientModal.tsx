@@ -18,6 +18,8 @@ interface AddClientModalProps {
   onClose: () => void;
   onAdd: (client: CreateClientData) => Promise<void>;
   t: (key: string) => string;
+  /** Données initiales pour pré-remplir le formulaire (ex: depuis un lead) */
+  initialData?: Partial<CreateClientData>;
 }
 
 export default function AddClientModal({
@@ -39,6 +41,20 @@ export default function AddClientModal({
   const [error, setError] = useState<string | null>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
+  // Pré-remplir le formulaire avec initialData à l'ouverture
+  useEffect(() => {
+    if (isOpen && initialData) {
+      if (initialData.name) setName(initialData.name);
+      if (initialData.email) setEmail(initialData.email);
+      if (initialData.number) setNumber(initialData.number);
+      if (initialData.enterprise) setEnterprise(initialData.enterprise);
+      if (initialData.adress) setAdress(initialData.adress);
+      if (initialData.website) setWebsite(initialData.website);
+      if (initialData.processStatus) setProcessStatus(initialData.processStatus);
+      if (initialData.isActive !== undefined) setIsActive(initialData.isActive);
+    }
+  }, [isOpen, initialData]);
+
   // Focus sur le premier champ à l'ouverture
   useEffect(() => {
     if (isOpen && nameInputRef.current) {
@@ -46,21 +62,19 @@ export default function AddClientModal({
     }
   }, [isOpen]);
 
-  // Reset du formulaire à la fermeture
+  // Reset du formulaire à la fermeture (immédiat pour éviter conflit avec pré-remplissage à la réouverture)
   useEffect(() => {
     if (!isOpen) {
-      setTimeout(() => {
-        setName('');
-        setEmail('');
-        setNumber('');
-        setEnterprise('');
-        setAdress('');
-        setWebsite('');
-        setProcessStatus('client');
-        setIsActive(true);
-        setSuccess(false);
-        setError(null);
-      }, 300);
+      setName('');
+      setEmail('');
+      setNumber('');
+      setEnterprise('');
+      setAdress('');
+      setWebsite('');
+      setProcessStatus('client');
+      setIsActive(true);
+      setSuccess(false);
+      setError(null);
     }
   }, [isOpen]);
 

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import AddClientModal from '@/app/dashboard/clients/AddClientModal';
 import Image from 'next/image';
 import { 
   IconSettings, 
@@ -41,9 +42,14 @@ import {
   deleteFollowUpTask,
   updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
+import { addClientUser } from '@/lib/api';
+import { useAuth } from '@/app/context/AuthContext';
+import { useLanguage } from '@/app/context/LanguageContext';
+import { clearCache } from '@/hooks/useApi';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
+import type { CreateClientData } from '@/types';
 
 function formatRelativeTime(date: Date): string {
   const now = new Date();
@@ -58,6 +64,8 @@ function formatRelativeTime(date: Date): string {
 
 export default function SmartFollowUpPage() {
   const router = useRouter();
+  const { user } = useAuth();
+  const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
@@ -82,7 +90,11 @@ export default function SmartFollowUpPage() {
   const [filterPrio, setFilterPrio] = useState<'Toutes' | 'Urgent' | 'Prioritaire' | 'Normal'>('Toutes');
   const [filterStatut, setFilterStatut] = useState<'Tous' | 'En attente' | 'Annulé' | 'Terminé'>('Tous');
   const [showSimulationDrawer, setShowSimulationDrawer] = useState(false);
-  
+  const [addClientModal, setAddClientModal] = useState<{
+    isOpen: boolean;
+    initialData?: Partial<CreateClientData>;
+  }>({ isOpen: false });
+
   // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
   const priorityKeywords = settings?.priority_keywords ?? [];
@@ -144,6 +156,31 @@ export default function SmartFollowUpPage() {
     } catch (error) {
       console.error('Erreur:', error);
       showGlobalPopup('Erreur', 'error');
+    }
+  };
+
+  const handleAddClient = async (clientData: CreateClientData) => {
+    if (!user?.id) {
+      showGlobalPopup(t('error_not_authenticated') || 'Vous devez être connecté', 'error');
+      throw new Error('Not authenticated');
+    }
+    try {
+      await addClientUser(user.id, {
+        name: clientData.name,
+        email: clientData.email,
+        number: clientData.number || '',
+        enterprise: clientData.enterprise || '',
+        adress: clientData.adress || '',
+        website: clientData.website || '',
+        processStatus: clientData.processStatus,
+        isActive: clientData.isActive,
+      });
+      showGlobalPopup(t('client_added_success') || 'Contact créé avec succès', 'success');
+      clearCache('clients');
+      mutateActions();
+      setAddClientModal({ isOpen: false });
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -420,7 +457,7 @@ export default function SmartFollowUpPage() {
         </div>
       ),
     },
-  ], [minScoreThreshold, router, priorityKeywords, handleQualifyLead, isLeadFromPriorityDomain]);
+  ], [minScoreThreshold, priorityKeywords, handleQualifyLead, isLeadFromPriorityDomain]);
 
   // Colonnes pour les tâches
   const taskColumns: Column<FollowUpTask>[] = useMemo(() => [
@@ -951,8 +988,14 @@ export default function SmartFollowUpPage() {
         hotLeadKeywords={settings?.priority_keywords}
       />
 
-    
-      
+      <AddClientModal
+        isOpen={addClientModal.isOpen}
+        onClose={() => setAddClientModal({ isOpen: false })}
+        onAdd={handleAddClient}
+        t={t}
+        initialData={addClientModal.initialData}
+      />
+
       <InstructionIADrawer
         isOpen={showInstructionDrawer}
         onClose={() => setShowInstructionDrawer(false)}
