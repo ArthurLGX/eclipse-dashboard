@@ -1594,11 +1594,11 @@ export async function fetchLogin(username: string, password: string) {
 export const fetchLogout = () => get('auth/logout');
 
 /** Demande de réinitialisation de mot de passe (envoie un email) */
-export async function forgotPassword(email: string) {
+export async function forgotPassword(email: string, locale?: 'fr' | 'en') {
   const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, locale: locale || 'fr' }),
   });
 
   if (!res.ok) {

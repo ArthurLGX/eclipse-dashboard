@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePopup } from '@/app/context/PopupContext';
+import { useLanguage } from '@/app/context/LanguageContext';
 import { forgotPassword } from '@/lib/api';
 import { BackBtn } from '@/app/components/buttons/backBtn';
 import { IconMail, IconCheck } from '@tabler/icons-react';
@@ -13,13 +14,14 @@ export default function ForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { showGlobalPopup } = usePopup();
+  const { language } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      await forgotPassword(email);
+      await forgotPassword(email, language as 'fr' | 'en');
       setIsSuccess(true);
       showGlobalPopup('Email de réinitialisation envoyé !', 'success');
     } catch (error) {
