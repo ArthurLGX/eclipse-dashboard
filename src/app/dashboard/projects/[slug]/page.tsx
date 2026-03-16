@@ -632,7 +632,7 @@ const PROJECT_TYPES = [
 
           {/* Title Row: Icon + Title + Badges */}
           <div className="flex items-center gap-3 mb-5 flex-wrap">
-            <div className="w-8 h-8 bg-primary  flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-accent  flex items-center justify-center flex-shrink-0">
               <ProjectTypeIcon type={project.type} className="w-4 h-4 !text-white" />
             </div>
             
@@ -719,7 +719,7 @@ const PROJECT_TYPES = [
                 {tab.label}
                 {tab.id === 'tasks' && tab.count !== undefined && tab.count > 0 && (
                   <span className={`px-1.5 py-0.5 !text-[10px] font-bold rounded ${
-                    activeTab === tab.id ? 'bg-primary !text-white' : 'bg-secondary !text-secondary'
+                    activeTab === tab.id ? 'bg-primary !text-white dark:bg-white dark:!text-black' : 'bg-secondary !text-secondary'
                   }`}>
                     {tab.count}
                   </span>
