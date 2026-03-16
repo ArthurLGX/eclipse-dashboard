@@ -89,7 +89,6 @@ export default function LeadDetailModal({
   onClose,
   action,
   onSuccess,
-  hotLeadKeywords,
 }: LeadDetailModalProps) {
   const { showGlobalPopup } = usePopup();
   const modalRef = useModalFocus(isOpen);

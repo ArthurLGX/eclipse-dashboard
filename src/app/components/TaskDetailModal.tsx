@@ -31,9 +31,7 @@ const sentimentLabels: Record<string, string> = {
 export default function TaskDetailModal({
   isOpen,
   onClose,
-  task,
-  aiInstruction,
-  hotLeadKeywords,
+  task
 }: TaskDetailModalProps) {
   const [analysis, setAnalysis] = useState<{ reasoning: string; suggestion: string } | null>(null);
   const modalRef = useModalFocus(isOpen);
