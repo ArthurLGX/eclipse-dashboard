@@ -33,6 +33,17 @@ import { deriveWebsite } from '@/lib/favicon';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
 
+/**
+ * Identifiant pour les routes API projets.
+ * Strapi 5 : documentId (string) — doc https://docs.strapi.io/cms/api/rest
+ * Strapi v4 : id (number) — définir NEXT_PUBLIC_STRAPI_USE_NUMERIC_ID=true
+ */
+function getProjectRouteId(project: { id: number; documentId: string }): string | number {
+  return process.env.NEXT_PUBLIC_STRAPI_USE_NUMERIC_ID === 'true'
+    ? project.id
+    : project.documentId;
+}
+
 /** Récupère le token d'authentification */
 export const getToken = (): string | null => {
   return typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -652,7 +663,7 @@ export const fetchUnassignedProjects = (userId: number) =>
   get(`projects?populate=*&filters[user][id][$eq]=${userId}&filters[client][$null]=true`);
 
 export async function updateProject(
-  projectDocumentId: string,
+  project: { id: number; documentId: string },
   data: {
     title?: string;
     description?: string;
@@ -666,19 +677,19 @@ export async function updateProject(
     sort_order?: number;
   }
 ) {
-  return put(`projects/${projectDocumentId}`, data);
+  return put(`projects/${getProjectRouteId(project)}`, data);
 }
 
 /**
  * Met à jour le statut d'un projet et synchronise automatiquement le statut pipeline du client
  */
 export async function updateProjectStatusWithSync(
-  projectDocumentId: string,
+  project: { id: number; documentId: string },
   newProjectStatus: 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
   clientDocumentId?: string
 ): Promise<void> {
   // Mettre à jour le statut du projet
-  await put(`projects/${projectDocumentId}`, { project_status: newProjectStatus });
+  await put(`projects/${getProjectRouteId(project)}`, { project_status: newProjectStatus });
   
   // Si on a le client, mettre à jour son statut pipeline
   if (clientDocumentId) {
@@ -713,15 +724,14 @@ export async function updateProjectStatusWithSync(
 }
 
 /** Toggle le statut favori d'un projet */
-export async function toggleProjectFavorite(projectDocumentId: string, isFavorite: boolean) {
-  return put(`projects/${projectDocumentId}`, { is_favorite: isFavorite });
+export async function toggleProjectFavorite(project: { id: number; documentId: string }, isFavorite: boolean) {
+  return put(`projects/${getProjectRouteId(project)}`, { is_favorite: isFavorite });
 }
 
-/** Met à jour l'ordre de plusieurs projets en une fois */
 /** Met à jour l'ordre de plusieurs projets en une fois (séquentiel pour éviter les deadlocks) */
-export async function updateProjectsOrder(projects: { documentId: string; sort_order: number }[]) {
+export async function updateProjectsOrder(projects: { id: number; documentId: string; sort_order: number }[]) {
   for (const p of projects) {
-    await put(`projects/${p.documentId}`, { sort_order: p.sort_order });
+    await put(`projects/${getProjectRouteId(p)}`, { sort_order: p.sort_order });
   }
 }
 
@@ -801,9 +811,9 @@ export async function assignProjectToClient(
   return { success: true, message: 'Projet assigné avec succès' };
 }
 
-/** Supprime un projet par son documentId */
-export const deleteProject = (documentId: string) =>
-  del(`projects/${documentId}`);
+/** Supprime un projet */
+export const deleteProject = (project: { id: number; documentId: string }) =>
+  del(`projects/${getProjectRouteId(project)}`);
 
 // ============================================================================
 // PROSPECTS

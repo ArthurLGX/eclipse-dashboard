@@ -119,7 +119,7 @@ export default function ProjectsPage() {
       if (!project.documentId) continue;
       try {
         await updateProjectStatusWithSync(
-          project.documentId,
+          project,
           'archived',
           project.client?.documentId
         );
@@ -439,7 +439,7 @@ export default function ProjectsPage() {
   const handleDeleteProject = async () => {
     if (!deleteModal.project?.documentId) return;
     
-    await deleteProject(deleteModal.project.documentId);
+    await deleteProject(deleteModal.project);
     showGlobalPopup(t('project_deleted_success') || 'Projet supprimé avec succès', 'success');
     clearCache('projects');
     await refetchProjects();
@@ -450,7 +450,7 @@ export default function ProjectsPage() {
     try {
       const newStatus = archive ? 'archived' : 'planning';
       await updateProjectStatusWithSync(
-        project.documentId,
+        project,
         newStatus,
         project.client?.documentId
       );
@@ -489,7 +489,7 @@ export default function ProjectsPage() {
     for (const project of projectsToDelete) {
       if (!project.documentId) continue;
       try {
-        await deleteProject(project.documentId);
+        await deleteProject(project);
         successCount++;
       } catch (error) {
         console.error(`Error deleting project ${project.title}:`, error);
@@ -519,7 +519,7 @@ export default function ProjectsPage() {
     setLocalFavorites(prev => ({ ...prev, [project.documentId]: newFavoriteState }));
     
     try {
-      await toggleProjectFavorite(project.documentId, newFavoriteState);
+      await toggleProjectFavorite(project, newFavoriteState);
       clearCache('projects');
     } catch (error) {
       // Revert on error
@@ -551,6 +551,7 @@ export default function ProjectsPage() {
       
       try {
         const updates = reorderedProjects.map((p, index) => ({
+          id: p.id,
           documentId: p.documentId,
           sort_order: index,
         }));

@@ -226,7 +226,7 @@ const PROJECT_TYPES = [
       
       // 2. Persistance en background (fire & forget)
       updateProjectStatusWithSync(
-        project.documentId,
+        project,
         newStatus as 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
         project.client?.documentId
       ).catch(error => {
@@ -316,13 +316,13 @@ const PROJECT_TYPES = [
       // Si le statut a changé, utiliser la synchronisation du pipeline
       if (statusChanged && selectedStatus) {
         await updateProjectStatusWithSync(
-          project.documentId,
+          project,
           selectedStatus as 'planning' | 'in_progress' | 'development' | 'review' | 'completed' | 'on_hold' | 'archived',
           project.client?.documentId
         );
         
         // Mettre à jour les autres champs séparément
-        await updateProject(project.documentId, {
+        await updateProject(project, {
           title: newTitle,
           description: editDescription || '',
           notes: editNotes || '',
@@ -333,7 +333,7 @@ const PROJECT_TYPES = [
         });
       } else {
         // Mise à jour normale
-        await updateProject(project.documentId, {
+        await updateProject(project, {
           title: newTitle,
           description: editDescription || '',
           notes: editNotes || '',
@@ -855,7 +855,7 @@ const PROJECT_TYPES = [
                         if (project.project_status !== 'completed') {
                           try {
                             await updateProjectStatusWithSync(
-                              project.documentId,
+                              project,
                               'completed',
                               project.client?.documentId
                             );
