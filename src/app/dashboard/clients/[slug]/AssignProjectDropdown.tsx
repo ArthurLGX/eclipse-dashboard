@@ -34,8 +34,8 @@ export default function AssignProjectDropdown({
   t,
 }: AssignProjectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [assigningId, setAssigningId] = useState<number | null>(null);
-  const [successId, setSuccessId] = useState<number | null>(null);
+  const [assigningId, setAssigningId] = useState<string | null>(null);
+  const [successId, setSuccessId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -51,11 +51,11 @@ export default function AssignProjectDropdown({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleAssign = async (projectId: number) => {
-    setAssigningId(projectId);
+  const handleAssign = async (projectDocumentId: string) => {
+    setAssigningId(projectDocumentId);
     try {
-      await onAssign(projectId);
-      setSuccessId(projectId);
+      await onAssign(projectDocumentId);
+      setSuccessId(projectDocumentId);
       setTimeout(() => {
         setIsOpen(false);
         setSuccessId(null);
