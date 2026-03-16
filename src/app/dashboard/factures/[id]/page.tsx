@@ -32,6 +32,7 @@ import {
   User,
   Currency,
 } from '@/app/models/Models';
+import type { QuoteStatus } from '@/types';
 import { useAuth } from '@/app/context/AuthContext';
 import { motion } from 'framer-motion';
 import {
@@ -897,22 +898,54 @@ export default function FacturePage() {
                 <div className="doc-invoice-num text-[22px] font-extrabold tracking-tight mb-2.5" style={{ color: 'var(--fd-ink)' }}>
                   #{facture?.reference || '-'}
                 </div>
-                <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
-                  (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
-                    ? 'pastille-success'
-                    : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
-                      ? 'pastille-sent'
-                      : 'pastille-info'
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${
+                {editing && formData ? (
+                  <select
+                    value={isQuote ? (formData.quote_status || 'draft') : (formData.facture_status || 'draft')}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (isQuote) {
+                        setFormData({ ...formData, quote_status: val as QuoteStatus });
+                      } else {
+                        setFormData({ ...formData, facture_status: val as FactureStatus });
+                      }
+                    }}
+                    className="text-[11px] font-semibold px-2.5 py-1 rounded-full border border-default !bg-background cursor-pointer"
+                  >
+                    {isQuote ? (
+                      <>
+                        <option value="draft">{t('draft')}</option>
+                        <option value="sent">{t('sent')}</option>
+                        <option value="negotiation">{t('negotiation') || 'Négociation'}</option>
+                        <option value="accepted">{t('accepted')}</option>
+                        <option value="rejected">{t('rejected')}</option>
+                        <option value="expired">{t('expired')}</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="draft">{t('draft')}</option>
+                        <option value="sent">{t('sent')}</option>
+                        <option value="paid">{t('paid')}</option>
+                      </>
+                    )}
+                  </select>
+                ) : (
+                  <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
                     (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
-                      ? 'bg-[#16a34a]'
+                      ? 'pastille-success'
                       : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
-                        ? 'bg-[#2563eb]'
-                        : 'bg-[#6366f1]'
-                  }`} />
-                  {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
-                </span>
+                        ? 'pastille-sent'
+                        : 'pastille-info'
+                  }`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${
+                      (isQuote ? facture?.quote_status : facture?.facture_status) === 'paid' || (isQuote && facture?.quote_status === 'accepted')
+                        ? 'bg-[#16a34a]'
+                        : (isQuote ? facture?.quote_status : facture?.facture_status) === 'sent'
+                          ? 'bg-[#2563eb]'
+                          : 'bg-[#6366f1]'
+                    }`} />
+                    {t(isQuote ? (facture?.quote_status || '') : (facture?.facture_status || ''))}
+                  </span>
+                )}
               </div>
             </div>
 

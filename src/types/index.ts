@@ -45,7 +45,7 @@ export type ProjectStatus = 'planning' | 'in_progress' | 'completed' | 'archived
 export type ProjectType = 'development' | 'design' | 'maintenance';
 export type FactureStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 export type DocumentType = 'invoice' | 'quote';
-export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+export type QuoteStatus = 'draft' | 'sent' | 'negotiation' | 'accepted' | 'rejected' | 'expired';
 export type Currency = 'EUR' | 'USD' | 'GBP' | 'CHF';
 // @deprecated - Utiliser ContactStatus à la place
 export type ProcessStatus = 'client' | 'prospect';

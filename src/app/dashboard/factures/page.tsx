@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { deleteFacture, convertQuoteToInvoice } from '@/lib/api';
+import { deleteFacture, convertQuoteToInvoice, updateFactureById } from '@/lib/api';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import Modal from '@/app/components/Modal';
 import { usePopup } from '@/app/context/PopupContext';
@@ -59,6 +59,8 @@ export default function FacturesPage() {
   const [itemsPerPage, setItemsPerPage] = useState(25);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [openStatusId, setOpenStatusId] = useState<string | null>(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
 
   const { data: facturesData, loading, refetch } = useFactures(user?.id);
 
@@ -121,6 +123,7 @@ export default function FacturesPage() {
         { value: 'draft', label: t('draft') || 'Brouillon' },
         { value: 'rejected', label: t('rejected') || 'Refusé' },
         { value: 'expired', label: t('expired') || 'Expiré' },
+        { value: 'negotiation', label: t('negotiation') || 'Négociation' },
       ];
     }
     return [
@@ -128,6 +131,24 @@ export default function FacturesPage() {
       { value: 'sent', label: t('sent') || 'Envoyée' },
       { value: 'draft', label: t('draft') || 'Brouillon' },
       { value: 'overdue', label: t('overdue') || 'En retard' },
+    ];
+  }, [isQuoteMode, t]);
+
+  const statusUpdateOptions = useMemo(() => {
+    if (isQuoteMode) {
+      return [
+        { value: 'draft', label: t('draft') || 'Brouillon' },
+        { value: 'sent', label: t('sent') || 'Envoyé' },
+        { value: 'negotiation', label: t('negotiation') || 'Négociation' },
+        { value: 'accepted', label: t('accepted') || 'Accepté' },
+        { value: 'rejected', label: t('rejected') || 'Refusé' },
+        { value: 'expired', label: t('expired') || 'Expiré' },
+      ];
+    }
+    return [
+      { value: 'draft', label: t('draft') || 'Brouillon' },
+      { value: 'sent', label: t('sent') || 'Envoyée' },
+      { value: 'paid', label: t('paid') || 'Payée' },
     ];
   }, [isQuoteMode, t]);
 
@@ -241,6 +262,28 @@ export default function FacturesPage() {
     }
   };
 
+  const handleStatusChange = useCallback(async (facture: Facture, newStatus: string) => {
+    const docId = facture.documentId;
+    if (!docId) return;
+    setUpdatingStatusId(docId);
+    setOpenStatusId(null);
+    try {
+      if (isQuoteMode) {
+        await updateFactureById(docId, { quote_status: newStatus });
+      } else {
+        await updateFactureById(docId, { facture_status: newStatus });
+      }
+      showGlobalPopup(isQuoteMode ? (t('quote_status_updated') || 'Statut du devis mis à jour') : (t('invoice_status_updated') || 'Statut de la facture mis à jour'), 'success');
+      clearCache('factures');
+      await refetch();
+    } catch (e) {
+      console.error(e);
+      showGlobalPopup(isQuoteMode ? (t('quote_status_update_error') || 'Erreur lors de la mise à jour du statut') : (t('invoice_status_update_error') || 'Erreur lors de la mise à jour du statut'), 'error');
+    } finally {
+      setUpdatingStatusId(null);
+    }
+  }, [isQuoteMode, refetch, showGlobalPopup, t]);
+
   const handleConvertQuote = useCallback(async () => {
     if (!convertModal.quote || !user?.id) return;
     const quote = convertModal.quote;
@@ -294,6 +337,7 @@ export default function FacturesPage() {
           accepted: { label: t('accepted') || 'Accepté', className: 'facture-badge facture-badge-paid' },
           rejected: { label: t('rejected') || 'Refusé', className: 'facture-badge facture-badge-late' },
           expired: { label: t('expired') || 'Expiré', className: 'facture-badge facture-badge-pending' },
+          negotiation: { label: t('negotiation') || 'Négociation', className: 'facture-badge facture-badge-pending' },
           sent: { label: t('sent') || 'Envoyé', className: 'facture-badge facture-badge-pending' },
           draft: { label: t('draft') || 'Brouillon', className: 'facture-badge facture-badge-draft' },
         }
@@ -546,7 +590,36 @@ export default function FacturesPage() {
                           <td className="facture-td">
                             {project ? <span className="facture-project-tag">{project.title}</span> : '—'}
                           </td>
-                          <td className="facture-td">{getStatusBadge(facture)}</td>
+                          <td className="facture-td" onClick={e => e.stopPropagation()}>
+                            <div className="relative inline-block">
+                              {openStatusId === id ? (
+                                <>
+                                  <div className="fixed inset-0 z-40" onClick={() => setOpenStatusId(null)} />
+                                  <div className="absolute left-0 top-full mt-1 z-50 min-w-[140px] py-1 bg-card border border-default shadow-lg rounded-md">
+                                    {statusUpdateOptions.map(opt => (
+                                      <button
+                                        key={opt.value}
+                                        className="w-full px-3 py-2 !text-left !text-sm hover:bg-hover flex items-center gap-2"
+                                        onClick={e => { e.stopPropagation(); handleStatusChange(facture, opt.value); }}
+                                        disabled={!!updatingStatusId}
+                                      >
+                                        <span className="facture-badge-dot" />
+                                        {opt.label}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </>
+                              ) : null}
+                              <button
+                                type="button"
+                                onClick={e => { e.stopPropagation(); setOpenStatusId(openStatusId === id ? null : id); }}
+                                disabled={!!updatingStatusId}
+                                className="!cursor-pointer border-0 !bg-transparent !p-0"
+                              >
+                                {getStatusBadge(facture)}
+                              </button>
+                            </div>
+                          </td>
                           <td className={`facture-td facture-amount-cell ${isOverdue ? 'facture-amount-late' : ''}`}>{facture.number ? formatCurrency(facture.number) : '—'}</td>
                           <td className="facture-td facture-actions-cell">
                             <div className="flex items-center justify-center gap-0.5">
