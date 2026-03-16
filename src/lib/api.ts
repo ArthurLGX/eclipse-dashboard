@@ -2232,14 +2232,18 @@ export async function fetchProjectTasks(projectDocumentId: string): Promise<ApiR
   let hasMore = true;
 
   while (hasMore) {
-    // Populate complet des subtasks avec tous leurs attributs (progress, dates, etc.)
+    // Populate complet des subtasks + project pour filtrage client-side de secours
     // Note: on ne peut pas utiliser populate=* car ça inclut le rôle qui n'est pas autorisé
     const response = await get<ApiResponse<ProjectTask[]>>(
-      `project-tasks?populate[0]=assigned_to&populate[1]=parent_task&populate[2]=subtasks&populate[3]=subtasks.assigned_to&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
+      `project-tasks?populate[0]=assigned_to&populate[1]=parent_task&populate[2]=subtasks&populate[3]=subtasks.assigned_to&populate[4]=project&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
     );
 
     if (response.data && response.data.length > 0) {
-      allTasks.push(...response.data);
+      // Filtrage client-side : ne garder que les tâches du projet (sécurité si le filtre API échoue)
+      const filtered = response.data.filter(
+        (t) => !t.project || t.project.documentId === projectDocumentId
+      );
+      allTasks.push(...filtered);
     }
 
     // Vérifier s'il y a plus de pages
@@ -2248,16 +2252,16 @@ export async function fetchProjectTasks(projectDocumentId: string): Promise<ApiR
     page++;
   }
 
-  return { 
-    data: allTasks, 
-    meta: { 
-      pagination: { 
-        page: 1, 
-        pageSize: allTasks.length, 
-        pageCount: 1, 
-        total: allTasks.length 
-      } 
-    } 
+  return {
+    data: allTasks,
+    meta: {
+      pagination: {
+        page: 1,
+        pageSize: allTasks.length,
+        pageCount: 1,
+        total: allTasks.length,
+      },
+    },
   };
 }
 
