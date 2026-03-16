@@ -237,14 +237,14 @@ export default function ClientDetailsPage() {
     }
   };
 
-  const handleAssignExistingProject = async (projectId: number) => {
-    if (!client?.id) {
+  const handleAssignExistingProject = async (projectDocumentId: string) => {
+    if (!client?.documentId) {
       showGlobalPopup(t('client_not_found') || 'Client non trouvé', 'error');
       throw new Error('Client not found');
     }
 
     try {
-      await assignProjectToClient(projectId, client.id);
+      await assignProjectToClient(projectDocumentId, client.documentId);
       showGlobalPopup(t('project_assigned_success') || 'Projet assigné avec succès', 'success');
       clearCache('client');
       clearCache('unassigned-projects');

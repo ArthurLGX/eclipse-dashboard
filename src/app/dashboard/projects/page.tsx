@@ -364,7 +364,9 @@ export default function ProjectsPage() {
           status === 'completed' ? { label: t('completed') || 'Terminé', className: 'badge-success' } :
           status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'badge-warning' } :
           status === 'planning' ? { label: t('planning') || 'Planification', className: 'badge-info' } :
-          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'bg-zinc-200 dark:bg-zinc-700 !text-zinc-600 dark:!text-primary' } :
+          status === 'maintenance' ? { label: t('maintenance') || 'Maintenance', className: 'badge-maintenance' } :
+          status === 'on_hold' ? { label: t('project_status_on_hold') || 'En pause', className: 'badge-status-on_hold' } :
+          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'badge-status-archived' } :
           { label: status, className: 'badge-primary' };
 
         return (
@@ -464,7 +466,8 @@ export default function ProjectsPage() {
       await refetchProjects();
     } catch (error) {
       console.error('Error archiving project:', error);
-      showGlobalPopup(t('error') || 'Erreur', 'error');
+      const msg = error instanceof Error ? error.message : (t('error') || 'Erreur');
+      showGlobalPopup(msg, 'error');
     }
   };
 

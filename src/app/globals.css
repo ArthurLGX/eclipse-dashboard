@@ -987,6 +987,80 @@ button {
   border: 1px solid var(--color-highlight);
 }
 
+/* Badges statut projet (planning, in_progress, completed, maintenance, on_hold, archived) */
+.badge-status-planning { /* = badge-info */
+  background-color: var(--color-info-bg);
+  color: var(--color-info-text);
+  border: 1px solid var(--color-info-border, transparent);
+}
+.badge-status-in_progress { /* = badge-warning */
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border, transparent);
+}
+.badge-status-completed { /* = badge-success */
+  background-color: var(--color-success-bg, #065f46);
+  color: var(--color-success-text, white);
+  border: 1px solid var(--color-success-border, #065f46);
+}
+:root.light .badge-status-planning { background-color: #fff7ed; color: #9a3412; border-color: #9a3412; }
+:root.dark .badge-status-planning,
+:root:not(.light) .badge-status-planning { background-color: #ea580c; color: white !important; border-color: #ea580c; }
+:root.light .badge-status-in_progress { background-color: var(--color-warning-bg); color: var(--color-warning-text); border-color: var(--color-warning-border); }
+:root.dark .badge-status-in_progress,
+:root:not(.light) .badge-status-in_progress { background-color: #d97706; color: white !important; border-color: #f59e0b; }
+:root.light .badge-status-completed { background-color: #065f46; color: white !important; border-color: #065f46; }
+:root.dark .badge-status-completed,
+:root:not(.light) .badge-status-completed { background-color: #065f46; color: white !important; border-color: #065f46; }
+
+/* Badge maintenance (projets) - teal/cyan */
+:root.light .badge-maintenance,
+:root.light .badge-status-maintenance {
+  background-color: #ccfbf1; /* teal-100 */
+  color: #0f766e; /* teal-700 */
+  border: 1px solid #0d9488; /* teal-600 */
+}
+.badge-maintenance,
+.badge-status-maintenance {
+  background-color: #ccfbf1;
+  color: #0f766e;
+  border: 1px solid #0d9488;
+}
+:root.dark .badge-maintenance,
+:root.dark .badge-status-maintenance,
+:root:not(.light) .badge-maintenance,
+:root:not(.light) .badge-status-maintenance {
+  background-color: #0d9488; /* teal-600 */
+  color: white !important;
+  border: 1px solid #14b8a6; /* teal-500 */
+}
+
+/* Badge archived (projets) */
+:root.light .badge-status-archived {
+  background-color: #f4f4f5; /* zinc-100 */
+  color: #52525b; /* zinc-600 */
+  border: 1px solid #a1a1aa; /* zinc-400 */
+}
+:root.dark .badge-status-archived,
+:root:not(.light) .badge-status-archived {
+  background-color: #3f3f46; /* zinc-700 */
+  color: #a1a1aa !important; /* zinc-400 */
+  border: 1px solid #52525b; /* zinc-600 */
+}
+
+/* Badge on_hold (projets) */
+:root.light .badge-status-on_hold {
+  background-color: #fffbeb; /* amber-50 */
+  color: #b45309; /* amber-700 */
+  border: 1px solid #f59e0b; /* amber-500 */
+}
+:root.dark .badge-status-on_hold,
+:root:not(.light) .badge-status-on_hold {
+  background-color: #d97706; /* amber-600 */
+  color: white !important;
+  border: 1px solid #f59e0b; /* amber-500 */
+}
+
 /* Pastilles facture/devis - draft (info), paid (success), sent (bleu) */
 .pastille-info {
   background-color: var(--color-info-bg);

@@ -749,14 +749,14 @@ export async function checkProjectDuplicateForClient(
 }
 
 export async function checkProjectAlreadyAssigned(
-  projectId: number,
-  clientId: number
+  projectDocumentId: string,
+  clientDocumentId: string
 ): Promise<boolean> {
   try {
-    const project = await get<{ data: { client?: { id: number } } }>(
-      `projects/${projectId}?populate=client`
+    const project = await get<{ data: { client?: { documentId?: string } } }>(
+      `projects/${projectDocumentId}?populate=client`
     );
-    return project.data?.client?.id === clientId;
+    return project.data?.client?.documentId === clientDocumentId;
   } catch {
     return false;
   }
@@ -795,16 +795,17 @@ export async function createProject(
   return post('projects', payload);
 }
 
+/** Assigne un projet à un client (Strapi v5 : documentId dans l'URL et pour la relation) */
 export async function assignProjectToClient(
-  projectId: number,
-  clientId: number
+  projectDocumentId: string,
+  clientDocumentId: string
 ): Promise<{ success: boolean; message: string }> {
-  const isAlreadyAssigned = await checkProjectAlreadyAssigned(projectId, clientId);
+  const isAlreadyAssigned = await checkProjectAlreadyAssigned(projectDocumentId, clientDocumentId);
   if (isAlreadyAssigned) {
     throw new Error('Ce projet est déjà assigné à ce client');
   }
 
-  await put(`projects/${projectId}`, { client: clientId });
+  await put(`projects/${projectDocumentId}`, { client: clientDocumentId });
   return { success: true, message: 'Projet assigné avec succès' };
 }
 

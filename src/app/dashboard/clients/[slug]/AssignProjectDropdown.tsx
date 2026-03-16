@@ -22,7 +22,7 @@ interface Project {
 
 interface AssignProjectDropdownProps {
   unassignedProjects: Project[];
-  onAssign: (projectId: number) => Promise<void>;
+  onAssign: (projectDocumentId: string) => Promise<void>;
   loading: boolean;
   t: (key: string) => string;
 }
@@ -145,8 +145,8 @@ export default function AssignProjectDropdown({
               ) : (
                 unassignedProjects.map((project) => (
                   <button
-                    key={project.id}
-                    onClick={() => handleAssign(project.id)}
+                    key={project.documentId}
+                    onClick={() => handleAssign(project.documentId)}
                     disabled={assigningId !== null}
                     className="w-full px-4 py-3 flex items-center gap-3 hover:bg-hover 
                       transition-colors !text-left border-b border-muted last:border-b-0
@@ -162,9 +162,9 @@ export default function AssignProjectDropdown({
                         {project.project_status === 'draft' && '○ Brouillon'}
                       </p>
                     </div>
-                    {assigningId === project.id ? (
+                    {assigningId === project.documentId ? (
                       <IconLoader2 size={18} className="!text-info animate-spin" />
-                    ) : successId === project.id ? (
+                    ) : successId === project.documentId ? (
                       <IconCheck size={18} className="!text-success-text" />
                     ) : (
                       <IconPlus size={18} className="!text-muted" />

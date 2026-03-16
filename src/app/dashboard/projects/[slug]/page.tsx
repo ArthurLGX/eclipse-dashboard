@@ -24,6 +24,7 @@ import {
   IconPlayerPlay,
   IconCopy,
   IconArrowLeft,
+  IconArchive,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import Link from 'next/link';
@@ -110,6 +111,9 @@ export default function ProjectDetailsPage() {
   { value: 'planning', label: t('planning'), color: 'blue', icon: IconClockPause },
   { value: 'in_progress', label: t('in_progress'), color: 'amber', icon: IconProgress },
   { value: 'completed', label: t('completed'), color: 'emerald', icon: IconCheck },
+  { value: 'maintenance', label: t('maintenance'), color: 'teal', icon: IconTool },
+  { value: 'on_hold', label: t('project_status_on_hold'), color: 'amber', icon: IconClockPause },
+  { value: 'archived', label: t('archived'), color: 'zinc', icon: IconArchive },
 ];
 
 const PROJECT_TYPES = [
@@ -296,8 +300,10 @@ const PROJECT_TYPES = [
       blue: { bg: 'bg-info-light', text: 'text-info', border: 'border-info' },
       amber: { bg: 'bg-warning-light', text: 'text-warning', border: 'border-warning' },
       emerald: { bg: 'bg-success-light', text: 'text-success', border: 'border-success' },
+      teal: { bg: 'bg-teal-100 dark:bg-teal-600/30', text: 'text-teal-700 dark:text-teal-300', border: 'border-teal-500' },
+      zinc: { bg: 'bg-zinc-100 dark:bg-zinc-700', text: 'text-zinc-600 dark:text-zinc-300', border: 'border-zinc-400' },
     };
-    return { ...config, colors: colorMap[config.color] };
+    return { ...config, colors: colorMap[config.color] || colorMap.blue };
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {

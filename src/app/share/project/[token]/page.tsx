@@ -247,6 +247,9 @@ export default function SharedProjectPage() {
     planning: { label: t('planning'), colorClass: 'badge badge-info' },
     in_progress: { label: t('in_progress'), colorClass: 'badge badge-warning' },
     completed: { label: t('done'), colorClass: 'badge badge-success' },
+    maintenance: { label: t('maintenance'), colorClass: 'badge badge-maintenance' },
+    on_hold: { label: t('project_status_on_hold'), colorClass: 'badge badge-status-on_hold' },
+    archived: { label: t('archived'), colorClass: 'badge badge-status-archived' },
   }[project.project_status] || { label: project.project_status, colorClass: 'badge badge-muted' };
 
   return (
