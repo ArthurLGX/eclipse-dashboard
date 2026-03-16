@@ -231,7 +231,7 @@ export default function AIFeaturesSettingsPage() {
       </div>
 
       {/* Warning */}
-      <div className="mb-6 p-4 bg-warning/10 border border-warning/20  flex items-start gap-3">
+      <div className="mb-6 p-4 bg-warning-light border border-warning  flex items-start gap-3">
         <IconAlertCircle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
         <div>
           <h3 className="font-semibold text-warning mb-1">Optimisez votre consommation de tokens</h3>
