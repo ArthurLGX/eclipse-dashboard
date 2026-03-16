@@ -107,6 +107,13 @@ export default function ProjectDetailsPage() {
   // Tour guidé pour les nouveaux projets (onboarding)
   const { isOpen: isTourOpen, openTour, closeTour } = useProjectGuidedTour();
 
+  // Évite la boucle infinie quand la sync API échoue (ex: 404)
+  const syncFailureRef = useRef<{ from: string; to: string } | null>(null);
+
+  useEffect(() => {
+    syncFailureRef.current = null; // Reset quand on change de projet
+  }, [project?.documentId]);
+
   const PROJECT_STATUS = [
   { value: 'planning', label: t('planning'), color: 'blue', icon: IconClockPause },
   { value: 'in_progress', label: t('in_progress'), color: 'amber', icon: IconProgress },
@@ -223,6 +230,11 @@ const PROJECT_TYPES = [
       newStatus = 'planning';
     }
     
+    // Ne pas retenter si cette transition a déjà échoué (évite boucle infinie sur 404)
+    if (syncFailureRef.current?.from === selectedStatus && syncFailureRef.current?.to === newStatus) {
+      return;
+    }
+    
     // Mise à jour optimiste du state local + sync API en background
     if (newStatus && newStatus !== selectedStatus) {
       // 1. Mise à jour immédiate du state React (UI réactive)
@@ -235,9 +247,13 @@ const PROJECT_TYPES = [
         project.client?.documentId
       ).catch(error => {
         console.error('Error syncing project status:', error);
+        // Marquer pour ne pas réessayer
+        syncFailureRef.current = { from: selectedStatus, to: newStatus };
         // Rollback en cas d'erreur
         setSelectedStatus(project.project_status || 'planning');
       });
+    } else {
+      syncFailureRef.current = null; // Reset si pas de transition
     }
   }, [tasks, project?.documentId, project?.client?.documentId, project?.project_status, selectedStatus, isOwner]);
 
