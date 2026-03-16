@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useModalFocus } from '@/hooks/useModalFocus';
-import { IconX, IconBrain, IconLoader2, IconRefresh } from '@tabler/icons-react';
+import { IconX, IconBrain } from '@tabler/icons-react';
 import type { FollowUpTask } from '@/types/smart-follow-up';
 
 interface TaskDetailModalProps {
@@ -36,61 +36,22 @@ export default function TaskDetailModal({
   hotLeadKeywords,
 }: TaskDetailModalProps) {
   const [analysis, setAnalysis] = useState<{ reasoning: string; suggestion: string } | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const modalRef = useModalFocus(isOpen);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const analysisCache = useRef<Map<string, { reasoning: string; suggestion: string }>>(new Map());
 
-  const fetchAnalysis = async () => {
-    if (!task) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/ai/task-analysis', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          task,
-          ai_instruction: aiInstruction || undefined,
-          email_body: task.context?.email_body,
-          hot_lead_keywords: hotLeadKeywords,
-        }),
-      });
-      if (!res.ok) throw new Error('Erreur génération');
-      const data = await res.json();
-      const result = { reasoning: data.reasoning, suggestion: data.suggestion };
-      if (task?.documentId) analysisCache.current.set(task.documentId, result);
-      setAnalysis(result);
-    } catch {
-      setError('Impossible de générer l\'analyse IA');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Aucune génération IA à l'ouverture : on affiche uniquement l'analyse déjà présente (créée lors de la lecture du mail)
   useEffect(() => {
     if (isOpen && task) {
-      setError(null);
-      const taskId = task.documentId;
-      const cached = taskId ? analysisCache.current.get(taskId) : null;
-      if (cached) {
-        setAnalysis(cached);
-        return;
-      }
       if (task.ai_analysis?.reasoning && task.ai_analysis?.suggestion) {
-        const data = {
+        setAnalysis({
           reasoning: task.ai_analysis.reasoning,
           suggestion: task.ai_analysis.suggestion,
-        };
-        if (taskId) analysisCache.current.set(taskId, data);
-        setAnalysis(data);
+        });
       } else {
         setAnalysis(null);
-        fetchAnalysis();
       }
     }
-  }, [isOpen, task?.documentId]);
+  }, [isOpen, task?.documentId, task?.ai_analysis]);
 
   useEffect(() => {
     if (isOpen) {
@@ -201,25 +162,12 @@ export default function TaskDetailModal({
                   <IconBrain className="w-4 h-4 text-accent-text" />
                   Réflexion et suggestion
                 </h3>
-                {loading && (
-                  <div className="flex items-center gap-2 py-8 text-muted">
-                    <IconLoader2 className="w-5 h-5 animate-spin" />
-                    <span>{`Génération de l'analyse...`}</span>
-                  </div>
+                {!analysis && (
+                  <p className="py-4 text-sm text-muted">
+                    L&apos;analyse sera disponible après traitement du mail (lecture automatique).
+                  </p>
                 )}
-                {error && (
-                  <div className="p-4 bg-error-light text-error  flex items-center justify-between">
-                    <span>{error}</span>
-                    <button
-                      onClick={fetchAnalysis}
-                      className="flex items-center gap-1 text-sm hover:underline"
-                    >
-                      <IconRefresh className="w-4 h-4" />
-                      Réessayer
-                    </button>
-                  </div>
-                )}
-                {analysis && !loading && (
+                {analysis && (
                   <div className="!space-y-4 !p-0 ">
                     <div className="bg-secondary  p-4">
                       <p className="text-xs font-medium text-muted uppercase mb-2">Raisonnement</p>

@@ -317,19 +317,20 @@ export default function SmartFollowUpPage() {
     {
       key: 'subject',
       label: 'Sujet',
+      className: 'min-w-[280px]',
       render: (_, action) => {
         const name = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact';
         const title = action.lead_title || '';
         const preview = action.follow_up_task?.context?.lead_response_preview as string | undefined;
         const subjectLine = [name, title].filter(Boolean).join(' · ');
-        const previewLine = preview ? `"${preview.length > 60 ? preview.slice(0, 57) + '...' : preview}"` : '';
+        const previewLine = preview ? `"${preview}"` : '';
         return (
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-primary truncate mb-0.5">
+          <div className="min-w-0 break-words">
+            <p className="text-sm font-medium text-primary mb-0.5">
               {subjectLine || action.proposed_content.subject}
             </p>
             {previewLine ? (
-              <p className="text-xs text-muted line-clamp-1 italic">
+              <p className="text-xs text-muted italic break-words">
                 {previewLine}
               </p>
             ) : null}
@@ -440,8 +441,9 @@ export default function SmartFollowUpPage() {
     {
       key: 'subject',
       label: 'Sujet',
+      className: 'min-w-[280px]',
       render: (_, task) => (
-        <p className="text-sm text-primary truncate">
+        <p className="text-sm text-primary break-words">
           {task.context?.original_subject || 'N/A'}
         </p>
       ),

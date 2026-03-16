@@ -103,7 +103,6 @@ export default function LeadDetailModal({
   const [detail, setDetail] = useState<AutomationAction | null>(null);
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<{ reasoning: string; suggestion: string } | null>(null);
-  const [analysisLoading, setAnalysisLoading] = useState(false);
   const [draft, setDraft] = useState('');
   const [channel, setChannel] = useState<Channel>('linkedin');
   const [regenerating, setRegenerating] = useState(false);
@@ -143,6 +142,7 @@ export default function LeadDetailModal({
       .finally(() => setLoading(false));
   }, [isOpen, action?.documentId]);
 
+  // Aucune génération IA à l'ouverture : on affiche uniquement l'analyse déjà présente (créée lors de la lecture du mail)
   useEffect(() => {
     if (!isOpen || !detail) return;
     if (detail.follow_up_task?.ai_analysis?.reasoning && detail.follow_up_task?.ai_analysis?.suggestion) {
@@ -150,43 +150,10 @@ export default function LeadDetailModal({
         reasoning: detail.follow_up_task.ai_analysis.reasoning,
         suggestion: detail.follow_up_task.ai_analysis.suggestion,
       });
-      return;
+    } else {
+      setAnalysis(null);
     }
-    if (!emailBody || !detail.follow_up_task) {
-      setAnalysisLoading(false);
-      return;
-    }
-
-    setAnalysisLoading(true);
-    const task = {
-      documentId: detail.follow_up_task.documentId,
-      context: detail.follow_up_task.context || {},
-      ai_analysis: detail.follow_up_task.ai_analysis || {},
-      received_email: detail.follow_up_task.received_email,
-    };
-
-    fetch('/api/ai/task-analysis', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        task,
-        email_body: emailBody,
-        hot_lead_keywords: hotLeadKeywords,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.reasoning || data.suggestion) {
-          setAnalysis({
-            reasoning: data.reasoning || '',
-            suggestion: data.suggestion || '',
-          });
-          if (data.draft && !draft) setDraft(data.draft);
-        }
-      })
-      .catch(() => showGlobalPopup('Erreur analyse IA', 'error'))
-      .finally(() => setAnalysisLoading(false));
-  }, [isOpen, detail?.documentId, emailBody]);
+  }, [isOpen, detail?.documentId, detail?.follow_up_task?.ai_analysis]);
 
   useEffect(() => {
     if (isOpen) {
@@ -414,10 +381,10 @@ export default function LeadDetailModal({
                 </div>
 
                 {/* Signal bar */}
-                {(loading || analysisLoading) ? (
+                {loading ? (
                   <div className="flex items-center gap-2 py-2.5 px-3.5  bg-[#f0ede8] border border-[#e2ddd8]">
                     <IconLoader2 className="w-4 h-4 animate-spin text-[#8a8178]" />
-                    <span className="text-[13px] text-[#8a8178]">Analyse en cours...</span>
+                    <span className="text-[13px] text-[#8a8178]">Chargement...</span>
                   </div>
                 ) : (
                   <div
@@ -425,7 +392,7 @@ export default function LeadDetailModal({
                   >
                     <div className="w-2 h-2 rounded-full bg-current animate-pulse flex-shrink-0" />
                     <span className="flex-1">
-                      {parsed.signal || analysis?.suggestion || 'Signal en cours d\'analyse'}
+                      {parsed.signal || analysis?.suggestion || "Analyse en attente (traitement lors de la lecture du mail)"}
                     </span>
                     <span className="font-mono text-[11px] opacity-70 ml-auto">
                       {score === 'hot' && '🔴 CHAUD'}
