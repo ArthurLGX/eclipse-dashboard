@@ -23,7 +23,7 @@ export function useFollowUpTasks(filters?: Record<string, unknown>) {
   });
 }
 
-export function useAutomationActions(status?: string) {
+export function useAutomationActions(status?: string | string[]) {
   return useSWR(['automation-actions', status], () => fetchAutomationActions(status), {
     refreshInterval: 60000,
   });

@@ -113,7 +113,7 @@ export async function deleteFollowUpTask(id: string): Promise<void> {
 // Automation Actions
 // ============================================================================
 
-export async function fetchAutomationActions(status?: string): Promise<AutomationAction[]> {
+export async function fetchAutomationActions(status?: string | string[]): Promise<AutomationAction[]> {
   const params = new URLSearchParams({
     'populate[user][fields][0]': 'username',
     'populate[client][fields][0]': 'name',
@@ -127,7 +127,11 @@ export async function fetchAutomationActions(status?: string): Promise<Automatio
   });
 
   if (status) {
-    params.append('filters[status_automation_action][$eq]', status);
+    if (Array.isArray(status)) {
+      status.forEach((s) => params.append('filters[status_automation_action][$in]', s));
+    } else {
+      params.append('filters[status_automation_action][$eq]', status);
+    }
   }
 
   const response = await apiRequest<{ data: AutomationAction[] }>(`automation-actions?${params}`);

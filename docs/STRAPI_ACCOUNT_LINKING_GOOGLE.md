@@ -17,6 +17,25 @@ Le fichier `src/extensions/users-permissions/strapi-server.ts` a été modifié 
 - Passage automatique en mode connexion (email + mot de passe)
 - Message : « Vous avez déjà un compte avec cet email. Connectez-vous avec votre mot de passe ci-dessous. »
 
+## Correction : login username après liaison Google
+
+**Problème** : Après liaison du compte Google, le champ `provider` passait à `google`, ce qui empêchait le login local (username/mot de passe) car Strapi filtre par `provider: 'local'`.
+
+**Correction appliquée** : Lors de la liaison d’un compte existant, on ne modifie plus `provider` — il reste `local`, la connexion par mot de passe continue de fonctionner.
+
+### Réparer un compte déjà impacté
+
+Si votre compte a déjà `provider = 'google'` et que vous ne pouvez plus vous connecter avec votre username :
+
+**MySQL :**
+```sql
+UPDATE up_users SET provider = 'local' WHERE provider = 'google' AND password IS NOT NULL;
+```
+
+(Pour un seul utilisateur, ajoutez `AND email = 'votre@email.com'` si besoin.)
+
+---
+
 ## Solution côté Strapi (à mettre en place)
 
 Pour permettre la connexion via Google même quand le compte existe déjà (liaison de compte), il faut étendre le plugin `users-permissions` dans Strapi.

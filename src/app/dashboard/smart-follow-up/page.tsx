@@ -19,6 +19,7 @@ import {
   IconBuilding,
   IconSearch,
   IconSparkles,
+  IconSend,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -70,9 +71,11 @@ export default function SmartFollowUpPage() {
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
   const { data: allActions, mutate: mutateActions } = useAutomationActions('pending');
+  const { data: sentActions = [], mutate: mutateSentActions } = useAutomationActions(['executed', 'failed']);
   const { data: settings, mutate: mutateSettings } = useAutomationSettings();
   
-  const [activeTab, setActiveTab] = useState<'actions' | 'tasks'>('actions');
+  const [activeTab, setActiveTab] = useState<'actions' | 'tasks' | 'sent'>('actions');
+  const [filterSentStatus, setFilterSentStatus] = useState<'Tous' | 'Envoyés' | 'Échoués'>('Tous');
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [togglingPause, setTogglingPause] = useState(false);
@@ -153,6 +156,7 @@ export default function SmartFollowUpPage() {
         showGlobalPopup('Lead rejeté', 'info');
       }
       mutateActions();
+      mutateSentActions();
     } catch (error) {
       console.error('Erreur:', error);
       showGlobalPopup('Erreur', 'error');
@@ -281,6 +285,22 @@ export default function SmartFollowUpPage() {
     annule: (tasks || []).filter(t => getTaskStatusLabel(t) === 'Annulé').length,
     urgent: (tasks || []).filter(t => getTaskPriority(t) === 'Urgent').length,
   }), [tasks]);
+
+  const filteredSentActions = useMemo(() => {
+    const list = sentActions || [];
+    if (filterSentStatus === 'Tous') return list;
+    if (filterSentStatus === 'Envoyés') return list.filter(a => a.status_automation_action === 'executed');
+    return list.filter(a => a.status_automation_action === 'failed');
+  }, [sentActions, filterSentStatus]);
+
+  const getContentSent = (action: AutomationAction) =>
+    (action.edited_content as { subject?: string; body?: string; to?: string[] } | null) || action.proposed_content;
+
+  const getBodyPreview = (body: string | undefined, maxLen = 120) => {
+    if (!body) return '—';
+    const text = body.replace(/<[^>]*>/g, '').trim();
+    return text.length <= maxLen ? text : `${text.slice(0, maxLen)}…`;
+  };
 
   // Colonnes pour les actions (leads)
   const actionColumns: Column<AutomationAction>[] = useMemo(() => [
@@ -606,6 +626,92 @@ export default function SmartFollowUpPage() {
     },
   ], [handleUpdateTask, setDeleteModal]);
 
+  // Colonnes pour l'historique des relances envoyées
+  const sentColumns: Column<AutomationAction>[] = useMemo(() => [
+    {
+      key: 'client',
+      label: 'Contact',
+      render: (_, action) => (
+        <div className="min-w-0">
+          <p className="font-medium text-primary truncate">
+            {action.client?.name ?? extractWalegoLeadName(action.proposed_content?.subject) ?? 'Contact inconnu'}
+          </p>
+          <p className="text-xs text-muted truncate">{action.client?.email || '—'}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'to',
+      label: 'Destinataire(s)',
+      render: (_, action) => {
+        const content = getContentSent(action);
+        const to = content?.to;
+        const toStr = Array.isArray(to) ? to.join(', ') : typeof to === 'string' ? to : '—';
+        return <span className="text-sm truncate max-w-[200px] block" title={toStr}>{toStr || '—'}</span>;
+      },
+    },
+    {
+      key: 'subject',
+      label: 'Sujet',
+      className: 'min-w-[200px]',
+      render: (_, action) => {
+        const content = getContentSent(action);
+        return <p className="text-sm text-primary truncate">{content?.subject || '—'}</p>;
+      },
+    },
+    {
+      key: 'body_preview',
+      label: 'Contenu envoyé',
+      className: 'max-w-[280px]',
+      render: (_, action) => {
+        const content = getContentSent(action);
+        const preview = getBodyPreview(content?.body);
+        return (
+          <p className="text-xs text-muted truncate" title={preview}>
+            {preview}
+          </p>
+        );
+      },
+    },
+    {
+      key: 'executed_at',
+      label: 'Date d\'envoi',
+      render: (_, action) => (
+        <span className="text-xs text-muted whitespace-nowrap">
+          {action.executed_at
+            ? new Date(action.executed_at).toLocaleString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '—'}
+        </span>
+      ),
+    },
+    {
+      key: 'status_sent',
+      label: 'Statut',
+      render: (_, action) => {
+        const isSuccess = action.status_automation_action === 'executed';
+        const msg = isSuccess
+          ? 'Envoyé'
+          : (action.execution_result as { message?: string })?.message || 'Échec';
+        return (
+          <span
+            className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
+              isSuccess ? 'bg-success-light text-success-text' : 'bg-error-light text-error-text'
+            }`}
+            title={!isSuccess ? msg : undefined}
+          >
+            {isSuccess ? '✓ Envoyé' : '✗ Échec'}
+          </span>
+        );
+      },
+    },
+  ], []);
+
   const handleDeleteMultipleTasks = async (tasksToDelete: FollowUpTask[]) => {
     let successCount = 0;
     let errorCount = 0;
@@ -781,6 +887,20 @@ export default function SmartFollowUpPage() {
                   {tasks?.length || 0}
                 </span>
               </button>
+              <button
+                onClick={() => setActiveTab('sent')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
+                  activeTab === 'sent' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
+                }`}
+              >
+                <IconSend className="w-3.5 h-3.5" />
+                Envoyés
+                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                  activeTab === 'sent' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
+                }`}>
+                  {sentActions?.length || 0}
+                </span>
+              </button>
             </div>
           </div>
         </div>
@@ -865,6 +985,40 @@ export default function SmartFollowUpPage() {
                 />
               </div>
             )
+          ) : activeTab === 'sent' ? (
+            /* RELANCES ENVOYÉES */
+            <>
+              <div className="flex items-center gap-2 flex-wrap mb-4">
+                <span className="!text-sm !text-muted">Filtrer par statut :</span>
+                <div className="flex gap-1">
+                  {(['Tous', 'Envoyés', 'Échoués'] as const).map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setFilterSentStatus(s)}
+                      className={`px-2.5 py-1.5 !text-xs font-medium transition-all whitespace-nowrap ${
+                        filterSentStatus === s
+                          ? 'bg-muted border border-default !text-primary'
+                          : 'bg-card border border-default !text-muted hover:!text-primary'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                <span className="ml-auto !text-xs !text-muted">
+                  {filteredSentActions.length} relance{filteredSentActions.length > 1 ? 's' : ''} affichée{filteredSentActions.length > 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="bg-card border border-default overflow-hidden">
+                <DataTable<AutomationAction>
+                  columns={sentColumns}
+                  data={filteredSentActions}
+                  emptyMessage="Aucune relance envoyée"
+                  onRowClick={(row) => { setSelectedAction(row); setShowDetailModal(true); }}
+                  loading={statsLoading}
+                />
+              </div>
+            </>
           ) : (
             /* TÂCHES */
             <>
@@ -952,6 +1106,7 @@ export default function SmartFollowUpPage() {
         }}
         onSuccess={() => {
           mutateActions();
+          mutateSentActions();
           setShowDetailModal(false);
           setSelectedAction(null);
         }}
