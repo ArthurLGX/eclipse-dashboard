@@ -422,9 +422,6 @@ function isClientInContext(ctx: UserContext | null, clientId: string): boolean {
 function isTaskInContext(ctx: UserContext | null, taskId: string): boolean {
   return !!ctx?.tasks?.some((t) => t.id === taskId);
 }
-function isInvoiceInContext(ctx: UserContext | null, invoiceId: string): boolean {
-  return !!ctx?.invoices?.some((i) => i.id === invoiceId);
-}
 
 async function strapiFetch(
   endpoint: string,
@@ -544,6 +541,7 @@ async function executeGenerateRelanceEmail(
   _context: UserContext | null,
   _token: string | null
 ) {
+  void _context; void _token;
   const { clientName, context, tone, additionalContext, daysSinceLastContact } = params;
   
   const toneStyles = {
@@ -661,8 +659,9 @@ async function executeCreateTask(
 async function executeCreateQuote(
   params: z.infer<typeof createQuoteSchema>,
   context: UserContext | null,
-  _token: string | null
+  token: string | null
 ) {
+  void token;
   const { clientId, clientName, projectId, projectName, estimatedAmount, description } = params;
   if (!context) return { success: false, error: 'Contexte non disponible' };
   if (!isClientInContext(context, clientId))
@@ -682,6 +681,7 @@ async function executeSuggestNextSteps(
   _context: UserContext | null,
   _token: string | null
 ) {
+  void _context; void _token;
   const { focus } = params;
   
   const suggestions: Record<string, string[]> = {
@@ -721,8 +721,9 @@ async function executeSuggestNextSteps(
 async function executeCreateContract(
   params: z.infer<typeof createContractSchema>,
   context: UserContext | null,
-  _token: string | null
+  token: string | null
 ) {
+  void token;
   const { clientId, clientName, projectId, projectName, contractType, title } = params;
   if (!context) return { success: false, error: 'Contexte non disponible' };
   if (!isClientInContext(context, clientId))
