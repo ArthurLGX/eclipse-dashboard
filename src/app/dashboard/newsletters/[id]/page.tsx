@@ -433,7 +433,7 @@ export default function NewsletterDetailPage() {
                 <span className="text-[10px] text-[#A09680]">Aperçu boîte mail</span>
               </div>
               <div className="p-4 flex justify-center">
-                <div className={`w-full bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.05)] ${previewDevice === 'mobile' ? 'max-w-[375px]' : 'max-w-[560px]'}`}>
+                <div className={`w-full bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.05)] w-full`}>
                   <div className="h-[500px] overflow-auto">
                     <MailboxPreview
                       newsletter={{

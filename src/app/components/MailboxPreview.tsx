@@ -588,7 +588,7 @@ export default function MailboxPreview({
             tabIndex={0}
             onMouseEnter={(e) => e.currentTarget.focus()}
           >
-            <div className="w-full max-w-2xl mx-auto">
+            <div className="w-full  mx-auto">
               <EmailPreviewContent 
                 newsletter={newsletter} 
                 templateConfig={templateConfig}
