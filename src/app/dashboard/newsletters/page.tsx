@@ -152,9 +152,9 @@ export default function NewslettersPage() {
 
               <button
                 onClick={() => router.push('/dashboard/newsletters/compose')}
-                className="flex items-center gap-2 bg-primary !text-black border-none px-4 py-2  !text-sm font-semibold hover:opacity-90 transition-all"
+                className="btn-primary flex items-center gap-2 px-4 py-2  !text-sm font-semibold hover:opacity-90 transition-all"
               >
-                <IconPlus className="w-4 h-4" />
+                <IconPlus className="w-4 h-4 !text-white" />
                 {t('add_newsletter') || 'Nouvelle newsletter'}
               </button>
             </div>

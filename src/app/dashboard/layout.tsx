@@ -37,6 +37,7 @@ import {
   IconFileText,
   IconBell,
   IconBrandInstagram,
+  IconSettings,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
 import ProtectedRoute from '@/app/components/ProtectedRoute';
@@ -408,8 +409,14 @@ function DashboardLayoutContent({
     },
 
     // ═══════════════════════════════════════
-    // COMPTE : déplacé dans le menu profil (photo à gauche des notifications)
+    // PARAMÈTRES
     // ═══════════════════════════════════════
+    {
+      id: 'settings',
+      label: t('settings') || 'Paramètres',
+      icon: <IconSettings size={15} stroke={1} />,
+      path: '/dashboard/settings',
+    },
 
     // ═══════════════════════════════════════
     // ADMINISTRATION (Visible uniquement pour les admins)
