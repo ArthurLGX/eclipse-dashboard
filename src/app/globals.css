@@ -349,6 +349,10 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
+/* Variante opaque sans backdrop-filter — pour éléments sticky où le contenu ne doit pas transparaître */
+.bg-card-solid {
+  background-color: var(--bg-card);
+}
 .bg-card-hover { 
   background-color: var(--bg-card-hover); 
   backdrop-filter: blur(20px);
@@ -987,78 +991,167 @@ button {
   border: 1px solid var(--color-highlight);
 }
 
-/* Badges statut projet (planning, in_progress, completed, maintenance, on_hold, archived) */
-.badge-status-planning { /* = badge-info */
-  background-color: var(--color-info-bg);
-  color: var(--color-info-text);
-  border: 1px solid var(--color-info-border, transparent);
+/* Badges statut projet : planning, in_progress, delivered, warranty, maintenance, completed, archived
+   Pattern : fond light, texte et border en couleur pleine */
+.badge-status-planning { /* bleu */
+  background-color: #dbeafe; /* blue-100 */
+  color: #2563eb; /* blue-600 */
+  border: 1px solid #2563eb;
 }
-.badge-status-in_progress { /* = badge-warning */
-  background-color: var(--color-warning-bg);
-  color: var(--color-warning-text);
-  border: 1px solid var(--color-warning-border, transparent);
-}
-.badge-status-completed { /* = badge-success */
-  background-color: var(--color-success-bg, #065f46);
-  color: var(--color-success-text, white);
-  border: 1px solid var(--color-success-border, #065f46);
-}
-:root.light .badge-status-planning { background-color: #fff7ed; color: #9a3412; border-color: #9a3412; }
 :root.dark .badge-status-planning,
-:root:not(.light) .badge-status-planning { background-color: #ea580c; color: white !important; border-color: #ea580c; }
-:root.light .badge-status-in_progress { background-color: var(--color-warning-bg); color: var(--color-warning-text); border-color: var(--color-warning-border); }
-:root.dark .badge-status-in_progress,
-:root:not(.light) .badge-status-in_progress { background-color: #d97706; color: white !important; border-color: #f59e0b; }
-:root.light .badge-status-completed { background-color: #065f46; color: white !important; border-color: #065f46; }
-:root.dark .badge-status-completed,
-:root:not(.light) .badge-status-completed { background-color: #065f46; color: white !important; border-color: #065f46; }
+:root:not(.light) .badge-status-planning {
+  background-color: #1e3a5f; /* blue-900/50 */
+  color: #60a5fa;
+  border: 1px solid #3b82f6;
+}
 
-/* Badge maintenance (projets) - teal/cyan */
-:root.light .badge-maintenance,
-:root.light .badge-status-maintenance {
+.badge-status-in_progress { /* amber */
+  background-color: #fffbeb; /* amber-50 */
+  color: #d97706; /* amber-600 */
+  border: 1px solid #d97706;
+}
+:root.dark .badge-status-in_progress,
+:root:not(.light) .badge-status-in_progress {
+  background-color: #451a03; /* amber-950 */
+  color: #fbbf24;
+  border: 1px solid #f59e0b;
+}
+
+.badge-status-delivered { /* vert/emerald - livré */
+  background-color: #d1fae5; /* emerald-100 */
+  color: #059669; /* emerald-600 */
+  border: 1px solid #059669;
+}
+:root.dark .badge-status-delivered,
+:root:not(.light) .badge-status-delivered {
+  background-color: #022c22; /* emerald-950 */
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.badge-status-warranty { /* violet - garantie */
+  background-color: #ede9fe; /* violet-100 */
+  color: #7c3aed; /* violet-600 */
+  border: 1px solid #7c3aed;
+}
+:root.dark .badge-status-warranty,
+:root:not(.light) .badge-status-warranty {
+  background-color: #2e1065; /* violet-950 */
+  color: #a78bfa;
+  border: 1px solid #8b5cf6;
+}
+
+.badge-status-maintenance, .badge-maintenance { /* teal */
   background-color: #ccfbf1; /* teal-100 */
   color: #0f766e; /* teal-700 */
-  border: 1px solid #0d9488; /* teal-600 */
-}
-.badge-maintenance,
-.badge-status-maintenance {
-  background-color: #ccfbf1;
-  color: #0f766e;
   border: 1px solid #0d9488;
 }
-:root.dark .badge-maintenance,
 :root.dark .badge-status-maintenance,
-:root:not(.light) .badge-maintenance,
-:root:not(.light) .badge-status-maintenance {
-  background-color: #0d9488; /* teal-600 */
-  color: white !important;
-  border: 1px solid #14b8a6; /* teal-500 */
+:root.dark .badge-maintenance,
+:root:not(.light) .badge-status-maintenance,
+:root:not(.light) .badge-maintenance {
+  background-color: #042f2e; /* teal-950 */
+  color: #2dd4bf;
+  border: 1px solid #14b8a6;
 }
 
-/* Badge archived (projets) */
-:root.light .badge-status-archived {
+.badge-status-completed { /* emerald - terminé */
+  background-color: #d1fae5; /* emerald-100 */
+  color: #047857; /* emerald-700 */
+  border: 1px solid #047857;
+}
+:root.dark .badge-status-completed,
+:root:not(.light) .badge-status-completed {
+  background-color: #022c22; /* emerald-950 */
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.badge-status-archived { /* zinc/gris */
   background-color: #f4f4f5; /* zinc-100 */
   color: #52525b; /* zinc-600 */
-  border: 1px solid #a1a1aa; /* zinc-400 */
+  border: 1px solid #71717a; /* zinc-500 */
 }
 :root.dark .badge-status-archived,
 :root:not(.light) .badge-status-archived {
-  background-color: #3f3f46; /* zinc-700 */
-  color: #a1a1aa !important; /* zinc-400 */
-  border: 1px solid #52525b; /* zinc-600 */
+  background-color: #27272a; /* zinc-800 */
+  color: #a1a1aa;
+  border: 1px solid #52525b;
 }
 
-/* Badge on_hold (projets) */
-:root.light .badge-status-on_hold {
-  background-color: #fffbeb; /* amber-50 */
-  color: #b45309; /* amber-700 */
-  border: 1px solid #f59e0b; /* amber-500 */
+/* on_hold - rétrocompatibilité */
+.badge-status-on_hold {
+  background-color: #fffbeb;
+  color: #b45309;
+  border: 1px solid #f59e0b;
 }
 :root.dark .badge-status-on_hold,
 :root:not(.light) .badge-status-on_hold {
-  background-color: #d97706; /* amber-600 */
-  color: white !important;
-  border: 1px solid #f59e0b; /* amber-500 */
+  background-color: #451a03;
+  color: #fbbf24;
+  border: 1px solid #f59e0b;
+}
+
+/* Badges statut tâche : todo, in_progress, completed, cancelled, archived
+   Homogènes avec les badges projet (fond light, texte et border couleur pleine) */
+.badge-task-todo {
+  background-color: #dbeafe;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+}
+:root.dark .badge-task-todo,
+:root:not(.light) .badge-task-todo {
+  background-color: #1e3a5f;
+  color: #60a5fa;
+  border: 1px solid #3b82f6;
+}
+
+.badge-task-in_progress {
+  background-color: #fffbeb;
+  color: #d97706;
+  border: 1px solid #d97706;
+}
+:root.dark .badge-task-in_progress,
+:root:not(.light) .badge-task-in_progress {
+  background-color: #451a03;
+  color: #fbbf24;
+  border: 1px solid #f59e0b;
+}
+
+.badge-task-completed {
+  background-color: #d1fae5;
+  color: #047857;
+  border: 1px solid #047857;
+}
+:root.dark .badge-task-completed,
+:root:not(.light) .badge-task-completed {
+  background-color: #022c22;
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.badge-task-cancelled {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+}
+:root.dark .badge-task-cancelled,
+:root:not(.light) .badge-task-cancelled {
+  background-color: #450a0a;
+  color: #f87171;
+  border: 1px solid #ef4444;
+}
+
+.badge-task-archived {
+  background-color: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #71717a;
+}
+:root.dark .badge-task-archived,
+:root:not(.light) .badge-task-archived {
+  background-color: #27272a;
+  color: #a1a1aa;
+  border: 1px solid #52525b;
 }
 
 /* Pastilles facture/devis - draft (info), paid (success), sent (bleu) */

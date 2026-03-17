@@ -282,8 +282,10 @@ export function useProjectByDocumentId(documentId: string | undefined) {
     `project-doc-${documentId}`,
     async () => {
       const response = await fetchProjectByDocumentId(documentId!);
+      // findOne retourne { data: project } (objet), find retourne { data: [project] } (array)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return { data: (response as any).data?.[0] || null };
+      const raw = (response as any).data;
+      return { data: Array.isArray(raw) ? raw[0] || null : raw || null };
     },
     [documentId],
     { enabled: !!documentId }

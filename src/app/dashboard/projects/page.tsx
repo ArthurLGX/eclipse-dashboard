@@ -360,18 +360,23 @@ export default function ProjectsPage() {
       label: t('status'),
       render: (value) => {
         const status = value as string;
-        const config = 
-          status === 'completed' ? { label: t('completed') || 'Terminé', className: 'badge-success' } :
-          status === 'in_progress' ? { label: t('in_progress') || 'En cours', className: 'badge-warning' } :
-          status === 'planning' ? { label: t('planning') || 'Planification', className: 'badge-info' } :
-          status === 'maintenance' ? { label: t('maintenance') || 'Maintenance', className: 'badge-maintenance' } :
-          status === 'on_hold' ? { label: t('project_status_on_hold') || 'En pause', className: 'badge-status-on_hold' } :
-          status === 'archived' ? { label: t('archived') || 'Archivé', className: 'badge-status-archived' } :
-          { label: status, className: 'badge-primary' };
+        const labels: Record<string, string> = {
+          planning: t('planning'),
+          in_progress: t('in_progress'),
+          delivered: t('pipeline_delivered'),
+          warranty: t('warranty'),
+          maintenance: t('maintenance'),
+          completed: t('completed'),
+          on_hold: t('project_status_on_hold'),
+          archived: t('archived'),
+        };
+        const label = labels[status] || status;
+        const knownStatuses = ['planning', 'in_progress', 'delivered', 'warranty', 'maintenance', 'completed', 'on_hold', 'archived'];
+        const className = knownStatuses.includes(status) ? `badge-status-${status}` : 'badge-muted';
 
         return (
-          <span className={`badge ${config.className}`}>
-            {config.label}
+          <span className={`badge ${className}`}>
+            {label}
           </span>
         );
       },

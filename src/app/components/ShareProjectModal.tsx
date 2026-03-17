@@ -266,19 +266,22 @@ export default function ShareProjectModal({
       loadData();
     } catch (error) {
       console.error('Error creating public link:', error);
-      showGlobalPopup(
-        t('error_creating_link') || 'Erreur lors de la création du lien',
-        'error'
-      );
+      const errMsg = error instanceof Error ? error.message : '';
+      const msg = errMsg.includes('does not belong to you')
+        ? (t('error_project_not_yours') || 'Seul le propriétaire du projet peut créer des liens publics.')
+        : errMsg.includes('403')
+          ? (t('error_permission_create_link') || 'Droits insuffisants.')
+          : (t('error_creating_link') || 'Erreur lors de la création du lien');
+      showGlobalPopup(msg, 'error');
     } finally {
       setCreatingPublicLink(false);
     }
   };
 
   // Désactiver un lien public
-  const handleDeactivateLink = async (linkDocumentId: string) => {
+  const handleDeactivateLink = async (link: ProjectShareLink) => {
     try {
-      await deactivateShareLink(linkDocumentId);
+      await deactivateShareLink(link);
       showGlobalPopup(t('link_deactivated') || 'Lien désactivé', 'success');
       loadData();
     } catch (error) {
@@ -515,8 +518,9 @@ export default function ShareProjectModal({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-hidden overscroll-contain"
         onClick={onClose}
+        onWheel={(e) => e.stopPropagation()}
       >
         <motion.div
           ref={modalRef}
@@ -525,11 +529,13 @@ export default function ShareProjectModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           transition={{ type: 'spring', duration: 0.3 }}
-          className="bg-card border border-default  w-full max-w-2xl shadow-2xl overflow-hidden outline-none"
+          className="bg-card border border-default h-[70vh] max-h-[90vh] w-full max-w-2xl shadow-2xl overflow-y-auto overscroll-contain outline-none"
           onClick={(e) => e.stopPropagation()}
+          onWheel={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-default">
+          {/* Header + Tabs sticky */}
+          <div className="sticky top-0 z-10 bg-card">
+            <div className="flex items-center justify-between p-6 border-b border-default">
             <div>
               <h2 className="!text-xl font-semibold !text-primary">
                 {t('share_project') || 'Partager le projet'}
@@ -544,10 +550,10 @@ export default function ShareProjectModal({
             >
               <IconX className="w-5 h-5" />
             </button>
-          </div>
+            </div>
 
-          {/* Tabs */}
-          <div className="flex border-b border-default">
+            {/* Tabs */}
+            <div className="flex border-b border-default">
             <button
               onClick={() => setActiveTab('invite')}
               className={`flex-1 py-3 px-4 !text-sm font-medium transition-colors ${
@@ -587,6 +593,7 @@ export default function ShareProjectModal({
                 {t('public_share') || 'Public'}
               </span>
             </button>
+            </div>
           </div>
 
           {/* Content */}
@@ -601,13 +608,13 @@ export default function ShareProjectModal({
                     </label>
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
-                        <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
+                        <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 !text-muted" />
                         <input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="email@exemple.com"
-                          className="w-full !pl-10 !pr-4 py-3 bg-input border border-input  !text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
+                          className="w-full h-full !pl-10 !pr-4 py-3 bg-input border border-input  !text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
                         />
                       </div>
                       <button
@@ -799,8 +806,8 @@ export default function ShareProjectModal({
                   </div>
                 </div>
 
-                {/* Configuration du nouveau lien */}
-                {showPublicLinkConfig ? (
+                {/* Configuration du nouveau lien - réservé au propriétaire */}
+                {isOwner && showPublicLinkConfig ? (
                   <div className="bg-hover border border-default  p-4 !space-y-4">
                     <h4 className="!text-sm font-medium !text-primary">
                       {t('configure_public_link') || 'Configurer le lien public'}
@@ -898,7 +905,7 @@ export default function ShareProjectModal({
                       </button>
                     </div>
                   </div>
-                ) : (
+                ) : isOwner ? (
                   <button
                     onClick={() => setShowPublicLinkConfig(true)}
                     className="w-full py-3 px-4 bg-success hover:opacity-90 !text-white  transition-colors flex items-center justify-center gap-3"
@@ -906,6 +913,10 @@ export default function ShareProjectModal({
                     <IconLink className="w-5 h-5" />
                     {t('create_public_link') || 'Créer un lien public'}
                   </button>
+                ) : (
+                  <p className="!text-sm !text-muted !text-center py-4">
+                    {t('public_link_owner_only') || 'Seul le propriétaire du projet peut créer des liens publics.'}
+                  </p>
                 )}
 
                 {/* Liens existants */}
@@ -925,7 +936,10 @@ export default function ShareProjectModal({
                               <IconLink className="w-5 h-5 !text-accent-light" />
                             </div>
                             <div className="min-w-0">
-                              <p className="!text-sm !text-primary truncate">
+                              <p className="!text-sm font-medium !text-primary truncate">
+                                {projectTitle}
+                              </p>
+                              <p className="!text-xs !text-muted truncate">
                                 /share/project/{link.share_token.substring(0, 8)}...
                               </p>
                               <div className="flex items-center gap-2 !text-xs !text-muted">
@@ -966,7 +980,7 @@ export default function ShareProjectModal({
                             </a>
                             {isOwner && (
                               <button
-                                onClick={() => handleDeactivateLink(link.documentId)}
+                                onClick={() => handleDeactivateLink(link)}
                                 className="p-2 !text-muted hover:!text-danger hover:bg-danger-light  transition-colors"
                                 title={t('deactivate') || 'Désactiver'}
                               >

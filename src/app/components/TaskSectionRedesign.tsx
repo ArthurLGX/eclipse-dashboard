@@ -570,7 +570,6 @@ function TaskCardRedesign({
   animateIndex,
 }: TaskCardRedesignProps) {
   void onStatusChange;
-  void t;
   const [editTitle, setEditTitle] = useState(task.title);
   const [editDescription, setEditDescription] = useState(task.description || '');
   const [editStatus, setEditStatus] = useState<TaskStatus>(task.task_status);
@@ -593,13 +592,16 @@ function TaskCardRedesign({
   const subtasks = tasks.filter((t) => t.parent_task?.documentId === task.documentId);
   const doneSt = subtasks.filter((s) => s.task_status === 'completed').length;
   const stPct = subtasks.length > 0 ? Math.round((doneSt / subtasks.length) * 100) : 0;
-  const badgeLabel = task.task_status === 'todo' ? 'À faire' : task.task_status === 'in_progress' ? 'En cours' : 'Terminé';
-  const badgeClass =
-    task.task_status === 'todo'
-      ? 'bg-secondary border-default !text-muted'
-      : task.task_status === 'in_progress'
-        ? 'bg-blue-500/10 border-blue-500/20 !text-blue-600'
-        : 'bg-green-500/10 border-green-500/20 !text-green-600';
+  const statusLabels: Record<string, string> = {
+    todo: t('todo') || 'À faire',
+    in_progress: t('in_progress') || 'En cours',
+    completed: t('completed') || 'Terminé',
+    cancelled: t('cancelled') || 'Annulé',
+    archived: t('task_archived') || 'Archivée',
+  };
+  const badgeLabel = statusLabels[task.task_status] || task.task_status;
+  const badgeClass = ['todo', 'in_progress', 'completed', 'cancelled', 'archived'].includes(task.task_status)
+    ? `badge-task-${task.task_status}` : 'badge-task-todo';
   const isLate = task.due_date && new Date(task.due_date) < new Date();
 
   const handleSave = async () => {

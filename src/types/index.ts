@@ -90,6 +90,8 @@ export interface User {
   documentId: string;
   username: string;
   email: string;
+  firstname?: string;
+  lastname?: string;
   provider: string;
   confirmed: boolean;
   blocked: boolean;

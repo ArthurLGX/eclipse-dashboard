@@ -37,6 +37,7 @@ export default function DraggableGanttBar({
   const [tempStartOffset, setTempStartOffset] = useState(startOffset);
   const [tempDuration, setTempDuration] = useState(duration);
   const constraintsRef = useRef<HTMLDivElement>(null);
+  const hasDraggedRef = useRef(false);
 
   // Reset temp values when props change
   useEffect(() => {
@@ -97,6 +98,9 @@ export default function DraggableGanttBar({
       return;
     }
 
+    // Marquer qu'un drag a eu lieu pour éviter d'ouvrir la modale au clic qui suit
+    hasDraggedRef.current = true;
+
     let newStartDate: string;
     let newDueDate: string;
 
@@ -137,6 +141,14 @@ export default function DraggableGanttBar({
   const currentStartOffset = isDragging ? tempStartOffset : startOffset;
   const currentDuration = isDragging ? tempDuration : duration;
 
+  // Après un drag, empêcher le clic de remonter (pour ne pas ouvrir la modale)
+  const handleBarClick = useCallback((e: React.MouseEvent) => {
+    if (hasDraggedRef.current) {
+      e.stopPropagation();
+      hasDraggedRef.current = false;
+    }
+  }, []);
+
   return (
     <div
       ref={constraintsRef}
@@ -158,7 +170,7 @@ export default function DraggableGanttBar({
           isDragging && dragMode === 'resize-left' ? 'bg-white/30' : ''
         }`}
         style={{ touchAction: 'none' }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleBarClick}
       >
         <div className="absolute inset-y-0 left-0 w-0.5 bg-white/50" />
       </motion.div>
@@ -209,7 +221,7 @@ export default function DraggableGanttBar({
           isDragging && dragMode === 'resize-right' ? 'bg-white/30' : ''
         }`}
         style={{ touchAction: 'none' }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleBarClick}
       >
         <div className="absolute inset-y-0 right-0 w-0.5 bg-white/50" />
       </motion.div>

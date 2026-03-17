@@ -52,6 +52,7 @@ import {
 import type { Project, Facture, ProjectCollaborator, ProjectTask, MeetingNote } from '@/types';
 import { IconUserPlus, IconHourglass } from '@tabler/icons-react';
 import { getUserDisplayName } from '@/lib/user-utils';
+import { UserAvatar } from '@/app/components/UserDisplay';
 
 
 
@@ -118,8 +119,10 @@ export default function ProjectDetailsPage() {
   const PROJECT_STATUS = [
   { value: 'planning', label: t('planning'), color: 'blue', icon: IconClockPause },
   { value: 'in_progress', label: t('in_progress'), color: 'amber', icon: IconProgress },
-  { value: 'completed', label: t('completed'), color: 'emerald', icon: IconCheck },
+  { value: 'delivered', label: t('pipeline_delivered'), color: 'emerald', icon: IconCheck },
+  { value: 'warranty', label: t('warranty'), color: 'violet', icon: IconClock },
   { value: 'maintenance', label: t('maintenance'), color: 'teal', icon: IconTool },
+  { value: 'completed', label: t('completed'), color: 'emerald', icon: IconCheck },
   { value: 'on_hold', label: t('project_status_on_hold'), color: 'amber', icon: IconClockPause },
   { value: 'archived', label: t('archived'), color: 'zinc', icon: IconArchive },
 ];
@@ -314,9 +317,10 @@ const PROJECT_TYPES = [
   const getStatusConfig = (status: string) => {
     const config = PROJECT_STATUS.find(s => s.value === status) || PROJECT_STATUS[0];
     const colorMap: Record<string, { bg: string; text: string; border: string }> = {
-      blue: { bg: 'bg-info-light', text: 'text-info', border: 'border-info' },
-      amber: { bg: 'bg-warning-light', text: 'text-warning', border: 'border-warning' },
-      emerald: { bg: 'bg-success-light', text: 'text-success', border: 'border-success' },
+      blue: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', border: 'border-blue-500' },
+      amber: { bg: 'bg-amber-50 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-500' },
+      emerald: { bg: 'bg-emerald-100 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-emerald-500' },
+      violet: { bg: 'bg-violet-100 dark:bg-violet-900/30', text: 'text-violet-600 dark:text-violet-400', border: 'border-violet-500' },
       teal: { bg: 'bg-teal-100 dark:bg-teal-600/30', text: 'text-teal-700 dark:text-teal-300', border: 'border-teal-500' },
       zinc: { bg: 'bg-zinc-100 dark:bg-zinc-700', text: 'text-zinc-600 dark:text-zinc-300', border: 'border-zinc-400' },
     };
@@ -487,9 +491,34 @@ const PROJECT_TYPES = [
               <IconFileText className="w-10 h-10 !text-accent-text" />
             </div>
             <h1 className="!text-2xl font-bold !text-primary mb-2">{project.title}</h1>
-            {(project.user?.username || project.user?.email) && (
-              <p className="!text-muted mb-4">{t('by')} {getUserDisplayName(project.user)}</p>
-            )}
+            {(() => {
+              const projectUsers = [
+                ...(project.user ? [project.user] : []),
+                ...(collaborators || [])
+                  .filter(c => c.user?.id && c.user.id !== project.user?.id)
+                  .map(c => c.user!),
+              ];
+              if (projectUsers.length === 0) return null;
+              return (
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <span className="!text-muted !text-sm">{t('by')}</span>
+                  <div className="flex -space-x-2">
+                    {projectUsers.map((u) => (
+                      <div
+                        key={u.id}
+                        className="relative ring-2 ring-card rounded-full shrink-0"
+                        title={getUserDisplayName(u)}
+                      >
+                        <UserAvatar user={u} size="md" />
+                      </div>
+                    ))}
+                  </div>
+                  {projectUsers.length === 1 && (
+                    <span className="!text-muted !text-sm">{getUserDisplayName(projectUsers[0])}</span>
+                  )}
+                </div>
+              );
+            })()}
             {(() => {
               const sc = getStatusConfig(project.project_status);
               return (
@@ -680,6 +709,22 @@ const PROJECT_TYPES = [
                 <span className="px-2 py-1 !text-xs font-medium rounded bg-muted !text-secondary whitespace-nowrap">
                   {PROJECT_TYPES.find(t => t.value === project.type)?.label}
                 </span>
+                {(() => {
+                  const projectUsers = [
+                    ...(project.user ? [project.user] : []),
+                    ...collaborators.filter(c => c.user?.id && c.user.id !== project.user?.id).map(c => c.user!),
+                  ];
+                  if (projectUsers.length === 0) return null;
+                  return (
+                    <div className="flex items-center gap-1.5 -space-x-2" title={projectUsers.map(u => getUserDisplayName(u)).join(', ')}>
+                      {projectUsers.map((u) => (
+                        <div key={u.id} className="relative ring-2 ring-border-default rounded-full shrink-0">
+                          <UserAvatar user={u} size="sm" />
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
               </>
             )}
           </div>

@@ -109,6 +109,13 @@ const put = <T = unknown>(endpoint: string, data: unknown): Promise<T> =>
     body: JSON.stringify({ data }),
   });
 
+/** PATCH request */
+const patch = <T = unknown>(endpoint: string, data: unknown): Promise<T> =>
+  apiRequest<T>(endpoint, {
+    method: 'PATCH',
+    body: JSON.stringify({ data }),
+  });
+
 /** DELETE request */
 const del = <T = unknown>(endpoint: string): Promise<T> =>
   apiRequest<T>(endpoint, { method: 'DELETE' });
@@ -650,8 +657,19 @@ export async function fetchAllUserProjects(userId: number) {
 export const fetchProjectById = (id: number) =>
   fetchEntityById('projects', id);
 
-export const fetchProjectByDocumentId = (documentId: string) =>
-  fetchEntityById('projects', documentId, true);
+export async function fetchProjectByDocumentId(documentId: string): Promise<ApiResponse<Project>> {
+  const base = `projects/${documentId}?populate=*&populate=user`;
+  try {
+    return await get<ApiResponse<Project>>(base);
+  } catch (err) {
+    // Si 404, essayer avec status=draft (projets en brouillon)
+    const msg = (err as Error)?.message || '';
+    if (msg.includes('404') || msg.includes('Not Found')) {
+      return get<ApiResponse<Project>>(`${base}&status=draft`);
+    }
+    throw err;
+  }
+}
 
 export const fetchNumberOfProjectsUser = (userId: number) =>
   fetchCount('projects', userId, 'user');
@@ -792,7 +810,23 @@ export async function createProject(
       : projectData.notes,
   };
 
-  return post('projects', payload);
+  const response = await post<ApiResponse<Project>>('projects', payload);
+  const project = (response as { data?: Project }).data ?? response as unknown as Project;
+  const documentId = typeof project?.documentId === 'string' ? project.documentId : null;
+  const userId = data.user;
+
+  // Toujours créer l'entrée project-collaborators pour le propriétaire (is_owner: true)
+  // Aligne le modèle avec/sans collaboration : owner = user du projet = is_owner dans project-collaborators
+  if (documentId && userId != null) {
+    try {
+      await addProjectCollaborator(documentId, userId, 'edit', true);
+    } catch (err) {
+      console.warn('[createProject] Impossible de créer project-collaborator pour le propriétaire:', err);
+      // Ne pas faire échouer la création du projet
+    }
+  }
+
+  return response;
 }
 
 /** Assigne un projet à un client (Strapi v5 : documentId dans l'URL et pour la relation) */
@@ -2079,14 +2113,15 @@ export const cancelInvitation = (invitationDocumentId: string) =>
 export async function addProjectCollaborator(
   projectDocumentId: string,
   userId: number,
-  permission: 'view' | 'edit' = 'edit'
+  permission: 'view' | 'edit' = 'edit',
+  isOwner = false
 ) {
   return post('project-collaborators', {
-    project: projectDocumentId,
-    user: userId,
+    project: { connect: [{ documentId: projectDocumentId }] },
+    user: { connect: [{ id: userId }] },
     permission,
     joined_at: new Date().toISOString(),
-    is_owner: false,
+    is_owner: isOwner,
   });
 }
 
@@ -2320,8 +2355,8 @@ export async function createProjectTask(data: {
   parent_task?: string; // documentId de la tâche parente (pour sous-tâches)
   color?: string; // couleur du groupe de tâches
 }) {
-  return post('project-tasks', {
-    project: data.project,
+  const payload = {
+    project: { connect: [{ documentId: data.project }] },
     title: data.title,
     description: data.description || '',
     task_status: data.task_status || 'todo',
@@ -2333,12 +2368,13 @@ export async function createProjectTask(data: {
     estimated_hours: data.estimated_hours || null,
     actual_hours: data.actual_hours || null,
     order: data.order || 0,
-    assigned_to: data.assigned_to || null,
-    created_user: data.created_user,
+    assigned_to: data.assigned_to ? { connect: [{ id: data.assigned_to }] } : null,
+    created_user: { connect: [{ id: data.created_user }] },
     tags: data.tags || [],
-    parent_task: data.parent_task || null,
+    parent_task: data.parent_task ? { connect: [{ documentId: data.parent_task }] } : null,
     color: data.color || '#8B5CF6',
-  });
+  };
+  return post('project-tasks', payload);
 }
 
 /** Met à jour une tâche */
@@ -2362,13 +2398,22 @@ export async function updateProjectTask(
     parent_task: string | null; // documentId de la tâche parente (pour transformer en sous-tâche)
   }>
 ) {
-  // Si la tâche est marquée comme complétée, ajouter la date de complétion
-  const payload = { ...data };
+  const payload: Record<string, unknown> = { ...data };
   if (data.task_status === 'completed' && !data.completed_date) {
     payload.completed_date = new Date().toISOString();
     payload.progress = 100;
   }
-  
+  // Format Strapi v5 pour les relations
+  if (data.parent_task !== undefined) {
+    payload.parent_task = data.parent_task
+      ? { connect: [{ documentId: data.parent_task }] }
+      : { set: [] };
+  }
+  if (data.assigned_to !== undefined) {
+    payload.assigned_to = data.assigned_to
+      ? { connect: [{ id: data.assigned_to }] }
+      : { set: [] };
+  }
   return put(`project-tasks/${taskDocumentId}`, payload);
 }
 
@@ -3252,23 +3297,29 @@ export const createProjectShareLink = async (
   const expiresAt = data.expires_in_days 
     ? new Date(Date.now() + data.expires_in_days * 24 * 60 * 60 * 1000).toISOString()
     : null;
-  
-  const response = await post<ApiResponse<ProjectShareLink>>(
-    'project-share-links',
-    {
-      share_token: shareToken,
-      is_active: true,
-      show_gantt: data.show_gantt ?? true,
-      show_progress: data.show_progress ?? true,
-      show_tasks: data.show_tasks ?? true,
-      expires_at: expiresAt,
-      views_count: 0,
-      project: { connect: [{ documentId: data.project }] },
+
+  const basePayload = {
+    share_token: shareToken,
+    is_active: true,
+    show_gantt: data.show_gantt ?? true,
+    show_progress: data.show_progress ?? true,
+    show_tasks: data.show_tasks ?? true,
+    expires_at: expiresAt,
+    views_count: 0,
+    project: data.project,
+  };
+
+  try {
+    const response = await post<ApiResponse<ProjectShareLink>>('project-share-links', {
+      ...basePayload,
       created_by_user: { connect: [{ id: userId }] },
-    }
-  );
-  
-  return response.data;
+    });
+    return response.data;
+  } catch (err) {
+    // Fallback : créateur géré côté serveur (JWT), ou nom de champ différent
+    const response = await post<ApiResponse<ProjectShareLink>>('project-share-links', basePayload);
+    return response.data;
+  }
 };
 
 /** Récupère les liens de partage d'un projet */
@@ -3282,11 +3333,23 @@ export const fetchProjectShareLinks = async (
 
 /** Désactive un lien de partage */
 export const deactivateShareLink = async (
-  shareLinkDocumentId: string
+  shareLink: { documentId: string; id?: number }
 ): Promise<void> => {
-  await put(`project-share-links/${shareLinkDocumentId}`, {
-    is_active: false,
-  });
+  const payload = { is_active: false };
+  const attempt = async (idOrDocId: string | number) => {
+    await put(`project-share-links/${idOrDocId}`, payload);
+  };
+  try {
+    await attempt(shareLink.documentId);
+  } catch (err) {
+    // Fallback: Strapi v4 ou backend custom utilise parfois l'id numérique
+    const is404 = err instanceof Error && (err.message.includes('404') || err.message.includes('Not Found'));
+    if (shareLink.id != null && is404) {
+      await attempt(shareLink.id);
+    } else {
+      throw err;
+    }
+  }
 };
 
 /** Met à jour un lien de partage */

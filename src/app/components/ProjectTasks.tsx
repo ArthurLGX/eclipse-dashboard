@@ -202,11 +202,11 @@ export default function ProjectTasks({
   ];
 
   const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string; color: string; icon: React.ReactNode }[] = [
-    { value: 'todo', label: t('todo') || 'À faire', color: 'zinc', icon: <IconClock className="w-4 h-4" /> },
-    { value: 'in_progress', label: t('in_progress') || 'En cours', color: 'blue', icon: <IconProgress className="w-4 h-4" /> },
+    { value: 'todo', label: t('todo') || 'À faire', color: 'blue', icon: <IconClock className="w-4 h-4" /> },
+    { value: 'in_progress', label: t('in_progress') || 'En cours', color: 'amber', icon: <IconProgress className="w-4 h-4" /> },
     { value: 'completed', label: t('completed') || 'Terminé', color: 'emerald', icon: <IconCheck className="w-4 h-4" /> },
     { value: 'cancelled', label: t('cancelled') || 'Annulé', color: 'red', icon: <IconX className="w-4 h-4" /> },
-    { value: 'archived', label: t('task_archived') || 'Archivée', color: 'gray', icon: <IconArchive className="w-4 h-4" /> },
+    { value: 'archived', label: t('task_archived') || 'Archivée', color: 'zinc', icon: <IconArchive className="w-4 h-4" /> },
   ];
 
   const PRIORITY_OPTIONS: { value: TaskPriority; label: string; color: string }[] = [
@@ -1180,14 +1180,8 @@ export default function ProjectTasks({
   };
 
   const getStatusStyle = (status: TaskStatus) => {
-    const option = TASK_STATUS_OPTIONS.find(o => o.value === status);
-    const colorMap: Record<string, string> = {
-      zinc: 'bg-zinc-500/20 !text-zinc-400 border-zinc-500/30',
-      blue: 'bg-blue-500/20 !text-blue-400 border-blue-500/30',
-      emerald: 'bg-emerald-500/20 !text-emerald-400 border-emerald-500/30',
-      red: 'bg-red-500/20 !text-red-400 border-red-500/30',
-    };
-    return colorMap[option?.color || 'zinc'];
+    const knownStatuses: TaskStatus[] = ['todo', 'in_progress', 'completed', 'cancelled', 'archived'];
+    return knownStatuses.includes(status) ? `badge-task-${status}` : 'badge-task-todo';
   };
 
   const getPriorityStyle = (priority: TaskPriority) => {
@@ -1535,7 +1529,7 @@ export default function ProjectTasks({
                       <UserAvatar user={parentTaskForSubtask.assigned_to} size="sm" />
                     </span>
                   )}
-                  <span className={`px-2 py-0.5 rounded-full ${TASK_STATUS_OPTIONS.find(s => s.value === parentTaskForSubtask.task_status)?.color || 'bg-muted'}`}>
+                  <span className={`px-2 py-0.5 rounded-full border ${getStatusStyle(parentTaskForSubtask.task_status)}`}>
                     {TASK_STATUS_OPTIONS.find(s => s.value === parentTaskForSubtask.task_status)?.label || parentTaskForSubtask.task_status}
                   </span>
                 </div>
@@ -2774,11 +2768,12 @@ interface TaskKanbanViewProps {
 }
 
 // Configuration des colonnes Kanban pour les tâches
+/* Colonnes Kanban - couleurs alignées avec badge-task-* */
 const KANBAN_COLUMNS: { id: TaskStatus; title: string; color: string; bgColor: string; borderColor: string; icon: React.ReactNode }[] = [
-  { id: 'todo', title: 'todo', color: 'text-zinc-400', bgColor: 'bg-zinc-500/10', borderColor: 'border-zinc-500/30', icon: <IconClock className="w-4 h-4" /> },
-  { id: 'in_progress', title: 'in_progress', color: 'text-blue-400', bgColor: 'bg-blue-500/10', borderColor: 'border-blue-500/30', icon: <IconProgress className="w-4 h-4" /> },
-  { id: 'completed', title: 'completed', color: 'text-emerald-400', bgColor: 'bg-emerald-500/10', borderColor: 'border-emerald-500/30', icon: <IconCheck className="w-4 h-4" /> },
-  { id: 'cancelled', title: 'cancelled', color: 'text-red-400', bgColor: 'bg-red-500/10', borderColor: 'border-red-500/30', icon: <IconX className="w-4 h-4" /> },
+  { id: 'todo', title: 'todo', color: '!text-blue-600 dark:!text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30', borderColor: 'border-blue-500', icon: <IconClock className="w-4 h-4" /> },
+  { id: 'in_progress', title: 'in_progress', color: '!text-amber-700 dark:!text-amber-400', bgColor: 'bg-amber-50 dark:bg-amber-900/30', borderColor: 'border-amber-500', icon: <IconProgress className="w-4 h-4" /> },
+  { id: 'completed', title: 'completed', color: '!text-emerald-700 dark:!text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30', borderColor: 'border-emerald-500', icon: <IconCheck className="w-4 h-4" /> },
+  { id: 'cancelled', title: 'cancelled', color: '!text-red-600 dark:!text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/30', borderColor: 'border-red-500', icon: <IconX className="w-4 h-4" /> },
 ];
 
 // Carte de tâche pour le Kanban
@@ -3631,8 +3626,9 @@ function TaskGanttView({
 
   // Gestion du changement de dates via drag-and-drop
   const handleTaskDateChange = useCallback(async (taskId: string, newStartDate: string, newDueDate: string) => {
-    // Trouver la tâche à mettre à jour
-    const taskToUpdate = tasks.find(t => t.documentId === taskId);
+    // Trouver la tâche (parent ou sous-tâche)
+    const taskToUpdate = tasks.find(t => t.documentId === taskId)
+      ?? tasks.flatMap(t => t.subtasks || []).find(s => s.documentId === taskId);
     if (!taskToUpdate) {
       console.error('Task not found:', taskId);
       return;
@@ -4027,7 +4023,7 @@ function TaskGanttView({
             <IconTimeline className="w-4 h-4 !text-accent" />
             <span className="font-semibold !text-sm !text-primary">{projectName || t('project_tasks') || 'Projet'}</span>
           </div>
-          <span className="font-mono !text-[10px] px-2 py-0.5 rounded border border-default !text-muted bg-muted/30">{t('gantt') || 'Gantt'}</span>
+          <span className="font-mono !text-[10px] px-2 py-0.5 rounded border border-default !text-muted bg-muted">{t('gantt') || 'Gantt'}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex border border-default  overflow-hidden">
@@ -4057,32 +4053,32 @@ function TaskGanttView({
         <table className="w-full border-collapse" style={{ minWidth: `${LEFT_W + 90 + 60 + dayHeaders.length * colWidth}px` }}>
           <thead className="sticky top-0 z-20 bg-card">
             <tr>
-              <th className="!text-left py-3 px-4 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky left-0 z-30 bg-card border-b border-default" style={{ width: LEFT_W, minWidth: LEFT_W }}>
+              <th className="!text-left py-3 px-4 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky left-0 z-40 bg-card-solid border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W, minWidth: LEFT_W }}>
                 {t('task_name') || 'Nom de la tâche'}
               </th>
-              <th className="!text-center py-3 px-2 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky z-30 bg-card border-b border-default w-20">
+              <th className="!text-center py-3 px-2 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky z-40 bg-card-solid border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W, width: 90, minWidth: 90 }}>
                 {t('due_range') || 'Période'}
               </th>
-              <th className="!text-center py-3 px-2 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky z-30 bg-card border-b border-default w-14">
+              <th className="!text-center py-3 px-2 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky z-40 !bg-card-solid border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60, minWidth: 60 }}>
                 {t('duration') || 'Durée'}
               </th>
               {months.map((month, i) => (
-                <th key={i} colSpan={month.days} className="!text-center py-2 !text-xs font-semibold !text-primary bg-muted/50 border-b border-default">
+                <th key={i} colSpan={month.days} className="!text-center py-2 !text-xs font-semibold !text-primary bg-muted border-b border-default">
                   {month.label}
                 </th>
               ))}
             </tr>
             <tr>
-              <th className="sticky left-0 z-30 bg-card h-8 border-b border-default" style={{ width: LEFT_W }} />
-              <th className="sticky z-30 bg-card border-b border-default" />
-              <th className="sticky z-30 bg-card border-b border-default" />
+              <th className="sticky left-0 z-40 bg-card-solid h-8 border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W }} />
+              <th className="sticky z-40 bg-card-solid h-8 border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W, width: 90 }} />
+              <th className="sticky z-40 bg-card-solid h-8 border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60 }} />
               {dayHeaders.map((day, j) => (
                 <th
                   key={j}
                   data-day-index={j}
                   data-is-today={isToday(day) ? 'true' : 'false'}
                   className={`!text-center py-1.5 font-mono !text-[10px] border-b border-default flex-shrink-0 ${
-                    isToday(day) ? '!text-warning font-semibold bg-warning/10' : day.getDay() === 0 || day.getDay() === 6 ? '!text-muted/60 bg-muted/20' : '!text-muted'
+                    isToday(day) ? '!text-warning font-semibold bg-warning/10' : day.getDay() === 0 || day.getDay() === 6 ? '!text-muted/60 bg-muted' : '!text-muted'
                   }`}
                   style={{ width: colWidth, minWidth: colWidth }}
                 >
@@ -4099,8 +4095,8 @@ function TaskGanttView({
                 return (
                   <React.Fragment key={group.color}>
                     {/* En-tête du groupe */}
-                    <tr className="cursor-pointer hover:bg-muted/50 transition-colors bg-muted/20" onClick={() => toggleGroup(group.color)}>
-                      <td className="py-2.5 px-4 sticky left-0 z-20 bg-muted/20 border-b border-default" style={{ width: LEFT_W }}>
+                    <tr className="cursor-pointer hover:bg-muted transition-colors bg-muted" onClick={() => toggleGroup(group.color)}>
+                      <td className="py-2.5 px-4 sticky left-0 z-40 bg-muted border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W }}>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: group.color }} />
                           <span className="font-semibold !text-primary !text-sm">{groupName}</span>
@@ -4108,9 +4104,9 @@ function TaskGanttView({
                           <IconChevronDown className={`w-4 h-4 !text-muted ml-auto transition-transform ${isExpanded ? '' : '-rotate-90'}`} />
                         </div>
                       </td>
-                      <td className="py-2.5 px-2 border-b border-default bg-muted/20" />
-                      <td className="py-2.5 px-2 border-b border-default bg-muted/20" />
-                      <td colSpan={dayHeaders.length} className="h-9 p-0 overflow-hidden border-b border-default bg-muted/20">
+                      <td className="py-2.5 px-2 border-b border-default bg-muted sticky z-40 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W, width: 90 }} />
+                      <td className="py-2.5 px-2 border-b border-default bg-muted sticky z-40 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60 }} />
+                      <td colSpan={dayHeaders.length} className="h-9 p-0 overflow-hidden border-b border-default bg-muted">
                         <div className="relative w-full h-full">
                           {todayIndex >= 0 && (
                             <div className="absolute top-0 bottom-0 w-[1.5px] bg-warning z-[4] pointer-events-none" style={{ left: `${todayIndex * colWidth + colWidth / 2}px` }}>
@@ -4154,7 +4150,7 @@ function TaskGanttView({
                             onClick={() => onEdit(task)}
                           >
                             {/* Task Name */}
-                            <td className="py-2 px-4 sticky left-0 z-20 bg-card group-hover:bg-muted/30 border-b border-default/60" style={{ width: LEFT_W }}>
+                            <td className="py-2 px-4 sticky left-0 z-40 bg-card-solid group-hover:bg-muted border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W }}>
                               <div className="flex items-center gap-2">
                                 <div 
                                   className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
@@ -4171,7 +4167,7 @@ function TaskGanttView({
                                   {task.title}
                                 </span>
                                 {hasSubtasks && (
-                                  <span className="flex items-center gap-0.5 !text-[10px] !text-muted bg-muted/30 px-1 py-0.5 rounded">
+                                  <span className="flex items-center gap-0.5 !text-[10px] !text-muted bg-muted px-1 py-0.5 rounded">
                                     <IconSubtask className="w-3 h-3" />
                                     {completedSubtasks}/{subtaskCount}
                                   </span>
@@ -4180,7 +4176,7 @@ function TaskGanttView({
                               </div>
                             </td>
                             {/* Due Range */}
-                            <td className="py-2 px-1 !text-center sticky z-20 bg-card group-hover:bg-muted/30 border-b border-default/60">
+                            <td className="py-2 px-1 !text-center sticky z-40 bg-card-solid group-hover:bg-muted border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W, width: 90 }}>
                               <span 
                                 className="!text-[10px] font-medium px-1.5 py-0.5 rounded whitespace-nowrap"
                                 style={{ backgroundColor: group.color + '20', color: group.color }}
@@ -4189,7 +4185,7 @@ function TaskGanttView({
                               </span>
                             </td>
                             {/* Duration */}
-                            <td className="py-2 px-1 !text-center sticky z-20 bg-card group-hover:bg-muted/30 border-b border-default/60">
+                            <td className="py-2 px-1 !text-center sticky z-40 bg-card-solid group-hover:bg-muted border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60 }}>
                               <span className="!text-xs !text-muted whitespace-nowrap">
                                 {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'd'}
                               </span>
@@ -4199,7 +4195,7 @@ function TaskGanttView({
                               <div className="relative w-full h-full">
                                 <div className="absolute inset-0 flex">
                                   {dayHeaders.map((day, i) => (
-                                    <div key={i} className={`flex-shrink-0 ${isToday(day) ? 'bg-warning/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted/30' : ''}`} style={{ width: colWidth }} />
+                                    <div key={i} className={`flex-shrink-0 ${isToday(day) ? 'bg-warning/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted' : ''}`} style={{ width: colWidth }} />
                                   ))}
                                 </div>
                                 {todayIndex >= 0 && (
@@ -4244,7 +4240,7 @@ function TaskGanttView({
                                   className="hover:bg-muted cursor-pointer h-[34px]"
                                 onClick={() => onEdit(task)}
                               >
-                                <td className="py-1 !pl-11 !pr-4 sticky left-0 z-20 bg-card border-b border-default/60" style={{ width: LEFT_W }}>
+                                <td className="py-1 !pl-11 !pr-4 sticky left-0 z-40 bg-card-solid border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W }}>
                                   <div className="flex items-center gap-2">
                                     <div 
                                       className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
@@ -4261,10 +4257,10 @@ function TaskGanttView({
                                     {subtask.assigned_to && <UserAvatar user={subtask.assigned_to} size="sm" className="ml-auto" />}
                                   </div>
                                 </td>
-                                <td className="py-1 px-1 !text-center sticky z-20 bg-card border-b border-default/60">
+                                <td className="py-1 px-1 !text-center sticky z-40 bg-card-solid border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W, width: 90 }}>
                                   <span className="!text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
-                                <td className="py-1 px-1 !text-center sticky z-20 bg-card border-b border-default/60">
+                                <td className="py-1 px-1 !text-center sticky z-40 bg-card-solid border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60 }}>
                                   <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-10 p-0 overflow-hidden border-b border-default/60">
@@ -4302,7 +4298,7 @@ function TaskGanttView({
                           {/* Nouvelle sous-tâche */}
                           <tr className="h-10">
                             <td
-                              className="py-1 px-4 sticky left-0 z-20 bg-card hover:bg-muted/30 cursor-pointer border-b border-default/60 transition-colors"
+                              className="py-1 px-4 sticky left-0 z-40 bg-card-solid hover:bg-muted cursor-pointer border-b border-default/60 transition-colors shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]"
                               onClick={(e) => { e.stopPropagation(); onAddSubtask(task); }}
                               style={{ width: LEFT_W }}
                             >
@@ -4311,8 +4307,8 @@ function TaskGanttView({
                                 <span className="!text-xs">{t('add_subtask') || 'Nouvelle sous-tâche'}</span>
                               </div>
                             </td>
-                            <td className="py-1 border-b border-default/60" />
-                            <td className="py-1 border-b border-default/60" />
+                            <td className="py-1 border-b border-default/60 sticky z-40 bg-card-solid" style={{ left: LEFT_W, width: 90 }} />
+                            <td className="py-1 border-b border-default/60 sticky z-40 bg-card-solid" style={{ left: LEFT_W + 90, width: 60 }} />
                             <td colSpan={dayHeaders.length} className="h-10 p-0 border-b border-default/60" />
                           </tr>
                         </React.Fragment>
@@ -4321,14 +4317,14 @@ function TaskGanttView({
                     {/* Nouvelle tâche (fin de groupe) */}
                     {canEdit && onAddTask && (
                       <tr className="h-10">
-                        <td className="py-1 px-4 sticky left-0 z-20 bg-card hover:bg-muted/30 cursor-pointer border-b border-default/60 transition-colors" onClick={onAddTask} style={{ width: LEFT_W }}>
+                        <td className="py-1 px-4 sticky left-0 z-40 bg-card-solid hover:bg-muted cursor-pointer border-b border-default/60 transition-colors shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" onClick={onAddTask} style={{ width: LEFT_W }}>
                           <div className="flex items-center gap-2 !text-muted hover:!text-accent">
                             <IconPlus className="w-3 h-3" />
                             <span className="!text-xs">{t('new_task') || 'Nouvelle tâche'}</span>
                           </div>
                         </td>
-                        <td className="py-1 border-b border-default/60" />
-                        <td className="py-1 border-b border-default/60" />
+                        <td className="py-1 border-b border-default/60 sticky z-40 bg-card-solid" style={{ left: LEFT_W, width: 90 }} />
+                        <td className="py-1 border-b border-default/60 sticky z-40 bg-card-solid" style={{ left: LEFT_W + 90, width: 60 }} />
                         <td colSpan={dayHeaders.length} className="h-10 p-0 border-b border-default/60" />
                       </tr>
                     )}

@@ -28,7 +28,7 @@ export function UserDisplay({ user, size = 'md', showName = true, className = ''
   const displayName = getUserDisplayName(user);
   const initials = getUserInitials(user);
   const pictureUrl = getProfilePictureUrl(user);
-  const colorIndex = (user.username || user.email || '').charCodeAt(0) % AVATAR_COLORS.length;
+  const colorIndex = (user.username || user.firstname || user.email || '').charCodeAt(0) % AVATAR_COLORS.length;
   const { avatar } = getSizeClasses(size);
 
   return (
@@ -85,7 +85,7 @@ export function UserAvatar({
   const displayName = getUserDisplayName(user);
   const initials = getUserInitials(user);
   const pictureUrl = getProfilePictureUrl(user);
-  const colorIndex = (user.username || user.email || '').charCodeAt(0) % AVATAR_COLORS.length;
+  const colorIndex = (user.username || user.firstname || user.email || '').charCodeAt(0) % AVATAR_COLORS.length;
   const { avatar } = getSizeClasses(size);
 
   return (

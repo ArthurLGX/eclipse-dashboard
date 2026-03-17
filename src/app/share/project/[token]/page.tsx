@@ -243,14 +243,22 @@ export default function SharedProjectPage() {
     ? Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
     : null;
 
+  const statusLabels: Record<string, string> = {
+    planning: t('planning'),
+    in_progress: t('in_progress'),
+    delivered: t('pipeline_delivered'),
+    warranty: t('warranty'),
+    maintenance: t('maintenance'),
+    completed: t('done'),
+    on_hold: t('project_status_on_hold'),
+    archived: t('archived'),
+  };
+  const knownStatuses = ['planning', 'in_progress', 'delivered', 'warranty', 'maintenance', 'completed', 'on_hold', 'archived'];
+  const status = project.project_status;
   const statusConfig = {
-    planning: { label: t('planning'), colorClass: 'badge badge-info' },
-    in_progress: { label: t('in_progress'), colorClass: 'badge badge-warning' },
-    completed: { label: t('done'), colorClass: 'badge badge-success' },
-    maintenance: { label: t('maintenance'), colorClass: 'badge badge-maintenance' },
-    on_hold: { label: t('project_status_on_hold'), colorClass: 'badge badge-status-on_hold' },
-    archived: { label: t('archived'), colorClass: 'badge badge-status-archived' },
-  }[project.project_status] || { label: project.project_status, colorClass: 'badge badge-muted' };
+    label: statusLabels[status] || status,
+    colorClass: knownStatuses.includes(status) ? `badge badge-status-${status}` : 'badge badge-muted',
+  };
 
   return (
     <div className="min-h-screen bg-page w-full px-8 pt-32 pb-8">

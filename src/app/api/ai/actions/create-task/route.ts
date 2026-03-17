@@ -43,29 +43,29 @@ export async function POST(req: Request) {
     // If no projectId provided, we need to get user's first project or create a standalone task
     let projectDocumentId = taskInput.projectId;
 
-    if (!projectDocumentId) {
-      // Get user info first
-      const userRes = await fetch(`${apiUrl}/api/users/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      if (!userRes.ok) {
-        return NextResponse.json(
-          { error: 'Impossible de récupérer l\'utilisateur' },
-          { status: 401 }
-        );
-      }
-      
-      const user = await userRes.json();
+    // Get user info (nécessaire pour created_user et fallback project)
+    const userRes = await fetch(`${apiUrl}/api/users/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
+    if (!userRes.ok) {
+      return NextResponse.json(
+        { error: 'Impossible de récupérer l\'utilisateur' },
+        { status: 401 }
+      );
+    }
+
+    const user = await userRes.json();
+
+    if (!projectDocumentId) {
       // Get user's first project
       const projectsRes = await fetch(
         `${apiUrl}/api/projects?filters[user][id][$eq]=${user.id}&pagination[limit]=1`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       const projectsData = await projectsRes.json();
-      
+
       if (projectsData.data && projectsData.data.length > 0) {
         projectDocumentId = projectsData.data[0].documentId;
       }
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create the task in Strapi
+    // Create the task in Strapi (format Strapi v5 pour les relations)
     const taskData = {
       data: {
         title: taskInput.title,
@@ -87,7 +87,8 @@ export async function POST(req: Request) {
         priority: taskInput.priority || 'medium',
         progress: 0,
         due_date: taskInput.dueDate || null,
-        project: projectDocumentId,
+        project: { connect: [{ documentId: projectDocumentId }] },
+        created_user: { connect: [{ id: user.id }] },
       },
     };
 
