@@ -21,6 +21,7 @@ import {
   IconPalette,
 } from '@tabler/icons-react';
 import MediaPickerModal from './MediaPickerModal';
+import { UserAvatar, getUserDisplayName } from '@/app/components/UserDisplay';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import {
@@ -756,14 +757,10 @@ export default function ShareProjectModal({
                       className="flex items-center justify-between p-3 bg-muted "
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-success-light flex items-center justify-center">
-                          <span className="!text-success font-medium">
-                            {collab.user?.username?.[0]?.toUpperCase() || '?'}
-                          </span>
-                        </div>
+                        <UserAvatar user={collab.user} size="md" className="!w-10 !h-10" />
                         <div>
                           <p className="!text-sm !text-primary">
-                            {collab.user?.username || collab.user?.email}
+                            {getUserDisplayName(collab.user)}
                           </p>
                           <p className="!text-xs !text-muted">
                             {collab.permission === 'edit' 

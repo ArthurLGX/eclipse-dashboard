@@ -84,9 +84,9 @@ export default function TaskSectionRedesign({
 
   const allMembers = useMemo(() => {
     const m: { id: number; documentId: string; username: string; email: string }[] = [];
-    if (ownerInfo) m.push({ id: ownerInfo.id, documentId: ownerInfo.documentId, username: ownerInfo.username || 'Propriétaire', email: ownerInfo.email || '' });
+    if (ownerInfo) m.push({ id: ownerInfo.id, documentId: ownerInfo.documentId, username: ownerInfo.username || ownerInfo.email || 'Propriétaire', email: ownerInfo.email || '' });
     collaborators.forEach((c) => {
-      if (c.user && !c.is_owner) m.push({ id: c.user.id, documentId: c.user.documentId, username: c.user.username || '', email: c.user.email || '' });
+      if (c.user && !c.is_owner) m.push({ id: c.user.id, documentId: c.user.documentId, username: c.user.username || c.user.email || '', email: c.user.email || '' });
     });
     return m;
   }, [ownerInfo, collaborators]);

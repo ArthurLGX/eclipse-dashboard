@@ -284,10 +284,10 @@ export default function TaskNotificationEmailModal({
                     <div key={idx} className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-accent-light flex items-center justify-center !text-accent-text font-medium">
-                          {recipient.username?.charAt(0).toUpperCase() || recipient.email?.charAt(0).toUpperCase()}
+                          {(recipient.username || recipient.email || '?').charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="!text-sm font-medium !text-primary">{recipient.username}</p>
+                          <p className="!text-sm font-medium !text-primary">{recipient.username || recipient.email}</p>
                           <p className="!text-xs !text-muted">{recipient.email}</p>
                         </div>
                       </div>

@@ -51,6 +51,7 @@ import {
 } from '@/lib/api';
 import type { Project, Facture, ProjectCollaborator, ProjectTask, MeetingNote } from '@/types';
 import { IconUserPlus, IconHourglass } from '@tabler/icons-react';
+import { getUserDisplayName } from '@/lib/user-utils';
 
 
 
@@ -486,8 +487,8 @@ const PROJECT_TYPES = [
               <IconFileText className="w-10 h-10 !text-accent-text" />
             </div>
             <h1 className="!text-2xl font-bold !text-primary mb-2">{project.title}</h1>
-            {project.user?.username && (
-              <p className="!text-muted mb-4">{t('by')} {project.user.username}</p>
+            {(project.user?.username || project.user?.email) && (
+              <p className="!text-muted mb-4">{t('by')} {getUserDisplayName(project.user)}</p>
             )}
             {(() => {
               const sc = getStatusConfig(project.project_status);
@@ -863,7 +864,7 @@ const PROJECT_TYPES = [
                       ownerInfo={project.user ? {
                         id: project.user.id,
                         documentId: project.user.documentId || '',
-                        username: project.user.username,
+                        username: getUserDisplayName(project.user),
                         email: project.user.email,
                       } : undefined}
                       useListRedesign
@@ -1205,7 +1206,7 @@ const PROJECT_TYPES = [
         projectTitle={project.title}
         userId={user?.id || 0}
         isOwner={isOwner}
-        ownerName={project.user?.username}
+        ownerName={getUserDisplayName(project.user)}
         ownerEmail={project.user?.email}
       />
 

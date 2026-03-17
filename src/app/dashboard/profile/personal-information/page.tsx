@@ -226,8 +226,8 @@ export default function PersonalInformationPage() {
           </div>
 
           <div className="profile-hero-info">
-            <div className="profile-hero-name">{profile?.username}</div>
-            <div className="profile-hero-handle">@{profile?.username} · {profile?.email}</div>
+            <div className="profile-hero-name">{profile?.username || profile?.email}</div>
+            <div className="profile-hero-handle">@{profile?.username || profile?.email?.split('@')[0] || 'user'} · {profile?.email}</div>
             <div className="profile-hero-badges">
               <span className="profile-hero-badge">
                 <span className={`profile-hero-badge-dot ${profile?.confirmed ? 'green' : ''}`} />

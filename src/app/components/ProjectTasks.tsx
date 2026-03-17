@@ -40,6 +40,7 @@ import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
 import { TaskListRedesignView } from './TaskSectionRedesign';
 import DraggableGanttBar from './DraggableGanttBar';
 import type { User } from '@/types';
+import { UserAvatar, getUserDisplayName } from '@/app/components/UserDisplay';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 import RichTextEditor from './RichTextEditor';
@@ -103,48 +104,6 @@ const TASK_COLORS = [
   '#06B6D4', // Cyan
   '#84CC16', // Lime
 ];
-
-// Composant Avatar pour les utilisateurs assignés
-function UserAvatar({ 
-  user, 
-  size = 'md',
-  className = '' 
-}: { 
-  user?: User | null; 
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}) {
-  const sizeClasses = {
-    sm: 'w-5 h-5 !text-[10px]',
-    md: 'w-7 h-7 !text-xs',
-    lg: 'w-9 h-9 !text-sm',
-  };
-  
-  if (!user) {
-    return (
-      <div className={`${sizeClasses[size]} rounded-full bg-muted flex items-center justify-center ${className}`}>
-        <IconUser className="w-3 h-3 !text-muted" />
-      </div>
-    );
-  }
-  
-  const initials = user.username 
-    ? user.username.slice(0, 2).toUpperCase() 
-    : user.email?.slice(0, 2).toUpperCase() || '??';
-    
-  // Générer une couleur basée sur le nom
-  const colors = ['bg-violet-500', 'bg-blue-500', 'bg-green-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500'];
-  const colorIndex = (user.username || user.email || '').charCodeAt(0) % colors.length;
-  
-  return (
-    <div 
-      className={`${sizeClasses[size]} rounded-full ${colors[colorIndex]} flex items-center justify-center !text-white font-medium ${className}`}
-      title={user.username || user.email}
-    >
-      {initials}
-    </div>
-  );
-}
 
 // Composant pour afficher plusieurs avatars empilés
 function AvatarStack({ 
@@ -212,7 +171,7 @@ export default function ProjectTasks({
       members.push({
         id: ownerInfo.id,
         documentId: ownerInfo.documentId,
-        username: ownerInfo.username || 'Propriétaire',
+        username: getUserDisplayName(ownerInfo) || 'Propriétaire',
         email: ownerInfo.email || '',
         isOwner: true,
       });
@@ -348,7 +307,7 @@ export default function ProjectTasks({
       if (newTask.assigned_to && onTaskAssigned) {
         const assignedMember = allMembers.find(m => m.documentId === newTask.assigned_to);
         if (assignedMember && assignedMember.email) {
-          onTaskAssigned(newTask.title, { email: assignedMember.email, username: assignedMember.username });
+          onTaskAssigned(newTask.title, { email: assignedMember.email, username: getUserDisplayName(assignedMember) });
         }
       }
 
@@ -862,7 +821,7 @@ export default function ProjectTasks({
             priority: task.priority,
             due_date: task.due_date,
             email: assignedMember.email,
-            username: assignedMember.username,
+            username: getUserDisplayName(assignedMember),
           });
         }
       }
@@ -1668,7 +1627,7 @@ export default function ProjectTasks({
                     <option value="">{t('not_assigned') || 'Non assigné'}</option>
                     {allMembers.map(member => (
                       <option key={member.documentId} value={member.documentId}>
-                        {member.username} {member.isOwner ? '(Propriétaire)' : ''}
+                        {getUserDisplayName(member)} {member.isOwner ? '(Propriétaire)' : ''}
                       </option>
                     ))}
                   </select>
@@ -2528,7 +2487,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                 <div className="flex items-center gap-2 mt-2">
                   <UserAvatar user={task.assigned_to} size="sm" />
                   <span className="!text-sm !text-primary">
-                    {t('assigned_to') || 'Assigné à'}: {task.assigned_to.username || task.assigned_to.email}
+                    {t('assigned_to') || 'Assigné à'}: {getUserDisplayName(task.assigned_to)}
                   </span>
                 </div>
               )}
@@ -2684,7 +2643,7 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
                 <option value="">{t('not_assigned') || 'Non assigné'}</option>
                 {allMembers.map(member => (
                   <option key={member.documentId} value={member.id}>
-                    {member.username} {member.isOwner ? `(${t('owner') || 'Propriétaire'})` : ''}
+                    {getUserDisplayName(member)} {member.isOwner ? `(${t('owner') || 'Propriétaire'})` : ''}
                   </option>
                 ))}
               </select>

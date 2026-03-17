@@ -269,9 +269,9 @@ export default function SharedProjectPage() {
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${statusConfig.colorClass}`}>
                   {statusConfig.label}
                 </span>
-                {project.user?.username && (
+                {(project.user?.username || project.user?.email) && (
                   <span className="!text-primary !text-sm">
-                    {t('by')} {project.user.username}
+                    {t('by')} {project.user.username || project.user.email}
                   </span>
                 )}
                 {project.end_date && (

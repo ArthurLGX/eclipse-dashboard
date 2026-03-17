@@ -743,7 +743,7 @@ export default function YourCompanyPage() {
                   <div className="company-nav-item-text">
                     <div className="company-nav-item-title">Profil personnel</div>
                     <div className="company-nav-item-sub">
-                      {user?.username || '—'} · {user?.email || '—'}
+                      {user?.username || user?.email || '—'} · {user?.email || '—'}
                     </div>
                   </div>
                   <span className="company-nav-item-arrow">›</span>

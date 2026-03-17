@@ -152,7 +152,7 @@ export default function AdminLogsPage() {
         log.timestamp,
         log.type,
         log.action,
-        log.user?.username || 'System',
+        log.user?.username || log.user?.email || 'System',
         log.user?.email || '-',
         log.ip || '-',
         log.status,
@@ -315,7 +315,7 @@ export default function AdminLogsPage() {
                       {log.user && (
                         <span className="flex items-center gap-1">
                           <IconUserPlus className="w-3 h-3" />
-                          {log.user.username}
+                          {log.user.username || log.user.email}
                         </span>
                       )}
                       {log.ip && (

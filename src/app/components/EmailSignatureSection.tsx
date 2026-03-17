@@ -223,7 +223,7 @@ export default function EmailSignatureSection() {
         // Sinon, pré-remplir avec les données entreprise
         setFormData({
           company_name: companyData.name || '',
-          sender_name: user.username || '',
+          sender_name: user.username || user.email || '',
           sender_title: '',
           phone: companyData.phoneNumber || '',
           website: companyData.website || '',
@@ -247,7 +247,7 @@ export default function EmailSignatureSection() {
         // Aucune donnée, juste mettre le nom de l'utilisateur
         setFormData(prev => ({
           ...prev,
-          sender_name: user.username || '',
+          sender_name: user.username || user.email || '',
         }));
       }
     } catch (error) {

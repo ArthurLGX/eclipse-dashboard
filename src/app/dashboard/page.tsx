@@ -208,7 +208,7 @@ export default function DashboardPage() {
               <span className="!text-xs !text-muted">{t('dashboard') || 'Tableau De Bord'}</span>
             </div>
             <h1 className="!text-[22px] font-bold tracking-tight !text-primary mb-0.5">
-              {user ? `Bonjour, ${user.username || user.email.split('@')[0]} 👋` : t('dashboard')}
+              {user ? `Bonjour, ${user.username || user.email?.split('@')[0] || user.email} 👋` : t('dashboard')}
             </h1>
             <p className="!text-sm !text-secondary">{t('dashboard_overview') || 'Voici un aperçu de votre activité'}</p>
           </div>

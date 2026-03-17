@@ -628,7 +628,7 @@ Cordialement`);
           } : undefined,
           tone: 'friendly',
           language: 'fr',
-          senderName: user?.username,
+          senderName: user?.username || user?.email,
         }),
       });
 
@@ -907,8 +907,8 @@ Cordialement`);
   // ============================================================================
 
   const senderInfo = useMemo(() => ({
-    firstName: signatureData?.sender_name?.split(' ')[0] || user?.username?.split(' ')[0] || 'Utilisateur',
-    lastName: signatureData?.sender_name?.split(' ').slice(1).join(' ') || user?.username?.split(' ').slice(1).join(' ') || '',
+    firstName: signatureData?.sender_name?.split(' ')[0] || (user?.username || user?.email)?.split(' ')[0] || 'Utilisateur',
+    lastName: signatureData?.sender_name?.split(' ').slice(1).join(' ') || (user?.username || user?.email)?.split(' ').slice(1).join(' ') || '',
     email: user?.email || 'email@example.com',
     profilePicture: user?.profile_picture?.url || null,
   }), [signatureData?.sender_name, user?.username, user?.email, user?.profile_picture?.url]);

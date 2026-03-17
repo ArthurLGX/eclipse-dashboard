@@ -1991,7 +1991,7 @@ export async function createProjectInvitation(data: {
   if (recipient) {
     try {
       // Récupérer les infos du sender (avec profile_picture) et du projet pour la notification
-      const senderData = await get<{ username: string; profile_picture?: { url: string } }>(`users/${data.sender}?populate=profile_picture`);
+      const senderData = await get<{ username?: string; email?: string; profile_picture?: { url: string } }>(`users/${data.sender}?populate=profile_picture`);
       const projectData = await get<ApiResponse<{ title: string }[]>>(
         `projects?filters[documentId][$eq]=${data.project}`
       );
@@ -2006,12 +2006,12 @@ export async function createProjectInvitation(data: {
         user: recipient.id,
         type: 'project_invitation',
         title: 'Invitation à collaborer',
-        message: `${senderData.username || 'Un utilisateur'} vous invite à collaborer sur le projet "${projectTitle}"`,
+        message: `${senderData.username || senderData.email || 'Un utilisateur'} vous invite à collaborer sur le projet "${projectTitle}"`,
         data: {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           invitation_id: (invitation as any).data?.documentId,
           project_id: data.project,
-          sender_name: senderData.username,
+          sender_name: senderData.username || senderData.email,
           sender_profile_picture: senderProfilePicture,
           project_title: projectTitle,
         },

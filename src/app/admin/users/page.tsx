@@ -18,6 +18,7 @@ import {
   IconEye,
   IconShield,
 } from '@tabler/icons-react';
+import { UserAvatar, getUserDisplayName } from '@/app/components/UserDisplay';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
 
@@ -30,7 +31,8 @@ interface Role {
 interface User {
   id: number;
   documentId: string;
-  username: string;
+  username?: string;
+  profile_picture?: { url?: string };
   email: string;
   confirmed: boolean;
   blocked: boolean;
@@ -228,7 +230,7 @@ export default function AdminUsersPage() {
       ['ID', 'Username', 'Email', 'Role', 'Status', 'Created At'].join(','),
       ...filteredUsers.map(user => [
         user.id,
-        user.username,
+        getUserDisplayName(user),
         user.email,
         user.role?.name || 'N/A',
         user.blocked ? 'Blocked' : 'Active',
@@ -423,13 +425,9 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="!text-accent-text font-medium !text-sm">
-                          {user.username?.charAt(0).toUpperCase() || '?'}
-                        </span>
-                      </div>
+                      <UserAvatar user={user} size="md" className="!w-9 !h-9" />
                       <div>
-                        <p className="font-medium !text-primary !text-sm">{user.username}</p>
+                        <p className="font-medium !text-primary !text-sm">{getUserDisplayName(user)}</p>
                         <p className="!text-xs !text-muted">ID: {user.id}</p>
                       </div>
                     </div>
@@ -585,13 +583,9 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="!text-2xl !text-accent-text font-bold">
-                          {modalData.user.username?.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
+                      <UserAvatar user={modalData.user} size="lg" className="!w-16 !h-16" />
                       <div>
-                        <p className="!text-xl font-semibold !text-primary">{modalData.user.username}</p>
+                        <p className="!text-xl font-semibold !text-primary">{getUserDisplayName(modalData.user)}</p>
                         <p className="!text-sm !text-muted">{modalData.user.email}</p>
                       </div>
                     </div>
@@ -647,13 +641,9 @@ export default function AdminUsersPage() {
                   </div>
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-accent-light flex items-center justify-center">
-                        <span className="!text-lg !text-accent-text font-bold">
-                          {modalData.user.username?.charAt(0).toUpperCase()}
-                        </span>
-                      </div>
+                      <UserAvatar user={modalData.user} size="lg" className="!w-12 !h-12" />
                       <div>
-                        <p className="font-semibold !text-primary">{modalData.user.username}</p>
+                        <p className="font-semibold !text-primary">{getUserDisplayName(modalData.user)}</p>
                         <p className="!text-sm !text-muted">{modalData.user.email}</p>
                       </div>
                     </div>
@@ -727,8 +717,8 @@ export default function AdminUsersPage() {
                     </h3>
                     <p className="!text-sm !text-muted mt-2">
                       {modalData.user.blocked
-                        ? `${modalData.user.username} ${t('will_be_able_to_login') || 'pourra de nouveau se connecter.'}`
-                        : `${modalData.user.username} ${t('will_not_be_able_to_login') || 'ne pourra plus se connecter.'}`
+                        ? `${getUserDisplayName(modalData.user)} ${t('will_be_able_to_login') || 'pourra de nouveau se connecter.'}`
+                        : `${getUserDisplayName(modalData.user)} ${t('will_not_be_able_to_login') || 'ne pourra plus se connecter.'}`
                       }
                     </p>
                   </div>
@@ -765,7 +755,7 @@ export default function AdminUsersPage() {
                       {t('delete_user') || 'Supprimer cet utilisateur'} ?
                     </h3>
                     <p className="!text-sm !text-muted mt-2">
-                      {t('delete_user_warning') || 'Cette action est irréversible. Toutes les données de'} {modalData.user.username} {t('will_be_deleted') || 'seront supprimées.'}
+                      {t('delete_user_warning') || 'Cette action est irréversible. Toutes les données de'} {getUserDisplayName(modalData.user)} {t('will_be_deleted') || 'seront supprimées.'}
                     </p>
                   </div>
                   <div className="flex gap-3">

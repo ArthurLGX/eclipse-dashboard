@@ -102,7 +102,7 @@ export default function TaskAssignmentEmailModal({
 
     return `
       <div style="font-family: 'Inter', Arial, sans-serif; color: #374151; line-height: 1.6;">
-        <p style="margin: 0 0 16px;">Bonjour <strong>${user.username.split(' ')[0]}</strong>,</p>
+        <p style="margin: 0 0 16px;">Bonjour <strong>${(user.username || user.email || '').split(' ')[0] || 'Utilisateur'}</strong>,</p>
         
         ${effectiveMessage.split('\n').map(line => `<p style="margin: 0 0 12px;">${line || '&nbsp;'}</p>`).join('')}
         
@@ -223,9 +223,9 @@ export default function TaskAssignmentEmailModal({
                       className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full"
                     >
                       <div className="w-6 h-6 rounded-full bg-accent-light flex items-center justify-center !text-accent-text !text-xs font-medium">
-                        {user.username.charAt(0).toUpperCase()}
+                        {(user.username || user.email || '?').charAt(0).toUpperCase()}
                       </div>
-                      <span className="!text-sm !text-primary">{user.username}</span>
+                      <span className="!text-sm !text-primary">{user.username || user.email}</span>
                       <span className="!text-xs !text-muted">({user.tasks.length})</span>
                       <button
                         onClick={() => openPreview(user)}

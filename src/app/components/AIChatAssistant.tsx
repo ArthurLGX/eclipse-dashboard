@@ -795,7 +795,7 @@ export default function AIChatAssistant() {
                     <IconSparkles size={32} className="!text-muted" />
                   </div>
                   <h4 className="font-semibold !text-primary mb-2">
-                    {t('ai_welcome_title') || 'Salut'} {user?.username || ''} ! 👋
+                    {t('ai_welcome_title') || 'Salut'} {user?.username || user?.email?.split('@')[0] || ''} ! 👋
                   </h4>
                   <p className="!text-sm !text-muted mb-6">
                     {t('ai_welcome_message') || 'Je suis là pour t\'aider à avancer sur tes projets et clients. Pose-moi une question ou choisis une action rapide.'}
