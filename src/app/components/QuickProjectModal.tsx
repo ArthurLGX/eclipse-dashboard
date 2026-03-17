@@ -256,7 +256,7 @@ export default function QuickProjectModal({
         client: clientId,
       });
       
-      const project = (projectResponse as { data?: Project }).data || projectResponse as Project;
+      const project = (projectResponse as { data?: Project }).data ?? (projectResponse as unknown as Project);
       
       if (!project?.documentId) {
         throw new Error('Invalid project response');

@@ -158,11 +158,13 @@ export default function QuoteToProjectModal({
           user: user.id,
         };
 
-        const createdProject = await createProject(projectData) as { id: number; documentId: string };
-        setCreatedProjectId(createdProject.documentId);
+        const projectResponse = await createProject(projectData);
+        const createdProject = (projectResponse as { data?: { documentId: string } }).data ?? (projectResponse as unknown as { documentId: string });
+        const projectDocumentId = createdProject?.documentId;
+        setCreatedProjectId(projectDocumentId ?? '');
 
         // Créer les tâches à partir des lignes de prestation
-        if (importTasksOption && invoiceLines.length > 0) {
+        if (importTasksOption && invoiceLines.length > 0 && projectDocumentId) {
           for (let i = 0; i < invoiceLines.length; i++) {
             const line = invoiceLines[i];
             const taskData = {
@@ -173,7 +175,7 @@ export default function QuoteToProjectModal({
               progress: 0,
               order: i,
               estimated_hours: estimateHours(line) || null,
-              project: createdProject.documentId, // documentId, pas id
+              project: projectDocumentId,
               created_user: user.id,
             };
 

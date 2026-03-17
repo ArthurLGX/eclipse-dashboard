@@ -682,8 +682,8 @@ export default function UnifiedOnboardingModal() {
        const projectResponse = await createProject(projectData, true);
        
       // Handle different response formats
-      const project = (projectResponse as { data?: { id: number; documentId: string; title: string }; id?: number; documentId?: string; title?: string }).data 
-        || projectResponse as { id: number; documentId: string; title: string };
+      const project = (projectResponse as { data?: { id: number; documentId: string; title: string } }).data 
+        ?? (projectResponse as unknown as { id: number; documentId: string; title: string });
       
       if (!project?.documentId) {
         console.error('[Onboarding] Invalid project response - no documentId:', projectResponse);
