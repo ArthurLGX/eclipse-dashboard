@@ -424,7 +424,7 @@ export default function NewsletterComposePage() {
           {/* Main */}
           <main className="flex-1 overflow-y-auto bg-[#F8F7F4]">
             {showPreview ? (
-              <div className="p-8 max-w-2xl">
+              <div className="p-8 w-full ">
                 <div className="bg-white shadow-xl overflow-hidden rounded-lg">
                   <iframe
                     srcDoc={generateEmailHtml({

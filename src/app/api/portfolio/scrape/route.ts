@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
-import puppeteer, { Browser } from 'puppeteer';
 
 interface ScrapedProject {
   id: string;
@@ -253,8 +252,8 @@ function extractProjectsFromHtml($: cheerio.CheerioAPI, baseUrl: string, debug: 
 
 export async function POST(request: NextRequest): Promise<NextResponse<ScrapeResult>> {
   const debug: string[] = [];
-  let browser: Browser | null = null;
-  
+  const isVercel = !!process.env.VERCEL;
+
   try {
     const { url, useJavaScript = true } = await request.json();
 
@@ -274,12 +273,13 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
     let siteName = '';
     let method = 'static';
 
-    // Try with Puppeteer first for JavaScript rendering
-    if (useJavaScript) {
+    // Puppeteer uniquement en local (non supporté sur Vercel serverless)
+    if (useJavaScript && !isVercel) {
       try {
+        const puppeteer = await import('puppeteer');
         debug.push('Launching Puppeteer browser...');
-        
-        browser = await puppeteer.launch({
+
+        const browser = await puppeteer.default.launch({
           headless: true,
           args: [
             '--no-sandbox',
@@ -291,60 +291,46 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
           ],
         });
 
-        const page = await browser.newPage();
-        
-        // Set viewport and user agent
-        await page.setViewport({ width: 1920, height: 1080 });
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+        try {
+          const page = await browser.newPage();
+          await page.setViewport({ width: 1920, height: 1080 });
+          await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-        debug.push(`Navigating to ${url}...`);
-        
-        // Navigate and wait for content
-        await page.goto(url, { 
-          waitUntil: 'networkidle2',
-          timeout: 30000,
-        });
+          debug.push(`Navigating to ${url}...`);
+          await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
-        // Wait a bit more for any lazy-loaded content
-        debug.push('Waiting for dynamic content...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
+          debug.push('Waiting for dynamic content...');
+          await new Promise((resolve) => setTimeout(resolve, 3000));
 
-        // Scroll down to trigger lazy loading
-        await page.evaluate(async () => {
-          await new Promise<void>((resolve) => {
-            let totalHeight = 0;
-            const distance = 500;
-            const timer = setInterval(() => {
-              const scrollHeight = document.body.scrollHeight;
-              window.scrollBy(0, distance);
-              totalHeight += distance;
-              if (totalHeight >= scrollHeight || totalHeight > 5000) {
-                clearInterval(timer);
-                resolve();
-              }
-            }, 100);
+          await page.evaluate(async () => {
+            await new Promise<void>((resolve) => {
+              let totalHeight = 0;
+              const distance = 500;
+              const timer = setInterval(() => {
+                const scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+                if (totalHeight >= scrollHeight || totalHeight > 5000) {
+                  clearInterval(timer);
+                  resolve();
+                }
+              }, 100);
+            });
           });
-        });
 
-        // Wait for images to load
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Get the rendered HTML
-        html = await page.content();
-        debug.push(`Got ${html.length} chars of rendered HTML`);
-        method = 'puppeteer';
-
-        await browser.close();
-        browser = null;
-
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          html = await page.content();
+          debug.push(`Got ${html.length} chars of rendered HTML`);
+          method = 'puppeteer';
+        } finally {
+          await browser.close();
+        }
       } catch (puppeteerError) {
         debug.push(`Puppeteer error: ${puppeteerError}`);
-        if (browser) {
-          await browser.close();
-          browser = null;
-        }
-        // Fall back to static fetch
+        // Fallback to static fetch below
       }
+    } else if (isVercel && useJavaScript) {
+      debug.push('Puppeteer non disponible sur Vercel, utilisation du fetch statique');
     }
 
     // Fallback to static fetch if Puppeteer failed or wasn't used

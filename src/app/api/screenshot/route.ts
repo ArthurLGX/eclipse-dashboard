@@ -66,20 +66,28 @@ async function captureScreenshot(
   url: string,
   options: { fullPage?: boolean; viewport?: { width: number; height: number } }
 ): Promise<ScreenshotResult> {
-  // Dynamic import to avoid loading puppeteer on every request
-  const puppeteer = await import('puppeteer');
-  
-  const browser = await puppeteer.default.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--window-size=1440,900',
-    ],
-  });
+  const isVercel = !!process.env.VERCEL;
+  const puppeteer = await import('puppeteer-core');
+
+  let launchOptions: Parameters<typeof puppeteer.default.launch>[0];
+  if (isVercel) {
+    const chromium = await import('@sparticuz/chromium');
+    chromium.default.setGraphicMode = false;
+    launchOptions = {
+      args: chromium.default.args,
+      executablePath: await chromium.default.executablePath(),
+      headless: chromium.default.headless,
+      ignoreHTTPSErrors: true,
+    };
+  } else {
+    launchOptions = {
+      channel: 'chrome',
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+    };
+  }
+
+  const browser = await puppeteer.default.launch(launchOptions);
 
   try {
     const page = await browser.newPage();

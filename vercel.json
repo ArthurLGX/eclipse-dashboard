@@ -1,0 +1,19 @@
+{
+  "functions": {
+    "src/app/api/screenshot/route.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "src/app/api/audit/route.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "src/app/api/portfolio/scrape/route.ts": {
+      "memory": 1024,
+      "maxDuration": 60
+    },
+    "src/app/api/generate-redesign-html/route.ts": {
+      "maxDuration": 300
+    }
+  }
+}
