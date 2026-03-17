@@ -1594,6 +1594,34 @@ export async function fetchLogin(username: string, password: string) {
 export const fetchLogout = () => get('auth/logout');
 
 /** Demande de réinitialisation de mot de passe (envoie un email) */
+/** Demande d'envoi d'un code de connexion (email ou après Google) */
+export async function requestLoginCode(email: string, locale?: 'fr' | 'en') {
+  const res = await fetch(`${API_URL}/api/auth/request-login-code`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.toLowerCase(), locale: locale || 'fr' }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error?.message || 'Erreur lors de l\'envoi du code');
+  }
+  return res.json();
+}
+
+/** Vérification du code de connexion */
+export async function verifyLoginCode(email: string, code: string) {
+  const res = await fetch(`${API_URL}/api/auth/verify-login-code`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.toLowerCase(), code: code.trim() }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    throw new Error(data?.error?.message || 'Code invalide ou expiré');
+  }
+  return res.json();
+}
+
 export async function forgotPassword(email: string, locale?: 'fr' | 'en') {
   const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
     method: 'POST',
