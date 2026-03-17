@@ -61,10 +61,12 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
       {/* Header */}
       <div className="space-y-4">
         <div>
-          <label className="block !text-sm font-medium !text-primary mb-2">
+          <label htmlFor="rule-name" className="block !text-sm font-medium !text-primary mb-2">
             Nom de la règle *
           </label>
           <input
+            id="rule-name"
+            name="ruleName"
             type="text"
             value={rule.name}
             onChange={(e) => setRule({ ...rule, name: e.target.value })}
@@ -74,10 +76,12 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
         </div>
 
         <div>
-          <label className="block !text-sm font-medium !text-primary mb-2">
+          <label htmlFor="rule-description" className="block !text-sm font-medium !text-primary mb-2">
             Description
           </label>
           <textarea
+            id="rule-description"
+            name="ruleDescription"
             value={rule.description || ''}
             onChange={(e) => setRule({ ...rule, description: e.target.value })}
             rows={2}
@@ -88,8 +92,10 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <label className="!text-sm font-medium !text-primary">Priorité :</label>
+            <label htmlFor="rule-priority" className="!text-sm font-medium !text-primary">Priorité :</label>
             <input
+              id="rule-priority"
+              name="rulePriority"
               type="number"
               min="1"
               max="10"
@@ -100,8 +106,10 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
             <span className="!text-xs !text-muted">(1-10)</span>
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label htmlFor="rule-enabled" className="flex items-center gap-2 cursor-pointer">
             <input
+              id="rule-enabled"
+              name="ruleEnabled"
               type="checkbox"
               checked={rule.enabled}
               onChange={(e) => setRule({ ...rule, enabled: e.target.checked })}
@@ -131,9 +139,11 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               >
                 <IconX className="w-4 h-4" />
               </button>
-              <label className="block !text-sm font-medium !text-primary mb-2">Expéditeur</label>
+              <label htmlFor="rule-sender-type" className="block !text-sm font-medium !text-primary mb-2">Expéditeur</label>
               <div className="grid grid-cols-2 gap-2">
                 <select
+                  id="rule-sender-type"
+                  name="senderType"
                   value={rule.conditions.sender.type}
                   onChange={(e) => updateCondition('sender', { ...rule.conditions.sender, type: e.target.value })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
@@ -145,15 +155,20 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   <option value="regex">Regex</option>
                 </select>
                 <input
+                  id="rule-sender-value"
+                  name="senderValue"
                   type="text"
                   value={rule.conditions.sender.value}
                   onChange={(e) => updateCondition('sender', { ...rule.conditions.sender, value: e.target.value })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
                   placeholder="valeur..."
+                  aria-label="Valeur expéditeur"
                 />
               </div>
-              <label className="flex items-center gap-2 mt-2">
+              <label htmlFor="rule-sender-case-sensitive" className="flex items-center gap-2 mt-2">
                 <input
+                  id="rule-sender-case-sensitive"
+                  name="senderCaseSensitive"
                   type="checkbox"
                   checked={rule.conditions.sender.case_sensitive || false}
                   onChange={(e) => updateCondition('sender', { ...rule.conditions.sender, case_sensitive: e.target.checked })}
@@ -180,9 +195,11 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               >
                 <IconX className="w-4 h-4" />
               </button>
-              <label className="block !text-sm font-medium !text-primary mb-2">Domaine</label>
+              <label htmlFor="rule-domain-type" className="block !text-sm font-medium !text-primary mb-2">Domaine</label>
               <div className="grid grid-cols-2 gap-2">
                 <select
+                  id="rule-domain-type"
+                  name="domainType"
                   value={rule.conditions.domain.type}
                   onChange={(e) => updateCondition('domain', { ...rule.conditions.domain, type: e.target.value })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
@@ -193,6 +210,8 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   <option value="not_in_list">Pas dans la liste</option>
                 </select>
                 <input
+                  id="rule-domain-value"
+                  name="domainValue"
                   type="text"
                   value={Array.isArray(rule.conditions.domain.value) ? rule.conditions.domain.value.join(', ') : rule.conditions.domain.value}
                   onChange={(e) => {
@@ -204,6 +223,7 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   }}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
                   placeholder={rule.conditions.domain.type === 'in_list' || rule.conditions.domain.type === 'not_in_list' ? "domain1.com, domain2.com" : "domain.com"}
+                  aria-label="Valeur domaine"
                 />
               </div>
             </div>
@@ -225,9 +245,11 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               >
                 <IconX className="w-4 h-4" />
               </button>
-              <label className="block !text-sm font-medium !text-primary mb-2">Sujet</label>
+              <label htmlFor="rule-subject-type" className="block !text-sm font-medium !text-primary mb-2">Sujet</label>
               <div className="grid grid-cols-2 gap-2">
                 <select
+                  id="rule-subject-type"
+                  name="subjectType"
                   value={rule.conditions.subject.type}
                   onChange={(e) => updateCondition('subject', { ...rule.conditions.subject, type: e.target.value })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
@@ -239,15 +261,20 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   <option value="regex">Regex</option>
                 </select>
                 <input
+                  id="rule-subject-value"
+                  name="subjectValue"
                   type="text"
                   value={rule.conditions.subject.value}
                   onChange={(e) => updateCondition('subject', { ...rule.conditions.subject, value: e.target.value })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
                   placeholder="valeur..."
+                  aria-label="Valeur sujet"
                 />
               </div>
-              <label className="flex items-center gap-2 mt-2">
+              <label htmlFor="rule-subject-case-sensitive" className="flex items-center gap-2 mt-2">
                 <input
+                  id="rule-subject-case-sensitive"
+                  name="subjectCaseSensitive"
                   type="checkbox"
                   checked={rule.conditions.subject.case_sensitive || false}
                   onChange={(e) => updateCondition('subject', { ...rule.conditions.subject, case_sensitive: e.target.checked })}
@@ -274,9 +301,11 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               >
                 <IconX className="w-4 h-4" />
               </button>
-              <label className="block !text-sm font-medium !text-primary mb-2">Mots-clés</label>
+              <label htmlFor="rule-keywords-type" className="block !text-sm font-medium !text-primary mb-2">Mots-clés</label>
               <div className="grid grid-cols-2 gap-2">
                 <select
+                  id="rule-keywords-type"
+                  name="keywordsType"
                   value={rule.conditions.keywords.type}
                   onChange={(e) => updateCondition('keywords', { ...rule.conditions.keywords, type: e.target.value })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
@@ -286,11 +315,14 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
                   <option value="contains_none">Ne contient aucun</option>
                 </select>
                 <input
+                  id="rule-keywords-value"
+                  name="keywordsValue"
                   type="text"
                   value={rule.conditions.keywords.value.join(', ')}
                   onChange={(e) => updateCondition('keywords', { ...rule.conditions.keywords, value: e.target.value.split(',').map(v => v.trim()) })}
                   className="px-3 py-2 bg-card border border-default  !text-primary !text-sm"
                   placeholder="mot1, mot2, mot3"
+                  aria-label="Valeur mots-clés"
                 />
               </div>
             </div>
@@ -312,8 +344,10 @@ export default function RuleBuilder({ rule: initialRule, onSave, onCancel }: Rul
               >
                 <IconX className="w-4 h-4" />
               </button>
-              <label className="flex items-center gap-2">
+              <label htmlFor="rule-has-contact" className="flex items-center gap-2">
                 <input
+                  id="rule-has-contact"
+                  name="hasContact"
                   type="checkbox"
                   checked={rule.conditions.has_contact}
                   onChange={(e) => updateCondition('has_contact', e.target.checked)}

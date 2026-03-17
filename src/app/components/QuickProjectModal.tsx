@@ -604,10 +604,12 @@ export default function QuickProjectModal({
                 {/* Formulaire */}
                 <div className="space-y-3">
                   <div>
-                    <label className="block !text-sm font-medium !text-secondary mb-1.5">
+                    <label htmlFor="quick-project-name" className="block !text-sm font-medium !text-secondary mb-1.5">
                       {t('project_name') || 'Nom du projet'} *
                     </label>
                     <input
+                      id="quick-project-name"
+                      name="projectName"
                       type="text"
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
@@ -619,10 +621,12 @@ export default function QuickProjectModal({
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block !text-sm font-medium !text-secondary mb-1.5">
+                      <label htmlFor="quick-project-client" className="block !text-sm font-medium !text-secondary mb-1.5">
                         {t('client') || 'Client'}
                       </label>
                       <select
+                        id="quick-project-client"
+                        name="selectedClientId"
                         value={selectedClientId}
                         onChange={(e) => setSelectedClientId(e.target.value)}
                         className="input w-full"
@@ -659,8 +663,9 @@ export default function QuickProjectModal({
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
+                      <label htmlFor="quick-timing-duration" className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                         <input
+                          id="quick-timing-duration"
                           type="radio"
                           name="timing_mode_quick"
                           checked={timingMode === 'duration'}
@@ -669,8 +674,9 @@ export default function QuickProjectModal({
                         />
                         {t('timing_scope_duration') || 'Durée'}
                       </label>
-                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
+                      <label htmlFor="quick-timing-end-date" className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-accent bg-accent-light !text-accent' : 'border-default !text-secondary'}`}>
                         <input
+                          id="quick-timing-end-date"
                           type="radio"
                           name="timing_mode_quick"
                           checked={timingMode === 'endDate'}
@@ -684,10 +690,12 @@ export default function QuickProjectModal({
                     {timingMode === 'duration' ? (
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block !text-xs !text-muted mb-1">
+                          <label htmlFor="quick-duration-option" className="block !text-xs !text-muted mb-1">
                             {t('duration') || 'Durée'}
                           </label>
                           <select
+                            id="quick-duration-option"
+                            name="durationOption"
                             value={durationOption}
                             onChange={(e) => setDurationOption(e.target.value)}
                             className="input w-full"
@@ -708,10 +716,12 @@ export default function QuickProjectModal({
                       </div>
                     ) : (
                       <div>
-                        <label className="block !text-xs !text-muted mb-1">
+                        <label htmlFor="quick-project-end-date" className="block !text-xs !text-muted mb-1">
                           {t('end_date') || 'Date de fin'}
                         </label>
                         <input
+                          id="quick-project-end-date"
+                          name="endDate"
                           type="date"
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}

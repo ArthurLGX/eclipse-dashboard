@@ -251,7 +251,7 @@ export default function RedesignWithClaude({ defaultScreenshot }: RedesignWithCl
             </div>
             <p className="!text-lg font-medium !text-primary mb-2">{t('redesign_generating')}</p>
             {/* Progress bar */}
-            <div className="max-w-xs mx-auto h-2 bg-muted rounded-full overflow-hidden mb-4">
+            <div className="max-w-xs mx-auto h-2 bg-page rounded-full overflow-hidden mb-4">
               <motion.div
                 className="h-full bg-accent rounded-full"
                 initial={{ width: 0 }}

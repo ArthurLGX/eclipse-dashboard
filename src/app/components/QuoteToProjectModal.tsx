@@ -263,6 +263,7 @@ export default function QuoteToProjectModal({
 
                   {/* Option: Créer le projet */}
                   <label
+                    htmlFor="quote-create-project-option"
                     className={`flex items-start gap-4 p-4  border-2 cursor-pointer transition-all ${
                       createProjectOption
                         ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/20'
@@ -270,6 +271,8 @@ export default function QuoteToProjectModal({
                     }`}
                   >
                     <input
+                      id="quote-create-project-option"
+                      name="createProjectOption"
                       type="checkbox"
                       checked={createProjectOption}
                       onChange={(e) => setCreateProjectOption(e.target.checked)}
@@ -331,6 +334,7 @@ export default function QuoteToProjectModal({
 
                   {/* Option: Générer une facture d'acompte */}
                   <label
+                    htmlFor="quote-create-invoice-option"
                     className={`flex items-start gap-4 p-4  border-2 cursor-pointer transition-all ${
                       createInvoiceOption
                         ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20'
@@ -338,6 +342,8 @@ export default function QuoteToProjectModal({
                     }`}
                   >
                     <input
+                      id="quote-create-invoice-option"
+                      name="createInvoiceOption"
                       type="checkbox"
                       checked={createInvoiceOption}
                       onChange={(e) => setCreateInvoiceOption(e.target.checked)}
@@ -417,10 +423,12 @@ export default function QuoteToProjectModal({
 
                   {/* Titre du projet */}
                   <div>
-                    <label className="block !text-sm font-medium !text-secondary mb-2">
+                    <label htmlFor="quote-project-title" className="block !text-sm font-medium !text-secondary mb-2">
                       {t('project_title') || 'Titre du projet'}
                     </label>
                     <input
+                      id="quote-project-title"
+                      name="projectTitle"
                       type="text"
                       value={projectTitle}
                       onChange={(e) => setProjectTitle(e.target.value)}
@@ -431,11 +439,13 @@ export default function QuoteToProjectModal({
 
                   {/* Date de début */}
                   <div>
-                    <label className="block !text-sm font-medium !text-secondary mb-2">
+                    <label htmlFor="quote-project-start-date" className="block !text-sm font-medium !text-secondary mb-2">
                       <IconCalendar className="w-4 h-4 inline mr-1" />
                       {t('project_start_date') || 'Date de début du projet'}
                     </label>
                     <input
+                      id="quote-project-start-date"
+                      name="projectStartDate"
                       type="date"
                       value={projectStartDate}
                       onChange={(e) => setProjectStartDate(e.target.value)}
@@ -453,8 +463,9 @@ export default function QuoteToProjectModal({
                       {t('timing_scope_desc') || 'Définissez la durée ou la date de fin pour éviter de compléter les dates manuellement.'}
                     </p>
                     <div className="grid grid-cols-2 gap-2">
-                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
+                      <label htmlFor="quote-timing-duration" className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'duration' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
                         <input
+                          id="quote-timing-duration"
                           type="radio"
                           name="timing_mode_quote"
                           checked={timingMode === 'duration'}
@@ -463,8 +474,9 @@ export default function QuoteToProjectModal({
                         />
                         {t('timing_scope_duration') || 'Durée'}
                       </label>
-                      <label className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
+                      <label htmlFor="quote-timing-end-date" className={`flex items-center gap-2 px-3 py-2  border cursor-pointer transition-colors ${timingMode === 'endDate' ? 'border-violet-500/60 bg-violet-100/50 dark:bg-violet-900/20 !text-violet-600' : 'border-default !text-secondary'}`}>
                         <input
+                          id="quote-timing-end-date"
                           type="radio"
                           name="timing_mode_quote"
                           checked={timingMode === 'endDate'}
@@ -478,10 +490,12 @@ export default function QuoteToProjectModal({
                     {timingMode === 'duration' ? (
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block !text-xs !text-muted mb-1">
+                          <label htmlFor="quote-duration-option" className="block !text-xs !text-muted mb-1">
                             {t('duration') || 'Durée'}
                           </label>
                           <select
+                            id="quote-duration-option"
+                            name="durationOption"
                             value={durationOption}
                             onChange={(e) => setDurationOption(e.target.value)}
                             className="input w-full"
@@ -502,10 +516,12 @@ export default function QuoteToProjectModal({
                       </div>
                     ) : (
                       <div>
-                        <label className="block !text-xs !text-muted mb-1">
+                        <label htmlFor="quote-project-end-date" className="block !text-xs !text-muted mb-1">
                           {t('end_date') || 'Date de fin'}
                         </label>
                         <input
+                          id="quote-project-end-date"
+                          name="projectEndDate"
                           type="date"
                           value={projectEndDate}
                           onChange={(e) => setProjectEndDate(e.target.value)}

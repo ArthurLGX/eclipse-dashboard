@@ -340,7 +340,7 @@ export default function SharedProjectPage() {
                 {t('progression')}
               </div>
               <div className="!text-3xl font-bold !text-primary mb-2">{overallProgress}%</div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-2 bg-page rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-accent rounded-full transition-all duration-500"
                   style={{ width: `${overallProgress}%` }}
@@ -1177,11 +1177,13 @@ function PublicGanttView({ tasks, projectName }: {
             <div className="flex-1 overflow-hidden flex flex-col sm:flex-row">
               <div className="w-full sm:w-72 flex-shrink-0 p-4 border-b sm:border-b-0 sm:border-r border-default !space-y-4 overflow-y-auto">
                 <div>
-                  <label className="block !text-sm font-medium !text-primary mb-2">
+                  <label htmlFor="export-file-name" className="block !text-sm font-medium !text-primary mb-2">
                     {t('file_name') || 'Nom du fichier'}
                   </label>
                   <div className="flex items-center gap-2">
                     <input
+                      id="export-file-name"
+                      name="exportFileName"
                       type="text"
                       value={exportFileName}
                       onChange={(e) => setExportFileName(e.target.value)}

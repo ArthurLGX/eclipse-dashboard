@@ -186,10 +186,12 @@ export default function SaveTemplateModal({
 
             {/* Nom du template */}
             <div>
-              <label className="block !text-sm font-medium !text-primary mb-2">
+              <label htmlFor="template-name" className="block !text-sm font-medium !text-primary mb-2">
                 {t('template_name') || 'Nom du thème'} *
               </label>
               <input
+                id="template-name"
+                name="templateName"
                 type="text"
                 value={name}
                 onChange={(e) => {
@@ -204,10 +206,12 @@ export default function SaveTemplateModal({
 
             {/* Description */}
             <div>
-              <label className="block !text-sm font-medium !text-primary mb-2">
+              <label htmlFor="template-description" className="block !text-sm font-medium !text-primary mb-2">
                 {t('template_description') || 'Description'} ({t('optional') || 'optionnel'})
               </label>
               <textarea
+                id="template-description"
+                name="templateDescription"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={t('template_description_placeholder') || 'Décrivez l\'utilisation de ce thème...'}

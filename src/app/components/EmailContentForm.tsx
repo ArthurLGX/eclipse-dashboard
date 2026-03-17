@@ -63,11 +63,13 @@ export default function EmailContentForm({
         {/* Title field */}
         {showTitle && (
           <div>
-            <label className="block !text-sm font-medium !text-secondary mb-2">
+            <label htmlFor="email-content-title" className="block !text-sm font-medium !text-secondary mb-2">
               <IconHeading className="w-4 h-4 inline mr-1.5 !text-accent-text" />
               {l.title} *
             </label>
             <input
+              id="email-content-title"
+              name="emailContentTitle"
               type="text"
               value={data.title}
               onChange={(e) => onChange({ title: e.target.value })}
@@ -101,7 +103,7 @@ export default function EmailContentForm({
 
       {/* Message field */}
       <div className="bg-card border border-default  p-6">
-        <label className="block !text-sm font-medium !text-secondary mb-3">
+        <label htmlFor="email-content-message" className="block !text-sm font-medium !text-secondary mb-3">
           {l.message} *
         </label>
         
@@ -109,6 +111,8 @@ export default function EmailContentForm({
           messageEditor
         ) : (
           <textarea
+            id="email-content-message"
+            name="emailContentMessage"
             value={data.message}
             onChange={(e) => onChange({ message: e.target.value })}
             placeholder={l.messagePlaceholder}

@@ -603,17 +603,20 @@ export default function ShareProjectModal({
                 {/* Invitation par email */}
                 <form onSubmit={handleSendInvitation} className="space-y-4">
                   <div>
-                    <label className="block !text-sm font-medium !text-secondary mb-2">
+                    <label htmlFor="share-invite-email" className="block !text-sm font-medium !text-secondary mb-2">
                       {t('invite_by_email') || 'Inviter par email'}
                     </label>
                     <div className="flex gap-2">
                       <div className="flex-1 relative">
                         <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 z-10 !text-muted" />
                         <input
+                          id="share-invite-email"
+                          name="invite-email"
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="email@exemple.com"
+                          autoComplete="email"
                           className="w-full h-full !pl-10 !pr-4 py-3 bg-input border border-input  !text-primary placeholder-muted focus:outline-none focus:border-success transition-colors"
                         />
                       </div>
@@ -815,8 +818,10 @@ export default function ShareProjectModal({
 
                     {/* Options d'affichage */}
                     <div className="space-y-3">
-                      <label className="flex items-center gap-3 cursor-pointer group">
+                      <label htmlFor="share-show-gantt" className="flex items-center gap-3 cursor-pointer group">
                         <input
+                          id="share-show-gantt"
+                          name="show-gantt"
                           type="checkbox"
                           checked={publicLinkConfig.show_gantt}
                           onChange={(e) => setPublicLinkConfig({ ...publicLinkConfig, show_gantt: e.target.checked })}
@@ -830,8 +835,10 @@ export default function ShareProjectModal({
                         </div>
                       </label>
 
-                      <label className="flex items-center gap-3 cursor-pointer group">
+                      <label htmlFor="share-show-progress" className="flex items-center gap-3 cursor-pointer group">
                         <input
+                          id="share-show-progress"
+                          name="show-progress"
                           type="checkbox"
                           checked={publicLinkConfig.show_progress}
                           onChange={(e) => setPublicLinkConfig({ ...publicLinkConfig, show_progress: e.target.checked })}
@@ -845,8 +852,10 @@ export default function ShareProjectModal({
                         </div>
                       </label>
 
-                      <label className="flex items-center gap-3 cursor-pointer group">
+                      <label htmlFor="share-show-tasks" className="flex items-center gap-3 cursor-pointer group">
                         <input
+                          id="share-show-tasks"
+                          name="show-tasks"
                           type="checkbox"
                           checked={publicLinkConfig.show_tasks}
                           onChange={(e) => setPublicLinkConfig({ ...publicLinkConfig, show_tasks: e.target.checked })}
@@ -863,10 +872,12 @@ export default function ShareProjectModal({
 
                     {/* Expiration */}
                     <div>
-                      <label className="block !text-sm !text-secondary mb-2">
+                      <label htmlFor="share-link-expiration" className="block !text-sm !text-secondary mb-2">
                         {t('link_expiration') || 'Expiration du lien'}
                       </label>
                       <select
+                        id="share-link-expiration"
+                        name="link-expiration"
                         value={publicLinkConfig.expires_in_days || ''}
                         onChange={(e) => setPublicLinkConfig({ 
                           ...publicLinkConfig, 
@@ -1039,16 +1050,19 @@ export default function ShareProjectModal({
               <div className="p-4 !space-y-4 max-h-[70vh] overflow-y-auto">
                 {/* Email destinataire */}
                 <div>
-                  <label className="block !text-sm font-medium !text-secondary mb-2">
+                  <label htmlFor="share-email-recipient" className="block !text-sm font-medium !text-secondary mb-2">
                     {t('recipient_email') || 'Email du destinataire'}
                   </label>
                   <div className="relative">
                     <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-accent-text" />
                     <input
+                      id="share-email-recipient"
+                      name="share-email-recipient"
                       type="email"
                       value={emailRecipient}
                       onChange={(e) => setEmailRecipient(e.target.value)}
                       placeholder="client@exemple.com"
+                      autoComplete="email"
                       className="w-full !pl-10 !pr-4 py-3 bg-input border border-input  !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                     />
                   </div>
@@ -1056,14 +1070,17 @@ export default function ShareProjectModal({
 
                 {/* Objet de l'email */}
                 <div>
-                  <label className="block !text-sm font-medium !text-secondary mb-2">
+                  <label htmlFor="share-email-subject" className="block !text-sm font-medium !text-secondary mb-2">
                     {t('email_subject') || 'Objet'}
                   </label>
                   <input
+                    id="share-email-subject"
+                    name="share-email-subject"
                     type="text"
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
                     placeholder={`${t('project_progress') || 'Suivi du projet'} : ${projectTitle}`}
+                    autoComplete="off"
                     className="w-full px-4 py-3 bg-input border border-input  !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                   />
                 </div>
@@ -1123,17 +1140,21 @@ export default function ShareProjectModal({
                         {bannerType === 'color' && (
                           <div className="grid grid-cols-2 gap-3">
                             <div>
-                              <label className="block !text-xs !text-secondary mb-1">
+                              <label htmlFor="share-banner-bg-color" className="block !text-xs !text-secondary mb-1">
                                 {t('background_color') || 'Couleur de fond'}
                               </label>
                               <div className="flex items-center gap-2">
                                 <input
+                                  id="share-banner-bg-color"
+                                  name="banner-background-color"
                                   type="color"
                                   value={bannerBackgroundColor}
                                   onChange={(e) => setBannerBackgroundColor(e.target.value)}
                                   className="w-8 h-8 rounded cursor-pointer border-0"
                                 />
                                 <input
+                                  id="share-banner-bg-color-text"
+                                  name="banner-background-color-text"
                                   type="text"
                                   value={bannerBackgroundColor}
                                   onChange={(e) => setBannerBackgroundColor(e.target.value)}
@@ -1142,17 +1163,21 @@ export default function ShareProjectModal({
                               </div>
                             </div>
                             <div>
-                              <label className="block !text-xs !text-secondary mb-1">
+                              <label htmlFor="share-banner-title-color" className="block !text-xs !text-secondary mb-1">
                                 {t('title_color') || 'Couleur du titre'}
                               </label>
                               <div className="flex items-center gap-2">
                                 <input
+                                  id="share-banner-title-color"
+                                  name="banner-title-color"
                                   type="color"
                                   value={bannerTitleColor}
                                   onChange={(e) => setBannerTitleColor(e.target.value)}
                                   className="w-8 h-8 rounded cursor-pointer border-0"
                                 />
                                 <input
+                                  id="share-banner-title-color-text"
+                                  name="banner-title-color-text"
                                   type="text"
                                   value={bannerTitleColor}
                                   onChange={(e) => setBannerTitleColor(e.target.value)}
@@ -1207,17 +1232,21 @@ export default function ShareProjectModal({
                             </button>
                             {bannerType === 'image' && (
                               <div>
-                                <label className="block !text-xs !text-secondary mb-1">
+                                <label htmlFor="share-banner-title-color-img" className="block !text-xs !text-secondary mb-1">
                                   {t('title_color') || 'Couleur du titre'}
                                 </label>
                                 <div className="flex items-center gap-2">
                                   <input
+                                    id="share-banner-title-color-img"
+                                    name="banner-title-color-img"
                                     type="color"
                                     value={bannerTitleColor}
                                     onChange={(e) => setBannerTitleColor(e.target.value)}
                                     className="w-8 h-8 rounded cursor-pointer border-0"
                                   />
                                   <input
+                                    id="share-banner-title-color-img-text"
+                                    name="banner-title-color-img-text"
                                     type="text"
                                     value={bannerTitleColor}
                                     onChange={(e) => setBannerTitleColor(e.target.value)}
@@ -1246,10 +1275,13 @@ export default function ShareProjectModal({
                           
                           {showBannerTitle && (
                             <input
+                              id="share-custom-banner-title"
+                              name="custom-banner-title"
                               type="text"
                               value={customBannerTitle}
                               onChange={(e) => setCustomBannerTitle(e.target.value)}
                               placeholder={projectTitle}
+                              autoComplete="off"
                               className="w-full px-3 py-2 !text-sm bg-input border border-input  !text-primary placeholder-muted focus:outline-none focus:border-accent transition-colors"
                             />
                           )}
@@ -1333,10 +1365,12 @@ export default function ShareProjectModal({
 
                 {/* Message personnalisé */}
                 <div>
-                  <label className="block !text-sm font-medium !text-secondary mb-2">
+                  <label htmlFor="share-email-message" className="block !text-sm font-medium !text-secondary mb-2">
                     {t('custom_message') || 'Message personnalisé'}
                   </label>
                   <textarea
+                    id="share-email-message"
+                    name="share-email-message"
                     value={emailMessage}
                     onChange={(e) => setEmailMessage(e.target.value)}
                     rows={6}

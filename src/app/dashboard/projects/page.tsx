@@ -23,6 +23,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import QuickProjectModal from '@/app/components/QuickProjectModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { generateSlug } from '@/utils/slug';
+import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import { useProjects, useClients, clearCache } from '@/hooks/useApi';
 import type { Project, Client } from '@/types';
 import { useQuota } from '@/app/context/QuotaContext';
@@ -349,11 +350,23 @@ export default function ProjectsPage() {
     {
       key: 'client',
       label: t('client'),
-      render: (value) => (
-        <p className="!text-primary">
-          {(value as { name?: string })?.name || 'N/A'}
-        </p>
-      ),
+      render: (value) => {
+        const client = value as { name?: string; documentId?: string; image?: { url?: string } } | null;
+        if (!client?.name) return <p className="!text-primary">N/A</p>;
+        const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || '';
+        const imgUrl = client.image?.url
+          ? (client.image.url.startsWith('http') ? client.image.url : `${apiUrl}${client.image.url}`)
+          : getDefaultContactAvatar(client.documentId || '').avatarUrl;
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imgUrl} alt={client.name} className="w-full h-full object-cover" />
+            </div>
+            <p className="!text-primary truncate">{client.name}</p>
+          </div>
+        );
+      },
     },
     {
       key: 'project_status',

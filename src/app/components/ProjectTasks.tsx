@@ -1329,7 +1329,7 @@ export default function ProjectTasks({
             <span className="!text-sm !text-primary">{t('overall_progress') || 'Progression globale'}</span>
             <span className="!text-sm font-medium !text-muted">{overallProgress}%</span>
           </div>
-          <div className="h-2 bg-muted rounded-full overflow-hidden">
+          <div className="h-2 bg-page rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}

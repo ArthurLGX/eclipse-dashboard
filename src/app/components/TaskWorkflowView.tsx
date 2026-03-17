@@ -889,7 +889,7 @@ export default function TaskWorkflowView({
             <div className="flex items-center gap-3 px-3 py-1.5 rounded-full bg-muted">
               <span className="!text-xs !text-secondary">{t('progress') || 'Progression'}:</span>
               <div className="flex items-center gap-2">
-                <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
+                <div className="w-24 h-2 bg-page rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-accent rounded-full transition-all duration-500 ease-out"
                     style={{ width: `${overallProgress}%` }}

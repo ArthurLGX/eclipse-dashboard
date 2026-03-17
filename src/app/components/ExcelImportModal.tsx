@@ -1132,13 +1132,13 @@ export default function ExcelImportModal({
                   
                   <div className="flex gap-2">
                     <div className="flex-1 relative">
-                      <IconLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted" />
+                      <IconLink className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted z-10" />
                       <input
                         type="url"
                         value={googleSheetUrl}
                         onChange={(e) => setGoogleSheetUrl(e.target.value)}
                         placeholder="https://docs.google.com/spreadsheets/d/..."
-                        className="w-full !pl-10 !pr-4 py-2.5 bg-muted border border-default  !text-primary !text-sm placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
+                        className="w-full h-full !pl-10 !pr-4 py-2.5 bg-muted border border-default  !text-primary !text-sm placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent"
                         onClick={(e) => e.stopPropagation()}
                       />
                     </div>

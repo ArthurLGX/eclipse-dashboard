@@ -1,5 +1,23 @@
 import type { NextConfig } from "next";
 
+// CSP : unsafe-eval requis uniquement en dev (React/Next.js pour les erreurs)
+// En prod, éviter unsafe-eval réduit les risques d'injection de code
+const isDev = process.env.NODE_ENV === 'development';
+
+const cspHeader = [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' blob: data: https: http:",
+    "font-src 'self'",
+    "connect-src 'self' https://api.dashboard.eclipsestudiodev.fr https://*.stripe.com https://docs.google.com wss:",
+    "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+].join('; ');
+
 const nextConfig: NextConfig = {
     eslint: { ignoreDuringBuilds: true },
     images: {
@@ -50,6 +68,10 @@ const nextConfig: NextConfig = {
                     {
                         key: "Access-Control-Allow-Origin",
                         value: "https://api.dashboard.eclipsestudiodev.fr", // Allow your API domain
+                    },
+                    {
+                        key: "Content-Security-Policy",
+                        value: cspHeader,
                     },
                 ],
             },

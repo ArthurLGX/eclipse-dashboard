@@ -21,6 +21,7 @@ import FloatingModal from '@/app/components/FloatingModal';
 import { useRouter } from 'next/navigation';
 import { Facture } from '@/app/models/Models';
 import { generateClientSlug } from '@/utils/slug';
+import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -483,15 +484,23 @@ export default function RevenuePage() {
       key: 'client_id',
       label: t('client') || 'Client',
       render: (_v, row) => {
-        const client = row.client_id;
+        const client = row.client_id as { name?: string; documentId?: string; image?: { url?: string } } | undefined;
         if (!client?.name) return <span className="!text-sm">-</span>;
+        const apiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || '';
+        const imgUrl = client.image?.url
+          ? (client.image.url.startsWith('http') ? client.image.url : `${apiUrl}${client.image.url}`)
+          : getDefaultContactAvatar(client.documentId || '').avatarUrl;
         return (
-          <span
-            className="!text-sm cursor-pointer hover:!text-accent-text transition-colors"
-            onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name, client.documentId)}`); }}
+          <div
+            className="flex items-center gap-2 cursor-pointer hover:!text-accent-text transition-colors min-w-0"
+            onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/clients/${generateClientSlug(client.name ?? '', client.documentId)}`); }}
           >
-            {client.name}
-          </span>
+            <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imgUrl} alt={client.name} className="w-full h-full object-cover" />
+            </div>
+            <span className="!text-sm truncate">{client.name}</span>
+          </div>
         );
       },
     },
