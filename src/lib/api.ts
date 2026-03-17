@@ -1365,6 +1365,21 @@ export async function fetchNewsletterById(documentId: string) {
   return response.json();
 }
 
+export async function deleteNewsletter(documentId: string) {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const response = await fetch(`${API_URL}/api/newsletters/${documentId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error?.error?.message || 'Erreur lors de la suppression');
+  }
+}
+
 export interface GradientStop {
   id: string;
   color: string;
