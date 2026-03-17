@@ -66,14 +66,14 @@ const TEMPLATE_LABELS: Record<string, string> = {
 };
 
 function StatusPill({ status, t }: { status: string; t: (key: string) => string }) {
-  const config: Record<string, { bg: string; text: string; label: string }> = {
-    sent: { bg: 'bg-[#EBF5EF]', text: 'text-[#2A6B47]', label: t('sent') || 'Envoyée' },
-    draft: { bg: 'bg-[#FEF5E5]', text: 'text-[#9B6B18]', label: t('draft') || 'Brouillon' },
-    scheduled: { bg: 'bg-[#EEF3FF]', text: 'text-[#2B5CB8]', label: t('scheduled') || 'Planifiée' },
+  const config: Record<string, { className: string; label: string }> = {
+    sent: { className: 'pastille-success', label: t('sent') || 'Envoyée' },
+    draft: { className: 'pastille-draft', label: t('draft') || 'Brouillon' },
+    scheduled: { className: 'pastille-scheduled', label: t('scheduled') || 'Planifiée' },
   };
   const style = config[status] || config.draft;
   return (
-    <span className={`inline-flex items-center gap-1.5 h-[22px] px-2.5 rounded-full text-[11px] font-medium ${style.bg} ${style.text}`}>
+    <span className={`inline-flex items-center gap-1.5 h-[22px] px-2.5 rounded-full text-[11px] font-medium ${style.className}`}>
       <span className="w-1.5 h-1.5 rounded-full bg-current" />
       {style.label}
     </span>
@@ -89,13 +89,13 @@ function SubscriberItem({ subscriber }: { subscriber: Subscriber }) {
     : subscriber.email.slice(0, 2).toUpperCase();
 
   return (
-    <div className="flex items-center gap-2 py-2.5 px-3 border-b border-[rgba(28,24,16,0.08)] last:border-b-0">
-      <div className="w-7 h-7 rounded-full bg-[#F2F0EB] border border-[rgba(28,24,16,0.08)] flex items-center justify-center text-[10px] font-medium text-[#6B6450] flex-shrink-0">
+    <div className="flex items-center gap-2 py-2.5 px-3 border-b border-default last:border-b-0">
+      <div className="w-7 h-7 rounded-full bg-muted border border-default flex items-center justify-center text-[10px] font-medium !text-muted flex-shrink-0">
         {initials}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-[#1C1810] truncate">{displayName || subscriber.email}</p>
-        {displayName && <p className="text-[10px] text-[#A09680] truncate">{subscriber.email}</p>}
+        <p className="text-xs font-medium !text-primary truncate">{displayName || subscriber.email}</p>
+        {displayName && <p className="text-[10px] !text-muted truncate">{subscriber.email}</p>}
       </div>
       {subscriber.email && <span className="w-1.5 h-1.5 rounded-full bg-[#2A6B47] flex-shrink-0" />}
     </div>
@@ -228,10 +228,10 @@ export default function NewsletterDetailPage() {
   if (loading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-[#F5F3EE] flex items-center justify-center">
+        <div className="min-h-screen bg-page flex items-center justify-center">
           <div className="text-center">
-            <IconLoader2 className="w-12 h-12 animate-spin text-[#6B6450] mx-auto mb-4" />
-            <p className="text-[13px] text-[#6B6450]">{t('loading_newsletter') || 'Chargement...'}</p>
+            <IconLoader2 className="w-12 h-12 animate-spin !text-muted mx-auto mb-4" />
+            <p className="text-[13px] !text-muted">{t('loading_newsletter') || 'Chargement...'}</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -260,31 +260,31 @@ export default function NewsletterDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-[#F5F3EE] flex flex-col">
+      <div className="min-h-screen bg-page flex flex-col">
         {/* Top Nav */}
-        <nav className="h-[52px] bg-white border-b border-[rgba(28,24,16,0.08)] flex items-center justify-between px-6 sticky top-0 z-50">
+        <nav className="h-[52px] bg-card border-b border-default flex items-center justify-between px-6 sticky top-0 z-50">
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => router.push('/dashboard/newsletters')}
-              className="w-8 h-8 rounded-md border border-[rgba(28,24,16,0.14)] flex items-center justify-center text-[#6B6450] hover:bg-[#F5F3EE] hover:text-[#1C1810] transition-colors"
+              className="w-8 h-8 rounded-md border border-default flex items-center justify-center !text-muted hover:bg-hover hover:!text-primary transition-colors"
               title={t('back') || 'Retour'}
             >
               <IconArrowLeft className="w-3.5 h-3.5" stroke={1.8} />
             </button>
-            <div className="flex items-center gap-1.5 text-xs text-[#A09680]">
+            <div className="flex items-center gap-1.5 text-xs !text-muted">
               <span>Newsletters</span>
               <span>›</span>
-              <span className="text-[#1C1810] font-medium truncate max-w-[180px]">{newsletter.title}</span>
+              <span className="!text-primary font-medium truncate max-w-[180px]">{newsletter.title}</span>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            <button onClick={handleExportHtml} className="h-8 px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-xs text-[#6B6450] flex items-center gap-1.5 hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+            <button onClick={handleExportHtml} className="h-8 px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
               <IconDownload className="w-3 h-3" stroke={1.5} /> Exporter
             </button>
-            <button onClick={handleDuplicate} className="h-8 px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-xs text-[#6B6450] flex items-center gap-1.5 hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+            <button onClick={handleDuplicate} className="h-8 px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
               <IconCopy className="w-3 h-3" stroke={1.5} /> Dupliquer
             </button>
-            <button onClick={handleEdit} className="h-8 px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-xs text-[#6B6450] flex items-center gap-1.5 hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+            <button onClick={handleEdit} className="h-8 px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
               <IconPencil className="w-3 h-3" stroke={1.5} /> Modifier
             </button>
             <button
@@ -298,45 +298,45 @@ export default function NewsletterDetailPage() {
         </nav>
 
         {/* Hero */}
-        <div className="bg-white border-b border-[rgba(28,24,16,0.08)] px-8 py-7">
+        <div className="bg-card border-b border-default px-8 py-7">
           <div className="flex items-start justify-between gap-4 mb-5">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <StatusPill status={newsletter.n_status} t={t} />
-                <span className="h-[22px] px-2.5 rounded-full text-[11px] text-[#A09680] bg-[#F9F8F5] border border-[rgba(28,24,16,0.08)] inline-flex items-center gap-1">
+                <span className="h-[22px] px-2.5 rounded-full text-[11px] !text-muted bg-muted border border-default inline-flex items-center gap-1">
                   <IconTemplate className="w-2.5 h-2.5" stroke={1.4} />
                   {TEMPLATE_LABELS[newsletter.template] || newsletter.template}
                 </span>
               </div>
-              <h1 className="font-serif text-[32px] font-normal text-[#1C1810] tracking-tight leading-tight mb-1.5">
+              <h1 className="font-serif text-[32px] font-normal !text-primary tracking-tight leading-tight mb-1.5">
                 {newsletter.title}
               </h1>
-              <p className="text-[13px] text-[#6B6450]">
-                Objet : <span className="text-[#1C1810] font-medium">{newsletter.subject}</span>
+              <p className="text-[13px] !text-muted">
+                Objet : <span className="!text-primary font-medium">{newsletter.subject}</span>
               </p>
             </div>
             {newsletter.n_status === 'sent' && (
-              <button className="h-8 px-3.5 rounded-md bg-[#1C1810] text-white text-xs font-medium flex items-center gap-1.5 hover:opacity-90 shrink-0">
+              <button className="h-8 px-3.5 rounded-md btn-primary text-xs font-medium flex items-center gap-1.5 hover:opacity-90 shrink-0">
                 <IconSend className="w-3 h-3" stroke={1.8} /> Renvoyer
               </button>
             )}
           </div>
           <div className="flex items-center gap-5 flex-wrap">
-            <div className="flex items-center gap-2 text-xs text-[#6B6450]">
-              <IconMail className="w-3.5 h-3.5 text-[#A09680]" stroke={1.4} />
+            <div className="flex items-center gap-2 text-xs !text-muted">
+              <IconMail className="w-3.5 h-3.5" stroke={1.4} />
               {newsletter.send_at
-                ? <>Envoyée le <strong className="text-[#1C1810] ml-0.5">{formatDate(newsletter.send_at)}</strong></>
-                : <>Créée le <strong className="text-[#1C1810] ml-0.5">{formatDate(newsletter.createdAt)}</strong></>
+                ? <>Envoyée le <strong className="!text-primary ml-0.5">{formatDate(newsletter.send_at)}</strong></>
+                : <>Créée le <strong className="!text-primary ml-0.5">{formatDate(newsletter.createdAt)}</strong></>
               }
             </div>
-            <div className="w-px h-3.5 bg-[rgba(28,24,16,0.14)]" />
-            <div className="flex items-center gap-2 text-xs text-[#6B6450]">
-              <IconUsers className="w-3.5 h-3.5 text-[#A09680]" stroke={1.4} />
-              Auteur : <strong className="text-[#1C1810] ml-0.5">{newsletter.author?.username || newsletter.author?.email || '-'}</strong>
+            <div className="w-px h-3.5 bg-[var(--border-default)]" />
+            <div className="flex items-center gap-2 text-xs !text-muted">
+              <IconUsers className="w-3.5 h-3.5" stroke={1.4} />
+              Auteur : <strong className="!text-primary ml-0.5">{newsletter.author?.username || newsletter.author?.email || '-'}</strong>
             </div>
-            <div className="w-px h-3.5 bg-[rgba(28,24,16,0.14)]" />
-            <div className="flex items-center gap-2 text-xs text-[#6B6450]">
-              <IconClock className="w-3.5 h-3.5 text-[#A09680]" stroke={1.4} />
+            <div className="w-px h-3.5 bg-[var(--border-default)]" />
+            <div className="flex items-center gap-2 text-xs !text-muted">
+              <IconClock className="w-3.5 h-3.5" stroke={1.4} />
               Créée le {formatShortDate(newsletter.createdAt)}
             </div>
           </div>
@@ -345,45 +345,45 @@ export default function NewsletterDetailPage() {
         {/* Body */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0">
           {/* Main */}
-          <div className="p-7 pr-8 border-r border-[rgba(28,24,16,0.08)] flex flex-col gap-5">
+          <div className="p-7 pr-8 border-r border-default flex flex-col gap-5">
             {/* Stats */}
             <div className="grid grid-cols-3 gap-2.5">
-              <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] p-4 overflow-hidden relative">
+              <div className="bg-card border border-default rounded-[14px] p-4 overflow-hidden relative">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#2A6B47]" />
-                <p className="text-[11px] font-medium uppercase tracking-wider text-[#A09680] mb-2">Taux d&apos;ouverture</p>
-                <p className="font-serif text-[28px] font-normal text-[#1C1810] leading-none mb-1">—</p>
-                <p className="text-[11px] text-[#A09680]">0 ouverture · {recipientCount} destinataires</p>
-                <div className="mt-2.5 h-1 bg-[#F2F0EB] rounded overflow-hidden">
+                <p className="text-[11px] font-medium uppercase tracking-wider !text-muted mb-2">Taux d&apos;ouverture</p>
+                <p className="font-serif text-[28px] font-normal !text-primary leading-none mb-1">—</p>
+                <p className="text-[11px] !text-muted">0 ouverture · {recipientCount} destinataires</p>
+                <div className="mt-2.5 h-1 bg-muted rounded overflow-hidden">
                   <div className="h-full bg-[#2A6B47] rounded transition-[width] duration-500" style={{ width: 0 }} />
                 </div>
               </div>
-              <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] p-4 overflow-hidden relative">
+              <div className="bg-card border border-default rounded-[14px] p-4 overflow-hidden relative">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#2B5CB8]" />
-                <p className="text-[11px] font-medium uppercase tracking-wider text-[#A09680] mb-2">Taux de clic</p>
-                <p className="font-serif text-[28px] font-normal text-[#1C1810] leading-none mb-1">—</p>
-                <p className="text-[11px] text-[#A09680]">0 clic sur les liens</p>
-                <div className="mt-2.5 h-1 bg-[#F2F0EB] rounded overflow-hidden">
+                <p className="text-[11px] font-medium uppercase tracking-wider !text-muted mb-2">Taux de clic</p>
+                <p className="font-serif text-[28px] font-normal !text-primary leading-none mb-1">—</p>
+                <p className="text-[11px] !text-muted">0 clic sur les liens</p>
+                <div className="mt-2.5 h-1 bg-muted rounded overflow-hidden">
                   <div className="h-full bg-[#2B5CB8] rounded transition-[width] duration-500" style={{ width: 0 }} />
                 </div>
               </div>
-              <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] p-4 overflow-hidden relative">
+              <div className="bg-card border border-default rounded-[14px] p-4 overflow-hidden relative">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#D4921A]" />
-                <p className="text-[11px] font-medium uppercase tracking-wider text-[#A09680] mb-2">Destinataires</p>
-                <p className="font-serif text-[28px] font-normal text-[#1C1810] leading-none mb-1">{recipientCount}</p>
-                <p className="text-[11px] text-[#A09680]">Contacts touchés</p>
-                <div className="mt-2.5 h-1 bg-[#F2F0EB] rounded overflow-hidden">
+                <p className="text-[11px] font-medium uppercase tracking-wider !text-muted mb-2">Destinataires</p>
+                <p className="font-serif text-[28px] font-normal !text-primary leading-none mb-1">{recipientCount}</p>
+                <p className="text-[11px] !text-muted">Contacts touchés</p>
+                <div className="mt-2.5 h-1 bg-muted rounded overflow-hidden">
                   <div className="h-full bg-[#D4921A] rounded transition-[width] duration-500" style={{ width: '100%' }} />
                 </div>
               </div>
             </div>
 
             {/* Info section */}
-            <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden">
-              <div className="flex items-center justify-between py-3.5 px-4 border-b border-[rgba(28,24,16,0.08)]">
-                <h3 className="text-[13px] font-medium text-[#1C1810] flex items-center gap-2">
-                  <IconFileText className="w-3.5 h-3.5 text-[#A09680]" stroke={1.4} /> Informations
+            <div className="bg-card border border-default rounded-[14px] overflow-hidden">
+              <div className="flex items-center justify-between py-3.5 px-4 border-b border-default">
+                <h3 className="text-[13px] font-medium !text-primary flex items-center gap-2">
+                  <IconFileText className="w-3.5 h-3.5 !text-muted" stroke={1.4} /> Informations
                 </h3>
-                <button onClick={handleEdit} className="text-[11px] text-[#2B5CB8] font-medium hover:underline cursor-pointer">Modifier →</button>
+                <button onClick={handleEdit} className="text-[11px] !text-secondary font-medium hover:underline cursor-pointer">Modifier →</button>
               </div>
               <div className="grid grid-cols-2">
                 {[
@@ -394,46 +394,46 @@ export default function NewsletterDetailPage() {
                   { label: 'Créée le', val: formatShortDate(newsletter.createdAt), muted: true },
                   { label: 'Mise à jour le', val: formatShortDate(newsletter.updatedAt), muted: true },
                 ].map(({ label, val, muted }) => (
-                  <div key={label} className="py-3 px-4 border-b border-r border-[rgba(28,24,16,0.08)] last:border-b-0 [&:nth-child(2n)]:border-r-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-[#A09680] mb-1">{label}</p>
-                    <div className={`text-[13px] ${muted ? 'text-[#6B6450] font-normal' : 'text-[#1C1810] font-medium'}`}>{val}</div>
+                  <div key={label} className="py-3 px-4 border-b border-r border-default last:border-b-0 [&:nth-child(2n)]:border-r-0">
+                    <p className="text-[10px] font-semibold uppercase tracking-widest !text-muted mb-1">{label}</p>
+                    <div className={`text-[13px] ${muted ? '!text-muted font-normal' : '!text-primary font-medium'}`}>{val}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Email Preview */}
-            <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden">
-              <div className="flex items-center justify-between py-3.5 px-4 border-b border-[rgba(28,24,16,0.08)]">
-                <h3 className="text-[13px] font-medium text-[#1C1810] flex items-center gap-2">
-                  <IconEye className="w-3.5 h-3.5 text-[#A09680]" stroke={1.4} /> Aperçu de l&apos;email
+            <div className="bg-card border border-default rounded-[14px] overflow-hidden">
+              <div className="flex items-center justify-between py-3.5 px-4 border-b border-default">
+                <h3 className="text-[13px] font-medium !text-primary flex items-center gap-2">
+                  <IconEye className="w-3.5 h-3.5 !text-muted" stroke={1.4} /> Aperçu de l&apos;email
                 </h3>
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => setPreviewDevice('desktop')}
-                    className={`h-6 px-2.5 rounded-md border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'desktop' ? 'bg-[#1C1810] text-white border-[#1C1810]' : 'border-[rgba(28,24,16,0.14)] text-[#A09680] hover:bg-[#F5F3EE]'}`}
+                    className={`h-6 px-2.5 rounded-md border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'desktop' ? 'btn-primary' : 'border-default !text-muted hover:bg-hover'}`}
                   >
                     <IconDeviceDesktop className="w-2.5 h-2.5" stroke={1.4} /> Desktop
                   </button>
                   <button
                     onClick={() => setPreviewDevice('mobile')}
-                    className={`h-6 px-2.5 rounded-md border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'mobile' ? 'bg-[#1C1810] text-white border-[#1C1810]' : 'border-[rgba(28,24,16,0.14)] text-[#A09680] hover:bg-[#F5F3EE]'}`}
+                    className={`h-6 px-2.5 rounded-md border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'mobile' ? 'btn-primary' : 'border-default !text-muted hover:bg-hover'}`}
                   >
                     <IconDeviceMobile className="w-2.5 h-2.5" stroke={1.4} /> Mobile
                   </button>
                 </div>
               </div>
-              <div className="bg-[#F9F8F5] border-b border-[rgba(28,24,16,0.08)] py-2.5 px-4 flex items-center gap-2">
+              <div className="bg-muted border-b border-default py-2.5 px-4 flex items-center gap-2">
                 <div className="flex gap-1">
                   <span className="w-2 h-2 rounded-full bg-[#FF6057]" />
                   <span className="w-2 h-2 rounded-full bg-[#FFBD2E]" />
                   <span className="w-2 h-2 rounded-full bg-[#27C93F]" />
                 </div>
-                <div className="flex-1 bg-white border border-[rgba(28,24,16,0.08)] rounded-md h-[22px] px-2.5 flex items-center text-[10px] text-[#A09680]">mail.google.com</div>
-                <span className="text-[10px] text-[#A09680]">Aperçu boîte mail</span>
+                <div className="flex-1 bg-card border border-default rounded-md h-[22px] px-2.5 flex items-center text-[10px] !text-muted">mail.google.com</div>
+                <span className="text-[10px] !text-muted">Aperçu boîte mail</span>
               </div>
               <div className="p-4 flex justify-center">
-                <div className={`w-full bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_16px_rgba(0,0,0,0.05)] w-full`}>
+                <div className="w-full bg-card border border-default rounded-[14px] overflow-hidden shadow-[var(--shadow-sm)] w-full">
                   <div className="h-[500px] overflow-auto">
                     <MailboxPreview
                       newsletter={{
@@ -466,10 +466,10 @@ export default function NewsletterDetailPage() {
             </div>
 
             {/* Timeline */}
-            <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden">
-              <div className="py-3.5 px-4 border-b border-[rgba(28,24,16,0.08)]">
-                <h3 className="text-[13px] font-medium text-[#1C1810] flex items-center gap-2">
-                  <IconClock className="w-3.5 h-3.5 text-[#A09680]" stroke={1.4} /> Historique
+            <div className="bg-card border border-default rounded-[14px] overflow-hidden">
+              <div className="py-3.5 px-4 border-b border-default">
+                <h3 className="text-[13px] font-medium !text-primary flex items-center gap-2">
+                  <IconClock className="w-3.5 h-3.5 !text-muted" stroke={1.4} /> Historique
                 </h3>
               </div>
               <div className="py-4 px-4 flex flex-col gap-0">
@@ -481,12 +481,12 @@ export default function NewsletterDetailPage() {
                 ].map((item, i) => (
                   <div key={i} className="flex gap-3 pb-4 last:pb-0 relative">
                     <div className="flex flex-col items-center w-5 shrink-0">
-                      <span className={`w-2 h-2 rounded-full shrink-0 mt-1 ${item.done ? 'bg-[#2A6B47]' : 'bg-[rgba(28,24,16,0.14)]'}`} />
-                      {i < 3 && <div className="flex-1 w-px bg-[rgba(28,24,16,0.08)] mt-0.5" />}
+                      <span className={`w-2 h-2 rounded-full shrink-0 mt-1 ${item.done ? 'bg-[#2A6B47]' : 'bg-[var(--border-default)]'}`} />
+                      {i < 3 && <div className="flex-1 w-px bg-[var(--border-muted)] mt-0.5" />}
                     </div>
                     <div className="flex-1 pt-0.5">
-                      <p className={`text-xs font-medium ${item.done ? 'text-[#1C1810]' : 'text-[#A09680]'}`}>{item.label}</p>
-                      <p className="text-[11px] text-[#A09680] mt-0.5">{item.time}</p>
+                      <p className={`text-xs font-medium ${item.done ? '!text-primary' : '!text-muted'}`}>{item.label}</p>
+                      <p className="text-[11px] !text-muted mt-0.5">{item.time}</p>
                     </div>
                   </div>
                 ))}
@@ -497,20 +497,20 @@ export default function NewsletterDetailPage() {
           {/* Sidebar */}
           <aside className="p-6 flex flex-col gap-4 lg:min-w-[300px]">
             <div>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#A09680] mb-2.5 flex items-center justify-between">
-                Destinataires <span className="font-semibold text-[#1C1810] text-xs normal-case tracking-normal">{recipientCount}</span>
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest !text-muted mb-2.5 flex items-center justify-between">
+                Destinataires <span className="font-semibold !text-primary text-xs normal-case tracking-normal">{recipientCount}</span>
               </h3>
               {recipientCount > 0 ? (
-                <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden">
+                <div className="bg-card border border-default rounded-[14px] overflow-hidden">
                   {newsletter.subscribers.map((s) => (
                     <SubscriberItem key={s.id} subscriber={s} />
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center gap-2 py-7 px-4 bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px]">
-                  <IconUsers className="w-7 h-7 text-[rgba(28,24,16,0.24)]" stroke={1.2} />
-                  <p className="text-xs text-[#A09680] text-center">Aucun destinataire<br />enregistré pour cette newsletter</p>
-                  <button onClick={handleEdit} className="mt-1 text-[11px] h-8 px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-[#6B6450] hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+                <div className="flex flex-col items-center justify-center gap-2 py-7 px-4 bg-card border border-default rounded-[14px]">
+                  <IconUsers className="w-7 h-7 !text-muted opacity-60" stroke={1.2} />
+                  <p className="text-xs !text-muted text-center">Aucun destinataire<br />enregistré pour cette newsletter</p>
+                  <button onClick={handleEdit} className="mt-1 text-[11px] h-8 px-3 rounded-md border border-default !text-muted hover:bg-hover hover:!text-primary">
                     + Ajouter
                   </button>
                 </div>
@@ -518,8 +518,8 @@ export default function NewsletterDetailPage() {
             </div>
 
             <div>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#A09680] mb-2.5">Statistiques rapides</h3>
-              <div className="bg-white border border-[rgba(28,24,16,0.08)] rounded-[14px] overflow-hidden">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest !text-muted mb-2.5">Statistiques rapides</h3>
+              <div className="bg-card border border-default rounded-[14px] overflow-hidden">
                 {[
                   { key: 'Total destinataires', val: String(recipientCount), icon: IconUsers },
                   { key: 'Ouvertures', val: '—', icon: IconMail, muted: true },
@@ -527,26 +527,26 @@ export default function NewsletterDetailPage() {
                   { key: 'Statut', val: <StatusPill status={newsletter.n_status} t={t} />, icon: IconFileText },
                   { key: 'Template', val: TEMPLATE_LABELS[newsletter.template] || newsletter.template, icon: IconClock, small: true },
                 ].map(({ key, val, icon: Icon, muted, small }) => (
-                  <div key={key} className="flex items-center justify-between py-2.5 px-3.5 border-b border-[rgba(28,24,16,0.08)] last:border-b-0">
-                    <span className="text-xs text-[#6B6450] flex items-center gap-1.5">
-                      <Icon className="w-3 h-3 text-[#A09680]" stroke={1.4} /> {key}
+                  <div key={key} className="flex items-center justify-between py-2.5 px-3.5 border-b border-default last:border-b-0">
+                    <span className="text-xs !text-muted flex items-center gap-1.5">
+                      <Icon className="w-3 h-3" stroke={1.4} /> {key}
                     </span>
-                    <span className={`text-xs font-medium ${muted ? 'text-[#A09680]' : 'text-[#1C1810]'} ${small ? 'text-[11px]' : ''}`}>{val}</span>
+                    <span className={`text-xs font-medium ${muted ? '!text-muted' : '!text-primary'} ${small ? 'text-[11px]' : ''}`}>{val}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[#A09680] mb-2.5">Actions</h3>
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest !text-muted mb-2.5">Actions</h3>
               <div className="flex flex-col gap-1.5">
-                <button onClick={handleDuplicate} className="w-full h-[34px] px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-xs text-[#6B6450] flex items-center gap-2 hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+                <button onClick={handleDuplicate} className="w-full h-[34px] px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
                   <IconCopy className="w-3.5 h-3.5" stroke={1.4} /> Dupliquer la newsletter
                 </button>
-                <button onClick={handleExportHtml} className="w-full h-[34px] px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-xs text-[#6B6450] flex items-center gap-2 hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+                <button onClick={handleExportHtml} className="w-full h-[34px] px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
                   <IconDownload className="w-3.5 h-3.5" stroke={1.4} /> Exporter le HTML
                 </button>
-                <button onClick={handleEdit} className="w-full h-[34px] px-3 rounded-md border border-[rgba(28,24,16,0.14)] text-xs text-[#6B6450] flex items-center gap-2 hover:bg-[#F5F3EE] hover:text-[#1C1810]">
+                <button onClick={handleEdit} className="w-full h-[34px] px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
                   <IconPencil className="w-3.5 h-3.5" stroke={1.4} /> Modifier le brouillon
                 </button>
                 <button onClick={handleDelete} disabled={deleting} className="w-full h-[34px] px-3 rounded-md border border-[rgba(181,58,42,0.25)] text-xs text-[#B53A2A] flex items-center gap-2 hover:bg-[#FDECEA] hover:border-[rgba(181,58,42,0.4)] disabled:opacity-50">

@@ -1199,6 +1199,44 @@ button {
   border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
+.pastille-draft {
+  background-color: #fef5e5;
+  color: #9b6b18;
+  border: 1px solid #fde68a;
+}
+
+:root.light .pastille-draft {
+  background-color: #fef5e5;
+  color: #9b6b18;
+  border: 1px solid #fde68a;
+}
+
+:root.dark .pastille-draft,
+:root:not(.light) .pastille-draft {
+  background-color: rgba(217, 119, 6, 0.2);
+  color: #fcd34d;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+}
+
+.pastille-scheduled {
+  background-color: #eef3ff;
+  color: #2b5cb8;
+  border: 1px solid #93c5fd;
+}
+
+:root.light .pastille-scheduled {
+  background-color: #eef3ff;
+  color: #2b5cb8;
+  border: 1px solid #93c5fd;
+}
+
+:root.dark .pastille-scheduled,
+:root:not(.light) .pastille-scheduled {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
 /* ============================================
    FACTURES PAGE - Design factures.html
    ============================================ */
