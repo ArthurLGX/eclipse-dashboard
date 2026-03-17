@@ -1044,7 +1044,9 @@ export async function updateFactureById(
   if (data.user) payload.user = data.user;
   if (data.pdf) payload.pdf = data.pdf;
   
-  const result = await put(`factures/${factureId}`, payload);
+  const id = String(factureId ?? '').trim();
+  if (!id) throw new Error('Identifiant de facture invalide');
+  const result = await put(`factures/${id}`, payload);
   return result;
 }
 

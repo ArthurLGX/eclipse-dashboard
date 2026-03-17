@@ -263,8 +263,11 @@ export default function FacturesPage() {
   };
 
   const handleStatusChange = useCallback(async (facture: Facture, newStatus: string) => {
-    const docId = facture.documentId;
-    if (!docId) return;
+    const docId = facture.documentId != null ? String(facture.documentId).trim() : '';
+    if (!docId) {
+      showGlobalPopup(isQuoteMode ? (t('quote_status_update_error') || 'Erreur : document manquant') : (t('invoice_status_update_error') || 'Erreur : document manquant'), 'error');
+      return;
+    }
     setUpdatingStatusId(docId);
     setOpenStatusId(null);
     try {
@@ -278,7 +281,14 @@ export default function FacturesPage() {
       await refetch();
     } catch (e) {
       console.error(e);
-      showGlobalPopup(isQuoteMode ? (t('quote_status_update_error') || 'Erreur lors de la mise à jour du statut') : (t('invoice_status_update_error') || 'Erreur lors de la mise à jour du statut'), 'error');
+      const msg = (e as Error)?.message || '';
+      const isNotFound = msg.includes('Not Found') || msg.includes('404');
+      showGlobalPopup(
+        isNotFound
+          ? (t('invoice_not_found') || 'Document introuvable — il a peut-être été supprimé')
+          : (isQuoteMode ? (t('quote_status_update_error') || 'Erreur lors de la mise à jour du statut') : (t('invoice_status_update_error') || 'Erreur lors de la mise à jour du statut')),
+        'error'
+      );
     } finally {
       setUpdatingStatusId(null);
     }

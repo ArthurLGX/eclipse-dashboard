@@ -7,7 +7,8 @@ import { anthropic } from '@ai-sdk/anthropic';
 import { generateText } from 'ai';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const maxDuration = 60;
+/** Timeout 5 min — génération HTML via Claude Vision peut être lente (image + tokens) */
+export const maxDuration = 300;
 
 const DEFAULT_PROMPT = `Tu es un expert en design web et développement front-end. Tu reçois une capture d'écran d'une page web (landing, homepage ou page produit).
 
@@ -58,6 +59,7 @@ export async function POST(request: NextRequest) {
 
     const { text } = await generateText({
       model: anthropic('claude-sonnet-4-20250514'),
+      maxOutputTokens: 16000,
       messages: [
         {
           role: 'user',
