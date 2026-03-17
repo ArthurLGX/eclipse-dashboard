@@ -200,7 +200,6 @@ interface FetchResult {
  * Priority: 1) Strapi VPS scrape API, 2) Puppeteer local, 3) Simple fetch
  */
 async function fetchWithJsRendering(url: string): Promise<FetchResult> {
-  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
   const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_URL || 'https://api.eclipsestudiodev.fr';
   
   // 1) Try Strapi VPS scrape API (works in production and local)
@@ -226,17 +225,7 @@ async function fetchWithJsRendering(url: string): Promise<FetchResult> {
     console.warn('[Audit] Strapi scrape API failed:', error);
   }
   
-  // 2) Try Puppeteer locally (development only)
-  if (!isVercel) {
-    try {
-      const result = await fetchWithPuppeteer(url);
-      if (result) return result;
-    } catch (error) {
-      console.warn('[Audit] Puppeteer rendering failed:', error);
-    }
-  }
-  
-  // 3) Fallback to simple fetch (no JS rendering)
+  // 2) Fallback to simple fetch (no JS rendering)
   const response = await fetch(url, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (compatible; EclipseAuditBot/1.0)',
@@ -250,37 +239,6 @@ async function fetchWithJsRendering(url: string): Promise<FetchResult> {
   }
   
   return { html: await response.text(), jsRendered: false };
-}
-
-/**
- * Fetch HTML using Puppeteer (local development only)
- */
-async function fetchWithPuppeteer(url: string): Promise<FetchResult | null> {
-  try {
-    const puppeteer = await import('puppeteer');
-    const browser = await puppeteer.default.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
-    });
-    
-    try {
-      const page = await browser.newPage();
-      await page.setViewport({ width: 1440, height: 900 });
-      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
-      
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-      
-      // Wait for dynamic content
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
-      
-      const html = await page.content();
-      return { html, jsRendered: true };
-    } finally {
-      await browser.close();
-    }
-  } catch {
-    return null;
-  }
 }
 
 // ============================================================================
@@ -1008,20 +966,7 @@ interface CaptureResult {
 }
 
 async function captureScreenshots(url: string): Promise<CaptureResult | undefined> {
-  const isVercel = process.env.VERCEL === '1' || process.env.VERCEL_ENV !== undefined;
-  
-  // On Vercel/serverless: use external screenshot API (thum.io - free, no API key needed)
-  if (isVercel) {
-    return captureScreenshotsExternal(url);
-  }
-  
-  // Local development: try Puppeteer, fallback to external API
-  try {
-    return await captureScreenshotsPuppeteer(url);
-  } catch (error) {
-    console.warn('Puppeteer failed, falling back to external API:', error);
-    return captureScreenshotsExternal(url);
-  }
+  return captureScreenshotsExternal(url);
 }
 
 // External screenshot API (works on Vercel)
@@ -1135,250 +1080,6 @@ async function detectSectionsFromHTML(url: string): Promise<DetectedSection[]> {
     });
   } catch {
     return [];
-  }
-}
-
-// Puppeteer-based capture (local development only)
-async function captureScreenshotsPuppeteer(url: string): Promise<CaptureResult | undefined> {
-  // Dynamic import to avoid loading puppeteer on every request
-  const puppeteer = await import('puppeteer');
-  
-  const browser = await puppeteer.default.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--window-size=1440,900',
-    ],
-  });
-
-  try {
-    const page = await browser.newPage();
-    
-    // Set viewport
-    await page.setViewport({ width: 1440, height: 900 });
-    
-    // Set user agent
-    await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    );
-    
-    // Navigate to page
-    await page.goto(url, {
-      waitUntil: 'networkidle2',
-      timeout: 30000,
-    });
-    
-    // Initial wait for page to render
-    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 1000)));
-    
-    // Try to close cookie banners first
-    try {
-      await page.evaluate(() => {
-        const selectors = [
-          '[class*="cookie"] button',
-          '[class*="consent"] button',
-          '[id*="cookie"] button',
-          'button[class*="accept"]',
-          'button[class*="agree"]',
-          '.cc-dismiss',
-          '#onetrust-accept-btn-handler',
-          '[class*="gdpr"] button',
-          '[aria-label*="cookie"] button',
-          '[aria-label*="consent"] button',
-        ];
-        
-        for (const selector of selectors) {
-          const buttons = document.querySelectorAll(selector);
-          buttons.forEach((btn) => {
-            const button = btn as HTMLButtonElement;
-            if (button && button.offsetParent !== null) {
-              button.click();
-            }
-          });
-        }
-      });
-      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
-    } catch {
-      // Ignore cookie banner errors
-    }
-    
-    // Scroll down the page to trigger lazy-load and scroll-based animations
-    await page.evaluate(async () => {
-      const scrollStep = window.innerHeight;
-      const scrollDelay = 200; // ms between scrolls
-      const maxScrolls = 10;
-      
-      for (let i = 0; i < maxScrolls; i++) {
-        window.scrollBy(0, scrollStep);
-        await new Promise(resolve => setTimeout(resolve, scrollDelay));
-        
-        // Stop if we've reached the bottom
-        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
-          break;
-        }
-      }
-      
-      // Wait for animations triggered by scroll
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Scroll back to top
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      
-      // Wait for any scroll-to-top animations
-      await new Promise(resolve => setTimeout(resolve, 300));
-    });
-    
-    // Wait for CSS animations to complete
-    await page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        // Get all animated elements
-        const animatedElements = document.querySelectorAll('*');
-        let animationsRunning = 0;
-        
-        animatedElements.forEach((el) => {
-          const style = window.getComputedStyle(el);
-          const animationDuration = parseFloat(style.animationDuration) || 0;
-          const transitionDuration = parseFloat(style.transitionDuration) || 0;
-          
-          if (animationDuration > 0 || transitionDuration > 0) {
-            animationsRunning++;
-          }
-        });
-        
-        // Wait a reasonable time for animations (max 3s)
-        const waitTime = Math.min(animationsRunning > 0 ? 2000 : 500, 3000);
-        setTimeout(resolve, waitTime);
-      });
-    });
-    
-    // Final wait to ensure everything is rendered
-    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 500)));
-    
-    // Capture viewport screenshot
-    const viewportScreenshot = await page.screenshot({
-      encoding: 'base64',
-      type: 'png',
-    });
-    
-    // Capture full page screenshot
-    const fullPageScreenshot = await page.screenshot({
-      encoding: 'base64',
-      type: 'png',
-      fullPage: true,
-    });
-    
-    // Detect sections with their positions using Puppeteer
-    const detectedSections = await page.evaluate((patterns: typeof SECTION_PATTERNS) => {
-      const sections: Array<{
-        id: string;
-        name: string;
-        type: string;
-        detected: boolean;
-        position?: { top: number; height: number };
-        issues: string[];
-        suggestions: string[];
-      }> = [];
-      
-      const pageHeight = document.documentElement.scrollHeight;
-      const viewportHeight = window.innerHeight;
-      
-      // Section names mapping
-      const sectionNames: Record<string, string> = {
-        navigation: 'Navigation',
-        hero: 'Hero Section',
-        problem: 'Problème',
-        solution: 'Solution',
-        proof: 'Preuve Sociale',
-        features: 'Fonctionnalités',
-        cta: 'Call-to-Action',
-        pricing: 'Tarification',
-        faq: 'FAQ',
-        footer: 'Footer',
-      };
-      
-      // Detect each section type
-      Object.entries(patterns).forEach(([sectionType, { keywords, cssPatterns }]) => {
-        let found = false;
-        let element: Element | null = null;
-        
-        // Search by CSS class/id patterns
-        for (const pattern of cssPatterns) {
-          const el = document.querySelector(
-            `[class*="${pattern}"], [id*="${pattern}"], section[data-section="${pattern}"]`
-          );
-          if (el) {
-            found = true;
-            element = el;
-            break;
-          }
-        }
-        
-        // Search by text content if not found
-        if (!found) {
-          const allElements = document.querySelectorAll('section, div, header, footer, nav');
-          for (const el of allElements) {
-            const text = el.textContent?.toLowerCase() || '';
-            for (const keyword of keywords) {
-              if (text.includes(keyword.toLowerCase())) {
-                found = true;
-                element = el;
-                break;
-              }
-            }
-            if (found) break;
-          }
-        }
-        
-        // Calculate position
-        let position: { top: number; height: number } | undefined;
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const scrollTop = window.scrollY;
-          position = {
-            top: Math.round(((rect.top + scrollTop) / pageHeight) * 100),
-            height: Math.round((rect.height / viewportHeight) * 100),
-          };
-        }
-        
-        // Generate issues and suggestions
-        const issues: string[] = [];
-        const suggestions: string[] = [];
-        
-        if (!found) {
-          if (['hero', 'cta', 'solution'].includes(sectionType)) {
-            issues.push(`Section ${sectionNames[sectionType]} manquante`);
-            suggestions.push(`Ajouter une section ${sectionNames[sectionType]} claire`);
-          }
-        }
-        
-        sections.push({
-          id: sectionType,
-          name: sectionNames[sectionType] || sectionType,
-          type: sectionType,
-          detected: found,
-          position,
-          issues,
-          suggestions,
-        });
-      });
-      
-      return sections;
-    }, SECTION_PATTERNS);
-    
-    return {
-      screenshots: {
-        viewport: viewportScreenshot as string,
-        fullPage: fullPageScreenshot as string,
-        capturedAt: new Date().toISOString(),
-      },
-      detectedSections: detectedSections as DetectedSection[],
-    };
-  } finally {
-    await browser.close();
   }
 }
 

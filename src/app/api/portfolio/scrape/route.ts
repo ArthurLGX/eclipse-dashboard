@@ -252,10 +252,8 @@ function extractProjectsFromHtml($: cheerio.CheerioAPI, baseUrl: string, debug: 
 
 export async function POST(request: NextRequest): Promise<NextResponse<ScrapeResult>> {
   const debug: string[] = [];
-  const isVercel = !!process.env.VERCEL;
-
   try {
-    const { url, useJavaScript = true } = await request.json();
+    const { url } = await request.json();
 
     if (!url) {
       return NextResponse.json({ success: false, projects: [], error: 'URL requise' }, { status: 400 });
@@ -271,92 +269,28 @@ export async function POST(request: NextRequest): Promise<NextResponse<ScrapeRes
     const baseUrl = `${parsedUrl.protocol}//${parsedUrl.host}`;
     let html = '';
     let siteName = '';
-    let method = 'static';
+    const method = 'static';
 
-    // Puppeteer uniquement en local (non supporté sur Vercel serverless)
-    if (useJavaScript && !isVercel) {
-      try {
-        const puppeteer = await import('puppeteer');
-        debug.push('Launching Puppeteer browser...');
+    // Fetch statique (Puppeteer retiré)
+    debug.push('Fetching page...');
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
+    });
 
-        const browser = await puppeteer.default.launch({
-          headless: true,
-          args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--disable-gpu',
-            '--window-size=1920x1080',
-          ],
-        });
-
-        try {
-          const page = await browser.newPage();
-          await page.setViewport({ width: 1920, height: 1080 });
-          await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-
-          debug.push(`Navigating to ${url}...`);
-          await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-
-          debug.push('Waiting for dynamic content...');
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-
-          await page.evaluate(async () => {
-            await new Promise<void>((resolve) => {
-              let totalHeight = 0;
-              const distance = 500;
-              const timer = setInterval(() => {
-                const scrollHeight = document.body.scrollHeight;
-                window.scrollBy(0, distance);
-                totalHeight += distance;
-                if (totalHeight >= scrollHeight || totalHeight > 5000) {
-                  clearInterval(timer);
-                  resolve();
-                }
-              }, 100);
-            });
-          });
-
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-          html = await page.content();
-          debug.push(`Got ${html.length} chars of rendered HTML`);
-          method = 'puppeteer';
-        } finally {
-          await browser.close();
-        }
-      } catch (puppeteerError) {
-        debug.push(`Puppeteer error: ${puppeteerError}`);
-        // Fallback to static fetch below
-      }
-    } else if (isVercel && useJavaScript) {
-      debug.push('Puppeteer non disponible sur Vercel, utilisation du fetch statique');
+    if (!response.ok) {
+      return NextResponse.json({
+        success: false,
+        projects: [],
+        error: `Impossible de charger la page (${response.status})`,
+        debug,
+      }, { status: 400 });
     }
 
-    // Fallback to static fetch if Puppeteer failed or wasn't used
-    if (!html) {
-      debug.push('Using static fetch fallback...');
-      
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        },
-      });
-
-      if (!response.ok) {
-        return NextResponse.json({ 
-          success: false, 
-          projects: [], 
-          error: `Impossible de charger la page (${response.status})`,
-          debug 
-        }, { status: 400 });
-      }
-
-      html = await response.text();
-      debug.push(`Got ${html.length} chars of static HTML`);
-      method = 'static';
-    }
+    html = await response.text();
+    debug.push(`Got ${html.length} chars of HTML`);
 
     const $ = cheerio.load(html);
 
