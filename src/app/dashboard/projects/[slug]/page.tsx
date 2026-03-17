@@ -293,6 +293,19 @@ const PROJECT_TYPES = [
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setCollaborators((collabResponse as any).data || []);
         
+        // Debug: comparer owner du projet vs user connecté (pour erreur "lien public / not owner")
+        const projectOwner = project.user;
+        const connectedUser = user;
+        const connectedUserDocId = (connectedUser as { documentId?: string })?.documentId;
+        console.log('[Project Owner Debug]', {
+          projectOwner: projectOwner ? { id: projectOwner.id, documentId: projectOwner.documentId, email: projectOwner.email, username: projectOwner.username } : null,
+          connectedUser: connectedUser ? { id: connectedUser.id, documentId: connectedUserDocId, email: connectedUser.email, username: connectedUser.username } : null,
+          'projectOwner.id === connectedUser.id': projectOwner?.id === connectedUser?.id,
+          'projectOwner.documentId === connectedUser.documentId': projectOwner?.documentId === connectedUserDocId,
+          isOwnerFromAPI: canDelete,
+          isCollaborator: isCollab,
+        });
+        
         // Vérifier si l'utilisateur est collaborateur (propriétaire ou collaborateur ajouté)
         const isOwnerOrCollab = canDelete || isCollab;
         setIsCollaborator(isOwnerOrCollab);
