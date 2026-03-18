@@ -142,7 +142,14 @@ RETOURNE UN JSON VALIDE avec cette structure:
       throw new Error('L\'IA n\'a pas retourné de contenu');
     }
 
-    const result = JSON.parse(responseContent);
+    // Extraire le JSON si l'IA l'a entouré de markdown (```json ... ``` ou ``` ... ```)
+    let jsonStr = responseContent.trim();
+    const codeBlockMatch = jsonStr.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+    if (codeBlockMatch) {
+      jsonStr = codeBlockMatch[1].trim();
+    }
+
+    const result = JSON.parse(jsonStr);
 
     // Validate the response structure
     if (!result.tasks || !Array.isArray(result.tasks)) {
