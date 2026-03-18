@@ -332,6 +332,7 @@ export default function ClientDetailsPage() {
               website={client.website}
               name={client.name}
               objectFit="contain"
+              menuPortal
             />
           </div>
 
