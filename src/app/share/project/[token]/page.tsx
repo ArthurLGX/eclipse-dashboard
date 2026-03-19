@@ -293,27 +293,8 @@ export default function SharedProjectPage() {
     : null;
 
   return (
-    <div className="min-h-screen bg-page font-sans antialiased">
-      {/* Nav sticky - style La Pêche */}
-      <nav className="sticky top-0 z-200 bg-white/92 backdrop-blur-xl border-b border-default px-6 md:px-10 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center !text-sm font-extrabold !text-white tracking-tight">
-            ES
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="!text-[13px] font-bold !text-primary">Eclipse Studio</span>
-            <span className="!text-[10px] !text-muted uppercase tracking-wider">Dashboard</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <a href="/dashboard" className="!text-[13px] !text-muted hover:!text-primary px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors">
-            {t('dashboard') || 'Tableau de bord'}
-          </a>
-          <a href="/pricing" className="!text-[13px] !text-muted hover:!text-primary px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors">
-            {t('pricing') || 'Tarifs'}
-          </a>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-page pt-8 font-sans antialiased">
+  
 
       {/* Container */}
       <div className="max-w-[1160px] mx-auto px-6 md:px-10 py-10">
