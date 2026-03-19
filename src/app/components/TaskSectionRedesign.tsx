@@ -15,6 +15,8 @@ import {
   IconLayoutGrid,
   IconX,
   IconSubtask,
+  IconSquare,
+  IconSquareCheck,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -549,8 +551,12 @@ interface TaskCardRedesignProps {
   onAddSubtask: (title: string) => Promise<void>;
   onSubtaskToggle: (st: ProjectTask) => Promise<void>;
   onSubtaskDelete: (st: ProjectTask) => Promise<void>;
+  onEditSubtask?: (st: ProjectTask) => void;
   t: (key: string) => string;
   animateIndex: number;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: () => void;
 }
 
 function TaskCardRedesign({
@@ -569,8 +575,12 @@ function TaskCardRedesign({
   onAddSubtask,
   onSubtaskToggle,
   onSubtaskDelete,
+  onEditSubtask,
   t,
   animateIndex,
+  isSelectionMode = false,
+  isSelected = false,
+  onToggleSelection,
 }: TaskCardRedesignProps) {
   void onStatusChange;
   const [editTitle, setEditTitle] = useState(task.title);
@@ -635,6 +645,16 @@ function TaskCardRedesign({
       }`}
     >
       <div className="flex items-center gap-3 py-3.5 px-4 cursor-pointer" onClick={onToggleExpand}>
+        {isSelectionMode && canEdit ? (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onToggleSelection?.(); }}
+            className="w-[18px] h-[18px] rounded border-2 flex items-center justify-center flex-shrink-0 hover:bg-muted transition-colors"
+            style={{ borderColor: isSelected ? 'var(--color-accent)' : undefined, backgroundColor: isSelected ? 'var(--color-accent)' : undefined }}
+          >
+            {isSelected && <IconCheck className="w-2.5 h-2.5 !text-white" strokeWidth={3} />}
+          </button>
+        ) : (
         <button
           type="button"
           className={`w-[18px] h-[18px] rounded-full flex-shrink-0 flex items-center justify-center transition-colors border-[1.5px] ${
@@ -646,6 +666,7 @@ function TaskCardRedesign({
         >
           {task.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 !text-white" strokeWidth={3} />}
         </button>
+        )}
         <div
           className="w-[3px] h-8 rounded-full flex-shrink-0"
           style={{ background: task.color || TASK_COLORS[0] }}
@@ -874,21 +895,32 @@ function TaskCardRedesign({
                     subtasks.map((st) => (
                       <div
                         key={st.documentId}
-                        className="flex items-center gap-2.5 py-2 px-3 bg-card border border-default  hover:border-[#ccc8c2] transition-colors group"
+                        className={`flex items-center gap-2.5 py-2 px-3 bg-card border border-default hover:border-[#ccc8c2] transition-colors group ${onEditSubtask ? 'cursor-pointer' : ''}`}
+                        onClick={onEditSubtask ? () => onEditSubtask(st) : undefined}
                       >
                         <button
                           type="button"
                           className={`w-[15px] h-[15px] rounded-full flex-shrink-0 flex items-center justify-center transition-colors border-[1.5px] ${
                             st.task_status === 'completed' ? 'bg-green-500 border-green-500' : 'border-[#ccc8c2] hover:border-green-500 hover:bg-green-500/10'
                           }`}
-                          onClick={() => onSubtaskToggle(st)}
+                          onClick={(e) => { e.stopPropagation(); onSubtaskToggle(st); }}
                         >
                           {st.task_status === 'completed' && <IconCheck className="w-2 h-2 !text-white" strokeWidth={3} />}
                         </button>
                         <span className={`flex-1 !text-[13px] !text-primary ${st.task_status === 'completed' ? 'line-through !text-muted' : ''}`}>{st.title}</span>
+                        {onEditSubtask && (
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); onEditSubtask?.(st); }}
+                            className="w-6 h-6 rounded flex items-center justify-center !text-muted2 opacity-0 group-hover:opacity-100 hover:bg-secondary hover:!text-primary transition-all"
+                            title={t('edit') || 'Modifier'}
+                          >
+                            <IconEdit className="w-3 h-3" />
+                          </button>
+                        )}
                         <button
                           type="button"
-                          onClick={() => onSubtaskDelete(st)}
+                          onClick={(e) => { e.stopPropagation(); onSubtaskDelete(st); }}
                           className="w-6 h-6 rounded flex items-center justify-center !text-muted2 opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:!text-red-600 transition-all"
                         >
                           <IconX className="w-3 h-3" />
@@ -968,6 +1000,10 @@ export interface TaskListRedesignViewProps {
   loadTasks: () => Promise<void>;
   onAllTasksCompleted?: () => void;
   t: (key: string) => string;
+  isSelectionMode?: boolean;
+  selectedTasks?: Set<string>;
+  onToggleSelection?: (taskId: string) => void;
+  onEditSubtask?: (subtask: ProjectTask) => void;
 }
 
 export function TaskListRedesignView({
@@ -980,6 +1016,10 @@ export function TaskListRedesignView({
   loadTasks,
   onAllTasksCompleted,
   t,
+  isSelectionMode = false,
+  selectedTasks = new Set(),
+  onToggleSelection,
+  onEditSubtask,
 }: TaskListRedesignViewProps) {
   const { showGlobalPopup } = usePopup();
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -1131,6 +1171,9 @@ export function TaskListRedesignView({
               onStatusChange={handleStatusChange}
               onSave={handleSaveTask}
               onDelete={handleDeleteTask}
+              isSelectionMode={isSelectionMode}
+              isSelected={selectedTasks.has(task.documentId)}
+              onToggleSelection={() => onToggleSelection?.(task.documentId)}
               onAddSubtask={async (title) => {
                 if (!title.trim()) return;
                 await createProjectTask({
@@ -1140,6 +1183,8 @@ export function TaskListRedesignView({
                   order: task.subtasks?.length ?? 0,
                   parent_task: task.documentId,
                   color: task.color || TASK_COLORS[0],
+                  start_date: task.start_date ?? undefined,
+                  due_date: task.due_date ?? undefined,
                 });
                 await loadTasks();
                 await syncParentFromSubtasks(task.documentId);
@@ -1155,6 +1200,7 @@ export function TaskListRedesignView({
                 await loadTasks();
                 await syncParentFromSubtasks(task.documentId);
               }}
+              onEditSubtask={onEditSubtask}
               t={t}
               animateIndex={i}
             />

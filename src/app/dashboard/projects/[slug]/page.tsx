@@ -633,17 +633,17 @@ const PROJECT_TYPES = [
                 <>
                   <button
                     onClick={() => setShowDuplicateModal(true)}
-                    className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
+                    className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 !text-sm font-medium shrink-0"
                     title={t('duplicate_project') || 'Dupliquer ce projet'}
                   >
-                    <IconCopy className="w-4 h-4" />
+                    <IconCopy className="w-4 h-4 !text-white" />
                     <span className="hidden sm:inline">{t('duplicate') || 'Dupliquer'}</span>
                   </button>
                   <button
                     onClick={() => setShowShareModal(true)}
-                    className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
+                    className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 !text-sm font-medium shrink-0"
                   >
-                    <IconShare className="w-4 h-4" />
+                    <IconShare className="w-4 h-4 !text-white " />
                     <span className="hidden sm:inline">{t('share') || 'Partager'}</span>
                   </button>
                 </>
@@ -658,21 +658,21 @@ const PROJECT_TYPES = [
                         onClick={() => {
                           setIsEditMode(false);
                         }}
-                        className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
+                        className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 !text-sm font-medium shrink-0"
                       >
-                        <IconX className="w-4 h-4" />
+                        <IconX className="w-4 h-4 !text-white" />
                         <span className="hidden sm:inline">{t('cancel') || 'Annuler'}</span>
                       </button>
                       {/* Bouton Sauvegarder */}
                       <button
                         onClick={() => formRef.current?.requestSubmit()}
                         disabled={isSaving}
-                        className="flex items-center gap-2 px-4 py-2 btn-primary  transition-colors !text-sm disabled:opacity-50"
+                        className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 !text-sm font-medium shrink-0 disabled:opacity-50"
                       >
                         {isSaving ? (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         ) : (
-                          <IconCheck className="w-4 h-4" />
+                          <IconCheck className="w-4 h-4 !text-white" />
                         )}
                         <span className="hidden sm:inline">{isSaving ? t('saving') || 'Sauvegarde...' : t('save') || 'Sauvegarder'}</span>
                       </button>
@@ -684,9 +684,9 @@ const PROJECT_TYPES = [
                         setEditNotes(project?.notes || '');
                         setIsEditMode(true);
                       }}
-                      className="flex items-center gap-2 px-3 py-2 btn-ghost  transition-colors !text-sm"
+                      className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 !text-sm font-medium shrink-0"
                     >
-                      <IconEdit className="w-4 h-4" />
+                      <IconEdit className="w-4 h-4 !text-white" />
                       <span className="hidden sm:inline">{t('edit') || 'Modifier'}</span>
                     </button>
                   )}

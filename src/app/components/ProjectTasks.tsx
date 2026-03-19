@@ -282,15 +282,15 @@ export default function ProjectTasks({
     }
   }, [parentTaskForSubtask]);
 
-  const loadTasks = async () => {
+  const loadTasks = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const response = await fetchProjectTasks(projectDocumentId);
       setTasks(response.data || []);
     } catch {
       setTasks([]);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -333,14 +333,14 @@ export default function ProjectTasks({
       setShowNewTaskForm(false);
       setParentTaskForSubtask(null);
       
-      // Recharger les tâches
-      await loadTasks();
-      
+      // Recharger les tâches (silencieux = pas de spinner)
+      await loadTasks(true);
+
       // Si c'était une sous-tâche, synchroniser la tâche parente
       if (parentDocId) {
         setTimeout(async () => {
           await syncParentTaskFromSubtasks(parentDocId);
-          loadTasks();
+          loadTasks(true);
         }, 100);
       }
     } catch (error) {
@@ -433,15 +433,14 @@ export default function ProjectTasks({
       showGlobalPopup(t('task_updated') || 'Tâche mise à jour', 'success');
       setEditingTask(null);
       
-      // Recharger les tâches d'abord
-      await loadTasks();
+      // Recharger les tâches (silencieux = pas de spinner)
+      await loadTasks(true);
       
       // Si c'est une sous-tâche, synchroniser la tâche parente
       if (isSubtask && parentTaskDocId) {
-        // Attendre un peu pour que loadTasks se termine
         setTimeout(async () => {
           await syncParentTaskFromSubtasks(parentTaskDocId);
-          loadTasks(); // Recharger pour voir les changements du parent
+          loadTasks(true);
         }, 100);
       }
     } catch (error) {
@@ -461,14 +460,14 @@ export default function ProjectTasks({
       await deleteProjectTask(taskDocumentId);
       showGlobalPopup(t('task_deleted') || 'Tâche supprimée', 'success');
       
-      // Recharger les tâches
-      await loadTasks();
+      // Recharger les tâches (silencieux = pas de spinner)
+      await loadTasks(true);
       
       // Si c'était une sous-tâche, synchroniser la tâche parente
       if (parentTaskDocId) {
         setTimeout(async () => {
           await syncParentTaskFromSubtasks(parentTaskDocId);
-          loadTasks();
+          loadTasks(true);
         }, 100);
       }
     } catch (error) {
@@ -525,7 +524,7 @@ export default function ProjectTasks({
         ? `${t('task_duplicated') || 'Tâche dupliquée'} (${subtasksCount} ${t('subtasks') || 'sous-tâches'})`
         : (t('task_duplicated') || 'Tâche dupliquée avec succès');
       showGlobalPopup(message, 'success');
-      loadTasks();
+      loadTasks(true);
     } catch (error) {
       console.error('Error duplicating task:', error);
       showGlobalPopup(t('error_generic') || 'Erreur lors de la duplication', 'error');
@@ -731,15 +730,15 @@ export default function ProjectTasks({
   const handleBulkDelete = async () => {
     if (selectedTasks.size === 0) return;
     if (!confirm(t('confirm_delete_tasks') || 'Supprimer les tâches sélectionnées ?')) return;
-    
+
     const taskIds = Array.from(selectedTasks);
     const previousTasks = [...tasks];
-    
+
     // Optimistic update
     setTasks(prev => prev.filter(t => !taskIds.includes(t.documentId)));
     setSelectedTasks(new Set());
     setIsSelectionMode(false);
-    
+
     // API calls en background
     try {
       await Promise.all(taskIds.map(id => deleteProjectTask(id)));
@@ -747,6 +746,31 @@ export default function ProjectTasks({
     } catch (error) {
       console.error('Error deleting tasks:', error);
       setTasks(previousTasks);
+      showGlobalPopup(t('error_generic') || 'Erreur', 'error');
+    }
+  };
+
+  const [showBulkDatesModal, setShowBulkDatesModal] = useState(false);
+  const [bulkDatesForm, setBulkDatesForm] = useState({ start_date: '', due_date: '' });
+  const handleBulkUpdateDates = async () => {
+    if (selectedTasks.size === 0) return;
+    const start = bulkDatesForm.start_date || null;
+    const due = bulkDatesForm.due_date || null;
+    if (!start && !due) {
+      showGlobalPopup(t('bulk_dates_required') || 'Indiquez au moins une date (début ou fin)', 'info');
+      return;
+    }
+    const taskIds = Array.from(selectedTasks);
+    try {
+      await Promise.all(taskIds.map(id => updateProjectTask(id, { start_date: start || undefined, due_date: due || undefined })));
+      showGlobalPopup(t('bulk_dates_updated') || `${taskIds.length} tâche(s) mise(s) à jour`, 'success');
+      setShowBulkDatesModal(false);
+      setBulkDatesForm({ start_date: '', due_date: '' });
+      setSelectedTasks(new Set());
+      setIsSelectionMode(false);
+      await loadTasks(true);
+    } catch (error) {
+      console.error('Error updating bulk dates:', error);
       showGlobalPopup(t('error_generic') || 'Erreur', 'error');
     }
   };
@@ -897,8 +921,8 @@ export default function ProjectTasks({
           'success'
         );
       }
-      
-      loadTasks();
+
+      loadTasks(true);
     } catch (error) {
       console.error('Error importing tasks:', error);
       throw error; // Propager l'erreur pour que le modal la gère
@@ -952,8 +976,8 @@ export default function ProjectTasks({
         `${createdCount} ${t('tasks_created') || 'tâches créées avec succès'}`,
         'success'
       );
-      
-      loadTasks();
+
+      loadTasks(true);
     } catch (error) {
       console.error('Error creating AI-generated tasks:', error);
       showGlobalPopup(
@@ -1584,6 +1608,14 @@ export default function ProjectTasks({
                   {t('archive_tasks') || 'Archiver'}
                 </button>
               )}
+              {/* Dates communes */}
+              <button
+                onClick={() => setShowBulkDatesModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5  !text-sm bg-accent !text-white hover:bg-[var(--color-accent)] transition-colors"
+              >
+                <IconCalendar className="w-4 h-4" />
+                {t('common_dates') || 'Dates communes'}
+              </button>
               {/* Supprimer */}
               <button
                 onClick={handleBulkDelete}
@@ -1828,9 +1860,13 @@ export default function ProjectTasks({
           projectDocumentId={projectDocumentId}
           userId={userId}
           allMembers={allMembers}
-          loadTasks={loadTasks}
+          loadTasks={() => loadTasks(true)}
           onAllTasksCompleted={onAllTasksCompleted}
           t={t}
+          isSelectionMode={isSelectionMode}
+          selectedTasks={selectedTasks}
+          onToggleSelection={toggleTaskSelection}
+          onEditSubtask={setEditingTask}
         />
       ) : filteredTasks.length === 0 ? (
         <div className="!text-center py-12 bg-muted  border border-default">
@@ -1914,7 +1950,7 @@ export default function ProjectTasks({
           {/* Vue Kanban */}
           {viewMode === 'kanban' && (
             <TaskKanbanView
-              tasks={filteredAtomicTasks}
+              tasks={filteredTasks}
               canEdit={canEdit}
               onStatusChange={handleStatusChange}
               onEdit={setEditingTask}
@@ -1963,11 +1999,71 @@ export default function ProjectTasks({
               projectName={projectName}
               canEdit={canEdit}
               t={t}
-              onTasksChange={() => loadTasks()}
+              onTasksChange={() => loadTasks(true)}
+              isSelectionMode={isSelectionMode}
+              selectedTasks={selectedTasks}
+              onToggleSelection={toggleTaskSelection}
             />
           )}
         </>
       )}
+
+      {/* Modal dates communes (sélection multiple) */}
+      <AnimatePresence>
+        {showBulkDatesModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+            onClick={() => setShowBulkDatesModal(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card border border-default w-full max-w-md p-6 shadow-2xl"
+            >
+              <h3 className="!text-lg font-semibold !text-primary mb-4 flex items-center gap-2">
+                <IconCalendar className="w-5 h-5" />
+                {t('common_dates') || 'Dates communes'}
+              </h3>
+              <p className="!text-sm !text-muted mb-4">
+                {selectedTasks.size} {t('selected_tasks') || 'tâche(s) sélectionnée(s)'} — {t('bulk_dates_desc') || 'Définir les mêmes dates pour toutes'}
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block !text-xs font-medium !text-muted mb-1">{t('start_date') || 'Date de début'}</label>
+                  <input
+                    type="date"
+                    value={bulkDatesForm.start_date}
+                    onChange={(e) => setBulkDatesForm(f => ({ ...f, start_date: e.target.value }))}
+                    className="input w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block !text-xs font-medium !text-muted mb-1">{t('due_date') || 'Date de fin'}</label>
+                  <input
+                    type="date"
+                    value={bulkDatesForm.due_date}
+                    onChange={(e) => setBulkDatesForm(f => ({ ...f, due_date: e.target.value }))}
+                    className="input w-full"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 mt-6 justify-end">
+                <button type="button" onClick={() => setShowBulkDatesModal(false)} className="px-4 py-2 !text-sm border border-default !text-primary hover:bg-muted transition-colors">
+                  {t('cancel') || 'Annuler'}
+                </button>
+                <button type="button" onClick={handleBulkUpdateDates} className="px-4 py-2 !text-sm bg-accent !text-white hover:bg-[var(--color-accent)] transition-colors">
+                  {t('apply') || 'Appliquer'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Modal d'édition */}
       <AnimatePresence>
@@ -2886,6 +2982,7 @@ const KANBAN_COLUMNS: { id: TaskStatus; title: string; color: string; bgColor: s
   { id: 'in_progress', title: 'in_progress', color: '!text-amber-700 dark:!text-amber-400', bgColor: 'bg-amber-50 dark:bg-amber-900/30', borderColor: 'border-amber-500', icon: <IconProgress className="w-4 h-4" /> },
   { id: 'completed', title: 'completed', color: '!text-emerald-700 dark:!text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30', borderColor: 'border-emerald-500', icon: <IconCheck className="w-4 h-4" /> },
   { id: 'cancelled', title: 'cancelled', color: '!text-red-600 dark:!text-red-400', bgColor: 'bg-red-100 dark:bg-red-900/30', borderColor: 'border-red-500', icon: <IconX className="w-4 h-4" /> },
+  { id: 'archived', title: 'archived', color: '!text-slate-600 dark:!text-slate-400', bgColor: 'bg-slate-100 dark:bg-slate-900/30', borderColor: 'border-slate-500', icon: <IconArchive className="w-4 h-4" /> },
 ];
 
 // Carte de tâche pour le Kanban
@@ -3477,6 +3574,9 @@ interface TaskGanttViewProps {
   canEdit?: boolean;
   t: (key: string) => string;
   onTasksChange?: () => void; // Callback pour recharger les tâches après modification
+  isSelectionMode?: boolean;
+  selectedTasks?: Set<string>;
+  onToggleSelection?: (taskId: string) => void;
 }
 
 // ROW_H = 40 (réservé pour layout)
@@ -3495,8 +3595,13 @@ function TaskGanttView({
   canEdit = true,
   t,
   onTasksChange,
+  isSelectionMode = false,
+  selectedTasks = new Set(),
+  onToggleSelection,
 }: TaskGanttViewProps) {
+  const { showGlobalPopup } = usePopup();
   const timelineRef = useRef<HTMLDivElement>(null);
+  const lastDraggedTaskIdRef = useRef<string | null>(null);
   const [colWidth, setColWidth] = useState(COL_W_DEFAULT);
   const [tooltip, setTooltip] = useState<{ visible: boolean; x: number; y: number; task: ProjectTask; color: string; effectiveProgress: number; startDate: string; endDate: string; dur: string } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -3524,6 +3629,16 @@ function TaskGanttView({
     return normalized;
   }, []);
 
+  // Parser une chaîne YYYY-MM-DD en date locale (évite décalage timezone avec new Date(str))
+  const parseLocalDate = useCallback((dateStr: string | null | undefined): Date | null => {
+    if (!dateStr || typeof dateStr !== 'string') return null;
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return null;
+    const [y, m, d] = parts;
+    const date = new Date(y, m - 1, d);
+    return isNaN(date.getTime()) ? null : date;
+  }, []);
+
   // Toggle groupe pliable
   const toggleGroup = useCallback((groupColor: string) => {
     setCollapsedGroups(prev => {
@@ -3544,7 +3659,9 @@ function TaskGanttView({
     setColWidth((w) => Math.max(COL_W_MIN, Math.min(COL_W_MAX, w + delta)));
   }, []);
 
-  const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
+  const tasksWithDates = useMemo(() => tasks.filter(task =>
+    task.start_date || task.due_date || task.subtasks?.some(s => s.start_date || s.due_date)
+  ), [tasks]);
 
   // Calculer toutes les données du Gantt avec useMemo
   const ganttData = useMemo(() => {
@@ -3552,11 +3669,18 @@ function TaskGanttView({
       return null;
     }
 
-    // Trouver les dates min et max - normaliser toutes les dates
-    const allDates = tasksWithDates.flatMap(task => [
-      task.start_date ? normalizeDate(new Date(task.start_date)) : null,
-      task.due_date ? normalizeDate(new Date(task.due_date)) : null,
-    ]).filter((d): d is Date => d !== null);
+    // Trouver les dates min et max - inclure tâches parentes et sous-tâches, parser en local
+    const allDates = tasksWithDates.flatMap(task => {
+      const parentDates = [
+        parseLocalDate(task.start_date),
+        parseLocalDate(task.due_date),
+      ].filter((d): d is Date => d !== null);
+      const subtaskDates = (task.subtasks || []).flatMap(s => [
+        parseLocalDate(s.start_date),
+        parseLocalDate(s.due_date),
+      ]).filter((d): d is Date => d !== null);
+      return [...parentDates, ...subtaskDates].map(d => normalizeDate(d));
+    }).filter((d): d is Date => d !== null);
 
     const minDateRaw = new Date(Math.min(...allDates.map(d => d.getTime()), today.getTime()));
     const maxDateRaw = new Date(Math.max(...allDates.map(d => d.getTime()), today.getTime()));
@@ -3622,43 +3746,55 @@ function TaskGanttView({
     const todayIndex = dayHeaders.findIndex(d => d.getTime() === today.getTime());
 
     return { minDate, maxDate, totalDays, dayHeaders, weeks, months, todayIndex };
-  }, [tasksWithDates, today, normalizeDate]);
+  }, [tasksWithDates, today, normalizeDate, parseLocalDate]);
 
   // Calculer la position d'une tâche (en nombre de jours depuis minDate)
-  // Pour les tâches parentes, utilise les dates min/max des sous-tâches
+  // Pour les tâches parentes : priorité aux dates propres (start_date, due_date) si définies, sinon enveloppe des sous-tâches
   const getTaskPosition = useCallback((task: ProjectTask, useSubtasksDates: boolean = true) => {
     if (!ganttData) return { startOffset: 0, duration: 1 };
     const { minDate } = ganttData;
     
-    // Pour les tâches avec sous-tâches, calculer les dates englobantes
     let effectiveStartDate = task.start_date;
     let effectiveEndDate = task.due_date;
     
     if (useSubtasksDates && task.subtasks && task.subtasks.length > 0) {
-      // Collecter toutes les dates (tâche + sous-tâches)
       const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
         .filter((d): d is string => !!d)
-        .map(d => new Date(d));
+        .map(d => parseLocalDate(d))
+        .filter((d): d is Date => d !== null);
       const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
         .filter((d): d is string => !!d)
-        .map(d => new Date(d));
-      
+        .map(d => parseLocalDate(d))
+        .filter((d): d is Date => d !== null);
+      // Priorité aux dates propres de la tâche parente si définies, sinon enveloppe min/max
       if (allStartDates.length > 0) {
-        effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
+        effectiveStartDate = task.start_date
+          ? task.start_date
+          : (() => {
+              const minD = new Date(Math.min(...allStartDates.map(d => d.getTime())));
+              return `${minD.getFullYear()}-${String(minD.getMonth() + 1).padStart(2, '0')}-${String(minD.getDate()).padStart(2, '0')}`;
+            })();
       }
       if (allEndDates.length > 0) {
-        effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
+        effectiveEndDate = task.due_date
+          ? task.due_date
+          : (() => {
+              const maxD = new Date(Math.max(...allEndDates.map(d => d.getTime())));
+              return `${maxD.getFullYear()}-${String(maxD.getMonth() + 1).padStart(2, '0')}-${String(maxD.getDate()).padStart(2, '0')}`;
+            })();
       }
     }
     
-    const start = normalizeDate(effectiveStartDate ? new Date(effectiveStartDate) : new Date(effectiveEndDate || today));
-    const end = normalizeDate(effectiveEndDate ? new Date(effectiveEndDate) : start);
+    const startDate = parseLocalDate(effectiveStartDate) ?? parseLocalDate(effectiveEndDate) ?? today;
+    const endDate = parseLocalDate(effectiveEndDate) ?? startDate;
+    const start = normalizeDate(startDate);
+    const end = normalizeDate(endDate);
     
     const startOffset = Math.round((start.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
     const duration = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
     
-    return { startOffset: Math.max(0, startOffset), duration };
-  }, [ganttData, normalizeDate, today]);
+    return { startOffset: Math.max(0, startOffset), duration, effectiveStartDate: effectiveStartDate || null, effectiveEndDate: effectiveEndDate || null };
+  }, [ganttData, normalizeDate, today, parseLocalDate]);
 
   // Calculer le pourcentage effectif d'une tâche (moyenne des sous-tâches si présentes)
   const getEffectiveProgress = useCallback((task: ProjectTask): number => {
@@ -3679,8 +3815,8 @@ function TaskGanttView({
     const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
     if (!startDate && !endDate) return '—';
     
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+    const start = startDate ? parseLocalDate(startDate) : null;
+    const end = endDate ? parseLocalDate(endDate) : null;
     
     if (start && end) {
       if (start.getMonth() === end.getMonth()) {
@@ -3691,20 +3827,22 @@ function TaskGanttView({
     if (start) return `${monthNames[start.getMonth()]} ${start.getDate()}`;
     if (end) return `${monthNames[end.getMonth()]} ${end.getDate()}`;
     return '—';
-  }, []);
+  }, [parseLocalDate]);
 
   // Calculer la durée en jours
   const getDurationDays = useCallback((startDate: string | null, endDate: string | null) => {
     if (!startDate && !endDate) return null;
-    const start = startDate ? normalizeDate(new Date(startDate)) : null;
-    const end = endDate ? normalizeDate(new Date(endDate)) : null;
+    const startParsed = startDate ? parseLocalDate(startDate) : null;
+    const endParsed = endDate ? parseLocalDate(endDate) : null;
+    const start = startParsed ? normalizeDate(startParsed) : null;
+    const end = endParsed ? normalizeDate(endParsed) : null;
     
     if (start && end) {
       const days = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
       return days;
     }
     return 1;
-  }, [normalizeDate]);
+  }, [normalizeDate, parseLocalDate]);
 
   // Grouper les tâches par couleur
   const taskGroups = useMemo(() => {
@@ -3736,6 +3874,14 @@ function TaskGanttView({
     return colorNames[color] || t('group') || 'Groupe';
   }, [t]);
 
+  // Ajouter N jours à une date ISO (YYYY-MM-DD) - format local pour éviter décalage timezone
+  const addDaysToDate = useCallback((dateStr: string, days: number): string => {
+    const parsed = parseLocalDate(dateStr);
+    if (!parsed) return dateStr;
+    parsed.setDate(parsed.getDate() + days);
+    return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, '0')}-${String(parsed.getDate()).padStart(2, '0')}`;
+  }, [parseLocalDate]);
+
   // Gestion du changement de dates via drag-and-drop
   const handleTaskDateChange = useCallback(async (taskId: string, newStartDate: string, newDueDate: string) => {
     // Trouver la tâche (parent ou sous-tâche)
@@ -3746,12 +3892,40 @@ function TaskGanttView({
       return;
     }
 
+    const hasSubtasks = taskToUpdate.subtasks && taskToUpdate.subtasks.length > 0;
+
     try {
-      // Mettre à jour la tâche avec les nouvelles dates
+      // Mettre à jour la tâche principale
       await updateProjectTask(taskToUpdate.documentId, {
         start_date: newStartDate,
         due_date: newDueDate,
       });
+
+      // Si tâche parente avec sous-tâches : décaler les sous-tâches du même nombre de jours que la tâche principale
+      if (hasSubtasks && taskToUpdate.subtasks) {
+        // Référence = dates de la tâche parente si définies, sinon enveloppe des sous-tâches
+        const allStarts = [taskToUpdate.start_date, ...taskToUpdate.subtasks.map(s => s.start_date)]
+          .filter((d): d is string => !!d);
+        const oldRefStart = taskToUpdate.start_date ?? (allStarts.length > 0 ? allStarts.reduce((min, d) => (d < min ? d : min), allStarts[0]) : newStartDate);
+        const oldStartDate = parseLocalDate(oldRefStart);
+        const newStartDateParsed = parseLocalDate(newStartDate);
+        if (oldStartDate && newStartDateParsed) {
+          const offsetDays = Math.round(
+            (newStartDateParsed.getTime() - oldStartDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+
+          for (const subtask of taskToUpdate.subtasks) {
+            const subStart = subtask.start_date;
+            const subDue = subtask.due_date;
+            if (subStart || subDue) {
+              await updateProjectTask(subtask.documentId, {
+                start_date: subStart ? addDaysToDate(subStart, offsetDays) : undefined,
+                due_date: subDue ? addDaysToDate(subDue, offsetDays) : undefined,
+              });
+            }
+          }
+        }
+      }
 
       // Recharger les tâches pour refléter les changements
       if (onTasksChange) {
@@ -3761,13 +3935,55 @@ function TaskGanttView({
       console.error('Error updating task dates:', error);
       throw error; // Propager l'erreur pour que DraggableGanttBar puisse gérer l'échec
     }
-  }, [tasks, onTasksChange]);
+  }, [tasks, onTasksChange, addDaysToDate, parseLocalDate]);
 
   const scrollToToday = useCallback(() => {
     if (!timelineRef.current || !ganttData) return;
     const todayX = ganttData.todayIndex >= 0 ? ganttData.todayIndex * colWidth : 0;
     timelineRef.current.scrollLeft = Math.max(0, todayX - timelineRef.current.clientWidth / 2);
   }, [ganttData, colWidth]);
+
+  const handleGanttBarDragEnd = useCallback((taskId: string) => {
+    lastDraggedTaskIdRef.current = taskId;
+    setTimeout(() => { lastDraggedTaskIdRef.current = null; }, 500);
+  }, []);
+
+  // Réaligner les dates : pour chaque tâche parente avec sous-tâches, aligner la tâche mère sur l'enveloppe (min/max) des sous-tâches
+  const [isReorging, setIsReorging] = useState(false);
+  const handleReorgDates = useCallback(async () => {
+    const parentsWithSubtasks = tasks.filter(t => t.subtasks && t.subtasks.length > 0);
+    if (parentsWithSubtasks.length === 0) {
+      showGlobalPopup(t('no_parent_with_subtasks') || 'Aucune tâche avec sous-tâches.', 'info');
+      return;
+    }
+    setIsReorging(true);
+    try {
+      let updated = 0;
+      for (const parent of parentsWithSubtasks) {
+        const allStarts = [parent.start_date, ...(parent.subtasks || []).map(s => s.start_date)].filter((d): d is string => !!d);
+        const allEnds = [parent.due_date, ...(parent.subtasks || []).map(s => s.due_date)].filter((d): d is string => !!d);
+        if (allStarts.length === 0 && allEnds.length === 0) continue;
+        const newStart = allStarts.length > 0 ? allStarts.reduce((min, d) => (d < min ? d : min), allStarts[0]) : parent.start_date;
+        const newEnd = allEnds.length > 0 ? allEnds.reduce((max, d) => (d > max ? d : max), allEnds[0]) : parent.due_date;
+        if (!newStart && !newEnd) continue;
+        const needsUpdate = (parent.start_date !== newStart || parent.due_date !== newEnd);
+        if (needsUpdate) {
+          await updateProjectTask(parent.documentId, {
+            start_date: newStart || undefined,
+            due_date: newEnd || undefined,
+          });
+          updated++;
+        }
+      }
+      if (onTasksChange) onTasksChange();
+      showGlobalPopup(updated > 0 ? (t('reorg_dates_success') || `${updated} tâche(s) mise(s) à jour.`) : (t('reorg_dates_already_synced') || 'Dates déjà alignées.'), 'success');
+    } catch (error) {
+      console.error('Reorg dates error:', error);
+      showGlobalPopup(t('error') || 'Erreur lors de la réorganisation.', 'error');
+    } finally {
+      setIsReorging(false);
+    }
+  }, [tasks, onTasksChange, showGlobalPopup, t]);
 
   // Fonction pour générer le HTML d'export (réutilisable pour aperçu et export)
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
@@ -4153,6 +4369,12 @@ function TaskGanttView({
               {t('new_task') || 'Nouvelle tâche'}
             </button>
           )}
+          {canEdit && (
+            <button type="button" onClick={handleReorgDates} disabled={isReorging} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted transition-colors disabled:opacity-50" title={t('reorg_dates_tooltip') || 'Réaligner les tâches mères sur l\'enveloppe de leurs sous-tâches'}>
+              <IconArrowsSort className="w-4 h-4" />
+              {isReorging ? (t('reorging') || 'Reorg...') : (t('reorg_dates') || 'Reorg dates')}
+            </button>
+          )}
           <button type="button" onClick={() => setShowExportModal(true)} disabled={isExporting} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-default !text-muted hover:!text-primary hover:bg-muted  transition-colors disabled:opacity-50">
             <IconFileTypePdf className="w-4 h-4" />
             {isExporting ? (t('exporting') || 'Export...') : (t('export_pdf') || 'Export PDF')}
@@ -4162,7 +4384,7 @@ function TaskGanttView({
 
       {/* Gantt - design redesign (table avec sticky cols) */}
       <div className="overflow-x-auto overflow-y-auto" ref={timelineRef} style={{ maxHeight: 'min(600px, 70vh)' }}>
-        <table className="w-full border-collapse" style={{ minWidth: `${LEFT_W + 90 + 60 + dayHeaders.length * colWidth}px` }}>
+        <table className="w-full border-collapse table-fixed" style={{ minWidth: `${LEFT_W + 90 + 60 + dayHeaders.length * colWidth}px` }}>
           <thead className="sticky top-0 z-20 bg-card">
             <tr>
               <th className="!text-left py-3 px-4 !text-[10px] font-mono !text-muted uppercase tracking-wider sticky left-0 z-40 bg-card-solid border-b border-default shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W, minWidth: LEFT_W }}>
@@ -4230,40 +4452,41 @@ function TaskGanttView({
                     </tr>
 
                     {isExpanded && group.tasks.map((task) => {
-                      const { startOffset, duration } = getTaskPosition(task, true); // true = utiliser dates des sous-tâches
+                      const pos = getTaskPosition(task, true);
+                      const { startOffset, duration, effectiveStartDate: posStart, effectiveEndDate: posEnd } = pos;
+                      const effectiveStartDate = posStart ?? task.start_date ?? null;
+                      const effectiveEndDate = posEnd ?? task.due_date ?? null;
                       const hasSubtasks = task.subtasks && task.subtasks.length > 0;
                       const subtaskCount = task.subtasks?.length || 0;
                       const completedSubtasks = task.subtasks?.filter(s => s.task_status === 'completed').length || 0;
                       const allAssignedUsers = [task.assigned_to, ...(task.subtasks?.map(s => s.assigned_to) || [])].filter((u): u is NonNullable<typeof u> => !!u);
                       const uniqueUsers = allAssignedUsers.filter((u, i, arr) => arr.findIndex(x => x.id === u.id) === i);
                       const effectiveProgress = getEffectiveProgress(task);
-                      
-                      // Calculer les dates effectives pour l'affichage (englobe sous-tâches)
-                      let effectiveStartDate = task.start_date;
-                      let effectiveEndDate = task.due_date;
-                      if (hasSubtasks && task.subtasks) {
-                        const allStartDates = [task.start_date, ...task.subtasks.map(s => s.start_date)]
-                          .filter((d): d is string => !!d).map(d => new Date(d));
-                        const allEndDates = [task.due_date, ...task.subtasks.map(s => s.due_date)]
-                          .filter((d): d is string => !!d).map(d => new Date(d));
-                        if (allStartDates.length > 0) {
-                          effectiveStartDate = new Date(Math.min(...allStartDates.map(d => d.getTime()))).toISOString().split('T')[0];
-                        }
-                        if (allEndDates.length > 0) {
-                          effectiveEndDate = new Date(Math.max(...allEndDates.map(d => d.getTime()))).toISOString().split('T')[0];
-                        }
-                      }
 
                       return (
                         <React.Fragment key={task.documentId}>
                           {/* Ligne de tâche principale */}
                           <tr 
                             className="hover:bg-muted cursor-pointer group h-[44px]"
-                            onClick={() => onEdit(task)}
+                            onClick={() => {
+                              if (lastDraggedTaskIdRef.current === task.documentId) return;
+                              onEdit(task);
+                            }}
                           >
                             {/* Task Name */}
                             <td className="py-2 px-4 sticky left-0 z-40 bg-card-solid group-hover:bg-muted border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W }}>
                               <div className="flex items-center gap-2">
+                                {isSelectionMode && canEdit && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); onToggleSelection?.(task.documentId); }}
+                                    className="w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 hover:bg-muted transition-colors"
+                                    style={{ borderColor: selectedTasks.has(task.documentId) ? 'var(--color-accent)' : undefined, backgroundColor: selectedTasks.has(task.documentId) ? 'var(--color-accent)' : undefined }}
+                                  >
+                                    {selectedTasks.has(task.documentId) && <IconCheck className="w-2.5 h-2.5 !text-white" />}
+                                  </button>
+                                )}
+                                {(!isSelectionMode || !canEdit) && (
                                 <div 
                                   className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                                     task.task_status === 'completed' ? 'border-transparent' : ''
@@ -4275,6 +4498,7 @@ function TaskGanttView({
                                 >
                                   {task.task_status === 'completed' && <IconCheck className="w-2.5 h-2.5 !text-white" />}
                                 </div>
+                                )}
                                 <span className={`text-sm truncate max-w-[140px] ${task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                   {task.title}
                                 </span>
@@ -4326,6 +4550,7 @@ function TaskGanttView({
                                     taskStatus={task.task_status}
                                     progress={effectiveProgress}
                                     onDateChange={handleTaskDateChange}
+                                    onDragEnd={handleGanttBarDragEnd}
                                     className="rounded-md"
                                   >
                                     <div
@@ -4349,11 +4574,24 @@ function TaskGanttView({
                             return (
                               <tr 
                                 key={subtask.documentId}
-                                  className="hover:bg-muted cursor-pointer h-[34px]"
-                                onClick={() => onEdit(task)}
+                                className="hover:bg-muted cursor-pointer h-[34px]"
+                                onClick={() => {
+                                  if (lastDraggedTaskIdRef.current === subtask.documentId) return;
+                                  onEdit(subtask);
+                                }}
                               >
                                 <td className="py-1 !pl-11 !pr-4 sticky left-0 z-40 bg-card-solid border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ width: LEFT_W }}>
                                   <div className="flex items-center gap-2">
+                                    {isSelectionMode && canEdit ? (
+                                      <button
+                                        type="button"
+                                        onClick={(e) => { e.stopPropagation(); onToggleSelection?.(subtask.documentId); }}
+                                        className="w-3.5 h-3.5 rounded border-2 flex items-center justify-center flex-shrink-0 hover:bg-muted transition-colors"
+                                        style={{ borderColor: selectedTasks.has(subtask.documentId) ? 'var(--color-accent)' : undefined, backgroundColor: selectedTasks.has(subtask.documentId) ? 'var(--color-accent)' : undefined }}
+                                      >
+                                        {selectedTasks.has(subtask.documentId) && <IconCheck className="w-2 h-2 !text-white" />}
+                                      </button>
+                                    ) : (
                                     <div 
                                       className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
                                       style={{ 
@@ -4363,6 +4601,7 @@ function TaskGanttView({
                                     >
                                       {subtask.task_status === 'completed' && <IconCheck className="w-2 h-2 !text-white" />}
                                     </div>
+                                    )}
                                     <span className={`text-xs truncate max-w-[130px] ${subtask.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'}`}>
                                       {subtask.title}
                                     </span>
@@ -4396,6 +4635,7 @@ function TaskGanttView({
                                         taskStatus={subtask.task_status}
                                         progress={subtask.progress || 0}
                                         onDateChange={handleTaskDateChange}
+                                        onDragEnd={handleGanttBarDragEnd}
                                         className="h-4 rounded opacity-85 hover:opacity-100"
                                       >
                                         <div />

@@ -14,6 +14,7 @@ interface DraggableGanttBarProps {
   taskStatus?: string;
   progress: number;
   onDateChange: (taskId: string, newStartDate: string, newDueDate: string) => Promise<void>;
+  onDragEnd?: (taskId: string) => void; // Appelé après un drag pour éviter ouverture modale au clic
   className?: string;
 }
 
@@ -30,6 +31,7 @@ export default function DraggableGanttBar({
   taskStatus,
   progress,
   onDateChange,
+  onDragEnd,
   className = '',
 }: DraggableGanttBarProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -45,11 +47,11 @@ export default function DraggableGanttBar({
     setTempDuration(duration);
   }, [startOffset, duration]);
 
-  // Calculer une nouvelle date à partir de l'offset
+  // Calculer une nouvelle date à partir de l'offset (format YYYY-MM-DD en local, évite décalage timezone)
   const calculateDateFromOffset = useCallback((dayOffset: number): string => {
     const newDate = new Date(minDate);
     newDate.setDate(newDate.getDate() + dayOffset);
-    return newDate.toISOString().split('T')[0];
+    return `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
   }, [minDate]);
 
   // Gestion du début du drag (marquer tout de suite pour éviter ouverture modale au relâchement)
@@ -87,13 +89,18 @@ export default function DraggableGanttBar({
   // Gestion de la fin du drag
   const handleDragEnd = useCallback(async (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     setIsDragging(false);
+    // Signaler immédiatement pour bloquer l'ouverture de la modale au clic (avant tout await)
+    onDragEnd?.(taskId);
 
-    if (!dragMode) return;
+    if (!dragMode) {
+      setDragMode(null);
+      return;
+    }
 
     const deltaX = info.offset.x;
     const deltaDays = Math.round(deltaX / dayWidth);
 
-    // Ignorer si pas de mouvement (hasDraggedRef déjà mis dans handleDragStart)
+    // Ignorer si pas de mouvement
     if (deltaDays === 0) {
       setDragMode(null);
       return;
@@ -134,7 +141,7 @@ export default function DraggableGanttBar({
     }
 
     setDragMode(null);
-  }, [dragMode, startOffset, duration, dayWidth, taskId, calculateDateFromOffset, onDateChange]);
+  }, [dragMode, startOffset, duration, dayWidth, taskId, calculateDateFromOffset, onDateChange, onDragEnd]);
 
   const currentStartOffset = isDragging ? tempStartOffset : startOffset;
   const currentDuration = isDragging ? tempDuration : duration;
@@ -146,6 +153,13 @@ export default function DraggableGanttBar({
       e.stopPropagation();
       hasDraggedRef.current = false;
     }
+  }, []);
+
+  // Les poignées de redimensionnement ne doivent jamais ouvrir la modale (clic sans drag)
+  const handleResizeHandleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (hasDraggedRef.current) hasDraggedRef.current = false;
   }, []);
 
   return (
@@ -162,6 +176,7 @@ export default function DraggableGanttBar({
         drag="x"
         dragMomentum={false}
         dragElastic={0}
+        dragConstraints={{ left: 0, right: 0 }}
         onDragStart={(e, info) => handleDragStart(e, info, 'resize-left')}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
@@ -169,7 +184,7 @@ export default function DraggableGanttBar({
           isDragging && dragMode === 'resize-left' ? 'bg-white/30' : ''
         }`}
         style={{ touchAction: 'none' }}
-        onClick={handleBarClick}
+        onClick={handleResizeHandleClick}
       >
         <div className="absolute inset-y-0 left-0 w-0.5 bg-white/50" />
       </motion.div>
@@ -179,6 +194,7 @@ export default function DraggableGanttBar({
         drag="x"
         dragMomentum={false}
         dragElastic={0}
+        dragConstraints={{ left: 0, right: 0 }}
         onDragStart={(e, info) => handleDragStart(e, info, 'move')}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
@@ -213,6 +229,7 @@ export default function DraggableGanttBar({
         drag="x"
         dragMomentum={false}
         dragElastic={0}
+        dragConstraints={{ left: 0, right: 0 }}
         onDragStart={(e, info) => handleDragStart(e, info, 'resize-right')}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
@@ -220,7 +237,7 @@ export default function DraggableGanttBar({
           isDragging && dragMode === 'resize-right' ? 'bg-white/30' : ''
         }`}
         style={{ touchAction: 'none' }}
-        onClick={handleBarClick}
+        onClick={handleResizeHandleClick}
       >
         <div className="absolute inset-y-0 right-0 w-0.5 bg-white/50" />
       </motion.div>
