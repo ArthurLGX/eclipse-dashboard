@@ -1105,20 +1105,7 @@ export function TaskListRedesignView({
 
   return (
     <div className="space-y-4">
-      {/* Barre de progression */}
-      <div className="bg-card border border-default  py-3.5 px-5 flex items-center gap-4">
-        <span className="!text-[13px] font-medium !text-muted whitespace-nowrap">Progression globale</span>
-        <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${globalPct}%` }}
-            transition={{ duration: 0.4 }}
-          />
-        </div>
-        <span className="font-mono !text-xs font-medium !text-success whitespace-nowrap">{globalPct}%</span>
-      </div>
-
+      {/* filtre sur le status des tâches + tri par date de début */}
       {/* Liste des cartes */}
       <div className="flex flex-col gap-1.5">
         <AnimatePresence mode="popLayout">
