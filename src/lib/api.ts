@@ -3305,38 +3305,41 @@ function generateShareToken(): string {
   return token;
 }
 
-/** Crée un lien de partage public pour un projet */
+/** Crée un lien de partage public pour un projet.
+ * Utilise la route API Next.js qui vérifie l'ownership (project-collaborators)
+ * puis proxi vers Strapi pour éviter les bugs de policy côté backend.
+ */
 export const createProjectShareLink = async (
-  userId: number,
   data: CreateProjectShareLinkData
 ): Promise<ProjectShareLink> => {
-  const shareToken = generateShareToken();
-  const expiresAt = data.expires_in_days 
-    ? new Date(Date.now() + data.expires_in_days * 24 * 60 * 60 * 1000).toISOString()
-    : null;
-
-  const basePayload = {
-    share_token: shareToken,
-    is_active: true,
-    show_gantt: data.show_gantt ?? true,
-    show_progress: data.show_progress ?? true,
-    show_tasks: data.show_tasks ?? true,
-    expires_at: expiresAt,
-    views_count: 0,
-    project: data.project,
-  };
-
-  try {
-    const response = await post<ApiResponse<ProjectShareLink>>('project-share-links', {
-      ...basePayload,
-      created_by_user: { connect: [{ id: userId }] },
-    });
-    return response.data;
-  } catch (err) {
-    // Fallback : créateur géré côté serveur (JWT), ou nom de champ différent
-    const response = await post<ApiResponse<ProjectShareLink>>('project-share-links', basePayload);
-    return response.data;
+  const token = getToken();
+  if (!token) {
+    throw new Error('Authentification requise');
   }
+
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const res = await fetch(`${baseUrl}/api/project-share-links/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      projectDocumentId: data.project,
+      show_gantt: data.show_gantt,
+      show_progress: data.show_progress,
+      show_tasks: data.show_tasks,
+      expires_in_days: data.expires_in_days,
+    }),
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData?.error || 'Erreur lors de la création du lien');
+  }
+
+  const result = await res.json();
+  return result;
 };
 
 /** Récupère les liens de partage d'un projet */

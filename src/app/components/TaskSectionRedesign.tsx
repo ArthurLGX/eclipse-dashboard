@@ -1062,6 +1062,7 @@ export function TaskListRedesignView({
         due_date: updates.due_date ?? null,
         estimated_hours: updates.estimated_hours ?? null,
         assigned_to: updates.assignedToDocId ? allMembers.find((m) => m.documentId === updates.assignedToDocId)?.id ?? null : null,
+        start_date: updates.start_date ?? null,
       });
       await loadTasks();
       showGlobalPopup('Modifications sauvegardées', 'success');

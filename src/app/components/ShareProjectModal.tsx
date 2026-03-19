@@ -243,7 +243,7 @@ export default function ShareProjectModal({
   const handleCreatePublicLink = async () => {
     setCreatingPublicLink(true);
     try {
-      const newLink = await createProjectShareLink(userId, {
+      const newLink = await createProjectShareLink({
         project: projectDocumentId,
         show_gantt: publicLinkConfig.show_gantt,
         show_progress: publicLinkConfig.show_progress,
