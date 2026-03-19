@@ -565,7 +565,7 @@ export default function SharedProjectPage() {
               <h3 className="!text-xl md:!text-[22px] font-extrabold !text-white mb-2 tracking-tight">
                 {t('want_to_collaborate')}
               </h3>
-              <p className="!text-[13px] !text-zinc-400 leading-relaxed">
+              <p className="!text-[13px] !text-white leading-relaxed">
                 {t('collaborate_description')}
               </p>
             </div>
