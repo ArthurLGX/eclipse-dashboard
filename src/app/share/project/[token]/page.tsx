@@ -551,22 +551,21 @@ export default function SharedProjectPage() {
 
         <hr className="border-t border-default my-0" />
 
-        {/* CTA - style La Pêche */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
           className="py-4 pb-14"
         >
-          <div className="bg-gradient-to-br from-accent/5 via-accent/10 to-accent/5 border border-accent/20 rounded-2xl p-10 md:p-11 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+          <div className="bg-accent !text-white rounded-2xl p-10 md:p-11 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <div className="max-w-[480px]">
-              <div className="!text-[11px] font-bold uppercase tracking-wider !text-accent mb-2.5">
+              <div className="!text-[11px] font-bold uppercase tracking-wider !text-white mb-2.5">
                 {t('collaboration') || 'Collaboration'}
               </div>
-              <h3 className="!text-xl md:!text-[22px] font-extrabold !text-primary mb-2 tracking-tight">
+              <h3 className="!text-xl md:!text-[22px] font-extrabold !text-white mb-2 tracking-tight">
                 {t('want_to_collaborate')}
               </h3>
-              <p className="!text-[13px] !text-muted leading-relaxed">
+              <p className="!text-[13px] !text-zinc-400 leading-relaxed">
                 {t('collaborate_description')}
               </p>
             </div>
@@ -588,25 +587,6 @@ export default function SharedProjectPage() {
             </div>
           </div>
         </motion.div>
-
-        {/* Footer - style La Pêche */}
-        <footer className="border-t border-default">
-          <div className="flex flex-col sm:flex-row items-center justify-between py-5 gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center !text-[9px] font-extrabold !text-white">
-                ES
-              </div>
-              <span className="!text-xs !text-muted">
-                Eclipse Development Dashboard™ {new Date().getFullYear()}
-              </span>
-            </div>
-            <div className="flex gap-6">
-              <a href="/dashboard" className="!text-xs !text-muted hover:!text-primary transition-colors">{t('dashboard') || 'Dashboard'}</a>
-              <a href="/pricing" className="!text-xs !text-muted hover:!text-primary transition-colors">{t('pricing') || 'Tarifs'}</a>
-              <a href="/contact" className="!text-xs !text-muted hover:!text-primary transition-colors">{t('contact') || 'Contact'}</a>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
   );

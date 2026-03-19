@@ -12,13 +12,10 @@ export const Footer = () => {
   const links = [
     { name: 'dashboard', path: '/dashboard' },
     { name: 'pricing', path: '/pricing' },
-    { name: 'contact', path: '/contact' },
-    { name: 'terms', path: '/terms' },
-    { name: 'privacy', path: '/privacy' },
   ];
 
-  // Ne pas afficher le footer sur les pages du dashboard, admin et portfolio public
-  const isDashboard = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin') || pathname?.startsWith('/portfolio/');
+  // Ne pas afficher le footer sur les pages du dashboard, admin, portfolio public et share/project
+  const isDashboard = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin') || pathname?.startsWith('/portfolio/') || pathname?.startsWith('/share/project');
   if (isDashboard) return null;
 
   return (
