@@ -239,7 +239,7 @@ export default function SharedProjectPage() {
     ? Math.round(parentTasks.reduce((sum, task) => sum + getTaskEffectiveProgress(task), 0) / parentTasks.length)
     : 0;
 
-  // Date de fin effective = max des due_date des tâches (ou project.end_date)
+  // Date de fin effective = max des due_date des tâches et sous-tâches (ou project.end_date si aucune tâche)
   const effectiveEndDateRaw = (() => {
     const allDueDates: string[] = [];
     tasks.forEach((task) => {
@@ -249,9 +249,14 @@ export default function SharedProjectPage() {
       });
     });
     if (allDueDates.length === 0) return project?.end_date?.split('T')[0] ?? null;
-    return allDueDates.reduce((a, b) => (a > b ? a : b));
+    let max = allDueDates[0];
+    for (let i = 1; i < allDueDates.length; i++) {
+      if (allDueDates[i] > max) max = allDueDates[i];
+    }
+    return max;
   })();
 
+  // Jours restants jusqu'à l'échéance (dates en local pour éviter décalage timezone)
   const daysRemaining = (() => {
     const raw = effectiveEndDateRaw;
     if (!raw) return null;
