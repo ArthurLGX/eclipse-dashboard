@@ -239,9 +239,32 @@ export default function SharedProjectPage() {
     ? Math.round(parentTasks.reduce((sum, task) => sum + getTaskEffectiveProgress(task), 0) / parentTasks.length)
     : 0;
 
-  const daysRemaining = project.end_date 
-    ? Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-    : null;
+  // Date de fin effective = max des due_date des tâches (ou project.end_date)
+  const effectiveEndDateRaw = (() => {
+    const allDueDates: string[] = [];
+    tasks.forEach((task) => {
+      if (task.due_date) allDueDates.push(task.due_date.split('T')[0]);
+      task.subtasks?.forEach((st) => {
+        if (st.due_date) allDueDates.push(st.due_date.split('T')[0]);
+      });
+    });
+    if (allDueDates.length === 0) return project?.end_date?.split('T')[0] ?? null;
+    return allDueDates.reduce((a, b) => (a > b ? a : b));
+  })();
+
+  const daysRemaining = (() => {
+    const raw = effectiveEndDateRaw;
+    if (!raw) return null;
+    const parts = raw.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return null;
+    const [y, m, d] = parts;
+    const endDate = new Date(y, m - 1, d);
+    if (isNaN(endDate.getTime())) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+    return Math.round((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  })();
 
   const statusLabels: Record<string, string> = {
     planning: t('planning'),
@@ -260,222 +283,228 @@ export default function SharedProjectPage() {
     colorClass: knownStatuses.includes(status) ? `badge badge-status-${status}` : 'badge badge-muted',
   };
 
+  const displayDeadline = effectiveEndDateRaw
+    ? new Date(effectiveEndDateRaw + 'T12:00:00').toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    : null;
+
   return (
-    <div className="min-h-screen bg-page w-full px-8 pt-32 pb-8">
-      <div className=" mx-auto">
-        {/* Header du projet */}
+    <div className="min-h-screen bg-page font-sans antialiased">
+      {/* Nav sticky - style La Pêche */}
+      <nav className="sticky top-0 z-200 bg-white/92 backdrop-blur-xl border-b border-default px-6 md:px-10 h-14 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center !text-sm font-extrabold !text-white tracking-tight">
+            ES
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="!text-[13px] font-bold !text-primary">Eclipse Studio</span>
+            <span className="!text-[10px] !text-muted uppercase tracking-wider">Dashboard</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <a href="/dashboard" className="!text-[13px] !text-muted hover:!text-primary px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors">
+            {t('dashboard') || 'Tableau de bord'}
+          </a>
+          <a href="/pricing" className="!text-[13px] !text-muted hover:!text-primary px-3 py-1.5 rounded-md hover:bg-muted/50 transition-colors">
+            {t('pricing') || 'Tarifs'}
+          </a>
+        </div>
+      </nav>
+
+      {/* Container */}
+      <div className="max-w-[1160px] mx-auto px-6 md:px-10 py-10">
+        {/* Project Header - style La Pêche */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 pb-8"
         >
-          {/* Titre et infos du projet */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-            <div>
-              <h1 className="!text-2xl sm:!text-3xl font-bold !text-primary mb-2">{project.title}</h1>
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full !text-sm font-medium border ${statusConfig.colorClass}`}>
-                  {statusConfig.label}
-                </span>
-                {(project.user?.username || project.user?.email) && (
-                  <span className="!text-primary !text-sm">
-                    {t('by')} {project.user.username || project.user.email}
-                  </span>
-                )}
-                {project.end_date && (
-                  <span className="!text-muted !text-sm flex items-center gap-1">
-                    <IconCalendar className="w-4 h-4" />
-                    {t('deadline')}: {new Date(project.end_date).toLocaleDateString('fr-FR')}
-                  </span>
-                )}
-              </div>
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-1.5 bg-accent/10 !text-accent font-semibold !text-[11px] px-2.5 py-1 rounded-full uppercase tracking-wider mb-2.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              {statusConfig.label}
             </div>
-            <div className="flex items-center gap-2">
-              <a
-                href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
-                className="btn btn-ghost flex items-center gap-2 px-4 py-2 !text-sm"
-              >
-                <IconMail className="w-4 h-4" />
-                {t('share_button')}
-              </a>
-              <a
-                href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-                className="btn btn-primary !text-white flex items-center gap-2 px-4 py-2 !text-sm"
-              >
-                <IconExternalLink className="w-4 h-4" color="white" />
-                {t('access_project')}
-              </a>
+            <h1 className="!text-2xl md:!text-[26px] font-extrabold !text-primary tracking-tight leading-tight mb-3">
+              {project.title}
+            </h1>
+            <div className="flex items-center gap-4 flex-wrap">
+              {(project.user?.username || project.user?.email) && (
+                <span className="flex items-center gap-1.5 !text-xs !text-muted">
+                  <IconCalendar className="w-3.5 h-3.5 !text-muted" />
+                  {t('by')} <strong className="!text-primary">{project.user.username || project.user.email}</strong>
+                </span>
+              )}
+              {displayDeadline && (
+                <span className="flex items-center gap-1.5 !text-xs !text-muted">
+                  <IconCalendar className="w-3.5 h-3.5 !text-muted" />
+                  {t('deadline')}: <strong className="!text-primary">{displayDeadline}</strong>
+                </span>
+              )}
             </div>
           </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <a
+              href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium border border-default !text-primary hover:bg-muted/50 transition-colors"
+            >
+              <IconMail className="w-3.5 h-3.5" />
+              {t('share_button')}
+            </a>
+            <a
+              href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
+            >
+              <IconExternalLink className="w-3.5 h-3.5" />
+              {t('access_project')}
+            </a>
+          </div>
         </motion.div>
+
+        <hr className="border-t border-default my-0" />
+
         {/* Description */}
         {project.description && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-card p-6 mb-6"
+            className="py-7"
           >
             <div 
-              className="!text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                [&_h1]:!text-xl [&_h1]:font-bold [&_h1]:mb-2
-                [&_h2]:!text-lg [&_h2]:font-semibold [&_h2]:mb-2
-                [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5
-                [&_a]:!text-accent-text [&_a]:underline [&_img]: [&_img]:max-w-full"
+              className="bg-muted/30 border border-default rounded-[10px] p-5 md:p-6 prose prose-sm max-w-none
+                [&_p]:!text-[13px] [&_p]:!text-muted [&_p]:leading-relaxed [&_p]:mb-2
+                [&_p:last-child]:mb-0 [&_strong]:!text-primary
+                [&_a]:!text-accent [&_a]:underline [&_img]:max-w-full"
               dangerouslySetInnerHTML={{ __html: project.description }}
             />
           </motion.div>
         )}
 
-        {/* Stats Cards */}
+        <hr className="border-t border-default my-0" />
+
+        {/* Stats - style La Pêche (4 cards) */}
         {shareConfig.showProgress && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+            transition={{ delay: 0.05 }}
+            className="py-7"
           >
-            <div className="bg-card p-5">
-              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
-                <IconChartBar className="w-4 h-4" />
-                {t('progression')}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+              <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-accent/70" />
+                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                  <IconChartBar className="w-4 h-4" />
+                </div>
+                <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('progression')}</div>
+                <div className="!text-3xl font-extrabold !text-primary leading-none">{overallProgress}%</div>
+                <div className="h-1.5 bg-muted rounded-full mt-3 overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-accent to-accent/70 rounded-full transition-all duration-500" style={{ width: `${overallProgress}%` }} />
+                </div>
               </div>
-              <div className="!text-3xl font-bold !text-primary mb-2">{overallProgress}%</div>
-              <div className="h-2 bg-page rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-accent rounded-full transition-all duration-500"
-                  style={{ width: `${overallProgress}%` }}
-                />
+              <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-accent/20" />
+                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                  <IconCheck className="w-4 h-4" />
+                </div>
+                <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('tasks_completed')}</div>
+                <div className="!text-3xl font-extrabold !text-primary leading-none">{completedTasks}</div>
+                <div className="!text-xs !text-muted mt-1">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
               </div>
-            </div>
-
-            <div className="bg-card p-5">
-              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
-                <IconCheck className="w-4 h-4" />
-                {t('tasks_completed')}
+              <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-accent/20" />
+                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                  <IconProgress className="w-4 h-4" />
+                </div>
+                <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('in_progress')}</div>
+                <div className="!text-3xl font-extrabold !text-primary leading-none">
+                  {parentTasks.filter(task => task.task_status === 'in_progress').length}
+                </div>
+                <div className="!text-xs !text-muted mt-1">{t('active_tasks')}</div>
               </div>
-              <div className="!text-3xl font-bold !text-success-text -text">{completedTasks}</div>
-              <div className="!text-sm !text-muted">{t('on_tasks')} {parentTasks.length} {t('tasks_label')}</div>
-            </div>
-
-            <div className="bg-card p-5">
-              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
-                <IconProgress className="w-4 h-4" />
-                {t('in_progress')}
-              </div>
-              <div className="!text-3xl font-bold !text-info">
-                {parentTasks.filter(task => task.task_status === 'in_progress').length}
-              </div>
-              <div className="!text-sm !text-muted">{t('active_tasks')}</div>
-            </div>
-
-            <div className="bg-card p-5">
-              <div className="flex items-center gap-2 !text-primary !text-sm mb-2">
-                <IconCalendar className="w-4 h-4" color="white"/>
-                {t('deadline')}
-              </div>
-              <div className={`text-3xl font-bold ${
-                daysRemaining !== null && daysRemaining < 0 ? 'text-danger' : 
-                daysRemaining !== null && daysRemaining < 7 ? 'text-warning' : 'text-primary'
-              }`}>
-                {daysRemaining !== null ? (
-                  daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : `${daysRemaining}j`
-                ) : '—'}
-              </div>
-              <div className="!text-sm !text-muted">
-                {daysRemaining !== null && daysRemaining < 0 ? t('days_late') : t('days_remaining')}
+              <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-accent/20" />
+                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                  <IconCalendar className="w-4 h-4" />
+                </div>
+                <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('deadline')}</div>
+                <div className="!text-2xl font-extrabold !text-primary leading-none">
+                  {daysRemaining !== null ? (
+                    daysRemaining < 0 ? `${Math.abs(daysRemaining)}j` : daysRemaining === 0 ? (t('today') || "Aujourd'hui") : `${daysRemaining}j`
+                  ) : '—'}
+                </div>
+                <div className={`inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded-full !text-[11px] font-semibold ${
+                  daysRemaining !== null && daysRemaining < 0 ? 'bg-red-100 !text-red-800' :
+                  daysRemaining !== null && daysRemaining < 7 ? 'bg-amber-100 !text-amber-800' :
+                  daysRemaining === 0 ? 'bg-emerald-100 !text-emerald-800' : 'bg-muted/50 !text-muted border border-default'
+                }`}>
+                  {daysRemaining !== null ? (
+                    daysRemaining < 0 ? `${Math.abs(daysRemaining)}j ${t('days_late')}` :
+                    daysRemaining === 0 ? t('today') : `${daysRemaining}j ${t('days_remaining')}`
+                  ) : t('no_date')}
+                </div>
               </div>
             </div>
           </motion.div>
         )}
 
-        {/* Barre de filtres */}
+        <hr className="border-t border-default my-0" />
+
+        {/* Filter tabs - style La Pêche */}
         {tasks.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="mb-6"
+            transition={{ delay: 0.1 }}
+            className="py-5"
           >
-            <div className="bg-card p-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex items-center gap-2 !text-primary">
-                  <IconFilter className="w-5 h-5" />
-                  <span className="font-medium">{t('filter_by_status') || 'Filtrer par statut'}</span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  {FILTER_OPTIONS.map(option => {
-                    const count = taskStats[option.value];
-                    const isActive = statusFilter === option.value;
-                    return (
-                      <motion.button
-                        key={option.value}
-                        onClick={() => setStatusFilter(option.value)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`flex items-center gap-2 px-3 py-1.5  !text-sm font-medium transition-all ${
-                          isActive
-                            ? 'bg-accent !text-white shadow-sm'
-                            : 'bg-muted !text-primary hover:bg-hover hover:!text-primary'
-                        }`}
-                      >
-                        <span className={isActive ? 'text-white' : option.color}>
-                          {option.icon}
-                        </span>
-                        {option.label}
-                        <span className={`px-1.5 py-0.5 rounded !text-xs ${
-                          isActive ? 'bg-white/20' : 'bg-page'
-                        }`}>
-                          {count}
-                        </span>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </div>
-              
-              {/* Résumé du filtre actif */}
-              {statusFilter !== 'all' && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="mt-3 pt-3 border-t border-default"
-                >
-                  <p className="!text-sm !text-primary">
-                    {t('showing') || 'Affichage de'}{' '}
-                    <span className="font-semibold !text-primary">{filteredTasks.length}</span>{' '}
-                    {t('tasks_on') || 'tâche(s) sur'}{' '}
-                    <span className="font-semibold !text-primary">{parentTasksForDisplay.length}</span>
-                    {' • '}
-                    <button 
-                      onClick={() => setStatusFilter('all')}
-                      className="!text-accent-text hover:underline"
-                    >
-                      {t('show_all') || 'Voir toutes'}
-                    </button>
-                  </p>
-                </motion.div>
-              )}
+            <div className="flex items-center gap-0.5 border-b border-default pb-0">
+              {FILTER_OPTIONS.map(option => {
+                const count = taskStats[option.value];
+                const isActive = statusFilter === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    onClick={() => setStatusFilter(option.value)}
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 !text-[13px] border-b-2 -mb-px transition-all whitespace-nowrap ${
+                      isActive
+                        ? '!text-accent border-accent font-medium'
+                        : '!text-muted hover:!text-primary border-transparent'
+                    }`}
+                  >
+                    {option.icon}
+                    {option.label}
+                    <span className={`!text-[11px] font-semibold px-1.5 py-0.5 rounded-full ${
+                      isActive ? 'bg-accent/15 !text-accent' : 'bg-muted/50 !text-muted'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
         )}
+
+        <hr className="border-t border-default my-0" />
 
         {/* Gantt Chart */}
         {shareConfig.showGantt && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8"
+            transition={{ delay: 0.15 }}
+            className="py-8"
           >
-            <h2 className="!text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
-              <IconTimeline className="w-5 h-5 !text-accent-light" />
-              {t('gantt_diagram')}
-              {statusFilter !== 'all' && (
-                <span className="!text-sm font-normal !text-muted">
-                  ({filteredTasks.length} {t('tasks') || 'tâches'})
-                </span>
-              )}
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="!text-[15px] font-bold !text-primary flex items-center gap-2">
+                <IconTimeline className="w-4 h-4" />
+                {t('gantt_diagram')}
+                {statusFilter !== 'all' && (
+                  <span className="!text-sm font-normal !text-muted">
+                    ({filteredTasks.length} {t('tasks') || 'tâches'})
+                  </span>
+                )}
+              </h2>
+            </div>
             {filteredTasks.length > 0 ? (
               <PublicGanttView 
                 tasks={filteredTasks} 
@@ -494,15 +523,18 @@ export default function SharedProjectPage() {
           </motion.div>
         )}
 
-        {/* Tasks List */}
+        <hr className="border-t border-default my-0" />
+
+        {/* Tasks List - style La Pêche */}
         {shareConfig.showTasks && tasks.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.2 }}
+            className="py-8"
           >
-            <h2 className="!text-xl font-semibold !text-primary mb-4 flex items-center gap-2">
-              <IconProgress className="w-5 h-5 !text-accent-light" />
+            <h2 className="!text-[15px] font-bold !text-primary mb-4 flex items-center gap-2">
+              <IconProgress className="w-4 h-4" />
               {t('tasks_list')}
               {statusFilter !== 'all' && (
                 <span className="!text-sm font-normal !text-muted">
@@ -511,19 +543,17 @@ export default function SharedProjectPage() {
               )}
             </h2>
             {filteredTasks.length > 0 ? (
-              <div className="bg-card overflow-hidden">
-                <div className="space-y-1 bg-page p-1">
-                  {filteredTasks.map((task, index) => (
-                    <TaskRow 
-                      key={task.documentId || index} 
-                      task={task} 
-                      taskStatusOptions={TASK_STATUS_OPTIONS}
-                    />
-                  ))}
-                </div>
+              <div className="flex flex-col gap-2">
+                {filteredTasks.map((task, index) => (
+                  <TaskRow 
+                    key={task.documentId || index} 
+                    task={task} 
+                    taskStatusOptions={TASK_STATUS_OPTIONS}
+                  />
+                ))}
               </div>
             ) : (
-              <div className="bg-card p-8 !text-center">
+              <div className="border border-default rounded-[10px] p-8 !text-center bg-card">
                 <IconProgress className="w-12 h-12 !text-muted mx-auto mb-3" />
                 <p className="!text-primary">
                   {t('no_tasks_with_status') || 'Aucune tâche avec ce statut'}
@@ -533,46 +563,64 @@ export default function SharedProjectPage() {
           </motion.div>
         )}
 
-        {/* CTA Section - Inciter à collaborer */}
+        <hr className="border-t border-default my-0" />
+
+        {/* CTA - style La Pêche */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-12 card bg-gradient-to-r from-accent-light via-accent/5 to-transparent border-accent-light p-8"
+          transition={{ delay: 0.25 }}
+          className="py-4 pb-14"
         >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="flex-1">
-              <h3 className="!text-xl font-bold !text-primary mb-2 flex items-center gap-2">
-                <IconUserPlus className="w-6 h-6" color="white" />
+          <div className="bg-gradient-to-br from-accent/5 via-accent/10 to-accent/5 border border-accent/20 rounded-2xl p-10 md:p-11 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div className="max-w-[480px]">
+              <div className="!text-[11px] font-bold uppercase tracking-wider !text-accent mb-2.5">
+                {t('collaboration') || 'Collaboration'}
+              </div>
+              <h3 className="!text-xl md:!text-[22px] font-extrabold !text-primary mb-2 tracking-tight">
                 {t('want_to_collaborate')}
               </h3>
-              <p className="!text-primary">
+              <p className="!text-[13px] !text-muted leading-relaxed">
                 {t('collaborate_description')}
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
               <a
                 href="/login"
-                className="btn btn-ghost flex items-center justify-center gap-2 px-6 py-3"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium bg-white border border-accent/30 !text-accent hover:bg-accent/10 transition-colors"
               >
-                <IconLogin className="w-5 h-5" />
+                <IconLogin className="w-3.5 h-3.5" />
                 {t('already_have_account')}
               </a>
               <a
                 href={`/register?redirect=/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-                className="btn btn-primary flex items-center justify-center gap-2 px-6 py-3"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
               >
-                <IconUserPlus className="w-5 h-5" />
+                <IconUserPlus className="w-3.5 h-3.5" />
                 {t('create_account_collaborate')}
               </a>
             </div>
           </div>
         </motion.div>
 
-        {/* Footer */}
-        <div className="mt-12 !text-center !text-muted !text-sm">
-          <p>{t('generated_with')}</p>
-        </div>
+        {/* Footer - style La Pêche */}
+        <footer className="border-t border-default">
+          <div className="flex flex-col sm:flex-row items-center justify-between py-5 gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center !text-[9px] font-extrabold !text-white">
+                ES
+              </div>
+              <span className="!text-xs !text-muted">
+                Eclipse Development Dashboard™ {new Date().getFullYear()}
+              </span>
+            </div>
+            <div className="flex gap-6">
+              <a href="/dashboard" className="!text-xs !text-muted hover:!text-primary transition-colors">{t('dashboard') || 'Dashboard'}</a>
+              <a href="/pricing" className="!text-xs !text-muted hover:!text-primary transition-colors">{t('pricing') || 'Tarifs'}</a>
+              <a href="/contact" className="!text-xs !text-muted hover:!text-primary transition-colors">{t('contact') || 'Contact'}</a>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );
@@ -621,98 +669,50 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
 
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
 
+  const progress = task.progress || 0;
+  const statusPillClass: Record<string, string> = {
+    todo: 'bg-muted/50 !text-muted border border-default',
+    in_progress: 'bg-amber-100 !text-amber-800',
+    completed: 'bg-emerald-100 !text-emerald-800',
+    cancelled: 'bg-red-100 !text-red-800',
+    archived: 'bg-slate-100 !text-slate-600',
+  };
+  const pillClass = statusPillClass[task.task_status] || 'bg-muted/50 !text-muted border border-default';
+
   return (
-    <div className={`p-4  bg-card hover:bg-hover transition-colors ${isOverdue ? 'border-l-2 border-danger' : ''}`}>
-      <div className="flex items-start gap-4">
-        {/* Status icon */}
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-          task.task_status === 'completed' ? 'bg-success-light' : 
-          task.task_status === 'in_progress' ? 'bg-info-light' : 'bg-muted/30'
+    <div className={`flex items-center justify-between gap-4 p-4 md:p-5 border border-default rounded-[10px] bg-card hover:border-accent/30 hover:shadow-sm transition-all ${isOverdue ? 'border-l-2 border-l-danger' : ''}`}>
+      <div className="flex items-center gap-3.5 flex-1 min-w-0">
+        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+          task.task_status === 'completed' ? 'border-transparent bg-success' : 'border-default'
         }`}>
           {task.task_status === 'completed' ? (
-            <IconCheck className="w-4 h-4 !text-success-text -text" />
-          ) : task.task_status === 'in_progress' ? (
-            <IconProgress className="w-4 h-4 !text-info" />
-          ) : task.task_status === 'cancelled' ? (
-            <IconX className="w-4 h-4 !text-danger" />
+            <IconCheck className="w-4 h-4 !text-white" />
           ) : (
-            <IconClock className="w-4 h-4 !text-muted" />
+            <IconCircle className="w-3.5 h-3.5 !text-muted" />
           )}
         </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h4 className={`font-medium ${
-              task.task_status === 'completed' ? 'text-muted line-through' : 'text-primary'
-            }`}>
-              {task.title}
-            </h4>
-            <IconFlag className={`w-4 h-4 ${getPriorityStyle()}`} />
-            <span className={`px-2 py-0.5 !text-xs rounded-full border ${getStatusStyle()}`}>
-              {statusConfig.label}
-            </span>
+        <div className="min-w-0 flex-1">
+          <div className={`!text-sm font-medium truncate ${
+            task.task_status === 'completed' ? '!text-muted line-through' : '!text-primary'
+          }`}>
+            {task.title}
           </div>
-          
-          {task.description && (
-            <div className="mt-2">
-              <div 
-                className={`text-primary leading-relaxed prose prose-sm max-w-none dark:prose-invert
-                  [&_h1]:!text-base [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:!text-primary
-                  [&_h2]:!text-sm [&_h2]:font-semibold [&_h2]:mb-1 [&_h2]:!text-primary
-                  [&_p]:mb-1 [&_p]:!text-primary
-                  [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-1
-                  [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-1
-                  [&_li]:mb-0.5 [&_li]:!text-primary
-                  [&_a]:!text-accent-text [&_a]:underline
-                  [&_strong]:font-semibold [&_strong]:!text-primary
-                  [&_em]:italic
-                  [&_img]: [&_img]:max-w-full [&_img]:my-2
-                  ${!isExpanded ? 'line-clamp-2' : ''}`}
-                dangerouslySetInnerHTML={{ __html: task.description }}
-              />
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="flex items-center gap-1 !text-xs !text-accent-text hover:!text-accent/80 mt-1 transition-colors"
-              >
-                {isExpanded ? (
-                  <>
-                    <IconChevronUp className="w-3.5 h-3.5" />
-                    {t('show_less') || 'Réduire'}
-                  </>
-                ) : (
-                  <>
-                    <IconChevronDown className="w-3.5 h-3.5" />
-                    {t('show_more') || 'Voir plus'}
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-          
-          <div className="flex items-center gap-4 mt-2 !text-xs !text-muted">
+          <div className="flex items-center gap-3 mt-0.5">
             {task.due_date && (
-              <span className={`flex items-center gap-1 ${isOverdue ? 'text-danger' : ''}`}>
-                <IconCalendar className="w-3.5 h-3.5" />
+              <span className={`flex items-center gap-1 !text-[11px] ${isOverdue ? '!text-danger' : '!text-muted'}`}>
+                <IconCalendar className="w-3 h-3" />
                 {new Date(task.due_date).toLocaleDateString('fr-FR')}
               </span>
             )}
-            <span>{task.progress || 0}% {t('completed_percent')}</span>
+            <span className="!text-[11px] !text-muted">{progress}% {t('completed_percent')}</span>
           </div>
         </div>
-
-        {/* Progress bar */}
-        <div className="w-24 hidden sm:block flex-shrink-0">
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div 
-              className={`h-full rounded-full transition-all ${
-                task.task_status === 'completed' ? 'bg-success' : 'bg-accent'
-              }`}
-              style={{ width: `${task.progress || 0}%` }}
-            />
-          </div>
-          <span className="!text-xs !text-muted mt-1 block !text-center">{task.progress || 0}%</span>
-        </div>
+      </div>
+      <div className="flex items-center gap-3 flex-shrink-0">
+        <span className={`!text-xs font-medium px-2.5 py-1 rounded-full ${pillClass}`}>
+          {statusConfig.label}
+        </span>
+        <span className="!text-[13px] font-bold !text-muted min-w-[30px] !text-right">{progress}%</span>
       </div>
     </div>
   );
