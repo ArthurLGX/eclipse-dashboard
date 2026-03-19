@@ -34,6 +34,8 @@ import {
   IconSelectAll,
   IconGripVertical,
   IconDots,
+  IconSearch,
+  IconArrowsSort,
 } from '@tabler/icons-react';
 import ExcelImportModal, { type ImportedTask, type ImportProgressCallback } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
@@ -231,7 +233,19 @@ export default function ProjectTasks({
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
   const [showArchived, setShowArchived] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<
+    | 'title_asc'
+    | 'title_desc'
+    | 'start_date_asc'
+    | 'start_date_desc'
+    | 'due_date_asc'
+    | 'due_date_desc'
+    | 'priority_asc'
+    | 'priority_desc'
+    | 'status'
+    | 'progress'
+  >('title_asc');
 
   // Formulaire nouvelle tâche
   const [newTask, setNewTask] = useState({
@@ -1197,16 +1211,82 @@ export default function ProjectTasks({
   // Filtrer les tâches : exclure les sous-tâches (elles sont affichées dans leurs parents)
   // Et filtrer les archivées selon le toggle
   const parentTasks = tasks.filter(task => !task.parent_task);
-  
-  const filteredTasks = parentTasks.filter(task => {
-    // Filtre par statut
-    const matchesStatus = filter === 'all' || task.task_status === filter;
-    
-    // Filtre des archivées (sauf si on veut les voir ou si le filtre est 'archived')
-    const matchesArchived = showArchived || filter === 'archived' || task.task_status !== 'archived';
-    
-    return matchesStatus && matchesArchived;
-  });
+
+  // Recherche : titre, description, ou titre d'une sous-tâche
+  const taskMatchesSearch = useCallback((task: ProjectTask, term: string): boolean => {
+    if (!term.trim()) return true;
+    const q = term.trim().toLowerCase();
+    const match = (s: string) => s && s.toLowerCase().includes(q);
+    if (match(task.title) || match(task.description || '')) return true;
+    if (task.subtasks?.some(st => match(st.title) || match(st.description || ''))) return true;
+    return false;
+  }, []);
+
+  // Ordre des priorités : urgent > high > medium > low
+  const priorityOrder: Record<TaskPriority, number> = {
+    urgent: 4,
+    high: 3,
+    medium: 2,
+    low: 1,
+  };
+  // Ordre des statuts : todo → in_progress → completed → cancelled → archived
+  const statusOrder: Record<TaskStatus, number> = {
+    todo: 0,
+    in_progress: 1,
+    completed: 2,
+    cancelled: 3,
+    archived: 4,
+  };
+
+  type SortKey = typeof sortBy;
+  const sortTasksFn = useCallback((a: ProjectTask, b: ProjectTask, sort: SortKey): number => {
+    switch (sort) {
+      case 'title_asc':
+        return (a.title || '').localeCompare(b.title || '', undefined, { sensitivity: 'base' });
+      case 'title_desc':
+        return (b.title || '').localeCompare(a.title || '', undefined, { sensitivity: 'base' });
+      case 'start_date_asc': {
+        const da = a.start_date ? new Date(a.start_date).getTime() : 0;
+        const db = b.start_date ? new Date(b.start_date).getTime() : 0;
+        return da - db;
+      }
+      case 'start_date_desc': {
+        const da = a.start_date ? new Date(a.start_date).getTime() : 0;
+        const db = b.start_date ? new Date(b.start_date).getTime() : 0;
+        return db - da;
+      }
+      case 'due_date_asc': {
+        const da = a.due_date ? new Date(a.due_date).getTime() : Infinity;
+        const db = b.due_date ? new Date(b.due_date).getTime() : Infinity;
+        return da - db;
+      }
+      case 'due_date_desc': {
+        const da = a.due_date ? new Date(a.due_date).getTime() : 0;
+        const db = b.due_date ? new Date(b.due_date).getTime() : 0;
+        return db - da;
+      }
+      case 'priority_asc':
+        return (priorityOrder[a.priority || 'medium'] ?? 0) - (priorityOrder[b.priority || 'medium'] ?? 0);
+      case 'priority_desc':
+        return (priorityOrder[b.priority || 'medium'] ?? 0) - (priorityOrder[a.priority || 'medium'] ?? 0);
+      case 'status':
+        return (statusOrder[a.task_status || 'todo'] ?? 0) - (statusOrder[b.task_status || 'todo'] ?? 0);
+      case 'progress':
+        return (a.progress ?? 0) - (b.progress ?? 0);
+      default:
+        return 0;
+    }
+  }, []);
+
+  const filteredTasks = useMemo(() => {
+    let list = parentTasks.filter(task => {
+      const matchesStatus = filter === 'all' || task.task_status === filter;
+      const matchesArchived = showArchived || filter === 'archived' || task.task_status !== 'archived';
+      const matchesSearch = taskMatchesSearch(task, searchTerm);
+      return matchesStatus && matchesArchived && matchesSearch;
+    });
+    return [...list].sort((a, b) => sortTasksFn(a, b, sortBy));
+  }, [parentTasks, filter, showArchived, searchTerm, sortBy, taskMatchesSearch, sortTasksFn]);
 
   // Compter les tâches archivées (pour le badge)
   const archivedCount = parentTasks.filter(t => t.task_status === 'archived').length;
@@ -1214,25 +1294,22 @@ export default function ProjectTasks({
   // Stats basées sur les tâches "atomiques" (tâches sans sous-tâches + toutes les sous-tâches)
   // Règle: Si une tâche parente a des sous-tâches, on ne compte que ses sous-tâches
   //        Si une tâche parente n'a pas de sous-tâches, on la compte
-  const atomicTasks = tasks.filter(task => {
-    // Si c'est une sous-tâche, on la compte toujours
+  const atomicTasks = useMemo(() => tasks.filter(task => {
     if (task.parent_task) return true;
-    // Si c'est une tâche parente sans sous-tâches, on la compte
     if (!task.subtasks || task.subtasks.length === 0) return true;
-    // Si c'est une tâche parente avec sous-tâches, on ne la compte PAS
     return false;
-  });
+  }), [tasks]);
 
-  // Filtrer les tâches atomiques par statut et archivées (pour Kanban et Tableau)
-  const filteredAtomicTasks = atomicTasks.filter(task => {
-    // Filtre par statut
-    const matchesStatus = filter === 'all' || task.task_status === filter;
-    
-    // Filtre des archivées (sauf si on veut les voir ou si le filtre est 'archived')
-    const matchesArchived = showArchived || filter === 'archived' || task.task_status !== 'archived';
-    
-    return matchesStatus && matchesArchived;
-  });
+  // Filtrer les tâches atomiques par statut, archivées et recherche (pour Kanban et Tableau)
+  const filteredAtomicTasks = useMemo(() => {
+    let list = atomicTasks.filter(task => {
+      const matchesStatus = filter === 'all' || task.task_status === filter;
+      const matchesArchived = showArchived || filter === 'archived' || task.task_status !== 'archived';
+      const matchesSearch = taskMatchesSearch(task, searchTerm);
+      return matchesStatus && matchesArchived && matchesSearch;
+    });
+    return [...list].sort((a, b) => sortTasksFn(a, b, sortBy));
+  }, [atomicTasks, filter, showArchived, searchTerm, sortBy, taskMatchesSearch, sortTasksFn]);
 
   const taskStats = {
     total: atomicTasks.length,
@@ -1336,6 +1413,41 @@ export default function ProjectTasks({
               transition={{ duration: 0.5 }}
               className="h-2 bg-accent rounded-full"
             />
+          </div>
+        </div>
+      )}
+
+      {/* Recherche et tri */}
+      {tasks.length > 0 && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="relative flex-1 max-w-xs">
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              placeholder={t('search_tasks') || 'Rechercher une tâche...'}
+              className="w-full pl-9 pr-3 py-2 !text-sm !text-primary bg-card border border-default focus:outline-none focus:ring-2 focus:ring-accent"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <IconArrowsSort className="w-4 h-4 !text-muted shrink-0" />
+            <select
+              value={sortBy}
+              onChange={e => setSortBy(e.target.value as typeof sortBy)}
+              className="!text-sm !text-primary bg-card border border-default px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
+            >
+              <option value="title_asc">{t('sort_by_name')} ↑</option>
+              <option value="title_desc">{t('sort_by_name')} ↓</option>
+              <option value="start_date_asc">{t('sort_by_start_date') || 'Date début'} ↑</option>
+              <option value="start_date_desc">{t('sort_by_start_date') || 'Date début'} ↓</option>
+              <option value="due_date_asc">{t('sort_by_due_date') || 'Date fin'} ↑</option>
+              <option value="due_date_desc">{t('sort_by_due_date') || 'Date fin'} ↓</option>
+              <option value="priority_desc">{t('sort_by_priority')} ↓</option>
+              <option value="priority_asc">{t('sort_by_priority')} ↑</option>
+              <option value="status">{t('sort_by_status')}</option>
+              <option value="progress">{t('sort_by_progress')}</option>
+            </select>
           </div>
         </div>
       )}
