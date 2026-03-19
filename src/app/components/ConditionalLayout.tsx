@@ -8,8 +8,9 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/forgot-password';
   const isLandingPage = pathname === '/';
+  const isShareProjectPage = pathname.startsWith('/share/project');
 
-  if (isAuthPage || isLandingPage) {
+  if (isAuthPage || isLandingPage || isShareProjectPage) {
     return <>{children}</>;
   }
 
