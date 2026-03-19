@@ -80,10 +80,9 @@ export async function POST(request: NextRequest) {
         show_tasks: show_tasks ?? true,
         expires_at: expiresAt,
         views_count: 0,
-        project: { connect: [{ documentId: projectDocumentId }] },
-        created_by_user: userDocumentId
-          ? { connect: [{ documentId: userDocumentId }] }
-          : { connect: [{ id: userId }] },
+        project: projectDocumentId,
+        // created_by_user est écrasé par le controller Strapi avec user.id
+        created_by_user: userId,
       },
     };
 

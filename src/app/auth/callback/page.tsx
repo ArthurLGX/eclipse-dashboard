@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
@@ -11,43 +11,46 @@ function CallbackContent() {
   const searchParams = useSearchParams();
   const { login } = useAuth();
   const { showGlobalPopup } = usePopup();
+  const processedRef = useRef(false);
 
   useEffect(() => {
+    if (processedRef.current) return;
+    const token = searchParams.get('token');
+    const userParam = searchParams.get('user');
+    const error = searchParams.get('error');
+
+    if (error) {
+      processedRef.current = true;
+      showGlobalPopup(`Erreur d'authentification: ${error}`, 'error');
+      router.replace('/login');
+      return;
+    }
+
+    if (!token || !userParam) {
+      processedRef.current = true;
+      showGlobalPopup('Données d\'authentification manquantes', 'error');
+      router.replace('/login');
+      return;
+    }
+
+    processedRef.current = true;
+
     const processAuth = async () => {
-      const token = searchParams.get('token');
-      const userParam = searchParams.get('user');
-      const error = searchParams.get('error');
-
-      if (error) {
-        showGlobalPopup(`Erreur d'authentification: ${error}`, 'error');
-        router.push('/login');
-        return;
-      }
-
-      if (!token || !userParam) {
-        showGlobalPopup('Données d\'authentification manquantes', 'error');
-        router.push('/login');
-        return;
-      }
-
       try {
         const user = JSON.parse(userParam);
-        
-        // Use the login function from AuthContext
         await login(user, token);
-        
         showGlobalPopup('Connexion Google réussie !', 'success');
-        
-        // AuthContext will handle the redirect based on subscription status
-      } catch (error) {
-        console.error('Error processing auth callback:', error);
+        router.replace('/');
+      } catch (err) {
+        console.error('Error processing auth callback:', err);
         showGlobalPopup('Erreur lors de la connexion', 'error');
-        router.push('/login');
+        router.replace('/login');
       }
     };
 
     processAuth();
-  }, [searchParams, login, router, showGlobalPopup]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- exécution unique au montage
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
