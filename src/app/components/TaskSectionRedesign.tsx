@@ -171,6 +171,7 @@ export default function TaskSectionRedesign({
       due_date?: string | null;
       estimated_hours?: number | null;
       assignedToDocId?: string;
+      start_date?: string | null;
     }
   ) => {
     if (!canEdit) return;
@@ -182,6 +183,7 @@ export default function TaskSectionRedesign({
         due_date: updates.due_date ?? null,
         estimated_hours: updates.estimated_hours ?? null,
         assigned_to: updates.assignedToDocId ? allMembers.find((m) => m.documentId === updates.assignedToDocId)?.id ?? null : null,
+        start_date: updates.start_date || null,
       });
       await loadTasks();
       showGlobalPopup('Modifications sauvegardées', 'success');
@@ -540,6 +542,7 @@ interface TaskCardRedesignProps {
       due_date?: string | null;
       estimated_hours?: number | null;
       assignedToDocId?: string;
+      start_date?: string | null;
     }
   ) => void;
   onDelete: (e: React.MouseEvent, task: ProjectTask) => void;
@@ -577,6 +580,7 @@ function TaskCardRedesign({
   const [editEstimated, setEditEstimated] = useState(task.estimated_hours?.toString() || '');
   const [editAssigned, setEditAssigned] = useState(task.assigned_to?.documentId || '');
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
+  const [editStartDate, setEditStartDate] = useState(task.start_date?.split('T')[0] || '');
 
   useEffect(() => {
     setEditTitle(task.title);
@@ -585,7 +589,8 @@ function TaskCardRedesign({
     setEditDueDate(task.due_date?.split('T')[0] || '');
     setEditEstimated(task.estimated_hours?.toString() || '');
     setEditAssigned(task.assigned_to?.documentId || '');
-  }, [task.documentId, task.title, task.description, task.task_status, task.due_date, task.estimated_hours, task.assigned_to?.documentId]);
+    setEditStartDate(task.start_date?.split('T')[0] || '');
+    }, [task.documentId, task.title, task.description, task.task_status, task.due_date, task.estimated_hours, task.assigned_to?.documentId, task.start_date]);
   const [subtaskInputFocused, setSubtaskInputFocused] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -613,6 +618,7 @@ function TaskCardRedesign({
       due_date: editDueDate || null,
       estimated_hours: editEstimated ? parseFloat(editEstimated) : null,
       assignedToDocId: editAssigned || undefined,
+      start_date: editStartDate || null,
     });
     setSaving(false);
   };
@@ -650,10 +656,10 @@ function TaskCardRedesign({
             <span className={`font-mono !text-[10px] px-1.5 py-0.5 rounded border ${badgeClass}`}>{badgeLabel}</span>
           </div>
           <div className="flex items-center gap-2.5 flex-wrap">
-            {task.due_date && (
+            {task.start_date && task.due_date && (
               <span className={`flex items-center gap-1 font-mono !text-[11px] !text-muted ${isLate ? '!text-red-600' : ''}`}>
                 <IconCalendar className="w-[11px] h-[11px]" />
-                {new Date(task.due_date).toLocaleDateString('fr-FR')}
+                {new Date(task.start_date).toLocaleDateString('fr-FR')} - {new Date(task.due_date).toLocaleDateString('fr-FR')}
               </span>
             )}
             {task.estimated_hours != null && (
@@ -788,6 +794,16 @@ function TaskCardRedesign({
                       ))}
                     </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-3">
+                   <div>
+                    <label className="font-mono !text-[10px] !text-muted2 uppercase tracking-wider block mb-1">Date de début</label>
+                    <input
+                      type="date"
+                      value={editStartDate}
+                      onChange={(e) => setEditStartDate(e.target.value)}
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
+                    />
+                  </div>
                   <div>
                     <label className="font-mono !text-[10px] !text-muted2 uppercase tracking-wider block mb-1">Échéance</label>
                     <input
@@ -796,6 +812,7 @@ function TaskCardRedesign({
                       onChange={(e) => setEditDueDate(e.target.value)}
                       className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
                     />
+                  </div>
                   </div>
                   <div>
                     <label className="font-mono !text-[10px] !text-muted2 uppercase tracking-wider block mb-1">Estimation</label>
@@ -1033,6 +1050,7 @@ export function TaskListRedesignView({
       due_date?: string | null;
       estimated_hours?: number | null;
       assignedToDocId?: string;
+      start_date?: string | null;
     }
   ) => {
     if (!canEdit) return;
