@@ -405,7 +405,7 @@ export default function PersonalInformationPage() {
                       type={showCurrentPassword ? 'text' : 'password'}
                       value={currentPassword}
                       onChange={e => setCurrentPassword(e.target.value)}
-                      className="profile-form-input pr-10"
+                      className="profile-form-input !pr-10"
                       placeholder="••••••••"
                     />
                     <button
@@ -425,7 +425,7 @@ export default function PersonalInformationPage() {
                         type={showNewPassword ? 'text' : 'password'}
                         value={newPassword}
                         onChange={e => setNewPassword(e.target.value)}
-                        className="profile-form-input pr-10"
+                        className="profile-form-input !pr-10"
                         placeholder="••••••••"
                       />
                       <button
@@ -444,7 +444,7 @@ export default function PersonalInformationPage() {
                         type={showConfirmPassword ? 'text' : 'password'}
                         value={confirmPassword}
                         onChange={e => setConfirmPassword(e.target.value)}
-                        className="profile-form-input pr-10"
+                        className="profile-form-input !pr-10"
                         placeholder="••••••••"
                       />
                       <button

@@ -1421,13 +1421,13 @@ export default function ProjectTasks({
       {tasks.length > 0 && (
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="relative flex-1 max-w-xs">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none" />
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted pointer-events-none z-10" />
             <input
               type="text"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
               placeholder={t('search_tasks') || 'Rechercher une tâche...'}
-              className="w-full pl-9 pr-3 py-2 !text-sm !text-primary bg-card border border-default focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full !pl-9 !pr-3 py-2 !text-sm !text-primary bg-card border border-default focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <div className="flex items-center gap-2">

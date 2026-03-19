@@ -345,7 +345,7 @@ export default function NewsletterDetailPage() {
         {/* Body */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-0">
           {/* Main */}
-          <div className="p-7 pr-8 border-r border-default flex flex-col gap-5">
+          <div className="p-7 !pr-8 border-r border-default flex flex-col gap-5">
             {/* Stats */}
             <div className="grid grid-cols-3 gap-2.5">
               <div className="bg-card border border-default rounded-[14px] p-4 overflow-hidden relative">

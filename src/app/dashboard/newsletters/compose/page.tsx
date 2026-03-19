@@ -661,7 +661,7 @@ export default function NewsletterComposePage() {
                           {recipients.map((r) => (
                             <div
                               key={r.email}
-                              className="inline-flex items-center gap-2 h-7 pl-2.5 pr-2 rounded-full bg-white border border-black/13 text-xs text-[#1A1917] animate-in fade-in duration-150"
+                              className="inline-flex items-center gap-2 h-7 !pl-2.5 !pr-2 rounded-full bg-white border border-black/13 text-xs text-[#1A1917] animate-in fade-in duration-150"
                             >
                               {r.email}
                               <button
