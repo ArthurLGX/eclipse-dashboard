@@ -762,6 +762,16 @@ function PublicGanttView({ tasks, projectName }: {
     return normalized;
   }, []);
 
+  // Parser YYYY-MM-DD en date locale (évite décalage timezone)
+  const parseLocalDate = useCallback((dateStr: string | null | undefined): Date | null => {
+    if (!dateStr || typeof dateStr !== 'string') return null;
+    const parts = dateStr.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return null;
+    const [y, m, d] = parts;
+    const date = new Date(y, m - 1, d);
+    return isNaN(date.getTime()) ? null : date;
+  }, []);
+
   const today = useMemo(() => normalizeDate(new Date()), [normalizeDate]);
   const tasksWithDates = useMemo(() => tasks.filter(task => task.start_date || task.due_date), [tasks]);
 
@@ -964,11 +974,17 @@ function PublicGanttView({ tasks, projectName }: {
   }, []);
 
   const getDurationDays = useCallback((startDate?: string | null, dueDate?: string | null) => {
-    if (!startDate || !dueDate) return 0;
-    const start = new Date(startDate);
-    const end = new Date(dueDate);
-    return Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1);
-  }, []);
+    if (!startDate && !dueDate) return null;
+    const startParsed = startDate ? parseLocalDate(startDate) : null;
+    const endParsed = dueDate ? parseLocalDate(dueDate) : null;
+    const start = startParsed ? normalizeDate(startParsed) : null;
+    const end = endParsed ? normalizeDate(endParsed) : null;
+    if (start && end) {
+      const days = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      return Math.max(1, days);
+    }
+    return 1;
+  }, [normalizeDate, parseLocalDate]);
 
   // Fonction pour générer le HTML d'export
   const generateExportHTML = useCallback((mode: 'light' | 'dark') => {
@@ -1439,7 +1455,7 @@ function PublicGanttView({ tasks, projectName }: {
                             {/* Duration - utilise les dates effectives */}
                             <td className="py-2 px-1 !text-center sticky left-[350px] z-20 bg-card group-hover:bg-muted/5 shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
                               <span className="!text-xs !text-muted whitespace-nowrap">
-                                {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'j'}
+                                {getDurationDays(effectiveStartDate, effectiveEndDate) != null ? `${getDurationDays(effectiveStartDate, effectiveEndDate)} ${t('days_short') || 'j'}` : '—'}
                               </span>
                             </td>
                             {/* Timeline - Barre de Gantt avec pourcentage effectif */}
@@ -1512,7 +1528,7 @@ function PublicGanttView({ tasks, projectName }: {
                                   <span className="!text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
                                 <td className="py-1 px-1 !text-center sticky left-[350px] z-20 bg-card shadow-[2px_0_4px_rgba(0,0,0,0.1)]" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted), 2px 0 4px rgba(0,0,0,0.1)' }}>
-                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'j'}</span>
+                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date) != null ? `${getDurationDays(subtask.start_date, subtask.due_date)} ${t('days_short') || 'j'}` : '—'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-[34px] p-0 overflow-hidden" style={{ boxShadow: 'inset 0 -1px 0 var(--color-border-muted)' }}>
                                   <div className="relative w-full h-full">

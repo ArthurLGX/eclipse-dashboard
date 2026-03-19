@@ -406,10 +406,37 @@ const PROJECT_TYPES = [
     }
   };
 
-  // Calculs pour les stats
-  const daysRemaining = project?.end_date 
-    ? Math.ceil((new Date(project.end_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-    : null;
+  // Date de fin effective = max des due_date des tâches et sous-tâches (ou project.end_date si aucune tâche)
+  const effectiveEndDateRaw = (() => {
+    const allDueDates: string[] = [];
+    tasks.forEach((task) => {
+      if (task.due_date) allDueDates.push(task.due_date.split('T')[0]);
+      task.subtasks?.forEach((st) => {
+        if (st.due_date) allDueDates.push(st.due_date.split('T')[0]);
+      });
+    });
+    if (allDueDates.length === 0) return project?.end_date?.split('T')[0] ?? null;
+    let max = allDueDates[0];
+    for (let i = 1; i < allDueDates.length; i++) {
+      if (allDueDates[i] > max) max = allDueDates[i];
+    }
+    return max;
+  })();
+
+  // Jours restants jusqu'à l'échéance (dates en local pour éviter décalage timezone)
+  const daysRemaining = (() => {
+    const raw = effectiveEndDateRaw;
+    if (!raw) return null;
+    const parts = raw.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return null;
+    const [y, m, d] = parts;
+    const endDate = new Date(y, m - 1, d);
+    if (isNaN(endDate.getTime())) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+    return Math.round((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  })();
   
   // Stats des tâches
   const totalTasks = tasks.length;
@@ -753,7 +780,7 @@ const PROJECT_TYPES = [
                 {daysRemaining !== null && daysRemaining < 0 && (
                   <span className="w-1.5 h-1.5 rounded-full bg-danger inline-block" />
                 )}
-                {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j — En retard` : `${daysRemaining}j`) : t('no_date') || 'Non définie'}
+                {daysRemaining !== null ? (daysRemaining < 0 ? `${Math.abs(daysRemaining)}j — En retard` : daysRemaining === 0 ? (t('today') || 'Aujourd\'hui') : `${daysRemaining}j`) : t('no_date') || 'Non définie'}
               </span>
             </div>
             

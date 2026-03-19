@@ -3829,7 +3829,7 @@ function TaskGanttView({
     return '—';
   }, [parseLocalDate]);
 
-  // Calculer la durée en jours
+  // Calculer la durée en jours (incluant début et fin ; min 1 jour)
   const getDurationDays = useCallback((startDate: string | null, endDate: string | null) => {
     if (!startDate && !endDate) return null;
     const startParsed = startDate ? parseLocalDate(startDate) : null;
@@ -3839,7 +3839,7 @@ function TaskGanttView({
     
     if (start && end) {
       const days = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      return days;
+      return Math.max(1, days);
     }
     return 1;
   }, [normalizeDate, parseLocalDate]);
@@ -4523,7 +4523,7 @@ function TaskGanttView({
                             {/* Duration */}
                             <td className="py-2 px-1 !text-center sticky z-40 bg-card-solid group-hover:bg-muted border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60 }}>
                               <span className="!text-xs !text-muted whitespace-nowrap">
-                                {getDurationDays(effectiveStartDate, effectiveEndDate)} {t('days_short') || 'd'}
+                                {getDurationDays(effectiveStartDate, effectiveEndDate) != null ? `${getDurationDays(effectiveStartDate, effectiveEndDate)} ${t('days_short') || 'd'}` : '—'}
                               </span>
                             </td>
                             {/* Timeline - Barre de Gantt redesign */}
@@ -4555,7 +4555,7 @@ function TaskGanttView({
                                   >
                                     <div
                                       className="flex items-center justify-between px-2.5 overflow-hidden h-full"
-                                      onMouseEnter={(e) => setTooltip({ visible: true, x: e.clientX, y: e.clientY, task, color: group.color, effectiveProgress, startDate: effectiveStartDate || '', endDate: effectiveEndDate || '', dur: `${getDurationDays(effectiveStartDate, effectiveEndDate) || 0}j` })}
+                                      onMouseEnter={(e) => setTooltip({ visible: true, x: e.clientX, y: e.clientY, task, color: group.color, effectiveProgress, startDate: effectiveStartDate || '', endDate: effectiveEndDate || '', dur: getDurationDays(effectiveStartDate, effectiveEndDate) != null ? `${getDurationDays(effectiveStartDate, effectiveEndDate)}j` : '—' })}
                                       onMouseMove={(e) => setTooltip((p) => p ? { ...p, x: e.clientX, y: e.clientY } : null)}
                                       onMouseLeave={() => setTooltip(null)}
                                     >
@@ -4612,7 +4612,7 @@ function TaskGanttView({
                                   <span className="!text-[9px] !text-muted whitespace-nowrap">{formatDateRange(subtask.start_date, subtask.due_date)}</span>
                                 </td>
                                 <td className="py-1 px-1 !text-center sticky z-40 bg-card-solid border-b border-default/60 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]" style={{ left: LEFT_W + 90, width: 60 }}>
-                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date)} {t('days_short') || 'd'}</span>
+                                  <span className="!text-[9px] !text-muted whitespace-nowrap">{getDurationDays(subtask.start_date, subtask.due_date) != null ? `${getDurationDays(subtask.start_date, subtask.due_date)} ${t('days_short') || 'd'}` : '—'}</span>
                                 </td>
                                 <td colSpan={dayHeaders.length} className="h-10 p-0 overflow-hidden border-b border-default/60">
                                   <div className="relative w-full h-full">
