@@ -52,9 +52,10 @@ export default function DraggableGanttBar({
     return newDate.toISOString().split('T')[0];
   }, [minDate]);
 
-  // Gestion du début du drag
+  // Gestion du début du drag (marquer tout de suite pour éviter ouverture modale au relâchement)
   const handleDragStart = useCallback((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo, mode: DragMode) => {
     event.stopPropagation();
+    hasDraggedRef.current = true;
     setIsDragging(true);
     setDragMode(mode);
   }, []);
@@ -92,14 +93,11 @@ export default function DraggableGanttBar({
     const deltaX = info.offset.x;
     const deltaDays = Math.round(deltaX / dayWidth);
 
-    // Ignorer si pas de mouvement
+    // Ignorer si pas de mouvement (hasDraggedRef déjà mis dans handleDragStart)
     if (deltaDays === 0) {
       setDragMode(null);
       return;
     }
-
-    // Marquer qu'un drag a eu lieu pour éviter d'ouvrir la modale au clic qui suit
-    hasDraggedRef.current = true;
 
     let newStartDate: string;
     let newDueDate: string;
@@ -141,9 +139,10 @@ export default function DraggableGanttBar({
   const currentStartOffset = isDragging ? tempStartOffset : startOffset;
   const currentDuration = isDragging ? tempDuration : duration;
 
-  // Après un drag, empêcher le clic de remonter (pour ne pas ouvrir la modale)
+  // Empêcher le clic de remonter après un drag (pour ne pas ouvrir la modale) ; sinon laisser le clic ouvrir la modale
   const handleBarClick = useCallback((e: React.MouseEvent) => {
     if (hasDraggedRef.current) {
+      e.preventDefault();
       e.stopPropagation();
       hasDraggedRef.current = false;
     }
@@ -183,19 +182,19 @@ export default function DraggableGanttBar({
         onDragStart={(e, info) => handleDragStart(e, info, 'move')}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
-        className={`relative h-7  shadow-sm hover:shadow-md transition-all cursor-move ${className} ${
+        className={`relative h-7 overflow-hidden shadow-sm hover:shadow-md transition-all cursor-move ${className} ${
           isDragging && dragMode === 'move' ? 'opacity-80 shadow-lg scale-105' : ''
         }`}
         style={{
           backgroundColor: taskStatus === 'cancelled' ? 'rgb(239 68 68 / 0.4)' : color,
           touchAction: 'none',
         }}
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleBarClick}
       >
-        {/* Barre de progression */}
+        {/* Partie complétée (gauche) = pleine couleur, partie restante (droite) = estompée */}
         <div
-          className="absolute inset-y-0 left-0 bg-black/15 rounded-l-md transition-all"
-          style={{ width: `${progress}%` }}
+          className="absolute inset-y-0 right-0 bg-white/35 transition-all pointer-events-none"
+          style={{ left: `${Math.min(100, Math.max(0, progress))}%` }}
         />
 
         {/* Contenu */}

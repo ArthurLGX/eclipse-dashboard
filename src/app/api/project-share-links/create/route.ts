@@ -80,9 +80,9 @@ export async function POST(request: NextRequest) {
         show_tasks: show_tasks ?? true,
         expires_at: expiresAt,
         views_count: 0,
-        project: { connect: [projectDocumentId] },
+        project: { connect: [{ documentId: projectDocumentId }] },
         created_by_user: userDocumentId
-          ? { connect: [userDocumentId] }
+          ? { connect: [{ documentId: userDocumentId }] }
           : { connect: [{ id: userId }] },
       },
     };
