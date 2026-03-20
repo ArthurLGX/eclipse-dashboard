@@ -20,6 +20,7 @@ import {
   IconSearch,
   IconSparkles,
   IconSend,
+  IconRefresh,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -43,7 +44,7 @@ import {
   deleteFollowUpTask,
   updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
-import { addClientUser } from '@/lib/api';
+import { addClientUser, syncInbox } from '@/lib/api';
 import { useAuth } from '@/app/context/AuthContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { clearCache } from '@/hooks/useApi';
@@ -97,6 +98,7 @@ export default function SmartFollowUpPage() {
     isOpen: boolean;
     initialData?: Partial<CreateClientData>;
   }>({ isOpen: false });
+  const [syncingEmails, setSyncingEmails] = useState(false);
 
   // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
@@ -143,6 +145,34 @@ export default function SmartFollowUpPage() {
       showGlobalPopup('Erreur lors du changement d\'état', 'error');
     } finally {
       setTogglingPause(false);
+    }
+  };
+
+  const handleRefetchEmails = async () => {
+    setSyncingEmails(true);
+    try {
+      const result = await syncInbox() as { synced?: number; skipped?: number; errors?: string[]; queued?: boolean; message?: string };
+      if (result?.queued) {
+        showGlobalPopup('Synchronisation en cours. Les leads apparaîtront sous 1–2 min.', 'success');
+      } else {
+        const synced = result?.synced ?? 0;
+        const skipped = result?.skipped ?? 0;
+        const errors = result?.errors ?? [];
+        if (errors.length > 0) {
+          showGlobalPopup(`Sync terminé avec ${errors.length} erreur(s). ${synced} email(s) récupéré(s).`, 'warning');
+        } else if (synced > 0 || skipped > 0) {
+          showGlobalPopup(`${synced} email(s) récupéré(s)${skipped > 0 ? `, ${skipped} ignoré(s)` : ''}. Les leads apparaîtront sous ~1 min.`, 'success');
+        } else {
+          showGlobalPopup('Aucun nouvel email trouvé.', 'info');
+        }
+      }
+      mutateActions();
+      mutateTasks();
+    } catch (error) {
+      console.error('Refetch emails error:', error);
+      showGlobalPopup(error instanceof Error ? error.message : 'Erreur lors de la récupération des emails', 'error');
+    } finally {
+      setSyncingEmails(false);
     }
   };
 
@@ -797,6 +827,15 @@ export default function SmartFollowUpPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <button
+                  onClick={handleRefetchEmails}
+                  disabled={syncingEmails}
+                  className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium  !text-primary border border-default hover:bg-hover transition-colors disabled:opacity-50"
+                  title={t('sync_inbox') || 'Récupérer les emails reçus'}
+                >
+                  <IconRefresh className={`w-3.5 h-3.5 ${syncingEmails ? 'animate-spin' : ''}`} />
+                  {t('sync_inbox') || 'Récupérer les emails'}
+                </button>
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
                   className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium  !text-primary border border-default hover:bg-hover transition-colors"
