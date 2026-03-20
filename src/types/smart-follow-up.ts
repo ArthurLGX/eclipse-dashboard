@@ -129,6 +129,8 @@ export interface AutomationSettings {
     access_token?: string;
     recipient_number?: string;
     notification_template?: string;
+    /** Meta : true = smart_follow_up_notification, false = hello_world */
+    use_smart_follow_up_template?: boolean;
   } | null;
   createdAt: string;
   updatedAt: string;

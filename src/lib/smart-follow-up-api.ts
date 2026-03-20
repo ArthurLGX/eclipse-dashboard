@@ -79,6 +79,7 @@ export async function testWhatsAppConnection(config: {
   access_token?: string;
   recipient_number?: string;
   notification_template?: string;
+  use_smart_follow_up_template?: boolean;
 }): Promise<{ success: boolean; error?: string; preview?: string }> {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');

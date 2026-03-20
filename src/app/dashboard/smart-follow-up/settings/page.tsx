@@ -160,6 +160,7 @@ export default function SmartFollowUpSettingsPage() {
       recipient_number: '',
     },
     notification_template: DEFAULT_WHATSAPP_TEMPLATE,
+    use_smart_follow_up_template: false,
   });
   const templateTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [testingWhatsApp, setTestingWhatsApp] = useState(false);
@@ -193,6 +194,7 @@ export default function SmartFollowUpSettingsPage() {
             recipient_number: wc.meta?.recipient_number ?? wc.recipient_number ?? '',
           },
           notification_template: wc.notification_template ?? DEFAULT_WHATSAPP_TEMPLATE,
+          use_smart_follow_up_template: wc.use_smart_follow_up_template ?? false,
         });
       }
     }
@@ -308,6 +310,7 @@ export default function SmartFollowUpSettingsPage() {
             access_token: whatsappConfig.meta.access_token,
             recipient_number: whatsappConfig.meta.recipient_number,
             notification_template: whatsappConfig.notification_template,
+            use_smart_follow_up_template: whatsappConfig.use_smart_follow_up_template,
           }
         : {
             provider: 'twilio' as const,
@@ -996,6 +999,30 @@ export default function SmartFollowUpSettingsPage() {
                   {/* Champs Meta API */}
                   {whatsappConfig.provider === 'meta' && (
                     <>
+                      {/* Toggles template Meta */}
+                      <div className={`${settingRow} flex-col items-stretch`}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Template Meta</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Choisir le template WhatsApp Business</p>
+                        </div>
+                        <div className="flex flex-wrap gap-4">
+                          <label className="flex items-center gap-2.5 cursor-pointer">
+                            <SettingToggle
+                              checked={!whatsappConfig.use_smart_follow_up_template}
+                              onChange={(v) => setWhatsappConfig({ ...whatsappConfig, use_smart_follow_up_template: !v })}
+                            />
+                            <span className="!text-[13px]">hello_world (pour le moment)</span>
+                          </label>
+                          <label className="flex items-center gap-2.5 cursor-pointer">
+                            <SettingToggle
+                              checked={whatsappConfig.use_smart_follow_up_template}
+                              onChange={(v) => setWhatsappConfig({ ...whatsappConfig, use_smart_follow_up_template: v })}
+                            />
+                            <span className="!text-[13px]">smart_follow_up_notification (quand approuvé)</span>
+                          </label>
+                        </div>
+                      </div>
+
                       <div className={settingRow}>
                         <div className={settingLabel}>
                           <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Phone Number ID</h4>
