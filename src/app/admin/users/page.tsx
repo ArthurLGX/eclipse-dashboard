@@ -17,11 +17,13 @@ import {
   IconRefresh,
   IconEye,
   IconShield,
-  IconUserSwitch,
+  IconLogin,
 } from '@tabler/icons-react';
 import { UserAvatar, getUserDisplayName } from '@/app/components/UserDisplay';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/context/AuthContext';
 
 interface Role {
   id: number;
@@ -528,7 +530,7 @@ export default function AdminUsersPage() {
                           className="p-2 hover:bg-hover transition-colors"
                           title={t('login_as') || 'Se connecter en tant que'}
                         >
-                          <IconUserSwitch className="w-4 h-4 !text-muted" />
+                          <IconLogin className="w-4 h-4 !text-muted" />
                         </button>
                       )}
                       <button
