@@ -109,12 +109,25 @@ export interface AutomationSettings {
   ai_instruction?: string | null;
   /** Historique des instructions précédentes (réutilisables) */
   ai_instruction_history?: string[] | null;
-  /** Configuration WhatsApp Meta (SaaS) */
+  /** Configuration WhatsApp multiprovider (Twilio | Meta) */
   whatsapp_config?: {
     enabled: boolean;
-    phone_number_id: string;
-    access_token: string;
-    recipient_number: string;
+    provider?: 'twilio' | 'meta';
+    twilio?: {
+      account_sid: string;
+      auth_token: string;
+      from_number: string;
+      to_number: string;
+    };
+    meta?: {
+      phone_number_id: string;
+      access_token: string;
+      recipient_number: string;
+    };
+    /** @deprecated Rétrocompatibilité — utiliser meta */
+    phone_number_id?: string;
+    access_token?: string;
+    recipient_number?: string;
     notification_template?: string;
   } | null;
   createdAt: string;

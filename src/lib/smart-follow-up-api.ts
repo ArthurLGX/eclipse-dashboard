@@ -68,11 +68,16 @@ export async function createAutomationSettings(data: Partial<AutomationSettings>
   return response.data;
 }
 
-/** Tester la connexion WhatsApp Meta */
+/** Tester la connexion WhatsApp (Twilio | Meta) */
 export async function testWhatsAppConnection(config: {
-  phone_number_id: string;
-  access_token: string;
-  recipient_number: string;
+  provider: 'twilio' | 'meta';
+  account_sid?: string;
+  auth_token?: string;
+  from_number?: string;
+  to_number?: string;
+  phone_number_id?: string;
+  access_token?: string;
+  recipient_number?: string;
   notification_template?: string;
 }): Promise<{ success: boolean; error?: string; preview?: string }> {
   const token = getToken();

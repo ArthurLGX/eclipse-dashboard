@@ -147,9 +147,18 @@ export default function SmartFollowUpSettingsPage() {
   });
   const [whatsappConfig, setWhatsappConfig] = useState({
     enabled: false,
-    phone_number_id: '',
-    access_token: '',
-    recipient_number: '',
+    provider: 'meta' as 'twilio' | 'meta',
+    twilio: {
+      account_sid: '',
+      auth_token: '',
+      from_number: '',
+      to_number: '',
+    },
+    meta: {
+      phone_number_id: '',
+      access_token: '',
+      recipient_number: '',
+    },
     notification_template: DEFAULT_WHATSAPP_TEMPLATE,
   });
   const templateTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -168,12 +177,22 @@ export default function SmartFollowUpSettingsPage() {
       setCustomRules(settings.custom_rules || []);
       if (settings.icp_settings) setICPSettings(settings.icp_settings);
       if (settings.whatsapp_config) {
+        const wc = settings.whatsapp_config;
         setWhatsappConfig({
-          enabled: settings.whatsapp_config.enabled ?? false,
-          phone_number_id: settings.whatsapp_config.phone_number_id ?? '',
-          access_token: settings.whatsapp_config.access_token ?? '',
-          recipient_number: settings.whatsapp_config.recipient_number ?? '',
-          notification_template: settings.whatsapp_config.notification_template ?? DEFAULT_WHATSAPP_TEMPLATE,
+          enabled: wc.enabled ?? false,
+          provider: (wc.provider as 'twilio' | 'meta') ?? 'meta',
+          twilio: {
+            account_sid: wc.twilio?.account_sid ?? '',
+            auth_token: wc.twilio?.auth_token ?? '',
+            from_number: wc.twilio?.from_number ?? '',
+            to_number: wc.twilio?.to_number ?? '',
+          },
+          meta: {
+            phone_number_id: wc.meta?.phone_number_id ?? wc.phone_number_id ?? '',
+            access_token: wc.meta?.access_token ?? wc.access_token ?? '',
+            recipient_number: wc.meta?.recipient_number ?? wc.recipient_number ?? '',
+          },
+          notification_template: wc.notification_template ?? DEFAULT_WHATSAPP_TEMPLATE,
         });
       }
     }
@@ -264,19 +283,41 @@ export default function SmartFollowUpSettingsPage() {
   };
 
   const handleTestWhatsApp = async () => {
-    if (!whatsappConfig.phone_number_id || !whatsappConfig.access_token || !whatsappConfig.recipient_number) {
+    const isMeta = whatsappConfig.provider === 'meta';
+    const validMeta = isMeta &&
+      whatsappConfig.meta.phone_number_id &&
+      whatsappConfig.meta.access_token &&
+      whatsappConfig.meta.recipient_number;
+    const validTwilio = !isMeta &&
+      whatsappConfig.twilio.account_sid &&
+      whatsappConfig.twilio.auth_token &&
+      whatsappConfig.twilio.from_number &&
+      whatsappConfig.twilio.to_number;
+
+    if (!validMeta && !validTwilio) {
       showGlobalPopup('Remplissez tous les champs avant de tester', 'error');
       return;
     }
     setTestingWhatsApp(true);
     setTestWhatsAppResult(null);
     try {
-      const result = await testWhatsAppConnection({
-        phone_number_id: whatsappConfig.phone_number_id,
-        access_token: whatsappConfig.access_token,
-        recipient_number: whatsappConfig.recipient_number,
-        notification_template: whatsappConfig.notification_template,
-      });
+      const payload = isMeta
+        ? {
+            provider: 'meta' as const,
+            phone_number_id: whatsappConfig.meta.phone_number_id,
+            access_token: whatsappConfig.meta.access_token,
+            recipient_number: whatsappConfig.meta.recipient_number,
+            notification_template: whatsappConfig.notification_template,
+          }
+        : {
+            provider: 'twilio' as const,
+            account_sid: whatsappConfig.twilio.account_sid,
+            auth_token: whatsappConfig.twilio.auth_token,
+            from_number: whatsappConfig.twilio.from_number,
+            to_number: whatsappConfig.twilio.to_number,
+            notification_template: whatsappConfig.notification_template,
+          };
+      const result = await testWhatsAppConnection(payload);
       setTestWhatsAppResult(result);
       if (result.success) showGlobalPopup('Message de test envoyé !', 'success');
     } catch (err) {
@@ -849,7 +890,7 @@ export default function SmartFollowUpSettingsPage() {
               </div>
               <div>
                 <div className="!text-sm font-semibold !text-primary">Notifications WhatsApp</div>
-                <div className="font-mono !text-[11px] !text-muted">Recevez une notification WhatsApp pour chaque nouveau lead qualifié (Meta API)</div>
+                <div className="font-mono !text-[11px] !text-muted">Recevez une notification WhatsApp pour chaque nouveau lead (Twilio ou Meta API)</div>
               </div>
             </div>
             <div>
@@ -866,45 +907,145 @@ export default function SmartFollowUpSettingsPage() {
 
               {whatsappConfig.enabled && (
                 <>
+                  {/* Sélecteur Provider */}
                   <div className={settingRow}>
                     <div className={settingLabel}>
-                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Phone Number ID</h4>
-                      <p className="font-mono !text-[11px] !text-muted">Meta for Developers → App → WhatsApp → Getting Started</p>
+                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Provider</h4>
+                      <p className="font-mono !text-[11px] !text-muted">Twilio ou Meta API (WhatsApp Business)</p>
                     </div>
-                    <input
-                      type="text"
-                      placeholder="123456789012345"
-                      value={whatsappConfig.phone_number_id}
-                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, phone_number_id: e.target.value })}
+                    <select
+                      value={whatsappConfig.provider}
+                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, provider: e.target.value as 'twilio' | 'meta' })}
                       className={`${settingInput} max-w-xs`}
-                    />
+                    >
+                      <option value="meta">Meta API</option>
+                      <option value="twilio">Twilio</option>
+                    </select>
                   </div>
-                  <div className={settingRow}>
-                    <div className={settingLabel}>
-                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Access Token</h4>
-                      <p className="font-mono !text-[11px] !text-muted">Token permanent depuis Meta Business Suite</p>
-                    </div>
-                    <input
-                      type="password"
-                      placeholder="EAAxxxxxxxxxxxxxxxx"
-                      value={whatsappConfig.access_token}
-                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, access_token: e.target.value })}
-                      className={`${settingInput} max-w-xs`}
-                    />
-                  </div>
-                  <div className={settingRow}>
-                    <div className={settingLabel}>
-                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Votre numéro WhatsApp</h4>
-                      <p className="font-mono !text-[11px] !text-muted">Format international sans + ni espaces (ex: 33612345678)</p>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="33612345678"
-                      value={whatsappConfig.recipient_number}
-                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, recipient_number: e.target.value })}
-                      className={`${settingInput} max-w-xs`}
-                    />
-                  </div>
+
+                  {/* Champs Twilio */}
+                  {whatsappConfig.provider === 'twilio' && (
+                    <>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Account SID</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Console Twilio → Account</p>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                          value={whatsappConfig.twilio.account_sid}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            twilio: { ...whatsappConfig.twilio, account_sid: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Auth Token</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Token secret Twilio</p>
+                        </div>
+                        <input
+                          type="password"
+                          placeholder="••••••••••••••••••••••••••••••••"
+                          value={whatsappConfig.twilio.auth_token}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            twilio: { ...whatsappConfig.twilio, auth_token: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">From number</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Numéro Twilio WhatsApp (ex: whatsapp:+14155238886)</p>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="whatsapp:+14155238886"
+                          value={whatsappConfig.twilio.from_number}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            twilio: { ...whatsappConfig.twilio, from_number: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">To number</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Votre numéro WhatsApp (ex: 33612345678)</p>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="33612345678"
+                          value={whatsappConfig.twilio.to_number}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            twilio: { ...whatsappConfig.twilio, to_number: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {/* Champs Meta API */}
+                  {whatsappConfig.provider === 'meta' && (
+                    <>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Phone Number ID</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Meta for Developers → App → WhatsApp → Getting Started</p>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="123456789012345"
+                          value={whatsappConfig.meta.phone_number_id}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            meta: { ...whatsappConfig.meta, phone_number_id: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Access Token</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Token permanent depuis Meta Business Suite</p>
+                        </div>
+                        <input
+                          type="password"
+                          placeholder="EAAxxxxxxxxxxxxxxxx"
+                          value={whatsappConfig.meta.access_token}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            meta: { ...whatsappConfig.meta, access_token: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                      <div className={settingRow}>
+                        <div className={settingLabel}>
+                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Votre numéro WhatsApp</h4>
+                          <p className="font-mono !text-[11px] !text-muted">Format international sans + ni espaces (ex: 33612345678)</p>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="33612345678"
+                          value={whatsappConfig.meta.recipient_number}
+                          onChange={(e) => setWhatsappConfig({
+                            ...whatsappConfig,
+                            meta: { ...whatsappConfig.meta, recipient_number: e.target.value },
+                          })}
+                          className={`${settingInput} max-w-xs`}
+                        />
+                      </div>
+                    </>
+                  )}
 
                   {/* Template de notification */}
                   <div className={`${settingRow} flex-col items-stretch`}>
@@ -981,18 +1122,30 @@ export default function SmartFollowUpSettingsPage() {
                   </div>
                   <details className="p-4 border-t border-default bg-muted/20">
                     <summary className="cursor-pointer font-mono !text-[11px] !text-muted hover:!text-primary">
-                      Comment obtenir mes credentials Meta ?
+                      {whatsappConfig.provider === 'twilio'
+                        ? 'Comment obtenir mes credentials Twilio ?'
+                        : 'Comment obtenir mes credentials Meta ?'}
                     </summary>
-                    <ol className="mt-3 font-mono !text-[11px] !text-muted space-y-1 list-decimal list-inside">
-                      <li>Aller sur developers.facebook.com</li>
-                      <li>Créer une app de type &quot;Business&quot;</li>
-                      <li>Ajouter le produit &quot;WhatsApp&quot;</li>
-                      <li>Dans &quot;Getting Started&quot; : copier le Phone Number ID</li>
-                      <li>Générer un token permanent dans &quot;System Users&quot; (Meta Business Suite)</li>
-                      <li>Coller les deux valeurs ci-dessus</li>
-                      <li>Entrer votre numéro WhatsApp sans + ni espaces</li>
-                      <li>Cliquer &quot;Tester la connexion&quot;</li>
-                    </ol>
+                    {whatsappConfig.provider === 'twilio' ? (
+                      <ol className="mt-3 font-mono !text-[11px] !text-muted space-y-1 list-decimal list-inside">
+                        <li>Créer un compte sur twilio.com</li>
+                        <li>Activer WhatsApp Sandbox ou un numéro WhatsApp Business</li>
+                        <li>Copier Account SID et Auth Token depuis la console</li>
+                        <li>From number : format whatsapp:+14155238886</li>
+                        <li>To number : votre numéro sans + (ex: 33612345678)</li>
+                      </ol>
+                    ) : (
+                      <ol className="mt-3 font-mono !text-[11px] !text-muted space-y-1 list-decimal list-inside">
+                        <li>Aller sur developers.facebook.com</li>
+                        <li>Créer une app de type &quot;Business&quot;</li>
+                        <li>Ajouter le produit &quot;WhatsApp&quot;</li>
+                        <li>Dans &quot;Getting Started&quot; : copier le Phone Number ID</li>
+                        <li>Générer un token permanent dans &quot;System Users&quot; (Meta Business Suite)</li>
+                        <li>Coller les deux valeurs ci-dessus</li>
+                        <li>Entrer votre numéro WhatsApp sans + ni espaces</li>
+                        <li>Cliquer &quot;Tester la connexion&quot;</li>
+                      </ol>
+                    )}
                   </details>
                 </>
               )}

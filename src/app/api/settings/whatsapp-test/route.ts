@@ -10,14 +10,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { phone_number_id, access_token, recipient_number, notification_template } = body;
-
-    if (!phone_number_id || !access_token || !recipient_number) {
-      return NextResponse.json(
-        { success: false, error: 'Champs manquants : phone_number_id, access_token, recipient_number' },
-        { status: 400 }
-      );
-    }
 
     const res = await fetch(`${STRAPI_URL}/api/whatsapp-meta/test`, {
       method: 'POST',
@@ -25,7 +17,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
         Authorization: authHeader,
       },
-      body: JSON.stringify({ phone_number_id, access_token, recipient_number, notification_template }),
+      body: JSON.stringify(body),
     });
 
     const result = await res.json();
