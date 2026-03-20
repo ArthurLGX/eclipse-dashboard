@@ -17,6 +17,7 @@ import {
   IconRefresh,
   IconEye,
   IconShield,
+  IconUserSwitch,
 } from '@tabler/icons-react';
 import { UserAvatar, getUserDisplayName } from '@/app/components/UserDisplay';
 import { useLanguage } from '@/app/context/LanguageContext';
@@ -69,6 +70,8 @@ export default function AdminUsersPage() {
   const [selectedRole, setSelectedRole] = useState<number | null>(null);
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
+  const { login } = useAuth();
+  const router = useRouter();
   const pageSize = 20;
 
   const fetchRoles = async () => {
@@ -220,6 +223,41 @@ export default function AdminUsersPage() {
       }
     } catch (error) {
       console.error('Error deleting user:', error);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleLoginAs = async (targetUser: User) => {
+    if (targetUser.blocked) {
+      showGlobalPopup(t('cannot_login_blocked') || 'Impossible de se connecter sur un compte bloqué', 'error');
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/users/admin/login-as`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: targetUser.id }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        showGlobalPopup(data.error?.message || t('login_as_error') || 'Erreur lors de la connexion', 'error');
+        return;
+      }
+      await login(data.user, data.jwt);
+      showGlobalPopup(
+        t('logged_in_as') || `Connecté en tant que ${getUserDisplayName(targetUser)}`,
+        'success'
+      );
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Error login-as:', error);
+      showGlobalPopup(t('login_as_error') || 'Erreur lors de la connexion', 'error');
     } finally {
       setActionLoading(false);
     }
@@ -483,6 +521,16 @@ export default function AdminUsersPage() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center justify-end gap-1">
+                      {!user.blocked && (
+                        <button
+                          onClick={() => handleLoginAs(user)}
+                          disabled={actionLoading}
+                          className="p-2 hover:bg-hover transition-colors"
+                          title={t('login_as') || 'Se connecter en tant que'}
+                        >
+                          <IconUserSwitch className="w-4 h-4 !text-muted" />
+                        </button>
+                      )}
                       <button
                         onClick={() => setModalData({ user, action: 'view' })}
                         className="p-2  hover:bg-hover transition-colors"
