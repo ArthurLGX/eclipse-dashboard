@@ -162,7 +162,7 @@ export default function TaskDetailModal({
                 </h3>
                 {!analysis && (
                   <p className="py-4 text-sm text-muted">
-                    L&apos;analyse sera disponible après traitement du mail (lecture automatique).
+                    L&apos;analyse sera disponible après le traitement automatique du mail par le système (cron toutes les minutes).
                   </p>
                 )}
                 {analysis && (

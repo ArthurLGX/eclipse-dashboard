@@ -391,7 +391,7 @@ export default function LeadDetailModal({
                   >
                     <div className="w-2 h-2 rounded-full bg-current animate-pulse flex-shrink-0" />
                     <span className="flex-1">
-                      {parsed.signal || analysis?.suggestion || "Analyse en attente (traitement lors de la lecture du mail)"}
+                      {parsed.signal || analysis?.suggestion || "Analyse en attente — traitement automatique en cours (cron ~1 min)"}
                     </span>
                     <span className="font-mono text-[11px] opacity-70 ml-auto">
                       {score === 'hot' && '🔴 CHAUD'}
