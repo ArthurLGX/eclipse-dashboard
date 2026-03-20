@@ -68,6 +68,27 @@ export async function createAutomationSettings(data: Partial<AutomationSettings>
   return response.data;
 }
 
+/** Tester la connexion WhatsApp Meta */
+export async function testWhatsAppConnection(config: {
+  phone_number_id: string;
+  access_token: string;
+  recipient_number: string;
+  notification_template?: string;
+}): Promise<{ success: boolean; error?: string; preview?: string }> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const res = await fetch('/api/settings/whatsapp-test', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(config),
+  });
+  return res.json();
+}
+
 // ============================================================================
 // Follow-up Tasks
 // ============================================================================

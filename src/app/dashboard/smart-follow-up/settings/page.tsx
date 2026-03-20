@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   IconBell,
   IconClock,
@@ -14,13 +14,43 @@ import {
   IconBolt,
   IconCalendar,
 } from '@tabler/icons-react';
+import { IconBrandWhatsapp } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
-import { updateAutomationSettings, createAutomationSettings } from '@/lib/smart-follow-up-api';
+import { updateAutomationSettings, createAutomationSettings, testWhatsAppConnection } from '@/lib/smart-follow-up-api';
 import { useAuth } from '@/app/context/AuthContext';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useSettingsLayout } from './settings-context';
 import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
+
+const DEFAULT_WHATSAPP_TEMPLATE =
+  '{{emoji}} {{source}} · {{name}}\n{{title}}\n{{signal}}\n→ {{action_url}}';
+
+const PREVIEW_VARS: Record<string, string> = {
+  emoji: '🔴',
+  source: 'Walego',
+  name: 'Charlotte Joseph',
+  title: 'Creative Project Manager · Freelance',
+  company: '',
+  signal: 'A bookée un discovery call ce mois',
+  score: 'hot',
+  linkedin_url: 'linkedin.com/in/charlottejoseph',
+  app_url: 'app.votre-dashboard.fr/leads/123',
+  action_url: 'linkedin.com/in/charlottejoseph',
+  date: '14/03 à 18h50',
+};
+
+function renderWhatsAppPreview(template?: string): string {
+  const tpl = template?.trim() || DEFAULT_WHATSAPP_TEMPLATE;
+  return Object.entries(PREVIEW_VARS).reduce(
+    (msg, [key, val]) => msg.replaceAll(`{{${key}}}`, val),
+    tpl
+  )
+    .split('\n')
+    .filter((l, i, arr) => l.trim() !== '' || arr[i - 1]?.trim() !== '')
+    .join('\n')
+    .trim();
+}
 
 /** Toggle custom style redesign */
 function SettingToggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
@@ -115,6 +145,16 @@ export default function SmartFollowUpSettingsPage() {
     dashboard: true,
     frequency: 'immediate',
   });
+  const [whatsappConfig, setWhatsappConfig] = useState({
+    enabled: false,
+    phone_number_id: '',
+    access_token: '',
+    recipient_number: '',
+    notification_template: DEFAULT_WHATSAPP_TEMPLATE,
+  });
+  const templateTextareaRef = useRef<HTMLTextAreaElement>(null);
+  const [testingWhatsApp, setTestingWhatsApp] = useState(false);
+  const [testWhatsAppResult, setTestWhatsAppResult] = useState<{ success: boolean; error?: string } | null>(null);
 
   useEffect(() => {
     if (settings) {
@@ -127,6 +167,15 @@ export default function SmartFollowUpSettingsPage() {
       setNotificationPreferences(settings.notification_preferences);
       setCustomRules(settings.custom_rules || []);
       if (settings.icp_settings) setICPSettings(settings.icp_settings);
+      if (settings.whatsapp_config) {
+        setWhatsappConfig({
+          enabled: settings.whatsapp_config.enabled ?? false,
+          phone_number_id: settings.whatsapp_config.phone_number_id ?? '',
+          access_token: settings.whatsapp_config.access_token ?? '',
+          recipient_number: settings.whatsapp_config.recipient_number ?? '',
+          notification_template: settings.whatsapp_config.notification_template ?? DEFAULT_WHATSAPP_TEMPLATE,
+        });
+      }
     }
   }, [settings]);
 
@@ -144,6 +193,7 @@ export default function SmartFollowUpSettingsPage() {
         notification_preferences: notificationPreferences,
         custom_rules: customRules,
         icp_settings: icpSettings,
+        whatsapp_config: whatsappConfig,
       };
       if (settings?.documentId) {
         await updateAutomationSettings(settings.documentId, data);
@@ -211,6 +261,43 @@ export default function SmartFollowUpSettingsPage() {
     } else {
       setWorkHours({ ...workHours, days: [...workHours.days, day] });
     }
+  };
+
+  const handleTestWhatsApp = async () => {
+    if (!whatsappConfig.phone_number_id || !whatsappConfig.access_token || !whatsappConfig.recipient_number) {
+      showGlobalPopup('Remplissez tous les champs avant de tester', 'error');
+      return;
+    }
+    setTestingWhatsApp(true);
+    setTestWhatsAppResult(null);
+    try {
+      const result = await testWhatsAppConnection({
+        phone_number_id: whatsappConfig.phone_number_id,
+        access_token: whatsappConfig.access_token,
+        recipient_number: whatsappConfig.recipient_number,
+        notification_template: whatsappConfig.notification_template,
+      });
+      setTestWhatsAppResult(result);
+      if (result.success) showGlobalPopup('Message de test envoyé !', 'success');
+    } catch (err) {
+      setTestWhatsAppResult({ success: false, error: String(err) });
+    } finally {
+      setTestingWhatsApp(false);
+    }
+  };
+
+  const insertTemplateVariable = (variable: string) => {
+    const textarea = templateTextareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const current = whatsappConfig.notification_template ?? DEFAULT_WHATSAPP_TEMPLATE;
+    const newVal = current.slice(0, start) + variable + current.slice(end);
+    setWhatsappConfig({ ...whatsappConfig, notification_template: newVal });
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + variable.length, start + variable.length);
+    }, 0);
   };
 
   const daysOfWeek = [
@@ -749,6 +836,166 @@ export default function SmartFollowUpSettingsPage() {
                   <option value="weekly">Résumé hebdomadaire</option>
                 </select>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* 9. WHATSAPP */}
+        {activeSection === 'whatsapp' && (
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
+            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-md bg-[#25D366] border border-[#25D366] flex items-center justify-center !text-white">
+                <IconBrandWhatsapp className="w-4 h-4 !text-white" />
+              </div>
+              <div>
+                <div className="!text-sm font-semibold !text-primary">Notifications WhatsApp</div>
+                <div className="font-mono !text-[11px] !text-muted">Recevez une notification WhatsApp pour chaque nouveau lead qualifié (Meta API)</div>
+              </div>
+            </div>
+            <div>
+              <div className={settingRow}>
+                <div className={settingLabel}>
+                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Activer les notifications</h4>
+                  <p className="font-mono !text-[11px] !text-muted">Envoyer un message WhatsApp à chaque nouveau lead</p>
+                </div>
+                <SettingToggle
+                  checked={whatsappConfig.enabled}
+                  onChange={(v) => setWhatsappConfig({ ...whatsappConfig, enabled: v })}
+                />
+              </div>
+
+              {whatsappConfig.enabled && (
+                <>
+                  <div className={settingRow}>
+                    <div className={settingLabel}>
+                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Phone Number ID</h4>
+                      <p className="font-mono !text-[11px] !text-muted">Meta for Developers → App → WhatsApp → Getting Started</p>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="123456789012345"
+                      value={whatsappConfig.phone_number_id}
+                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, phone_number_id: e.target.value })}
+                      className={`${settingInput} max-w-xs`}
+                    />
+                  </div>
+                  <div className={settingRow}>
+                    <div className={settingLabel}>
+                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Access Token</h4>
+                      <p className="font-mono !text-[11px] !text-muted">Token permanent depuis Meta Business Suite</p>
+                    </div>
+                    <input
+                      type="password"
+                      placeholder="EAAxxxxxxxxxxxxxxxx"
+                      value={whatsappConfig.access_token}
+                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, access_token: e.target.value })}
+                      className={`${settingInput} max-w-xs`}
+                    />
+                  </div>
+                  <div className={settingRow}>
+                    <div className={settingLabel}>
+                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Votre numéro WhatsApp</h4>
+                      <p className="font-mono !text-[11px] !text-muted">Format international sans + ni espaces (ex: 33612345678)</p>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="33612345678"
+                      value={whatsappConfig.recipient_number}
+                      onChange={(e) => setWhatsappConfig({ ...whatsappConfig, recipient_number: e.target.value })}
+                      className={`${settingInput} max-w-xs`}
+                    />
+                  </div>
+
+                  {/* Template de notification */}
+                  <div className={`${settingRow} flex-col items-stretch`}>
+                    <div className={settingLabel}>
+                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Template du message</h4>
+                      <p className="font-mono !text-[11px] !text-muted">Personnalisez le message WhatsApp reçu pour chaque lead</p>
+                    </div>
+                    <div className="w-full flex flex-col gap-2">
+                      <textarea
+                        ref={templateTextareaRef}
+                        rows={4}
+                        value={whatsappConfig.notification_template ?? DEFAULT_WHATSAPP_TEMPLATE}
+                        onChange={(e) => setWhatsappConfig({ ...whatsappConfig, notification_template: e.target.value })}
+                        className={`${settingInput} font-mono !text-xs resize-y min-h-[80px]`}
+                        placeholder={DEFAULT_WHATSAPP_TEMPLATE}
+                      />
+                      <div className="flex flex-wrap gap-1.5">
+                        {['{{emoji}}', '{{source}}', '{{name}}', '{{title}}', '{{company}}', '{{signal}}', '{{action_url}}', '{{linkedin_url}}', '{{app_url}}', '{{date}}'].map((v) => (
+                          <button
+                            key={v}
+                            type="button"
+                            onClick={() => insertTemplateVariable(v)}
+                            className="px-2 py-1 font-mono !text-[10px] bg-muted border border-default hover:border-primary hover:!text-primary transition-colors"
+                            title="Cliquer pour insérer"
+                          >
+                            {v}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="bg-muted/50 border border-default rounded p-3">
+                        <div className="font-mono !text-[10px] !text-muted mb-2">APERÇU</div>
+                        <pre className="font-sans !text-[13px] !text-primary whitespace-pre-wrap break-words m-0 leading-relaxed">
+                          {renderWhatsAppPreview(whatsappConfig.notification_template)}
+                        </pre>
+                      </div>
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => setWhatsappConfig({ ...whatsappConfig, notification_template: DEFAULT_WHATSAPP_TEMPLATE })}
+                          className="font-mono !text-[11px] !text-muted hover:!text-primary transition-colors"
+                        >
+                          Réinitialiser le template
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border-t border-default flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={handleTestWhatsApp}
+                      disabled={testingWhatsApp}
+                      className="px-4 py-2 bg-[#25D366] !text-white !text-sm font-semibold hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
+                    >
+                      {testingWhatsApp ? (
+                        <>
+                          <span className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                          Test en cours...
+                        </>
+                      ) : (
+                        <>
+                          <IconBrandWhatsapp className="w-4 h-4" />
+                          Tester la connexion
+                        </>
+                      )}
+                    </button>
+                    {testWhatsAppResult && (
+                      <span
+                        className={`font-mono !text-xs ${testWhatsAppResult.success ? '!text-success' : '!text-danger'}`}
+                      >
+                        {testWhatsAppResult.success ? '✓ Message envoyé' : `✗ ${testWhatsAppResult.error}`}
+                      </span>
+                    )}
+                  </div>
+                  <details className="p-4 border-t border-default bg-muted/20">
+                    <summary className="cursor-pointer font-mono !text-[11px] !text-muted hover:!text-primary">
+                      Comment obtenir mes credentials Meta ?
+                    </summary>
+                    <ol className="mt-3 font-mono !text-[11px] !text-muted space-y-1 list-decimal list-inside">
+                      <li>Aller sur developers.facebook.com</li>
+                      <li>Créer une app de type &quot;Business&quot;</li>
+                      <li>Ajouter le produit &quot;WhatsApp&quot;</li>
+                      <li>Dans &quot;Getting Started&quot; : copier le Phone Number ID</li>
+                      <li>Générer un token permanent dans &quot;System Users&quot; (Meta Business Suite)</li>
+                      <li>Coller les deux valeurs ci-dessus</li>
+                      <li>Entrer votre numéro WhatsApp sans + ni espaces</li>
+                      <li>Cliquer &quot;Tester la connexion&quot;</li>
+                    </ol>
+                  </details>
+                </>
+              )}
             </div>
           </section>
         )}
