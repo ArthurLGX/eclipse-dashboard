@@ -248,7 +248,14 @@ export default function AdminUsersPage() {
       });
       const data = await response.json();
       if (!response.ok) {
-        showGlobalPopup(data.error?.message || t('login_as_error') || 'Erreur lors de la connexion', 'error');
+        const err = data.error;
+        const userEmail = err?.details?.userEmail;
+        const allowed = err?.details?.allowedEmails as string[] | undefined;
+        const msg = userEmail
+          ? `Réservé aux admins. Ton email: ${userEmail}${allowed?.length ? ` • Autorisés: ${allowed.join(', ')}` : ''}`
+          : (err?.message || t('login_as_error') || 'Erreur lors de la connexion');
+        console.log('[Login-as] Erreur:', data);
+        showGlobalPopup(msg, 'error');
         return;
       }
       await login(data.user, data.jwt);
@@ -353,7 +360,7 @@ export default function AdminUsersPage() {
       <div className="bg-card p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
+            <IconSearch className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
             <input
               type="text"
               placeholder={t('search_by_name_or_email') || 'Rechercher par nom ou email'}

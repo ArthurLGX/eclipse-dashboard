@@ -110,7 +110,7 @@ ${(email_body || task.context?.email_body || '').slice(0, 6000)}`;
       if (isQuotaExceeded(openaiError) && process.env.ANTHROPIC_API_KEY) {
         const { text } = await generateText({
           ...modelOptions,
-          model: anthropic('claude-sonnet-4-6') as unknown as Parameters<typeof generateText>[0]['model'],
+          model: anthropic('claude-sonnet-4-20250514') as unknown as Parameters<typeof generateText>[0]['model'],
           system: systemPrompt,
           prompt: userMessage,
         });

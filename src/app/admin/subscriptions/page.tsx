@@ -331,7 +331,7 @@ export default function AdminSubscriptionsPage() {
       <div className="bg-card p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
+            <IconSearch className="absolute z-10 left-3 top-1/2 -translate-y-1/2 w-5 h-5 !text-muted" />
             <input
               type="text"
               placeholder={t('search_user') || 'Rechercher un utilisateur...'}
