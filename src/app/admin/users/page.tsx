@@ -249,11 +249,7 @@ export default function AdminUsersPage() {
       const data = await response.json();
       if (!response.ok) {
         const err = data.error;
-        const userEmail = err?.details?.userEmail;
-        const allowed = err?.details?.allowedEmails as string[] | undefined;
-        const msg = userEmail
-          ? `Réservé aux admins. Ton email: ${userEmail}${allowed?.length ? ` • Autorisés: ${allowed.join(', ')}` : ''}`
-          : (err?.message || t('login_as_error') || 'Erreur lors de la connexion');
+        const msg = err?.message || t('login_as_error') || 'Erreur lors de la connexion';
         console.log('[Login-as] Erreur:', data);
         showGlobalPopup(msg, 'error');
         return;
