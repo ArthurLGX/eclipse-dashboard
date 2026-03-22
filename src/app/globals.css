@@ -6,6 +6,14 @@
 
 @import 'tailwindcss';
 
+/* Tailwind @theme: success, danger, warning, info — support opacity slash (bg-danger/20) */
+@theme inline {
+  --color-success: rgb(var(--color-success-rgb) / <alpha-value>);
+  --color-danger: rgb(var(--color-danger-rgb) / <alpha-value>);
+  --color-warning: rgb(var(--color-warning-rgb) / <alpha-value>);
+  --color-info: rgb(var(--color-info-rgb) / <alpha-value>);
+}
+
 /* ============================================
    CSS VARIABLES - Single source of truth
    ============================================ */
@@ -26,6 +34,12 @@
   --color-highlight: #ff380b;
   --color-highlight-hover: #e63309;
   --color-highlight-text: #FFFFFF;
+
+  /* RGB components for Tailwind opacity (bg-success/20 etc) — défaut dark */
+  --color-success-rgb: 123 150 3;
+  --color-danger-rgb: 255 56 11;
+  --color-warning-rgb: 133 27 3;
+  --color-info-rgb: 51 51 51;
 }
 
 /* ============================================
@@ -84,22 +98,26 @@
   --color-primary-text: #FFFFFF;
   
    --color-success: #7b9603;
+  --color-success-rgb: 123 150 3;
   --color-success-bg: #171c00;
   --color-success-border: #242c02;
   --color-success-text: #7b9603;
   
   --color-info: #333333;
+  --color-info-rgb: 51 51 51;
   --color-info-bg: rgba(168, 168, 168, 0.1);
   --color-info-border: rgba(168, 168, 168, 0.3);
   --color-info-text: #d8d7d7;
   
   --color-warning: #851b03;
+  --color-warning-rgb: 133 27 3;
   --color-warning-light: #160500;
   --color-warning-bg: #f57048;
   --color-warning-border: rgba(255, 56, 11, 0.3);
   --color-warning-text: #310c01 ;
   
   --color-danger: #ff380b;
+  --color-danger-rgb: 255 56 11;
   --color-danger-bg: #ff380b;
   --color-danger-border: #ff380b;
   --color-danger-text: #000000;
@@ -216,30 +234,34 @@
   --color-primary-text:   #FFFFFF;
   --color-primary-hover:  #333333;
 
-  /* Success */
-  --color-success:        #000000;
-  --color-success-bg:     rgba(0, 0, 0, 0.06);
-  --color-success-border: rgba(0, 0, 0, 0.2);
-  --color-success-text:   #000000;
+  /* Success - vert */
+  --color-success:        #16a34a;
+  --color-success-rgb:    22 163 74;
+  --color-success-bg:     rgba(34, 197, 94, 0.12);
+  --color-success-border: rgba(22, 163, 74, 0.4);
+  --color-success-text:   #15803d;
 
-  /* Info */
-  --color-info:        #333333;
-  --color-info-bg:     rgba(0, 0, 0, 0.06);
-  --color-info-border: rgba(0, 0, 0, 0.15);
-  --color-info-text:   #000000;
+  /* Info - bleu clair */
+  --color-info:        #0ea5e9;
+  --color-info-rgb:    14 165 233;
+  --color-info-bg:     rgba(56, 189, 248, 0.12);
+  --color-info-border: rgba(14, 165, 233, 0.35);
+  --color-info-text:   #0284c7;
 
-  /* Warning */
-  --color-warning:        #333333;
-  --color-warning-light:  rgba(0, 0, 0, 0.06);
-  --color-warning-bg:     rgba(0, 0, 0, 0.06);
-  --color-warning-border: rgba(0, 0, 0, 0.2);
-  --color-warning-text:   #000000;
+  /* Warning - orange */
+  --color-warning:        #ea580c;
+  --color-warning-rgb:    234 88 12;
+  --color-warning-light:  rgba(249, 115, 22, 0.12);
+  --color-warning-bg:     rgba(249, 115, 22, 0.12);
+  --color-warning-border: rgba(234, 88, 12, 0.4);
+  --color-warning-text:   #c2410c;
 
-  /* Danger */
-  --color-danger:        #000000;
-  --color-danger-bg:     rgba(0, 0, 0, 0.08);
-  --color-danger-border: rgba(0, 0, 0, 0.2);
-  --color-danger-text:   #000000;
+  /* Danger - rouge */
+  --color-danger:        #dc2626;
+  --color-danger-rgb:    220 38 38;
+  --color-danger-bg:     rgba(239, 68, 68, 0.12);
+  --color-danger-border: rgba(220, 38, 38, 0.4);
+  --color-danger-text:   #b91c1c;
 
   /* Shadows */
   --shadow-sm:     0 2px 8px  rgba(0, 0, 0, 0.06);

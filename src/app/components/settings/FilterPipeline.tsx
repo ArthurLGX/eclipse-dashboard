@@ -9,9 +9,9 @@ interface StepProps {
 
 function Step({ number, label, status, statusType = 'analyze' }: StepProps) {
   const statusColors = {
-    reject: '!text-danger border-danger/20 bg-danger/5',
-    qualified: '!text-success border-success/20 bg-success/5',
-    analyze: '!text-muted border-default bg-muted/30',
+    reject: '!text-danger border-danger bg-danger',
+    qualified: '!text-success border-success bg-success',
+    analyze: '!text-muted border-default bg-muted',
   };
   const color = statusColors[statusType];
 
