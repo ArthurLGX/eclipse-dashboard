@@ -242,25 +242,25 @@
   --color-success-text:   #15803d;
 
   /* Info - bleu clair */
-  --color-info:        #0ea5e9;
+  --color-info:        #87ceeb;
   --color-info-rgb:    14 165 233;
-  --color-info-bg:     rgba(56, 189, 248, 0.12);
-  --color-info-border: rgba(14, 165, 233, 0.35);
-  --color-info-text:   #0284c7;
+  --color-info-bg:     #87ceeb;
+  --color-info-border: #007acc;
+  --color-info-text:   #007acc;
 
   /* Warning - orange */
-  --color-warning:        #ea580c;
+  --color-warning:        #fbb342;
   --color-warning-rgb:    234 88 12;
   --color-warning-light:  rgba(249, 115, 22, 0.12);
   --color-warning-bg:     rgba(249, 115, 22, 0.12);
   --color-warning-border: rgba(234, 88, 12, 0.4);
-  --color-warning-text:   #c2410c;
+  --color-warning-text:   #854d0e;
 
   /* Danger - rouge */
-  --color-danger:        #dc2626;
-  --color-danger-rgb:    220 38 38;
-  --color-danger-bg:     rgba(239, 68, 68, 0.12);
-  --color-danger-border: rgba(220, 38, 38, 0.4);
+  --color-danger:        #ff9898;
+  --color-danger-rgb:    255 152 152;
+  --color-danger-bg:     #ff9898;
+  --color-danger-border: #b91c1c;
   --color-danger-text:   #b91c1c;
 
   /* Shadows */
