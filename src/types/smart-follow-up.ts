@@ -109,6 +109,21 @@ export interface AutomationSettings {
   ai_instruction?: string | null;
   /** Historique des instructions précédentes (réutilisables) */
   ai_instruction_history?: string[] | null;
+  /** Instructions par source : default, walego, folk, direct, inbound */
+  ai_instructions_by_source?: {
+    default?: string;
+    walego?: string;
+    folk?: string;
+    direct?: string;
+    inbound?: string;
+  } | null;
+  /** Instruction saisonnière avec plage de dates */
+  seasonal_instruction?: {
+    enabled: boolean;
+    content: string;
+    active_from?: string;
+    active_until?: string;
+  } | null;
   /** Configuration WhatsApp multiprovider (Twilio | Meta) */
   whatsapp_config?: {
     enabled: boolean;

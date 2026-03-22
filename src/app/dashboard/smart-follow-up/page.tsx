@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AddClientModal from '@/app/dashboard/clients/AddClientModal';
 import Image from 'next/image';
@@ -99,6 +99,13 @@ export default function SmartFollowUpPage() {
     initialData?: Partial<CreateClientData>;
   }>({ isOpen: false });
   const [syncingEmails, setSyncingEmails] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !hasSeenSFUOnboarding()) {
+      setShowOnboarding(true);
+    }
+  }, []);
 
   // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
@@ -1214,6 +1221,11 @@ export default function SmartFollowUpPage() {
           setSelectedAction(simulatedDetail);
           setShowDetailModal(true);
         }}
+      />
+
+      <SFUOnboarding
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
       />
     </>
   );

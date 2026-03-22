@@ -13,6 +13,7 @@ import {
   IconBan,
   IconBolt,
   IconCalendar,
+  IconSparkles,
 } from '@tabler/icons-react';
 import { IconBrandWhatsapp } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
@@ -23,6 +24,7 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useSettingsLayout } from './settings-context';
 import FilterPipeline from '@/app/components/settings/FilterPipeline';
 import FilterSummary from '@/app/components/settings/FilterSummary';
+import { resetSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
 
 const DEFAULT_WHATSAPP_TEMPLATE =
@@ -167,6 +169,14 @@ export default function SmartFollowUpSettingsPage() {
   const templateTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [testingWhatsApp, setTestingWhatsApp] = useState(false);
   const [testWhatsAppResult, setTestWhatsAppResult] = useState<{ success: boolean; error?: string } | null>(null);
+  const [aiInstructionsBySource, setAiInstructionsBySource] = useState<Record<string, string>>({});
+  const [instructionTab, setInstructionTab] = useState<string>('default');
+  const [seasonalInstruction, setSeasonalInstruction] = useState({
+    enabled: false,
+    content: '',
+    active_from: '',
+    active_until: '',
+  });
 
   useEffect(() => {
     if (settings) {
@@ -179,6 +189,14 @@ export default function SmartFollowUpSettingsPage() {
       setNotificationPreferences(settings.notification_preferences);
       setCustomRules(settings.custom_rules || []);
       if (settings.icp_settings) setICPSettings(settings.icp_settings);
+      if (settings.ai_instructions_by_source) {
+        setAiInstructionsBySource(settings.ai_instructions_by_source as Record<string, string>);
+      } else if (settings.ai_instruction) {
+        setAiInstructionsBySource({ default: settings.ai_instruction });
+      }
+      if (settings.seasonal_instruction && typeof settings.seasonal_instruction === 'object') {
+        setSeasonalInstruction((s) => ({ ...s, ...settings.seasonal_instruction }));
+      }
       if (settings.whatsapp_config) {
         const wc = settings.whatsapp_config;
         setWhatsappConfig({
@@ -217,6 +235,9 @@ export default function SmartFollowUpSettingsPage() {
         custom_rules: customRules,
         icp_settings: icpSettings,
         whatsapp_config: whatsappConfig,
+        ai_instructions_by_source: aiInstructionsBySource,
+        seasonal_instruction: seasonalInstruction,
+        ai_instruction: aiInstructionsBySource.default || undefined,
       };
       if (settings?.documentId) {
         await updateAutomationSettings(settings.documentId, data);
@@ -368,6 +389,12 @@ export default function SmartFollowUpSettingsPage() {
           <div>
             <h1 className="font-serif !text-[28px] !text-primary leading-tight mb-1">Paramètres</h1>
             <p className="font-mono !text-xs !text-muted">Smart Follow-Up · Automatisation des relances</p>
+            <button
+              onClick={resetSFUOnboarding}
+              className="mt-2 font-mono !text-[11px] !text-muted hover:!text-primary underline"
+            >
+              ↩ Revoir l&apos;introduction
+            </button>
           </div>
           <button
             onClick={handleSave}
@@ -738,6 +765,96 @@ export default function SmartFollowUpSettingsPage() {
                     </span>
                   ))}
                 </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 4b. INSTRUCTION IA (par source + saisonnier) */}
+        {activeSection === 'instruction' && (
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
+            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <IconSparkles className="w-4 h-4 !text-white" />
+              </div>
+              <div>
+                <div className="!text-sm font-semibold !text-primary">Instruction IA</div>
+                <div className="font-mono !text-[11px] !text-muted">
+                  Contexte métier et priorités par source. Plus c&apos;est précis, plus les suggestions sont pertinentes.
+                </div>
+              </div>
+            </div>
+            <div className="p-4">
+              <div className="flex flex-wrap gap-1 mb-3">
+                {[
+                  { id: 'default', label: 'Générale' },
+                  { id: 'walego', label: 'Walego' },
+                  { id: 'folk', label: 'Folk' },
+                  { id: 'direct', label: 'Email direct' },
+                  { id: 'inbound', label: 'Inbound' },
+                ].map(({ id, label }) => (
+                  <button
+                    key={id}
+                    onClick={() => setInstructionTab(id)}
+                    className={`px-3 py-1.5 font-mono !text-[11px] transition-all ${
+                      instructionTab === id
+                        ? 'bg-primary !text-white border border-primary'
+                        : 'bg-muted border border-default !text-muted hover:border-[#ccc8c2]'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={aiInstructionsBySource[instructionTab] || ''}
+                onChange={(e) => setAiInstructionsBySource((s) => ({ ...s, [instructionTab]: e.target.value }))}
+                placeholder={`Instruction pour ${instructionTab === 'default' ? 'tous les leads' : instructionTab}...`}
+                className={`${settingInput} min-h-[120px] resize-y`}
+                rows={5}
+              />
+              <div className="mt-6 pt-4 border-t border-default">
+                <label className="flex items-center gap-2 cursor-pointer mb-2">
+                  <input
+                    type="checkbox"
+                    checked={seasonalInstruction.enabled}
+                    onChange={(e) => setSeasonalInstruction((s) => ({ ...s, enabled: e.target.checked }))}
+                    className="w-4 h-4"
+                  />
+                  <span className="!text-[13px] font-medium !text-primary">Activer une instruction saisonnière</span>
+                </label>
+                <p className="font-mono !text-[11px] !text-muted mb-3">Du [date] au [date] — contexte temporaire (ex: période refonte)</p>
+                {seasonalInstruction.enabled && (
+                  <div className="space-y-2 mb-3">
+                    <div className="flex gap-2">
+                      <div className="flex-1">
+                        <label className="font-mono !text-[10px] !text-muted block mb-1">Du</label>
+                        <input
+                          type="date"
+                          value={seasonalInstruction.active_from}
+                          onChange={(e) => setSeasonalInstruction((s) => ({ ...s, active_from: e.target.value }))}
+                          className={settingInput}
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="font-mono !text-[10px] !text-muted block mb-1">Au</label>
+                        <input
+                          type="date"
+                          value={seasonalInstruction.active_until}
+                          onChange={(e) => setSeasonalInstruction((s) => ({ ...s, active_until: e.target.value }))}
+                          className={settingInput}
+                        />
+                      </div>
+                    </div>
+                    <textarea
+                      value={seasonalInstruction.content}
+                      onChange={(e) => setSeasonalInstruction((s) => ({ ...s, content: e.target.value }))}
+                      placeholder="Ex: Période refonte — prioriser les demandes de refonte site..."
+                      className={`${settingInput} min-h-[80px] resize-y`}
+                      rows={3}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </section>

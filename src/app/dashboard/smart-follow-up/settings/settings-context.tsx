@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from 'react';
 
-export type NavSection = 'activation' | 'domaines' | 'icp' | 'mots-cles' | 'delais' | 'heures' | 'regles' | 'notifications' | 'whatsapp';
+export type NavSection = 'activation' | 'domaines' | 'icp' | 'mots-cles' | 'instruction' | 'delais' | 'heures' | 'regles' | 'notifications' | 'whatsapp';
 
 interface SettingsLayoutContextValue {
   activeSection: NavSection;
