@@ -212,7 +212,7 @@ export default function PersonalInformationPage() {
         <div className="profile-hero">
           <div className="profile-avatar-wrap">
             <div className="profile-avatar-ring">
-              <div className="w-[76px] h-[76px] rounded-full overflow-hidden flex items-center justify-center shrink-0 [&_button]:!w-[76px] [&_button]:!h-[76px] ">
+              <div className="w-[76px] h-[76px] rounded-full overflow-hidden flex items-center justify-center shrink-0 ">
                 <ImageUpload
                   currentImageUrl={profilePictureUrl}
                   onUpload={handleProfilePictureUpload}
