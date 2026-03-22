@@ -150,6 +150,8 @@ export interface TaskContext {
   email_body?: string;
   /** Preview (60 chars) de la réponse du lead — pour affichage tableau */
   lead_response_preview?: string;
+  /** Source de qualification : 'contact' = contact connu (bypass ICP), etc. */
+  source?: string;
 }
 
 export interface TaskAIAnalysis {
