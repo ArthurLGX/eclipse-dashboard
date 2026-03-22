@@ -30,6 +30,7 @@ import RuleManagementModal from '@/app/components/RuleManagementModal';
 import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import InstructionIADrawer from '@/app/components/InstructionIADrawer';
 import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
+import SFUOnboarding, { hasSeenSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
