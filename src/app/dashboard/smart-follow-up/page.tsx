@@ -31,6 +31,7 @@ import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import InstructionIADrawer from '@/app/components/InstructionIADrawer';
 import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
 import SFUOnboarding, { hasSeenSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
+import SyncInboxToast from '@/app/components/SyncInboxToast';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
@@ -100,6 +101,11 @@ export default function SmartFollowUpPage() {
     initialData?: Partial<CreateClientData>;
   }>({ isOpen: false });
   const [syncingEmails, setSyncingEmails] = useState(false);
+  const [syncToast, setSyncToast] = useState<{
+    isOpen: boolean;
+    loading: boolean;
+    processedEmails: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }>;
+  }>({ isOpen: false, loading: false, processedEmails: [] });
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
@@ -158,11 +164,22 @@ export default function SmartFollowUpPage() {
 
   const handleRefetchEmails = async () => {
     setSyncingEmails(true);
+    setSyncToast({ isOpen: true, loading: true, processedEmails: [] });
     try {
-      const result = await syncInbox() as { synced?: number; skipped?: number; errors?: string[]; queued?: boolean; message?: string };
+      const result = await syncInbox({ detailed: true }) as {
+        synced?: number;
+        skipped?: number;
+        errors?: string[];
+        queued?: boolean;
+        message?: string;
+        processedEmails?: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }>;
+      };
       if (result?.queued) {
+        setSyncToast({ isOpen: false, loading: false, processedEmails: [] });
         showGlobalPopup('Synchronisation en cours. Les leads apparaîtront sous 1–2 min.', 'success');
       } else {
+        const processedEmails = result?.processedEmails ?? [];
+        setSyncToast({ isOpen: true, loading: false, processedEmails });
         const synced = result?.synced ?? 0;
         const skipped = result?.skipped ?? 0;
         const errors = result?.errors ?? [];
@@ -170,7 +187,7 @@ export default function SmartFollowUpPage() {
           showGlobalPopup(`Sync terminé avec ${errors.length} erreur(s). ${synced} email(s) récupéré(s).`, 'warning');
         } else if (synced > 0 || skipped > 0) {
           showGlobalPopup(`${synced} email(s) récupéré(s)${skipped > 0 ? `, ${skipped} ignoré(s)` : ''}. Les leads apparaîtront sous ~1 min.`, 'success');
-        } else {
+        } else if (processedEmails.length === 0) {
           showGlobalPopup('Aucun nouvel email trouvé.', 'info');
         }
       }
@@ -178,6 +195,7 @@ export default function SmartFollowUpPage() {
       mutateTasks();
     } catch (error) {
       console.error('Refetch emails error:', error);
+      setSyncToast({ isOpen: false, loading: false, processedEmails: [] });
       showGlobalPopup(error instanceof Error ? error.message : 'Erreur lors de la récupération des emails', 'error');
     } finally {
       setSyncingEmails(false);
@@ -1227,6 +1245,13 @@ export default function SmartFollowUpPage() {
       <SFUOnboarding
         isOpen={showOnboarding}
         onClose={() => setShowOnboarding(false)}
+      />
+
+      <SyncInboxToast
+        isOpen={syncToast.isOpen}
+        loading={syncToast.loading}
+        processedEmails={syncToast.processedEmails}
+        onClose={() => setSyncToast((s) => ({ ...s, isOpen: false }))}
       />
     </>
   );

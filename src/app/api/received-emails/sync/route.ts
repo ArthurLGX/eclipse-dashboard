@@ -10,7 +10,10 @@ const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337'
 export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization');
-    const response = await fetch(`${STRAPI_URL}/api/received-emails/sync`, {
+    const url = new URL(request.url);
+    const detailed = url.searchParams.get('detailed') === 'true' || url.searchParams.get('detailed') === '1';
+    const syncUrl = `${STRAPI_URL}/api/received-emails/sync${detailed ? '?detailed=true' : ''}`;
+    const response = await fetch(syncUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

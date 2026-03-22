@@ -2886,10 +2886,11 @@ export const fetchInbox = async (filters: InboxFilters = {}): Promise<InboxRespo
 };
 
 /** Synchronise la boîte de réception avec le serveur IMAP */
-export const syncInbox = async (): Promise<{ synced: number; skipped: number; errors: string[] }> => {
+export const syncInbox = async (options?: { detailed?: boolean }): Promise<{ synced: number; skipped: number; errors: string[]; processedEmails?: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }> }> => {
   // En client, passer par notre proxy pour éviter CORS (Strapi → front Vercel)
   if (typeof window !== 'undefined') {
-    const res = await fetch('/api/received-emails/sync', {
+    const url = `/api/received-emails/sync${options?.detailed ? '?detailed=true' : ''}`;
+    const res = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ data: {} }),
