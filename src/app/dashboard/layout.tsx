@@ -806,7 +806,7 @@ function DashboardLayoutContent({
           >
             {/* Padding ajusté pour mobile: header (60px) + bottom nav (80px) */}
             <div className="w-full max-w-full lg:p-6 p-4 lg:pt-6 pt-20 lg:pb-6 pb-24">
-              <BreadCrumb />
+              {!(isDesktop && pathname?.includes('smart-follow-up/settings')) && <BreadCrumb />}
               {children}
             </div>
           </motion.main>
