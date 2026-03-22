@@ -3432,7 +3432,7 @@ nav button:hover svg, nav a:hover svg {
 .profile-toggle input:checked + .profile-toggle-slider { background: var(--color-accent); }
 .profile-toggle input:checked + .profile-toggle-slider::before { transform: translateX(16px); }
 .profile-side-card {
-  background: var(--bg-card);
+  background: var(--bg-success);
   border: 1px solid var(--border-default);
    box-shadow: var(--shadow-sm);
   overflow: hidden;

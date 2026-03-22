@@ -259,7 +259,7 @@ export default function AddClientModal({
               type="button"
               onClick={() => setIsActive(!isActive)}
               className={`relative w-10 h-5 rounded-full transition-colors ${
-                isActive ? 'bg-success' : 'bg-muted'
+                isActive ? 'bg-success' : 'bg-warning'
               }`}
             >
               <div

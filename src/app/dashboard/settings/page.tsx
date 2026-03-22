@@ -204,7 +204,7 @@ export default function SettingsPage() {
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-accent' : 'bg-muted'}`}
+        className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-success' : 'bg-warning'}`}
       >
         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${checked ? 'translate-x-5' : ''}`} />
       </button>

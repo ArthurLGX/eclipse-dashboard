@@ -580,7 +580,7 @@ export default function AdminSubscriptionsPage() {
                                   setEditingPlan({ ...editingPlan, features: newFeatures });
                                 }}
                                 className={`relative w-10 h-5 rounded-full transition-all duration-200 ${
-                                  value ? 'bg-success' : 'bg-gray-300 dark:bg-gray-600'
+                                  value ? 'bg-success' : 'bg-warning'
                                 }`}
                               >
                                 <div

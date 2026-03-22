@@ -55,8 +55,8 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
             className={`
               relative flex flex-col items-center gap-3 p-6  border-2 transition-all cursor-pointer
               ${isSelected 
-                ? 'border-accent bg-accent-light shadow-lg shadow-accent-light' 
-                : 'border-default bg-card hover:border-accent-light hover:bg-accent-light'
+                ? 'border-success bg-success-light shadow-lg shadow-success' 
+                : 'border-default bg-card hover:border-success-light hover:bg-success'
               }
             `}
           >
@@ -64,22 +64,22 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute top-2 right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center"
+                className="absolute top-2 right-2 w-6 h-6 bg-success rounded-full flex items-center justify-center"
               >
-                <IconCheck className="w-4 h-4 !text-white" />
+                <IconCheck className="w-4 h-4 !text-black" />
               </motion.div>
             )}
             
             <div className={`
               p-3  transition-colors
-              ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted'}
+              ${isSelected ? 'bg-success !text-black' : 'bg-warning !text-muted'}
             `}>
               {BUSINESS_ICONS[type]}
             </div>
             
             <span className={`
               font-medium !text-center !text-sm
-              ${isSelected ? '!text-accent' : '!text-primary'}
+              ${isSelected ? '!text-success' : '!text-primary'}
             `}>
               {label}
             </span>
@@ -253,7 +253,7 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
       className={`
         relative flex items-center gap-3 p-4  border transition-all cursor-pointer
         ${isSelected 
-          ? 'border-accent bg-accent-light' 
+          ? 'border-success bg-success-light' 
           : 'border-default bg-card hover:border-accent-light'
         }
       `}
@@ -261,12 +261,12 @@ function ModuleCard({ moduleId, label, isSelected, isCore, onToggle }: ModuleCar
       <div className={`
         w-5 h-5  border-2 flex items-center justify-center shrink-0
         ${isSelected 
-          ? 'border-accent bg-accent' 
+          ? 'border-success bg-success' 
           : 'border-muted'
         }
       `}>
         {isSelected && (
-          <IconCheck className="w-3 h-3 !text-white" />
+          <IconCheck className="w-3 h-3 !text-black" />
         )}
       </div>
       
@@ -332,7 +332,7 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
       <div className="flex items-center justify-center gap-4">
         <div className={`
           flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium
-          ${step === 'business' ? 'bg-accent !text-white' : 'bg-success !text-white'}
+          ${step === 'business' ? 'bg-success !text-black' : 'bg-success !text-black'}
         `}>
           {step === 'modules' ? <IconCheck className="w-4 h-4" /> : '1'}
           <span>{t('your_business') || 'Votre métier'}</span>
@@ -340,7 +340,7 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
         <div className="w-8 h-0.5 bg-muted" />
         <div className={`
           flex items-center gap-2 px-4 py-2 rounded-full !text-sm font-medium
-          ${step === 'modules' ? 'bg-accent !text-white' : 'bg-muted !text-muted'}
+          ${step === 'modules' ? 'bg-success !text-black' : 'bg-warning !text-muted'}
         `}>
           <span>2</span>
           <span>{t('your_tools') || 'Vos outils'}</span>
@@ -409,7 +409,7 @@ export function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetupWizardP
           className={`
             px-6 py-2.5  font-medium transition-all
             ${selectedType
-              ? 'bg-accent !text-white hover:bg-accent-light'
+              ? 'bg-success !text-black hover:bg-success-light'
               : 'bg-muted !text-muted cursor-not-allowed'
             }
           `}
