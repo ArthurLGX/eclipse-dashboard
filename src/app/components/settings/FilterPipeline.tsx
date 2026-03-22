@@ -11,7 +11,7 @@ function Step({ number, label, status, statusType = 'analyze' }: StepProps) {
   const statusColors = {
     reject: '!text-danger border-danger bg-danger',
     qualified: '!text-success border-success bg-success',
-    analyze: '!text-muted border-default bg-muted',
+    analyze: '!text-info border-info bg-info',
   };
   const color = statusColors[statusType];
 

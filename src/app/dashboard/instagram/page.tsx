@@ -1290,7 +1290,7 @@ function InstagramPlanner() {
                         setShowCreateModal(false);
                       }}
                       disabled={isPublishing || !editingPost.mediaUrls?.length}
-                      className="px-4 py-2 bg-success !text-white  hover:bg-success/90 transition-colors disabled:opacity-50 flex items-center gap-2"
+                      className="px-4 py-2 bg-success !text-white  hover:bg-success transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
                       {isPublishing ? (
                         <IconLoader2 className="w-4 h-4 animate-spin" />

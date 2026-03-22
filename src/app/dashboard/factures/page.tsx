@@ -740,7 +740,7 @@ export default function FacturesPage() {
       <Modal open={convertModal.isOpen} onClose={() => setConvertModal({ isOpen: false, quote: null })}>
         <div className="p-6 !space-y-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-success flex items-center justify-center">
               <IconFileInvoice className="w-6 h-6 !text-success" />
             </div>
             <div>

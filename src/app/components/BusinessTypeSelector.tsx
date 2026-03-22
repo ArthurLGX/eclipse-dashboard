@@ -195,7 +195,7 @@ export function ModuleSelector({ businessType, selectedModules, onToggle }: Modu
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-warning/20 flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-warning flex items-center justify-center">
                   <IconAlertTriangle className="w-6 h-6 text-warning" />
                 </div>
                 <div className="flex-1 min-w-0">

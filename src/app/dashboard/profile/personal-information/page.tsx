@@ -547,7 +547,7 @@ export default function PersonalInformationPage() {
               <div className="profile-side-card-header">
                 <span className="profile-side-card-title">Abonnement actif</span>
                 {subscription?.plan && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-success/10 text-success">
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-success text-success">
                     {subscription.plan.name.charAt(0).toUpperCase() + subscription.plan.name.slice(1)}
                   </span>
                 )}

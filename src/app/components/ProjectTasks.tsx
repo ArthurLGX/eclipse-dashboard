@@ -4359,7 +4359,7 @@ function TaskGanttView({
             <div className="w-px bg-default" />
             <button type="button" onClick={() => zoom(4)} className="w-8 h-8 flex items-center justify-center !text-muted hover:bg-muted" title={t('zoom_in') || 'Zoom avant'}>+</button>
           </div>
-          <button type="button" onClick={scrollToToday} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-warning/40 !text-warning hover:bg-warning/10  transition-colors">
+          <button type="button" onClick={scrollToToday} className="flex items-center gap-1.5 px-3 py-1.5 !text-sm border border-warning/40 !text-warning hover:bg-warning  transition-colors">
             <IconCalendarEvent className="w-4 h-4" />
             {t('today') || "Aujourd'hui"}
           </button>
@@ -4412,7 +4412,7 @@ function TaskGanttView({
                   data-day-index={j}
                   data-is-today={isToday(day) ? 'true' : 'false'}
                   className={`!text-center py-1.5 font-mono !text-[10px] border-b border-default flex-shrink-0 ${
-                    isToday(day) ? '!text-warning font-semibold bg-warning/10' : day.getDay() === 0 || day.getDay() === 6 ? '!text-muted/60 bg-muted' : '!text-muted'
+                    isToday(day) ? '!text-warning font-semibold bg-warning' : day.getDay() === 0 || day.getDay() === 6 ? '!text-muted/60 bg-muted' : '!text-muted'
                   }`}
                   style={{ width: colWidth, minWidth: colWidth }}
                 >
@@ -4531,7 +4531,7 @@ function TaskGanttView({
                               <div className="relative w-full h-full">
                                 <div className="absolute inset-0 flex">
                                   {dayHeaders.map((day, i) => (
-                                    <div key={i} className={`flex-shrink-0 ${isToday(day) ? 'bg-warning/5' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted' : ''}`} style={{ width: colWidth }} />
+                                    <div key={i} className={`flex-shrink-0 ${isToday(day) ? 'bg-warning' : ''} ${day.getDay() === 0 || day.getDay() === 6 ? 'bg-muted' : ''}`} style={{ width: colWidth }} />
                                   ))}
                                 </div>
                                 {todayIndex >= 0 && (

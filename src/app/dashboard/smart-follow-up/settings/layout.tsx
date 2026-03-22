@@ -69,15 +69,15 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                 >
                   {item.icon}
                   {item.label}
-                  {item.badge && <span className="ml-auto font-mono !text-[9px] px-1.5 py-0.5 rounded bg-success/10 !text-success border border-success/20">{item.badge}</span>}
-                  {item.badgeWarn && <span className="ml-auto font-mono !text-[9px] px-1.5 py-0.5 rounded bg-warning/10 !text-warning border border-warning/20">5</span>}
+                  {item.badge && <span className="ml-auto font-mono !text-[9px] px-1.5 py-0.5 rounded bg-success !text-success border border-success/20">{item.badge}</span>}
+                  {item.badgeWarn && <span className="ml-auto font-mono !text-[9px] px-1.5 py-0.5 rounded bg-warning !text-warning border border-warning/20">5</span>}
                 </button>
               ))}
             </div>
           ))}
 
           <div className="mt-auto pt-4 border-t border-default">
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-success/10 border border-success/20  !text-success !text-sm font-medium">
+            <div className="flex items-center gap-2 px-3 py-2.5 bg-success border border-success/20  !text-success !text-sm font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
               Système actif · {rulesCount} règles
             </div>

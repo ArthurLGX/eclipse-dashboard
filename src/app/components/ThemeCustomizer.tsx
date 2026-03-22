@@ -482,7 +482,7 @@ export default function ThemeCustomizer({
               </button>
               <button
                 onClick={() => setHeaderBackgroundUrl('')}
-                className="p-1.5 bg-danger/90 !text-white rounded-full hover:bg-[var(--color-danger)] transition-colors"
+                className="p-1.5 bg-danger !text-white rounded-full hover:bg-[var(--color-danger)] transition-colors"
                 title={t('remove_image') || 'Supprimer'}
               >
                 <IconX className="w-4 h-4" />

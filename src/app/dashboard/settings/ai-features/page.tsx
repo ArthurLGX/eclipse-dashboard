@@ -255,7 +255,7 @@ export default function AIFeaturesSettingsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => toggleAll(category, true)}
-                className="px-3 py-1.5 text-xs bg-success/10 text-success  hover:bg-success/20 transition-colors"
+                className="px-3 py-1.5 text-xs bg-success text-success  hover:bg-success transition-colors"
               >
                 Tout activer
               </button>

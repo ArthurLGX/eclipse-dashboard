@@ -516,7 +516,7 @@ export default function SmartFollowUpPage() {
               e.stopPropagation();
               handleQualifyLead(action, 'rejected');
             }}
-            className="px-2 py-1 bg-danger rounded text-xs font-medium hover:bg-danger/20"
+            className="px-2 py-1 bg-danger rounded text-xs font-medium hover:bg-danger"
             title="Rejeter"
           >
             <IconX className="w-3.5 h-3.5 !text-white" />

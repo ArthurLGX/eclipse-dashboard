@@ -571,7 +571,7 @@ export default function SmartFollowUpSettingsPage() {
                         <label
                           key={type}
                           className={`flex items-center gap-2.5 p-2.5  cursor-pointer transition-all border ${
-                            icpSettings.types_enabled[type] ? 'bg-success/10 border-success/20' : 'bg-muted border-default hover:border-[#ccc8c2]'
+                            icpSettings.types_enabled[type] ? 'bg-success border-success/20' : 'bg-muted border-default hover:border-[#ccc8c2]'
                           }`}
                         >
                           <div
@@ -692,7 +692,7 @@ export default function SmartFollowUpSettingsPage() {
                               ? 'bg-blue-500/10 border border-blue-500/20 !text-blue-600'
                               : type === 'agence'
                                 ? 'bg-accent/10 border border-accent/20 !text-accent'
-                                : 'bg-success/10 border border-success/20 !text-success'
+                                : 'bg-success border border-success/20 !text-success'
                           }`}
                         >
                           {kw}
@@ -758,7 +758,7 @@ export default function SmartFollowUpSettingsPage() {
                   {priorityKeywords.map((kw) => (
                     <span
                       key={kw}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium bg-danger/10 border border-danger/20 !text-danger"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium bg-danger border border-danger/20 !text-danger"
                     >
                       {kw}
                       <button onClick={() => handleRemoveKeyword(kw)} className="opacity-50 hover:opacity-100">×</button>
@@ -975,7 +975,7 @@ export default function SmartFollowUpSettingsPage() {
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
                       <span className="flex-1 !text-[13px] font-medium !text-primary">{rule.name}</span>
-                      <span className="font-mono !text-[10px] px-2 py-0.5 rounded bg-success/10 !text-success border border-success/20">
+                      <span className="font-mono !text-[10px] px-2 py-0.5 rounded bg-success !text-success border border-success/20">
                         Priorité {rule.priority}
                       </span>
                     </div>
