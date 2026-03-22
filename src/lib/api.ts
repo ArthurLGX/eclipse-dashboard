@@ -2885,8 +2885,17 @@ export const fetchInbox = async (filters: InboxFilters = {}): Promise<InboxRespo
   return await get<InboxResponse>(url);
 };
 
+export interface ProcessedEmail {
+  name: string;
+  email: string;
+  snippet: string;
+  confidence: number;
+  status: 'lead' | 'rejected';
+  reason: string;
+}
+
 /** Synchronise la boîte de réception avec le serveur IMAP */
-export const syncInbox = async (options?: { detailed?: boolean }): Promise<{ synced: number; skipped: number; errors: string[]; processedEmails?: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }> }> => {
+export const syncInbox = async (options?: { detailed?: boolean }): Promise<{ synced: number; skipped: number; errors: string[]; processedEmails?: ProcessedEmail[] }> => {
   // En client, passer par notre proxy pour éviter CORS (Strapi → front Vercel)
   if (typeof window !== 'undefined') {
     const url = `/api/received-emails/sync${options?.detailed ? '?detailed=true' : ''}`;
@@ -2904,6 +2913,49 @@ export const syncInbox = async (options?: { detailed?: boolean }): Promise<{ syn
   }
   const response = await post<{ data: { synced: number; skipped: number; errors: string[] } }>('received-emails/sync', {});
   return response.data;
+};
+
+/** Sync avec streaming SSE - appelle onEmail pour chaque email traité en temps réel */
+export const syncInboxStream = async (onEmail: (email: ProcessedEmail) => void): Promise<{ synced: number; skipped: number; errors: string[] }> => {
+  const res = await fetch('/api/received-emails/sync?stream=true', {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({}),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => null);
+    throw new Error(err?.error?.message || `Erreur ${res.status}`);
+  }
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error('Stream non supporté');
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let result = { synced: 0, skipped: 0, errors: [] as string[] };
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n\n');
+    buffer = lines.pop() ?? '';
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      try {
+        const data = JSON.parse(line.slice(6)) as ProcessedEmail | { type: string; synced?: number; skipped?: number; errors?: string[]; message?: string };
+        if ('type' in data) {
+          if (data.type === 'done') result = { synced: data.synced ?? 0, skipped: data.skipped ?? 0, errors: data.errors ?? [] };
+          else if (data.type === 'error') throw new Error(data.message);
+        } else {
+          onEmail(data);
+        }
+      } catch (e) {
+        if (e instanceof SyntaxError) continue;
+        throw e;
+      }
+    }
+  }
+  return result;
 };
 
 /** Récupère un email reçu par son ID */

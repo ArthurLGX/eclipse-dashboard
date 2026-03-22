@@ -46,7 +46,7 @@ import {
   deleteFollowUpTask,
   updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
-import { addClientUser, syncInbox } from '@/lib/api';
+import { addClientUser, syncInboxStream, type ProcessedEmail } from '@/lib/api';
 import { useAuth } from '@/app/context/AuthContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { clearCache } from '@/hooks/useApi';
@@ -166,30 +166,20 @@ export default function SmartFollowUpPage() {
     setSyncingEmails(true);
     setSyncToast({ isOpen: true, loading: true, processedEmails: [] });
     try {
-      const result = await syncInbox({ detailed: true }) as {
-        synced?: number;
-        skipped?: number;
-        errors?: string[];
-        queued?: boolean;
-        message?: string;
-        processedEmails?: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }>;
-      };
-      if (result?.queued) {
-        setSyncToast({ isOpen: false, loading: false, processedEmails: [] });
-        showGlobalPopup('Synchronisation en cours. Les leads apparaîtront sous 1–2 min.', 'success');
+      const result = await syncInboxStream((email: ProcessedEmail) => {
+        setSyncToast((prev) => ({
+          ...prev,
+          processedEmails: [...prev.processedEmails, email],
+        }));
+      });
+      setSyncToast((prev) => ({ ...prev, loading: false }));
+      const { synced, skipped, errors } = result;
+      if (errors.length > 0) {
+        showGlobalPopup(`Sync terminé avec ${errors.length} erreur(s). ${synced} email(s) récupéré(s).`, 'warning');
+      } else if (synced > 0 || skipped > 0) {
+        showGlobalPopup(`${synced} email(s) récupéré(s)${skipped > 0 ? `, ${skipped} ignoré(s)` : ''}. Les leads apparaîtront sous ~1 min.`, 'success');
       } else {
-        const processedEmails = result?.processedEmails ?? [];
-        setSyncToast({ isOpen: true, loading: false, processedEmails });
-        const synced = result?.synced ?? 0;
-        const skipped = result?.skipped ?? 0;
-        const errors = result?.errors ?? [];
-        if (errors.length > 0) {
-          showGlobalPopup(`Sync terminé avec ${errors.length} erreur(s). ${synced} email(s) récupéré(s).`, 'warning');
-        } else if (synced > 0 || skipped > 0) {
-          showGlobalPopup(`${synced} email(s) récupéré(s)${skipped > 0 ? `, ${skipped} ignoré(s)` : ''}. Les leads apparaîtront sous ~1 min.`, 'success');
-        } else if (processedEmails.length === 0) {
-          showGlobalPopup('Aucun nouvel email trouvé.', 'info');
-        }
+        showGlobalPopup('Aucun nouvel email trouvé.', 'info');
       }
       mutateActions();
       mutateTasks();

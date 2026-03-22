@@ -39,20 +39,23 @@ function EmailCard({
     return () => clearTimeout(t);
   }, [index, initialDelay]);
 
+  // Motion delay en secondes (initialDelay est en ms)
+  const animationDelay = initialDelay / 1000 + index * 0.05;
+
   return (
     <motion.div
       initial={{ opacity: 0, x: -20, scale: 0.95 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      transition={{ delay: initialDelay + index * 0.08, duration: 0.3 }}
+      transition={{ delay: animationDelay, duration: 0.3 }}
       className="rounded-lg border overflow-hidden"
     >
       <div
         className={`border p-3 space-y-1.5 transition-colors duration-500 ${
           phase === 'analyzing'
-            ? 'bg-info/15 border-info/40'
+            ? 'bg-info border-info'
             : isLead
-              ? 'bg-success/15 border-success/40'
-              : 'bg-danger/15 border-danger/40'
+              ? 'bg-success border-success'
+              : 'bg-danger border-danger'
         }`}
       >
         <div className="flex items-start justify-between gap-2">
@@ -62,14 +65,14 @@ function EmailCard({
           </div>
           <div className="flex-shrink-0">
             {phase === 'analyzing' ? (
-              <div className="w-6 h-6 rounded-full border-2 border-info/50 border-t-info animate-spin" />
+                <div className="w-6 h-6 rounded-full border-2 border-info border-t-info animate-spin" />
             ) : (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  isLead ? 'bg-success/30 !text-success-text' : 'bg-danger/30 !text-danger-text'
+                  isLead ? 'bg-success !text-success-text' : 'bg-danger !text-danger-text'
                 }`}
               >
                 {isLead ? (
@@ -90,10 +93,10 @@ function EmailCard({
           <span
             className={`font-mono !text-[10px] px-1.5 py-0.5 rounded transition-colors duration-300 ${
               phase === 'analyzing'
-                ? 'bg-info/25 !text-info'
+                  ? 'bg-info !text-info'
                 : isLead
-                  ? 'bg-success/25 !text-success-text'
-                  : 'bg-danger/25 !text-danger-text'
+                  ? 'bg-success !text-success-text'
+                  : 'bg-danger !text-danger-text'
             }`}
           >
             {phase === 'analyzing' ? '...' : `${confidencePercent}%`}
@@ -160,7 +163,7 @@ export default function SyncInboxToast({
         <div className="overflow-y-auto p-3 space-y-2 max-h-[55vh]">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-8 gap-4">
-              <div className="w-8 h-8 border-2 border-info/50 border-t-info rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-info border-t-info rounded-full animate-spin" />
               <p className="!text-sm !text-muted">Récupération et analyse des emails...</p>
             </div>
           ) : processedEmails.length === 0 ? (
