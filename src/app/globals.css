@@ -482,11 +482,11 @@
 .text-accent-text { color: var(--color-accent-text) !important; }
 .text-primary-text { color: var(--color-primary-text) !important; }
 .text-color-primary { color: var(--color-primary); }
-.text-success { color: var(--color-success); }
+.text-success { color: var(--color-success-text); }
 .text-success-text { color: var(--color-success-text); }
 .text-info { color: var(--color-info-text); }
-.text-warning-text { color: var(--color-warning); }
-.text-danger { color: var(--color-danger); }
+.text-warning-text { color: var(--color-warning-text); }
+.text-danger { color: var(--color-danger-text); }
 .text-highlight { color: var(--color-highlight); }
 
 /* Borders */
@@ -1287,7 +1287,7 @@ button {
   line-height: 1;
   color: var(--text-primary);
 }
-.facture-stat-value.facture-stat-green { color: var(--color-success) !important; }
+.facture-stat-value.facture-stat-green { color: var(--color-success-text) !important; }
 .facture-stat-value.facture-stat-purple { color: #7C3AED !important; }
 .facture-stat-value.facture-stat-amber { color: #D97706 !important; }
 .facture-stat-meta {
@@ -1298,7 +1298,7 @@ button {
   color: var(--text-muted);
   margin-top: 8px;
 }
-.facture-stat-meta.facture-stat-meta-up { color: var(--color-success) !important; }
+.facture-stat-meta.facture-stat-meta-up { color: var(--color-success-text) !important; }
 .facture-stat-meta.facture-stat-warn { color: #D97706 !important; }
 .facture-stat-dot {
   width: 5px;
@@ -1545,7 +1545,7 @@ button {
   text-align: right;
   white-space: nowrap;
 }
-.facture-amount-cell.facture-amount-late { color: var(--color-danger) !important; }
+.facture-amount-cell.facture-amount-late { color: var(--color-danger-text) !important; }
 .facture-actions-cell { display: flex; align-items: center; justify-content: center; }
 .facture-action-btn {
   width: 30px;
@@ -1701,11 +1701,11 @@ button {
 }
 
 .demo-stat-primary {
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 
 .demo-stat-secondary {
-  color: var(--color-info);
+  color: var(--color-info-text);
 }
 
 .demo-stat-tertiary {
@@ -3110,7 +3110,7 @@ nav button:hover svg, nav a:hover svg {
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
 }
-.subscription-feature-check svg { width: 10px; height: 10px; color: var(--color-success); }
+.subscription-feature-check svg { width: 10px; height: 10px; color: var(--color-success-text); }
 .subscription-feature-value {
   margin-left: auto;
   font-family: var(--font-geist-mono), monospace;
@@ -3189,7 +3189,7 @@ nav button:hover svg, nav a:hover svg {
   padding: 3px 10px; border-radius: 99px;
   font-size: 12px; font-weight: 500;
   background: var(--color-success-bg);
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 .subscription-status-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-success); }
 .subscription-billing-block { padding: 14px 18px; }
@@ -3329,7 +3329,7 @@ nav button:hover svg, nav a:hover svg {
   transition: background .15s;
 }
 .profile-btn-hero-ghost:hover { background: var(--bg-hover); }
-.profile-hero-since { position: absolute; bottom: 20px; right: 32px; font-size: 12px; color: var(--text-muted); font-family: var(--font-geist-mono), monospace; z-index: 1; }
+.profile-hero-since { font-size: 12px; color: var(--text-muted); font-family: var(--font-geist-mono), monospace; z-index: 1; }
 .profile-card {
   background: var(--bg-card);
   border: 1px solid var(--border-default);
@@ -3368,7 +3368,7 @@ nav button:hover svg, nav a:hover svg {
   padding: 3px 10px; border-radius: 99px;
   font-size: 12px; font-weight: 500;
   background: var(--color-success-bg);
-  color: var(--color-success);
+  color: var(--color-success-text);
 }
 .profile-status-pill-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-success); }
 .profile-pw-body { padding: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
@@ -3454,7 +3454,7 @@ nav button:hover svg, nav a:hover svg {
 .profile-plan-features-mini { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 .profile-plan-feat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
 .profile-plan-feat-check { width: 16px; height: 16px; border-radius: 50%; background: var(--color-success-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.profile-plan-feat-check svg { width: 8px; height: 8px; color: var(--color-success); }
+.profile-plan-feat-check svg { width: 8px; height: 8px; color: var(--color-success-text); }
 .profile-btn-upgrade { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 11px 16px; background: var(--text-primary); color: var(--bg-page); border: none; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity .15s; }
 .profile-btn-upgrade:hover { opacity: .9; }
 .profile-stats-mini { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border-default); }
@@ -3481,7 +3481,7 @@ nav button:hover svg, nav a:hover svg {
 .profile-nav-item-sub { font-size: 12px; color: var(--text-muted); }
 .profile-nav-item-arrow { color: var(--text-muted); font-size: 16px; }
 .profile-nav-item.danger .profile-nav-item-icon { background: var(--color-danger-bg); border-color: var(--color-danger-border); color: var(--color-danger-text); }
-.profile-nav-item.danger .profile-nav-item-title { color: var(--color-danger); }
+.profile-nav-item.danger .profile-nav-item-title { color: var(--color-danger-text); }
 @keyframes profileFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ============================================
@@ -3684,7 +3684,7 @@ nav button:hover svg, nav a:hover svg {
   display: flex; align-items: center; justify-content: center;
 }
 .company-check-icon.done { background: var(--color-success-bg); }
-.company-check-icon.done svg { color: var(--color-success); }
+.company-check-icon.done svg { color: var(--color-success-text); }
 .company-check-icon.todo { background: var(--bg-muted); border: 1.5px dashed var(--border-input); }
 .company-check-text { flex: 1; }
 .company-check-text.done-text { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--border-default); }
