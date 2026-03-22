@@ -21,6 +21,8 @@ import { useAuth } from '@/app/context/AuthContext';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useSettingsLayout } from './settings-context';
+import FilterPipeline from '@/app/components/settings/FilterPipeline';
+import FilterSummary from '@/app/components/settings/FilterSummary';
 import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
 
 const DEFAULT_WHATSAPP_TEMPLATE =
@@ -397,6 +399,17 @@ export default function SmartFollowUpSettingsPage() {
           </button>
         </div>
 
+        <FilterPipeline />
+        <FilterSummary
+          excludedDomainsCount={excludedDomains.length}
+          minScoreThreshold={icpSettings.min_score_threshold}
+          totalKeywords={
+            Object.values(icpSettings.keywords).flat().length + priorityKeywords.length
+          }
+          activeRules={customRules.filter((r) => r.enabled).length}
+          totalRules={customRules.length}
+        />
+
         {/* 1. ACTIVATION */}
         {activeSection === 'activation' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
@@ -428,7 +441,7 @@ export default function SmartFollowUpSettingsPage() {
           </section>
         )}
 
-        {/* 2. DOMAINES EXCLUS */}
+        {/* 2. EMAILS À IGNORER (ex-domaines exclus) */}
         {activeSection === 'domaines' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
@@ -436,8 +449,10 @@ export default function SmartFollowUpSettingsPage() {
                 <IconBan className="w-4 h-4 !text-white" />
               </div>
               <div>
-                <div className="!text-sm font-semibold !text-primary">Domaines exclus</div>
-                <div className="font-mono !text-[11px] !text-muted">Ces emails ne déclencheront pas de relances automatiques</div>
+                <div className="!text-sm font-semibold !text-primary">Emails à ignorer</div>
+                <div className="font-mono !text-[11px] !text-muted">
+                  Les emails provenant de ces domaines sont automatiquement ignorés. Ex : noreply.com, newsletter.fr
+                </div>
               </div>
             </div>
             <div className="p-4">
@@ -600,89 +615,14 @@ export default function SmartFollowUpSettingsPage() {
                     </label>
                   </div>
 
-                  {/* Mots-clés par type */}
-                  {(['b2b', 'agence', 'freelance'] as const).map((type) => (
-                    <div key={type} className={`${settingRow} flex-col items-stretch`}>
-                      <div className="flex items-center justify-between w-full">
-                        <div className="font-mono !text-[10px] !text-muted uppercase tracking-wider">{type}</div>
-                        <button
-                          onClick={() => { setEditingICPType(editingICPType === type ? null : type); setNewICPKeyword(''); }}
-                          className="px-2.5 py-1  bg-success !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1"
-                        >
-                          <IconPlus className="w-3 h-3" />
-                          Ajouter
-                        </button>
-                      </div>
-                      {editingICPType === type && (
-                        <div className="flex gap-2 w-full">
-                          <input
-                            value={newICPKeyword}
-                            onChange={(e) => setNewICPKeyword(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAddICPKeyword(type)}
-                            placeholder={`Nouveau mot-clé ${type}`}
-                            className={settingInput}
-                            autoFocus
-                          />
-                          <button onClick={() => handleAddICPKeyword(type)} className="px-3 py-2 bg-primary !text-white  !text-xs font-semibold">
-                            Ajouter
-                          </button>
-                        </div>
-                      )}
-                      <div className="flex flex-wrap gap-1.5 w-full">
-                        {(icpSettings.keywords[type] || []).map((kw) => (
-                          <span
-                            key={kw}
-                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium ${
-                              type === 'b2b'
-                                ? 'bg-blue-500/10 border border-blue-500/20 !text-blue-600'
-                                : type === 'agence'
-                                  ? 'bg-accent/10 border border-accent/20 !text-accent'
-                                  : 'bg-success/10 border border-success/20 !text-success'
-                            }`}
-                          >
-                            {kw}
-                            <button onClick={() => handleRemoveICPKeyword(type, kw)} className="opacity-50 hover:opacity-100">×</button>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Mots-clés prioritaires */}
-                  <div className={`${settingRow} flex-col items-stretch bg-danger/5`}>
-                    <div className="flex items-center justify-between w-full">
-                      <div>
-                        <div className="!text-[13px] font-semibold !text-primary">Mots-clés prioritaires</div>
-                        <div className="font-mono !text-[11px] !text-muted">Domaine de l&apos;expéditeur + si ces mots apparaissent dans sujet/corps → lead chaud (ex: rfp, consultation, refonte, budget)</div>
-                      </div>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newKeyword}
-                          onChange={(e) => setNewKeyword(e.target.value)}
-                          onKeyDown={(e) => e.key === 'Enter' && handleAddKeyword()}
-                          placeholder="ex: rfp, consultation, refonte, budget, walego"
-                          className={`${settingInput} w-28`}
-                        />
-                        <button
-                          onClick={handleAddKeyword}
-                          className="px-2.5 py-1  bg-danger !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1"
-                        >
-                          <IconPlus className="w-3 h-3" />
-                          Ajouter
-                        </button>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-1.5 w-full">
-                      {priorityKeywords.map((kw) => (
-                        <span
-                          key={kw}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium bg-danger/10 border border-danger/20 !text-danger"
-                        >
-                          {kw}
-                          <button onClick={() => handleRemoveKeyword(kw)} className="opacity-50 hover:opacity-100">×</button>
-                        </span>
-                      ))}
+                  <div className={settingRow}>
+                    <div className={settingLabel}>
+                      <p className="font-mono !text-[11px] !text-muted">
+                        Les mots-clés profil et priorité sont configurés dans la section Mots-clés importants.
+                      </p>
+                      <button onClick={() => setActiveSection('mots-cles')} className="mt-2 px-3 py-1.5 border border-default !text-xs font-medium !text-muted hover:!text-primary hover:border-[#ccc8c2]">
+                        Gérer les mots-clés
+                      </button>
                     </div>
                   </div>
                 </>
@@ -691,7 +631,7 @@ export default function SmartFollowUpSettingsPage() {
           </section>
         )}
 
-        {/* 4. MOTS-CLÉS (section dédiée si séparée) */}
+        {/* 4. MOTS-CLÉS IMPORTANTS (fusion profil + priorité) */}
         {activeSection === 'mots-cles' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
@@ -699,15 +639,106 @@ export default function SmartFollowUpSettingsPage() {
                 <IconBolt className="w-4 h-4 !text-white" />
               </div>
               <div>
-                <div className="!text-sm font-semibold !text-primary">Mots-clés de détection</div>
-                <div className="font-mono !text-[11px] !text-muted">Classifient automatiquement les leads entrants</div>
+                <div className="!text-sm font-semibold !text-primary">Mots-clés importants</div>
+                <div className="font-mono !text-[11px] !text-muted">
+                  Si un email contient ces mots, il est traité en priorité. Ex : urgent, devis, rfp, projet
+                </div>
               </div>
             </div>
-            <div className="p-4">
-              <p className="!text-sm !text-muted mb-4">Configurez les mots-clés dans la section Profil ICP.</p>
-              <button onClick={() => setActiveSection('icp')} className="px-4 py-2 bg-accent !text-white  !text-sm font-medium hover:opacity-90">
-                Aller au profil ICP
-              </button>
+            <div className="p-4 space-y-6">
+              {/* Profil client (ICP keywords) */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="!text-base">🎯</span>
+                  <h4 className="!text-[13px] font-semibold !text-primary">Profil client</h4>
+                </div>
+                <p className="font-mono !text-[11px] !text-muted mb-3">Ces mots identifient le type de prospect</p>
+                <div className="space-y-2 mb-3">
+                  {(['b2b', 'agence', 'freelance'] as const).map((type) => (
+                    <div key={type} className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-mono !text-[10px] !text-muted uppercase w-14">{type}</span>
+                      {(icpSettings.keywords[type] || []).map((kw) => (
+                        <span
+                          key={`${type}-${kw}`}
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium ${
+                            type === 'b2b'
+                              ? 'bg-blue-500/10 border border-blue-500/20 !text-blue-600'
+                              : type === 'agence'
+                                ? 'bg-accent/10 border border-accent/20 !text-accent'
+                                : 'bg-success/10 border border-success/20 !text-success'
+                          }`}
+                        >
+                          {kw}
+                          <button onClick={() => handleRemoveICPKeyword(type, kw)} className="opacity-50 hover:opacity-100">×</button>
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <select
+                    value={editingICPType || ''}
+                    onChange={(e) => {
+                      setEditingICPType(e.target.value || null);
+                      setNewICPKeyword('');
+                    }}
+                    className={`${settingInput} max-w-[140px]`}
+                  >
+                    <option value="">Choisir un type</option>
+                    {(['b2b', 'agence', 'freelance'] as const).map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                  {editingICPType && (
+                    <>
+                      <input
+                        value={newICPKeyword}
+                        onChange={(e) => setNewICPKeyword(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleAddICPKeyword(editingICPType)}
+                        placeholder="Nouveau mot-clé"
+                        className={`${settingInput} flex-1 max-w-[200px]`}
+                      />
+                      <button onClick={() => handleAddICPKeyword(editingICPType)} className="px-3 py-2 bg-success !text-white !text-xs font-semibold hover:opacity-90">
+                        Ajouter
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Priorité haute (priority keywords) */}
+              <div className="pt-4 border-t border-default">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="!text-base">⚡</span>
+                  <h4 className="!text-[13px] font-semibold !text-primary">Priorité haute</h4>
+                </div>
+                <p className="font-mono !text-[11px] !text-muted mb-3">Ces mots font remonter l&apos;email en tête de liste</p>
+                <div className="flex gap-2 mb-3">
+                  <input
+                    type="text"
+                    value={newKeyword}
+                    onChange={(e) => setNewKeyword(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddKeyword()}
+                    placeholder="ex: urgent, rfp, devis"
+                    className={`${settingInput} flex-1 max-w-[220px]`}
+                  />
+                  <button onClick={handleAddKeyword} className="px-3 py-2 bg-danger !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1">
+                    <IconPlus className="w-3 h-3" />
+                    Ajouter
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {priorityKeywords.map((kw) => (
+                    <span
+                      key={kw}
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium bg-danger/10 border border-danger/20 !text-danger"
+                    >
+                      {kw}
+                      <button onClick={() => handleRemoveKeyword(kw)} className="opacity-50 hover:opacity-100">×</button>
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </section>
         )}
@@ -794,7 +825,7 @@ export default function SmartFollowUpSettingsPage() {
           </section>
         )}
 
-        {/* 7. RÈGLES */}
+        {/* 7. RÈGLES AVANCÉES */}
         {activeSection === 'regles' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center justify-between gap-2.5">
@@ -803,9 +834,9 @@ export default function SmartFollowUpSettingsPage() {
                   <IconShieldCheck className="w-4 h-4 !text-white" />
                 </div>
                 <div>
-                  <div className="!text-sm font-semibold !text-primary">Règles de filtrage personnalisées</div>
+                  <div className="!text-sm font-semibold !text-primary">Règles avancées</div>
                   <div className="font-mono !text-[11px] !text-muted">
-                    {customRules.length} règle{customRules.length > 1 ? 's' : ''} configurée{customRules.length > 1 ? 's' : ''} · {customRules.filter((r) => r.enabled).length} active{customRules.filter((r) => r.enabled).length > 1 ? 's' : ''} sur {customRules.length}
+                    Règles personnalisées pour les cas particuliers. Ex : si expéditeur = concurrent.com → ignorer
                   </div>
                 </div>
               </div>

@@ -19,8 +19,8 @@ import { SettingsLayoutContext } from './settings-context';
 import type { NavSection } from './settings-context';
 
 const NAV_GROUPS: { label: string; items: { id: NavSection; label: string; icon: React.ReactNode; badge?: string; badgeWarn?: boolean }[] }[] = [
-  { label: 'Général', items: [{ id: 'activation', label: 'Activation', icon: <IconCircleDot className="w-3.5 h-3.5" />, badge: 'ON' }, { id: 'icp', label: 'Profil ICP', icon: <IconUsers className="w-3.5 h-3.5" />, badge: 'Actif' }, { id: 'domaines', label: 'Domaines exclus', icon: <IconBan className="w-3.5 h-3.5" /> }] },
-  { label: 'Automatisation', items: [{ id: 'mots-cles', label: 'Mots-clés', icon: <IconBolt className="w-3.5 h-3.5" /> }, { id: 'delais', label: 'Délais de relance', icon: <IconClock className="w-3.5 h-3.5" />, badgeWarn: true }, { id: 'regles', label: 'Règles de filtrage', icon: <IconShieldCheck className="w-3.5 h-3.5" /> }] },
+  { label: 'Général', items: [{ id: 'activation', label: 'Activation', icon: <IconCircleDot className="w-3.5 h-3.5" />, badge: 'ON' }, { id: 'icp', label: 'Mon client idéal', icon: <IconUsers className="w-3.5 h-3.5" />, badge: 'Actif' }, { id: 'domaines', label: 'Emails à ignorer', icon: <IconBan className="w-3.5 h-3.5" /> }] },
+  { label: 'Automatisation', items: [{ id: 'mots-cles', label: 'Mots-clés importants', icon: <IconBolt className="w-3.5 h-3.5" /> }, { id: 'delais', label: 'Délais de relance', icon: <IconClock className="w-3.5 h-3.5" />, badgeWarn: true }, { id: 'regles', label: 'Règles avancées', icon: <IconShieldCheck className="w-3.5 h-3.5" /> }] },
   { label: 'Préférences', items: [{ id: 'notifications', label: 'Notifications', icon: <IconBell className="w-3.5 h-3.5" /> }, { id: 'heures', label: 'Heures de travail', icon: <IconCalendar className="w-3.5 h-3.5" /> }, { id: 'whatsapp', label: 'WhatsApp', icon: <IconBrandWhatsapp className="w-3.5 h-3.5" /> }] },
 ];
 

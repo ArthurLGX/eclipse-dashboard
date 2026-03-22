@@ -358,6 +358,12 @@ export default function LeadDetailModal({
                       {detail?.lead_title && (
                         <p className="text-[13px] text-[#8a8178] mt-0.5">{detail.lead_title}</p>
                       )}
+                      {detail?.follow_up_task?.context?.source === 'contact' && (
+                        <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+                          <IconUser className="w-3 h-3" />
+                          Contact existant
+                        </span>
+                      )}
                       {detail?.linkedin_url && (
                         <a
                           href={detail.linkedin_url}
