@@ -214,6 +214,32 @@ export async function rejectAutomationAction(id: string, reason?: string): Promi
   } as Partial<AutomationAction>);
 }
 
+/** Envoie une notification WhatsApp pour le lead (action) affiché */
+export async function sendWhatsAppNotification(actionId: string): Promise<{ ok?: boolean; error?: string }> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const res = await fetch('/api/smart-follow-up/send-whatsapp-notification', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ actionId }),
+  });
+  const data = await res.json();
+  if (!res.ok) return { error: data.error || 'Erreur envoi' };
+  return data;
+}
+
+/** Reporte la tâche de suivi à J+2 (9h) */
+export async function snoozeFollowUpTaskToJ2(taskDocumentId: string): Promise<FollowUpTask> {
+  const inTwoDays = new Date();
+  inTwoDays.setDate(inTwoDays.getDate() + 2);
+  inTwoDays.setHours(9, 0, 0, 0);
+  return updateFollowUpTask(taskDocumentId, { scheduled_for: inTwoDays.toISOString() } as Partial<FollowUpTask>);
+}
+
 export async function deleteAutomationAction(id: string): Promise<void> {
   await apiRequest(`automation-actions/${id}`, {
     method: 'DELETE',

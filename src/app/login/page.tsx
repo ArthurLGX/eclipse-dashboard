@@ -289,6 +289,10 @@ function LoginContent() {
           <Link href="/privacy" className="no-underline hover:underline">{t('confidentiality')}</Link>
           <span> · </span>
           <Link href="/terms" className="no-underline hover:underline">{t('terms_short')}</Link>
+          <span> · </span>
+          <Link href="/cookies" className="no-underline hover:underline">{isFr ? 'Cookies' : 'Cookies'}</Link>
+          <span> · </span>
+          <Link href="/delete-account" className="no-underline hover:underline">{isFr ? 'Supprimer mon compte' : 'Delete my account'}</Link>
         </div>
       </div>
     </div>

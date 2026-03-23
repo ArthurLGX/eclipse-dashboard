@@ -524,7 +524,8 @@ export default function LandingPage() {
             <li><a href="#">{t('landing_footer_contact')}</a></li>
             <li><Link href="/privacy">{t('landing_footer_privacy')}</Link></li>
             <li><Link href="/terms">{t('landing_footer_terms')}</Link></li>
-            <li><a href="#">{t('landing_footer_legal')}</a></li>
+            <li><Link href="/cookies">{t('landing_footer_cookies')}</Link></li>
+            <li><Link href="/delete-account">{t('landing_footer_delete_account')}</Link></li>
           </ul>
         </div>
       </footer>

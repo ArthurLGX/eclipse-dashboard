@@ -983,9 +983,13 @@ export default function SettingsPage() {
         )}
 
           {/* Footer info */}
-          <div className="pt-4 border-t border-default !text-xs !text-muted flex items-center gap-2">
+          <div className="pt-4 border-t border-default !text-xs !text-muted flex flex-wrap items-center gap-2">
             <span className="!text-info">💡</span>
             {t('settings_saved_locally') || 'Vos préférences sont enregistrées automatiquement.'}
+            <span className="mx-2">·</span>
+            <Link href="/delete-account" className="hover:underline !text-danger">
+              {t('landing_footer_delete_account') || (language === 'fr' ? 'Supprimer mon compte' : 'Delete my account')}
+            </Link>
           </div>
         </div>
       </div>

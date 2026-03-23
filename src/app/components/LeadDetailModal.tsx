@@ -19,7 +19,12 @@ import {
 import { usePopup } from '@/app/context/PopupContext';
 import { useModalFocus, useModalScroll } from '@/hooks/useModalFocus';
 import { getToken } from '@/lib/api';
-import { fetchAutomationActionDetail } from '@/lib/smart-follow-up-api';
+import {
+  fetchAutomationActionDetail,
+  sendWhatsAppNotification,
+  rejectAutomationAction,
+  snoozeFollowUpTaskToJ2,
+} from '@/lib/smart-follow-up-api';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { extractWalegoLead } from '@/utils/extract-walego-lead';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
@@ -106,6 +111,9 @@ export default function LeadDetailModal({
   const [channel, setChannel] = useState<Channel>('linkedin');
   const [regenerating, setRegenerating] = useState(false);
   const [sending, setSending] = useState(false);
+  const [whatsappSending, setWhatsappSending] = useState(false);
+  const [archiving, setArchiving] = useState(false);
+  const [snoozing, setSnoozing] = useState(false);
 
   const emailBody =
     detail?.follow_up_task?.received_email?.content_text ||
@@ -277,6 +285,54 @@ export default function LeadDetailModal({
       showGlobalPopup(e instanceof Error ? e.message : 'Erreur envoi', 'error');
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleWhatsAppNotify = async () => {
+    if (!detail?.documentId) return;
+    setWhatsappSending(true);
+    try {
+      const result = await sendWhatsAppNotification(detail.documentId);
+      if (result.error) throw new Error(result.error);
+      showGlobalPopup(`Notif WhatsApp envoyée pour ${displayName}`, 'success');
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur envoi notif WhatsApp', 'error');
+    } finally {
+      setWhatsappSending(false);
+    }
+  };
+
+  const handleArchive = async () => {
+    if (!detail?.documentId) return;
+    setArchiving(true);
+    try {
+      await rejectAutomationAction(detail.documentId, 'Archivé depuis le dashboard');
+      showGlobalPopup(`${displayName} archivé`, 'success');
+      onSuccess?.();
+      onClose();
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur archivage', 'error');
+    } finally {
+      setArchiving(false);
+    }
+  };
+
+  const handleSnoozeJ2 = async () => {
+    const taskId = detail?.follow_up_task?.documentId;
+    if (!taskId) {
+      showGlobalPopup('Aucune tâche de suivi liée', 'error');
+      return;
+    }
+    setSnoozing(true);
+    try {
+      await snoozeFollowUpTaskToJ2(taskId);
+      showGlobalPopup(`${displayName} reporté à J+2`, 'success');
+      onSuccess?.();
+      onClose();
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur report', 'error');
+    } finally {
+      setSnoozing(false);
     }
   };
 
@@ -521,21 +577,41 @@ export default function LeadDetailModal({
                     </button>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
-                        <div className="w-7 h-7  bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0">
-                          <IconClock className="w-3.5 h-3.5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-[#1a1714]">Relance auto J+2</p>
+                      <button
+                        onClick={handleSnoozeJ2}
+                        disabled={snoozing || !detail?.follow_up_task?.documentId}
+                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {snoozing ? (
+                          <IconLoader2 className="w-7 h-7 animate-spin text-amber-600" />
+                        ) : (
+                          <div className="w-7 h-7 bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0">
+                            <IconClock className="w-3.5 h-3.5" />
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium text-[#1a1714]">
+                            Reporter {displayName} à J+2
+                          </p>
                           <p className="font-mono text-[10px] text-[#8a8178]">Si pas de réponse</p>
                         </div>
                       </button>
-                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
-                        <div className="w-7 h-7  bg-[#25d366]/10 text-[#25d366] flex items-center justify-center flex-shrink-0">
-                          <IconBrandWhatsapp className="w-3.5 h-3.5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-[#1a1714]">Notif WhatsApp</p>
+                      <button
+                        onClick={handleWhatsAppNotify}
+                        disabled={whatsappSending || !detail?.documentId}
+                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {whatsappSending ? (
+                          <IconLoader2 className="w-7 h-7 animate-spin text-[#25d366]" />
+                        ) : (
+                          <div className="w-7 h-7 bg-[#25d366]/10 text-[#25d366] flex items-center justify-center flex-shrink-0">
+                            <IconBrandWhatsapp className="w-3.5 h-3.5" />
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-xs font-medium text-[#1a1714]">
+                            Notifier {displayName} sur WhatsApp
+                          </p>
                           <p className="font-mono text-[10px] text-[#8a8178]">Alerter sur mobile</p>
                         </div>
                       </button>
@@ -543,22 +619,34 @@ export default function LeadDetailModal({
                         href={detail?.linkedin_url || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left no-underline"
+                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left no-underline"
                       >
-                        <div className="w-7 h-7  bg-[#0077b5]/10 text-[#0077b5] flex items-center justify-center flex-shrink-0">
+                        <div className="w-7 h-7 bg-[#0077b5]/10 text-[#0077b5] flex items-center justify-center flex-shrink-0">
                           <IconBrandLinkedin className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <p className="text-xs font-medium text-[#1a1714]">Voir profil LinkedIn</p>
+                          <p className="text-xs font-medium text-[#1a1714]">
+                            Voir profil LinkedIn de {displayName}
+                          </p>
                           <p className="font-mono text-[10px] text-[#8a8178]">Contexte avant call</p>
                         </div>
                       </a>
-                      <button className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8]  cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left">
-                        <div className="w-7 h-7  bg-gray-500/10 text-gray-500 flex items-center justify-center flex-shrink-0">
-                          <IconArchive className="w-3.5 h-3.5" />
-                        </div>
+                      <button
+                        onClick={handleArchive}
+                        disabled={archiving || !detail?.documentId}
+                        className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] cursor-pointer transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {archiving ? (
+                          <IconLoader2 className="w-7 h-7 animate-spin text-gray-500" />
+                        ) : (
+                          <div className="w-7 h-7 bg-gray-500/10 text-gray-500 flex items-center justify-center flex-shrink-0">
+                            <IconArchive className="w-3.5 h-3.5" />
+                          </div>
+                        )}
                         <div>
-                          <p className="text-xs font-medium text-[#1a1714]">Archiver</p>
+                          <p className="text-xs font-medium text-[#1a1714]">
+                            Archiver {displayName}
+                          </p>
                           <p className="font-mono text-[10px] text-[#8a8178]">Pas pertinent</p>
                         </div>
                       </button>
