@@ -161,7 +161,7 @@ export default function NewslettersPage() {
 
             {/* Stats inline */}
             <div className="flex gap-3 flex-wrap">
-              <div className="bg-card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5 rounded-lg">
                 <div className="!text-xs !text-muted mb-1">{t('total_newsletters') || 'Total'}</div>
                 <div className="!text-[22px] font-bold tracking-tight !text-primary">{loading ? '...' : newsletters.length}</div>
               </div>
@@ -169,11 +169,11 @@ export default function NewslettersPage() {
                 <div className="!text-xs !text-muted mb-1">{t('sent') || 'Envoyées'}</div>
                 <div className="!text-[22px] font-bold tracking-tight text-emerald-500">{loading ? '...' : sentCount}</div>
               </div>
-              <div className="bg-card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5 rounded-lg">
                 <div className="!text-xs !text-muted mb-1">{t('draft') || 'Brouillons'}</div>
                 <div className="!text-[22px] font-bold tracking-tight !text-secondary">{loading ? '...' : draftCount}</div>
               </div>
-              <div className="bg-card flex-1 min-w-[140px] p-3.5">
+              <div className="bg-card flex-1 min-w-[140px] p-3.5 rounded-lg">
                 <div className="!text-xs !text-muted mb-1">{t('scheduled') || 'Planifiées'}</div>
                 <div className="!text-[22px] font-bold tracking-tight text-blue-500">{loading ? '...' : scheduledCount}</div>
               </div>

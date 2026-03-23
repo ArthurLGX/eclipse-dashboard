@@ -965,7 +965,7 @@ export default function SmartFollowUpPage() {
           {hasAiInstruction && (
             <>
             <p className="!text-xs !text-primary mb-2">Instruction IA :</p>  
-            <div className="p-3 bg-accent-light border border-accent  flex items-center justify-between mb-4 w-fit">
+            <div className="p-3 bg-accent-light border border-accent  flex items-center justify-between mb-4 w-fit rounded-lg ">
               <div className="flex items-center gap-2 !text-sm !text-primary min-w-0 flex-1">
                 <IconSparkles className="w-4 h-4 shrink-0 text-accent-text" />
                 <span className="truncate !text-xs text-primary">{aiInstruction}</span>
@@ -988,7 +988,7 @@ export default function SmartFollowUpPage() {
               { label: 'Cette semaine', value: statsLoading ? '...' : (stats?.sentThisWeek ?? 0), color: '!text-primary' },
               { label: 'Taux de succès', value: statsLoading ? '...' : `${stats?.successRate?.toFixed(0) ?? 0}%`, color: '!text-violet-500' },
             ].map(k => (
-              <div key={k.label} className="bg-card flex-1 min-w-[140px] p-3.5">
+              <div key={k.label} className="bg-card flex-1 min-w-[140px] p-3.5 rounded-lg">
                 <div className="!text-xs !text-muted mb-1">{k.label}</div>
                 <div className={`!text-[22px] font-bold tracking-tight ${k.color}`}>{k.value}</div>
               </div>
@@ -997,7 +997,7 @@ export default function SmartFollowUpPage() {
 
           {/* Bannière filtre ICP */}
           {activeTab === 'actions' && nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
-            <div className="p-3 bg-blue-50 border border-blue-200  flex items-center justify-between mb-4">
+            <div className="p-3 bg-blue-50 border border-blue-200  flex items-center justify-between mb-4 rounded-lg">
               <div className="flex items-center gap-2 !text-sm !text-blue-600">
                 <IconFilter className="w-4 h-4" />
                 <span>{nonQualifiedActions.length} emails filtrés (score ICP &lt; {Math.round(minScoreThreshold * 100)}%)</span>
@@ -1008,7 +1008,7 @@ export default function SmartFollowUpPage() {
             </div>
           )}
           {activeTab === 'actions' && showLowScoreEmails && nonQualifiedActions && nonQualifiedActions.length > 0 && (
-            <div className="p-3 bg-amber-50 border border-amber-200  flex items-center justify-between mb-4">
+            <div className="p-3 bg-amber-50 border border-amber-200  flex items-center justify-between mb-4 rounded-lg">
               <div className="flex items-center gap-2 !text-sm !text-amber-700">
                 <IconAlertCircle className="w-4 h-4" />
                 <span>{nonQualifiedActions.length} emails non qualifiés affichés</span>
@@ -1022,7 +1022,7 @@ export default function SmartFollowUpPage() {
           {activeTab === 'actions' ? (
             /* LEADS */
             (actions?.length ?? 0) === 0 ? (
-              <div className="bg-card p-16 text-center">
+              <div className="bg-card p-16 text-center rounded-lg">
                 <div className="w-14 h-14 bg-muted  flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
                 <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead en attente</div>
                 <div className="!text-sm !text-muted max-w-xs mx-auto">

@@ -221,7 +221,7 @@ export default function DashboardPage() {
           <div className="flex gap-3 flex-wrap">
             {/* CA ce mois */}
             <div 
-              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow rounded-lg"
               onClick={() => router.push('/dashboard/revenue')}
             >
               <div className="w-1.5 h-1.5 rounded-full bg-violet-500 mb-2.5" />
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
             {/* Clients */}
             <div 
-              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow rounded-lg"
               onClick={() => router.push('/dashboard/clients')}
             >
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mb-2.5" />
@@ -251,7 +251,7 @@ export default function DashboardPage() {
 
             {/* Projets actifs */}
             <div 
-              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow rounded-lg"
               onClick={() => router.push('/dashboard/projects')}
             >
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mb-2.5" />
@@ -266,7 +266,7 @@ export default function DashboardPage() {
 
             {/* Prospects */}
             <div 
-              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow rounded-lg"
               onClick={() => router.push('/dashboard/prospects')}
             >
               <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mb-2.5" />
@@ -281,7 +281,7 @@ export default function DashboardPage() {
 
             {/* Factures en retard */}
             <div 
-              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow"
+              className="bg-card flex-1 min-w-[180px] cursor-pointer p-4 hover:shadow-md transition-shadow rounded-lg"
               onClick={() => router.push('/dashboard/factures')}
             >
               <div className="w-1.5 h-1.5 rounded-full bg-red-500 mb-2.5" />
@@ -330,7 +330,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Limites du plan */}
-            <div className="bg-card p-5">
+            <div className="bg-card p-5 rounded-lg  ">
               <div className="!text-sm font-semibold !text-primary mb-4">{t('plan_limits') || 'Limites du plan'}</div>
               <div className="flex flex-col gap-3.5">
                 {[
@@ -360,7 +360,7 @@ export default function DashboardPage() {
           {/* Activité récente + Session IDE */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Activité récente */}
-            <div className="bg-card">
+            <div className="bg-card rounded-lg  ">
               <div className="p-4 border-b border-default">
                 <div className="!text-sm font-semibold !text-primary">{t('recent_activity') || 'Activité récente'}</div>
               </div>
