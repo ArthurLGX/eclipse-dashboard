@@ -112,9 +112,11 @@ Dans le projet Next.js (eclipse-dashboard), ajouter au `.env` :
 
 ```
 WHATSAPP_WEBHOOK_VERIFY_TOKEN=<token_secret_aleatoire>
+# Optionnel : numéro du user pour détecter les commandes 1/2/3 (sinon récupéré depuis automation-settings)
+WHATSAPP_RECIPIENT_NUMBER=33612345678
 ```
 
-Ce token est utilisé lors de la validation du webhook Meta (GET).
+Le token est utilisé lors de la validation du webhook Meta (GET).
 
 ---
 
@@ -125,3 +127,86 @@ Dans Meta for Developers → Configuration du webhook WhatsApp :
 - **URL :** `https://<votre-domaine>/api/webhooks/whatsapp`
 - **Token de vérification :** valeur de `WHATSAPP_WEBHOOK_VERIFY_TOKEN`
 - **Champs à souscrire :** `messages`
+
+---
+
+## 4. WhatsApp Entrant — Messages Prospects → Leads
+
+Des prospects écrivent directement sur le numéro WhatsApp Business. Ces messages doivent créer des `received-email` avec `source: 'whatsapp'`, scorer via le Mail Scanner, et afficher dans le tableau Smart Follow-Up comme les autres leads.
+
+### Endpoint `POST /api/whatsapp/incoming-prospect`
+
+Le webhook Next.js appelle cet endpoint pour les messages qui ne sont pas des commandes 1/2/3.
+
+**Body :**
+```json
+{
+  "fromNumber": "33612345678",
+  "messageText": "Bonjour, je suis intéressé par vos services",
+  "profileName": "Jean Dupont",
+  "rawMessage": {
+    "id": "wamid.xxx",
+    "type": "text",
+    "timestamp": "1737622800"
+  }
+}
+```
+
+**Logique attendue :**
+
+1. **Déduplication** : Si le même numéro (`from_email: ${fromNumber}@whatsapp`) a déjà écrit dans les 30 derniers jours → `appendToExistingConversation()` au lieu de créer un nouveau lead.
+
+2. **Création received-email** si nouveau :
+   - `from_email` : `${fromNumber}@whatsapp`
+   - `from_name` : `profileName` ou `WhatsApp XXXX` (4 derniers chiffres)
+   - `subject` : `WhatsApp · ${displayName}`
+   - `content_text` : format structuré pour le Mail Scanner (voir ci-dessous)
+   - `source` : `'whatsapp'`
+   - `metadata` : `{ whatsapp_number, whatsapp_name, message_id, message_type }`
+
+3. **Format content_text pour Mail Scanner :**
+```
+NEW LEAD IDENTIFIED via WhatsApp
+
+Name: {displayName}
+Phone: {fromNumber}
+Source: WhatsApp Direct Message
+
+CONVERSATION
+
+{displayName}
+{messageText}
+
+Lead Status: lead
+Reasoning: Direct WhatsApp message from prospect.
+```
+
+4. **Append à conversation existante** : concaténer le nouveau message dans `content_text` avec un séparateur `[Message suivant — {date}]`, et remettre `processed: false` pour re-déclencher l'analyse.
+
+### Bypass ICP pour source WhatsApp
+
+Dans `icp-filter.ts` (ou équivalent) :
+```typescript
+function shouldBypassICP(email: ReceivedEmail): boolean {
+  return (
+    isWalegoNotification(email) ||
+    isFolkNotification(email)   ||
+    email.source === 'whatsapp'
+  );
+}
+```
+
+Dans `inbox-sync.ts` : plancher `baseConfidence` à 0.70 pour les emails WhatsApp.
+
+### Schéma received-email
+
+Vérifier que le champ `source` accepte `'whatsapp'` :
+```json
+{
+  "source": {
+    "type": "enumeration",
+    "enum": ["walego", "folk", "direct", "inbound", "whatsapp"],
+    "default": "direct"
+  }
+}
+```

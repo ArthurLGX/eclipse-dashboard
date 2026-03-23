@@ -110,6 +110,7 @@ export default function SmartFollowUpPage() {
     processedEmails: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }>;
   }>({ isOpen: false, loading: false, processedEmails: [] });
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [savingFilter, setSavingFilter] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !hasSeenSFUOnboarding()) {
@@ -142,7 +143,28 @@ export default function SmartFollowUpPage() {
     const fromPriorityDomain = isLeadFromPriorityDomain(a);
     return !meetsScore && !fromPriorityDomain;
   }) ?? [];
-  const actions = showLowScoreEmails ? allActions : qualifiedActions;
+  // Filtrage par source (email / whatsapp / both)
+  const sourceFilter = (settings?.source_filter as 'both' | 'email' | 'whatsapp') || 'both';
+  const notificationChannel = (settings?.notification_preferences as { channel?: 'both' | 'email' | 'whatsapp' })?.channel || 'both';
+
+  const isActionWhatsApp = (a: AutomationAction) => {
+    const ctx = a.follow_up_task?.context;
+    const fromEmail = a.follow_up_task?.received_email?.from_email ?? '';
+    const subject = a.proposed_content?.subject ?? '';
+    return ctx?.source === 'whatsapp' || fromEmail?.endsWith('@whatsapp') || subject?.startsWith('WhatsApp ·');
+  };
+  const filterBySource = (list: AutomationAction[]) => {
+    if (sourceFilter === 'both') return list;
+    return list.filter((a) => {
+      const isWa = isActionWhatsApp(a);
+      if (sourceFilter === 'whatsapp') return isWa;
+      if (sourceFilter === 'email') return !isWa;
+      return true;
+    });
+  };
+
+  const baseActions = showLowScoreEmails ? allActions : qualifiedActions;
+  const actions = useMemo(() => filterBySource(baseActions ?? []), [baseActions, sourceFilter]);
 
   const handleToggleSystem = async (newEnabled?: boolean) => {
     if (!settings?.documentId) {
@@ -162,6 +184,35 @@ export default function SmartFollowUpPage() {
       showGlobalPopup('Erreur lors du changement d\'état', 'error');
     } finally {
       setTogglingPause(false);
+    }
+  };
+
+  const handleSourceFilterChange = async (value: 'both' | 'email' | 'whatsapp') => {
+    if (!settings?.documentId) return;
+    setSavingFilter(true);
+    try {
+      await updateAutomationSettings(settings.documentId, { source_filter: value });
+      mutateSettings();
+    } catch {
+      showGlobalPopup('Erreur mise à jour filtre', 'error');
+    } finally {
+      setSavingFilter(false);
+    }
+  };
+
+  const handleNotificationChannelChange = async (value: 'both' | 'email' | 'whatsapp') => {
+    if (!settings?.documentId) return;
+    setSavingFilter(true);
+    try {
+      const prefs = (settings.notification_preferences as Record<string, unknown>) || {};
+      await updateAutomationSettings(settings.documentId, {
+        notification_preferences: { ...prefs, channel: value },
+      });
+      mutateSettings();
+    } catch {
+      showGlobalPopup('Erreur mise à jour notifications', 'error');
+    } finally {
+      setSavingFilter(false);
     }
   };
 
@@ -289,15 +340,36 @@ export default function SmartFollowUpPage() {
       });
   };
 
-  const getContactType = (action: AutomationAction) => {
+const getContactType = (action: AutomationAction) => {
     const subject = action.proposed_content.subject.toLowerCase();
     const body = action.proposed_content.body.toLowerCase();
     const text = `${subject} ${body}`;
-    
+
     if (text.includes('freelance') || text.includes('indépendant')) return { label: 'Freelance', icon: IconUser, color: 'text-blue-500' };
     if (text.includes('agence') || text.includes('agency')) return { label: 'Agence', icon: IconBriefcase, color: 'text-purple-500' };
     if (text.includes('b2b') || text.includes('entreprise')) return { label: 'B2B', icon: IconBuilding, color: 'text-green-500' };
     return { label: 'B2C', icon: IconUser, color: 'text-orange-500' };
+  };
+
+  const getSourceBadge = (action: AutomationAction) => {
+    const ctx = action.follow_up_task?.context;
+    const fromEmail = action.follow_up_task?.received_email?.from_email ?? '';
+    const subject = action.proposed_content?.subject ?? '';
+
+    if (ctx?.source === 'whatsapp' || fromEmail?.endsWith('@whatsapp') || subject?.startsWith('WhatsApp ·')) {
+      return { label: 'WhatsApp', color: 'bg-[#25d366]/15 text-[#25d366]' };
+    }
+    if (ctx?.source === 'contact') return { label: 'Contact', color: 'bg-emerald-100 text-emerald-700' };
+    if (fromEmail?.toLowerCase().includes('walego') || subject?.toLowerCase().includes('walego')) {
+      return { label: 'Walego', color: 'bg-blue-100 text-blue-700' };
+    }
+    if (fromEmail?.toLowerCase().includes('folk') || subject?.toLowerCase().includes('folk')) {
+      return { label: 'Folk', color: 'bg-purple-100 text-purple-700' };
+    }
+    if (ctx?.source === 'inbound' || subject?.toLowerCase().includes('inbound')) {
+      return { label: 'Inbound', color: 'bg-orange-100 text-orange-700' };
+    }
+    return { label: 'Email', color: 'bg-gray-100 text-gray-700' };
   };
 
   const isSystemEnabled = settings?.enabled ?? true;
@@ -452,6 +524,18 @@ export default function SmartFollowUpPage() {
         return (
           <span className={`px-2 py-1 text-xs font-medium rounded whitespace-nowrap ${contactType.color} bg-current/10`}>
             {contactType.label}
+          </span>
+        );
+      },
+    },
+    {
+      key: 'source',
+      label: 'Source',
+      render: (_, action) => {
+        const badge = getSourceBadge(action);
+        return (
+          <span className={`px-2 py-1 text-xs font-medium rounded whitespace-nowrap ${badge.color}`}>
+            {badge.label}
           </span>
         );
       },
@@ -1040,7 +1124,40 @@ export default function SmartFollowUpPage() {
 
           {activeTab === 'actions' ? (
             /* LEADS */
-            (actions?.length ?? 0) === 0 ? (
+            <>
+            {/* Filtres Source + Notifications */}
+            <div className="flex flex-wrap items-center gap-4 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="!text-sm !text-muted">Source :</span>
+                <select
+                  value={sourceFilter}
+                  onChange={(e) => handleSourceFilterChange(e.target.value as 'both' | 'email' | 'whatsapp')}
+                  disabled={savingFilter}
+                  className="!text-sm py-1.5 pl-2 pr-8 rounded-lg border border-default bg-card !text-primary"
+                >
+                  <option value="both">Les deux</option>
+                  <option value="email">Email</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="!text-sm !text-muted">Notifications :</span>
+                <select
+                  value={notificationChannel}
+                  onChange={(e) => handleNotificationChannelChange(e.target.value as 'both' | 'email' | 'whatsapp')}
+                  disabled={savingFilter}
+                  className="!text-sm py-1.5 pl-2 pr-8 rounded-lg border border-default bg-card !text-primary"
+                >
+                  <option value="both">Les deux</option>
+                  <option value="email">Email</option>
+                  <option value="whatsapp">WhatsApp</option>
+                </select>
+              </div>
+              <span className="!text-xs !text-muted ml-auto">
+                {actions?.length ?? 0} lead{(actions?.length ?? 0) > 1 ? 's' : ''} affiché{(actions?.length ?? 0) > 1 ? 's' : ''}
+              </span>
+            </div>
+            {(actions?.length ?? 0) === 0 ? (
               <div className="bg-card p-16 text-center rounded-lg">
                 <div className="w-14 h-14 bg-muted  flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
                 <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead en attente</div>
@@ -1058,6 +1175,8 @@ export default function SmartFollowUpPage() {
                   loading={statsLoading}
                 />
               </div>
+            )
+            </>
             )
           ) : activeTab === 'sent' ? (
             /* RELANCES ENVOYÉES */

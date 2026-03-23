@@ -6,6 +6,10 @@
  *
  * Variables .env requises:
  * - WHATSAPP_WEBHOOK_VERIFY_TOKEN: token secret pour la validation Meta
+ *
+ * Routage:
+ * - Message 1/2/3 depuis le numéro configuré (recipient) → commande bidirectionnelle (process-reply)
+ * - Autres messages → prospect entrant → incoming-prospect (création lead)
  */
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -24,6 +28,28 @@ export async function GET(request: NextRequest) {
   return new NextResponse('Forbidden', { status: 403 });
 }
 
+const WHATSAPP_RECIPIENT_NUMBER = process.env.WHATSAPP_RECIPIENT_NUMBER;
+
+/** Récupère le numéro recipient (user) pour détecter les commandes 1/2/3 */
+async function getRecipientNumber(): Promise<string | null> {
+  if (WHATSAPP_RECIPIENT_NUMBER) {
+    return WHATSAPP_RECIPIENT_NUMBER.replace(/\D/g, '');
+  }
+  try {
+    const res = await fetch(
+      `${STRAPI_URL}/api/automation-settings?populate=whatsapp_config&filters[whatsapp_config][enabled][$eq]=true`,
+      { next: { revalidate: 0 } }
+    );
+    const data = await res.json();
+    const settings = Array.isArray(data?.data) ? data.data[0] : data?.data;
+    const recipient = settings?.whatsapp_config?.meta?.recipient_number || settings?.whatsapp_config?.recipient_number;
+    if (recipient) return recipient.replace(/\D/g, '');
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -32,6 +58,7 @@ export async function POST(request: NextRequest) {
     const changes = entry?.changes?.[0];
     const value = changes?.value;
     const messages = value?.messages;
+    const contacts = value?.contacts;
 
     if (!messages || messages.length === 0) {
       return NextResponse.json({ status: 'ok' });
@@ -39,25 +66,55 @@ export async function POST(request: NextRequest) {
 
     const message = messages[0];
     const fromNumber = message.from;
-    const messageText = message.text?.body?.trim();
+    const messageText = (message.text?.body ?? '').trim();
+    // Pour images/vocaux/etc. : créer le lead avec [Media reçu]
+    const displayText = messageText || '[Media reçu]';
+    const profileName = contacts?.[0]?.profile?.name ?? null;
 
-    if (!messageText) {
-      return NextResponse.json({ status: 'ok' });
-    }
+    // ── ROUTAGE : commande 1/2/3 vs prospect entrant ──
+    const myNumber = await getRecipientNumber();
+    const isCommand =
+      ['1', '2', '3'].includes(messageText) &&
+      myNumber &&
+      fromNumber === myNumber;
 
-    // Proxy vers Strapi pour traiter la réponse (1/2/3)
-    try {
-      const res = await fetch(`${STRAPI_URL}/api/whatsapp/process-reply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fromNumber, reply: messageText }),
-      });
-
-      if (!res.ok) {
-        console.error('[WhatsApp Webhook] Strapi process-reply error:', res.status, await res.text());
+    if (isCommand) {
+      // → Commande dashboard (bidirectionnel existant)
+      try {
+        const res = await fetch(`${STRAPI_URL}/api/whatsapp/process-reply`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fromNumber, reply: messageText }),
+        });
+        if (!res.ok) {
+          console.error('[WhatsApp Webhook] process-reply error:', res.status, await res.text());
+        }
+      } catch (err) {
+        console.error('[WhatsApp Webhook] Strapi unavailable:', err);
       }
-    } catch (err) {
-      console.error('[WhatsApp Webhook] Strapi unavailable:', err);
+    } else {
+      // → Message prospect entrant → créer un lead
+      try {
+        const res = await fetch(`${STRAPI_URL}/api/whatsapp/incoming-prospect`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fromNumber,
+            messageText: displayText,
+            profileName,
+            rawMessage: {
+              id: message.id,
+              type: message.type || 'text',
+              timestamp: message.timestamp,
+            },
+          }),
+        });
+        if (!res.ok) {
+          console.error('[WhatsApp Webhook] incoming-prospect error:', res.status, await res.text());
+        }
+      } catch (err) {
+        console.error('[WhatsApp Webhook] incoming-prospect Strapi unavailable:', err);
+      }
     }
 
     return NextResponse.json({ status: 'ok' });

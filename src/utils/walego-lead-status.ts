@@ -9,6 +9,9 @@
  */
 export function extractWalegoLeadName(subject: string): string | null {
   if (!subject?.trim()) return null;
+  // "WhatsApp · Jean Dupont" → "Jean Dupont"
+  const whatsappMatch = subject.match(/^WhatsApp\s*[·•]\s*(.+)$/);
+  if (whatsappMatch) return whatsappMatch[1].trim();
   // "Prise de nouvelles - New Lead with Walego: Gaëtan Balawe from" → "Gaëtan Balawe"
   const match = subject.match(/(?:New Lead with )?Walego\s*:\s*([^\n]+?)\s+from/i);
   if (match) return match[1].trim();

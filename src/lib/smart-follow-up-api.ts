@@ -150,6 +150,8 @@ export async function fetchAutomationActions(status?: string | string[]): Promis
     'populate[follow_up_task][fields][0]': 'task_type',
     'populate[follow_up_task][fields][1]': 'documentId',
     'populate[follow_up_task][fields][2]': 'context',
+    'populate[follow_up_task][populate][received_email][fields][0]': 'from_email',
+    'populate[follow_up_task][populate][received_email][fields][1]': 'subject',
     'populate[approved_by][fields][0]': 'username',
     'sort[0]': 'createdAt:desc',
   });

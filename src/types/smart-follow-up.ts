@@ -102,7 +102,11 @@ export interface AutomationSettings {
     email: boolean;
     dashboard: boolean;
     frequency: string;
+    /** Canal de notification : email, whatsapp, ou les deux */
+    channel?: 'both' | 'email' | 'whatsapp';
   };
+  /** Filtre source des leads affichés */
+  source_filter?: 'both' | 'email' | 'whatsapp';
   custom_rules: FilterRule[];
   icp_settings: ICPSettings;
   /** Instruction personnalisée pour l'IA (ex: contexte Walego, priorités) */
