@@ -847,6 +847,7 @@ button {
   color: var(--text-primary);
    padding: 0.5rem 0.75rem;
   transition: all 0.2s ease;
+  border-radius: var(--radius-default);
 }
 
 .input::placeholder {
@@ -865,15 +866,18 @@ button {
   border: 1px solid rgba(0, 0, 0, 0.15);
   color: #000000;
   backdrop-filter: blur(10px);
+  border-radius: var(--radius-default);
 }
 
 :root.light .input::placeholder {
   color: #999999;
+  border-radius: var(--radius-default);
 }
 
 :root.light .input:focus {
   border-color: rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-default);
 }
 
 /* Navigation items */
@@ -888,6 +892,7 @@ button {
   font-size: 14px;
   transition: all 0.2s ease;
   border: 1px solid transparent;
+  border-radius: var(--radius-default);
 }
 
 .nav-item:hover {
@@ -903,6 +908,7 @@ button {
   background-color: rgba(255, 56, 11, 0.1);
   color: white;
   border: 1px solid var(--color-accent-border);
+  border-radius: var(--radius-default);
 }
 
 .nav-item.active svg,
@@ -928,6 +934,7 @@ button {
   background-color: var(--nav-active-bg);
   color: white !important;
   border: 1px solid var(--nav-active-border);
+  border-radius: var(--radius-default);
 }
 
 :root.light .nav-item.active svg,
@@ -943,6 +950,7 @@ button {
 .sidebar {
   background: var(--bg-page) !important;
   border-right: 1px solid var(--border-default);
+  border-radius: var(--radius-default);
 }
 
 /* Tables */
@@ -951,6 +959,7 @@ button {
   background-color: var(--bg-card);
   border: 1px solid var(--border-default);
    overflow: hidden;
+   border-radius: var(--radius-default);
 }
 
 .table th {
@@ -974,10 +983,12 @@ button {
 
 .table tbody tr:nth-child(even) {
   background-color: var(--bg-input);
-}
+  border-radius: var(--radius-default);
+  }
 
 .table tbody tr:hover {
   background-color: var(--bg-hover);
+  border-radius: var(--radius-default);
 }
 
 /* Badges */
@@ -987,17 +998,20 @@ button {
   padding: 0.25rem 0.5rem;
    font-size: 0.75rem;
   font-weight: 500;
+  border-radius: var(--radius-default);
 }
 
 .badge-primary {
   background-color: var(--color-primary-bg);
   color: var(--color-primary-text);
+  border-radius: var(--radius-default);
 }
 
 :root.light .badge-success {
   background-color: #065f46; /* emerald-800 */
   color: white !important;
   border: 1px solid #065f46;
+  border-radius: var(--radius-default);
 }
 
 :root.dark .badge-success,
@@ -1005,27 +1019,32 @@ button {
   background-color: #065f46; /* emerald-800 */
   color: white !important;
   border: 1px solid #065f46;
+  border-radius: var(--radius-default);
 }
 
 .badge-info {
   background-color: var(--color-info-bg);
   color: var(--color-info-text);
+  border-radius: var(--radius-default);
 }
 
 .badge-warning {
   background-color: var(--color-warning-bg);
   color: var(--color-warning-text);
+  border-radius: var(--radius-default);
 }
 
 .badge-danger {
   background-color: var(--color-danger-bg);
   color: var(--color-danger-text);
+  border-radius: var(--radius-default);
 }
 
 .badge-highlight {
   background-color: var(--color-highlight);
   color: var(--color-highlight-text);
   border: 1px solid var(--color-highlight);
+  border-radius: var(--radius-default);
 }
 
 /* Badges statut projet : planning, in_progress, delivered, warranty, maintenance, completed, archived
@@ -1034,54 +1053,63 @@ button {
   background-color: #dbeafe; /* blue-100 */
   color: #2563eb; /* blue-600 */
   border: 1px solid #2563eb;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-status-planning,
 :root:not(.light) .badge-status-planning {
   background-color: #1e3a5f; /* blue-900/50 */
   color: #60a5fa;
   border: 1px solid #3b82f6;
+  border-radius: var(--radius-default);
 }
 
 .badge-status-in_progress { /* amber */
   background-color: #fffbeb; /* amber-50 */
   color: #d97706; /* amber-600 */
   border: 1px solid #d97706;
-}
+  border-radius: var(--radius-default);
+    }
 :root.dark .badge-status-in_progress,
 :root:not(.light) .badge-status-in_progress {
   background-color: #451a03; /* amber-950 */
   color: #fbbf24;
   border: 1px solid #f59e0b;
+  border-radius: var(--radius-default);
 }
 
 .badge-status-delivered { /* vert/emerald - livré */
   background-color: #d1fae5; /* emerald-100 */
   color: #059669; /* emerald-600 */
   border: 1px solid #059669;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-status-delivered,
 :root:not(.light) .badge-status-delivered {
   background-color: #022c22; /* emerald-950 */
   color: #34d399;
   border: 1px solid #10b981;
+  border-radius: var(--radius-default);
 }
 
 .badge-status-warranty { /* violet - garantie */
   background-color: #ede9fe; /* violet-100 */
   color: #7c3aed; /* violet-600 */
   border: 1px solid #7c3aed;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-status-warranty,
 :root:not(.light) .badge-status-warranty {
   background-color: #2e1065; /* violet-950 */
   color: #a78bfa;
   border: 1px solid #8b5cf6;
+  border-radius: var(--radius-default);
 }
 
 .badge-status-maintenance, .badge-maintenance { /* teal */
   background-color: #ccfbf1; /* teal-100 */
   color: #0f766e; /* teal-700 */
   border: 1px solid #0d9488;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-status-maintenance,
 :root.dark .badge-maintenance,
@@ -1090,30 +1118,35 @@ button {
   background-color: #042f2e; /* teal-950 */
   color: #2dd4bf;
   border: 1px solid #14b8a6;
+  border-radius: var(--radius-default);
 }
 
 .badge-status-completed { /* emerald - terminé */
   background-color: #d1fae5; /* emerald-100 */
   color: #047857; /* emerald-700 */
   border: 1px solid #047857;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-status-completed,
 :root:not(.light) .badge-status-completed {
   background-color: #022c22; /* emerald-950 */
   color: #34d399;
   border: 1px solid #10b981;
+  border-radius: var(--radius-default);
 }
 
 .badge-status-archived { /* zinc/gris */
   background-color: #f4f4f5; /* zinc-100 */
   color: #52525b; /* zinc-600 */
   border: 1px solid #71717a; /* zinc-500 */
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-status-archived,
 :root:not(.light) .badge-status-archived {
   background-color: #27272a; /* zinc-800 */
   color: #a1a1aa;
   border: 1px solid #52525b;
+  border-radius: var(--radius-default);
 }
 
 /* on_hold - rétrocompatibilité */
@@ -1121,12 +1154,14 @@ button {
   background-color: #fffbeb;
   color: #b45309;
   border: 1px solid #f59e0b;
-}
+  border-radius: var(--radius-default);
+    }
 :root.dark .badge-status-on_hold,
 :root:not(.light) .badge-status-on_hold {
   background-color: #451a03;
   color: #fbbf24;
   border: 1px solid #f59e0b;
+  border-radius: var(--radius-default);
 }
 
 /* Badges statut tâche : todo, in_progress, completed, cancelled, archived
@@ -1135,60 +1170,70 @@ button {
   background-color: #dbeafe;
   color: #2563eb;
   border: 1px solid #2563eb;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-task-todo,
 :root:not(.light) .badge-task-todo {
   background-color: #1e3a5f;
   color: #60a5fa;
   border: 1px solid #3b82f6;
+  border-radius: var(--radius-default);
 }
 
 .badge-task-in_progress {
   background-color: #fffbeb;
   color: #d97706;
   border: 1px solid #d97706;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-task-in_progress,
 :root:not(.light) .badge-task-in_progress {
   background-color: #451a03;
   color: #fbbf24;
   border: 1px solid #f59e0b;
+  border-radius: var(--radius-default);
 }
 
 .badge-task-completed {
   background-color: #d1fae5;
   color: #047857;
   border: 1px solid #047857;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-task-completed,
 :root:not(.light) .badge-task-completed {
   background-color: #022c22;
   color: #34d399;
   border: 1px solid #10b981;
+  border-radius: var(--radius-default);
 }
 
 .badge-task-cancelled {
   background-color: #fee2e2;
   color: #dc2626;
   border: 1px solid #dc2626;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-task-cancelled,
 :root:not(.light) .badge-task-cancelled {
   background-color: #450a0a;
   color: #f87171;
   border: 1px solid #ef4444;
+  border-radius: var(--radius-default);
 }
 
 .badge-task-archived {
   background-color: #f4f4f5;
   color: #52525b;
   border: 1px solid #71717a;
+  border-radius: var(--radius-default);
 }
 :root.dark .badge-task-archived,
 :root:not(.light) .badge-task-archived {
   background-color: #27272a;
   color: #a1a1aa;
   border: 1px solid #52525b;
+  border-radius: var(--radius-default);
 }
 
 /* Pastilles facture/devis - draft (info), paid (success), sent (bleu) */
@@ -1196,83 +1241,99 @@ button {
   background-color: var(--color-info-bg);
   color: var(--color-info-text);
   border: 1px solid var(--color-info-border);
-}
+  border-radius: var(--radius-default);
+    }
 
 .pastille-success {
   background-color: #dcfce7;
   color: #166534;
   border: 1px solid #bbf7d0;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.light .pastille-success {
   background-color: #dcfce7;
   color: #166534;
   border: 1px solid #bbf7d0;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.dark .pastille-success,
 :root:not(.light) .pastille-success {
   background-color: #065f46;
   color: white !important;
   border: 1px solid #065f46;
-}
+  border-radius: var(--radius-default);
+    }
 
 .pastille-sent {
   background-color: #dbeafe;
   color: #1e40af;
   border: 1px solid #93c5fd;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.light .pastille-sent {
   background-color: #dbeafe;
   color: #1e40af;
   border: 1px solid #93c5fd;
-}
+  border-radius: var(--radius-default);
+    } 
 
 :root.dark .pastille-sent,
 :root:not(.light) .pastille-sent {
   background-color: rgba(59, 130, 246, 0.2);
   color: #93c5fd;
   border: 1px solid rgba(59, 130, 246, 0.4);
-}
+  border-radius: var(--radius-default);
+    }
 
 .pastille-draft {
   background-color: #fef5e5;
   color: #9b6b18;
   border: 1px solid #fde68a;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.light .pastille-draft {
   background-color: #fef5e5;
   color: #9b6b18;
   border: 1px solid #fde68a;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.dark .pastille-draft,
 :root:not(.light) .pastille-draft {
   background-color: rgba(217, 119, 6, 0.2);
   color: #fcd34d;
   border: 1px solid rgba(217, 119, 6, 0.4);
-}
+  border-radius: var(--radius-default);
+    }
 
 .pastille-scheduled {
   background-color: #eef3ff;
   color: #2b5cb8;
   border: 1px solid #93c5fd;
-}
+  border-radius: var(--radius-default);
+    }
+
 
 :root.light .pastille-scheduled {
   background-color: #eef3ff;
   color: #2b5cb8;
   border: 1px solid #93c5fd;
-}
+  border-radius: var(--radius-default);
+    }
+
 
 :root.dark .pastille-scheduled,
 :root:not(.light) .pastille-scheduled {
   background-color: rgba(59, 130, 246, 0.2);
   color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.4);
-}
+  border: 1px solid rgba(59, 130, 246, 0.4); 
+  border-radius: var(--radius-default);
+    }
+
 
 /* ============================================
    FACTURES PAGE - Design factures.html
@@ -1283,9 +1344,11 @@ button {
    padding: 18px 20px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   transition: box-shadow 0.15s;
+  border-radius: var(--radius-default);
 }
 .facture-stat-card:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  border-radius: var(--radius-default);
 }
 .facture-stat-label {
   font-size: 11px;
@@ -1294,6 +1357,7 @@ button {
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 8px;
+  border-radius: var(--radius-default);
 }
 .facture-stat-value {
   font-size: 28px;
@@ -1301,6 +1365,7 @@ button {
   letter-spacing: -1px;
   line-height: 1;
   color: var(--text-primary);
+  border-radius: var(--radius-default);
 }
 .facture-stat-value.facture-stat-green { color: var(--color-success-text) !important; }
 .facture-stat-value.facture-stat-purple { color: #7C3AED !important; }
@@ -1312,6 +1377,7 @@ button {
   font-size: 12px;
   color: var(--text-muted);
   margin-top: 8px;
+  border-radius: var(--radius-default);
 }
 .facture-stat-meta.facture-stat-meta-up { color: var(--color-success-text) !important; }
 .facture-stat-meta.facture-stat-warn { color: #D97706 !important; }
@@ -1320,7 +1386,8 @@ button {
   height: 5px;
   border-radius: 50%;
   background: currentColor;
-}
+  border-radius: var(--radius-default);
+  }
 
 .facture-tab {
   padding: 10px 20px;
@@ -1333,12 +1400,14 @@ button {
   margin-bottom: -1px;
   transition: color 0.15s;
   font-family: inherit;
+  border-radius: var(--radius-default);
 }
 .facture-tab:hover { color: var(--text-primary); }
 .facture-tab.facture-tab-active {
   color: var(--text-primary);
   font-weight: 500;
   border-bottom-color: var(--color-accent);
+  border-radius: var(--radius-default);
 }
 .facture-tab-count {
   display: inline-flex;
@@ -1351,11 +1420,13 @@ button {
   color: var(--text-muted);
   padding: 1px 7px;
   margin-left: 6px;
+  border-radius: var(--radius-default);
 }
 .facture-tab.facture-tab-active .facture-tab-count,
 .facture-tab-count.facture-tab-count-active {
   background: var(--color-accent) !important;
   color: var(--color-accent-text) !important;
+  border-radius: var(--radius-default);
 }
 
 .facture-search-input {
@@ -1368,12 +1439,14 @@ button {
   border: 1px solid var(--border-default);
    color: var(--text-primary);
   transition: border-color 0.15s, box-shadow 0.15s;
+  border-radius: var(--radius-default);
 }
 .facture-search-input::placeholder { color: var(--text-muted); }
 .facture-search-input:focus {
   outline: none;
   border-color: var(--border-input);
   box-shadow: 0 0 0 3px rgba(255,56,11,0.1);
+  border-radius: var(--radius-default);
 }
 
 .facture-filter-select {
@@ -1386,6 +1459,7 @@ button {
    color: var(--text-primary);
   cursor: pointer;
   min-width: 155px;
+  border-radius: var(--radius-default);
 }
 .facture-btn-outline {
   height: 38px;
@@ -1401,10 +1475,12 @@ button {
    color: var(--text-muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
+  border-radius: var(--radius-default);
 }
 .facture-btn-outline:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
+  border-radius: var(--radius-default);
 }
 
 .facture-bulk-bar {
@@ -1415,6 +1491,7 @@ button {
   background: var(--color-accent);
    color: var(--color-accent-text);
   font-size: 13px;
+  border-radius: var(--radius-default);
 }
 .facture-bulk-btn {
   padding: 5px 12px;
@@ -1424,18 +1501,21 @@ button {
   font-family: inherit;
   cursor: pointer;
   transition: background 0.15s;
+  border-radius: var(--radius-default);
 }
 .facture-bulk-btn:hover { background: rgba(255,255,255,0.1); }
 .facture-bulk-btn.danger {
   border-color: var(--color-danger);
   color: #FCA5A5;
-}
+  border-radius: var(--radius-default);
+    }
 .facture-bulk-btn.danger:hover { background: rgba(239,68,68,0.15); }
 
 .facture-table-card {
   background: var(--bg-card);
   border: 1px solid var(--border-default);
    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+   border-radius: var(--radius-default);
 }
 .facture-th {
   padding: 11px 14px;
@@ -1448,6 +1528,7 @@ button {
   background: var(--bg-muted);
   border-bottom: 1px solid var(--border-default);
   white-space: nowrap;
+  border-radius: var(--radius-default);
 }
 .facture-th-check { width: 40px; }
 .facture-th-amount { text-align: right; }
@@ -1458,10 +1539,12 @@ button {
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-default);
   vertical-align: middle;
+  border-radius: var(--radius-default);
 }
 .facture-tr {
   transition: background 0.1s;
   cursor: pointer;
+  border-radius: var(--radius-default);
 }
 .facture-tr:hover { background: var(--bg-hover); }
 .facture-tr-selected { background: rgba(255,56,11,0.08) !important; }
@@ -1470,6 +1553,7 @@ button {
   font-size: 12.5px;
   font-weight: 500;
   color: var(--text-primary);
+  border-radius: var(--radius-default);
 }
 .facture-date-cell { font-size: 13.5px; color: var(--text-muted); white-space: nowrap; }
 .facture-avatar {
@@ -1483,6 +1567,7 @@ button {
   font-weight: 600;
   flex-shrink: 0;
   letter-spacing: 0;
+  border-radius: var(--radius-default);
 }
 .facture-avatar-av-blue   { background: #DBEAFE; color: #1D4ED8; }
 .facture-avatar-av-teal   { background: #CCFBF1; color: #0F766E; }
@@ -1500,6 +1585,7 @@ button {
   font-size: 12px;
   color: var(--text-muted);
   white-space: nowrap;
+  border-radius: var(--radius-default);
 }
 .facture-badge {
   display: inline-flex;
@@ -1510,6 +1596,7 @@ button {
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  border-radius: var(--radius-default);
 }
 .facture-badge-dot {
   width: 5px;
@@ -1520,46 +1607,54 @@ button {
 .facture-badge-paid {
   background: #DCFCE7;
   color: #166534;
+  border-radius: var(--radius-default);
 }
 .facture-badge-paid .facture-badge-dot { background: #22C55E; }
 .facture-badge-pending {
   background: #FEF3C7;
   color: #92400E;
+  border-radius: var(--radius-default);
 }
 .facture-badge-pending .facture-badge-dot { background: #F59E0B; }
 .facture-badge-late {
   background: #FEE2E2;
   color: #991B1B;
+  border-radius: var(--radius-default);
 }
 .facture-badge-late .facture-badge-dot { background: #EF4444; }
 .facture-badge-draft {
   background: var(--bg-muted);
   color: var(--text-muted);
   border: 1px solid var(--border-default);
-}
+  border-radius: var(--radius-default);
+  }
 .facture-badge-draft .facture-badge-dot { background: var(--text-muted); }
 :root.dark .facture-badge-paid,
 :root:not(.light) .facture-badge-paid {
   background: rgba(34,197,94,0.2);
   color: #4ADE80;
-}
+  border-radius: var(--radius-default);
+  }
 :root.dark .facture-badge-pending,
 :root:not(.light) .facture-badge-pending {
   background: rgba(245,158,11,0.2);
   color: #FBBF24;
-}
+  border-radius: var(--radius-default);
+  }
 :root.dark .facture-badge-late,
 :root:not(.light) .facture-badge-late {
   background: rgba(239,68,68,0.2);
   color: #F87171;
-}
+  border-radius: var(--radius-default);
+  }
 .facture-amount-cell {
   font-family: var(--font-geist-mono), monospace;
   font-size: 13.5px;
   font-weight: 500;
   text-align: right;
   white-space: nowrap;
-}
+  border-radius: var(--radius-default);
+  }
 .facture-amount-cell.facture-amount-late { color: var(--color-danger-text) !important; }
 .facture-actions-cell { display: flex; align-items: center; justify-content: center; }
 .facture-action-btn {
@@ -1574,7 +1669,8 @@ button {
   cursor: pointer;
   color: var(--text-muted);
   transition: background 0.12s, color 0.12s;
-}
+  border-radius: var(--radius-default);
+  }
 .facture-action-btn:hover {
   background: var(--bg-muted);
   color: var(--text-primary);
@@ -1584,7 +1680,8 @@ button {
   height: 16px;
   accent-color: var(--color-accent);
   cursor: pointer;
-}
+  border-radius: var(--radius-default);
+  }
 .facture-per-page-select {
   border: 1px solid var(--border-default);
    padding: 3px 8px;
@@ -1593,7 +1690,8 @@ button {
   background: var(--bg-card);
   color: var(--text-primary);
   cursor: pointer;
-}
+  border-radius: var(--radius-default);
+  }
 .facture-pagination {
   display: flex;
   align-items: center;
@@ -1602,7 +1700,8 @@ button {
   border-top: 1px solid var(--border-default);
   font-size: 13px;
   color: var(--text-muted);
-}
+  border-radius: var(--radius-default);
+  }
 .facture-page-btn {
   min-width: 30px;
   height: 30px;
@@ -1621,46 +1720,53 @@ button {
 .facture-page-btn:hover:not(:disabled) {
   background: var(--bg-muted);
   color: var(--text-primary);
-}
+  border-radius: var(--radius-default);
+  }
 .facture-page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .facture-page-btn-active {
   background: var(--color-accent) !important;
   color: var(--color-accent-text) !important;
   border-color: var(--color-accent) !important;
-}
+  border-radius: var(--radius-default);
+  }
 
 /* Mode light - Badges noir et blanc */
 :root.light .badge-primary {
   background-color: var(--color-primary-bg);
   color: var(--color-primary-text);
   border: 1px solid var(--color-primary-border);
-}
+  border-radius: var(--radius-default);
+  }
 
 
 :root.light .badge-info {
   background-color: #fff7ed; /* orange-50 */
   color: #9a3412; /* orange-800 */
   border: 1px solid #9a3412; /* orange-800 */
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.dark .badge-info,
 :root:not(.light) .badge-info {
   background-color: #ea580c; /* orange-600 */
   color: white !important;
   border: 1px solid #ea580c;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.light .badge-warning {
   background-color: var(--color-warning-bg);
   color: var(--color-warning-text);
   border: 1px solid var(--color-warning-border);
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.light .badge-danger {
   background-color: var(--color-danger-bg);
   color: var(--color-danger-text);
   border: 1px solid var(--color-danger-border);
-}
+  border-radius: var(--radius-default);
+      }
 
 /* ============================================
    DASHBOARD DEMO COMPONENTS (Landing Page)
@@ -1675,134 +1781,161 @@ button {
 .demo-sidebar {
   background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-default);
+  border-radius: var(--radius-default);
 }
 
 .demo-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-default);
   transition: all 0.3s ease;
+  border-radius: var(--radius-default);
 }
 
 .demo-card:hover {
   background-color: var(--bg-card-hover);
+  border-radius: var(--radius-default);
 }
 
 .demo-nav-item {
   color: var(--text-muted);
   transition: all 0.2s ease;
+  border-radius: var(--radius-default);
 }
 
 .demo-nav-item:hover {
   background-color: var(--bg-hover);
   color: var(--color-highlight);
+  border-radius: var(--radius-default);
 }
 
 .demo-nav-item.active {
   background-color: var(--color-accent-bg);
   border: 1px solid var(--color-accent-border);
   color: var(--color-highlight);
+  border-radius: var(--radius-default);
 }
 
 .demo-title {
   color: var(--text-primary);
+  border-radius: var(--radius-default);
 }
 
 .demo-subtitle {
   color: var(--text-secondary);
+  border-radius: var(--radius-default);
 }
 
 .demo-muted {
   color: var(--text-muted);
+  border-radius: var(--radius-default);
 }
 
 .demo-stat-primary {
   color: var(--color-success-text);
+  border-radius: var(--radius-default);
 }
 
 .demo-stat-secondary {
   color: var(--color-info-text);
+  border-radius: var(--radius-default);
 }
 
 .demo-stat-tertiary {
   color: var(--color-primary);
-}
+  border-radius: var(--radius-default);
+  }
 
 .demo-button {
   background-color: var(--color-accent-bg);
   border: 1px solid var(--color-accent-border);
   color: var(--color-accent-light);
   transition: all 0.2s ease;
-}
+  border-radius: var(--radius-default);
+    }
 
 .demo-button:hover {
   background-color: var(--color-accent);
   color: white;
-}
+  border-radius: var(--radius-default);
+  }
 
 /* Mode light - Demo components avec glass effect */
 :root.light .demo-container {
   background-color: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-sidebar {
   background-color: rgba(255, 255, 255, 0.95);
   border-right: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-card {
   background-color: rgba(0, 0, 0, 0.05);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-card:hover {
   background-color: rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-nav-item {
   color: #777777;
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-nav-item:hover {
   background-color: rgba(0, 0, 0, 0.08);
   color: var(--color-highlight);
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-nav-item.active {
   background-color: rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0, 0, 0, 0.25);
   color: var(--color-highlight);
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-title {
   color: #000000;
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-subtitle {
   color: #474747;
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-muted {
   color: #777777;
+  border-radius: var(--radius-default);
 }
 
 :root.light .demo-stat-primary,
 :root.light .demo-stat-secondary,
 :root.light .demo-stat-tertiary {
   color: #000000;
-}
+  border-radius: var(--radius-default);
+    }
 
 :root.light .demo-button {
   background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.25);
   color: #000000;
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .demo-button:hover {
   background-color: rgba(0, 0, 0, 0.2);
   color: #000000;
-}
+  border-radius: var(--radius-default);
+        }
 
 /* ============================================
    BASE STYLES
@@ -1820,50 +1953,61 @@ button {
 
 ::-webkit-scrollbar-track {
   background: var(--bg-muted);
+  border-radius: var(--radius-default);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--text-muted);
+  border-radius: var(--radius-default);
  }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+  border-radius: var(--radius-default);
 }
 
 /* Mode light - Scrollbar gris sur blanc */
 :root.light ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-default);
 }
 
 :root.light ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-default);
 }
 
 :root.light ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-default);
 }
 
 /* Force visible scrollbar for modals */
 .scrollbar-visible {
   scrollbar-width: thin;
   scrollbar-color: var(--text-muted) var(--bg-hover);
+  border-radius: var(--radius-default);
 }
 
 .scrollbar-visible::-webkit-scrollbar {
   width: 10px;
+  border-radius: var(--radius-default);
 }
 
 .scrollbar-visible::-webkit-scrollbar-track {
   background: var(--bg-hover);
+  border-radius: var(--radius-default);
  }
 
 .scrollbar-visible::-webkit-scrollbar-thumb {
   background: var(--border-default);
    border: 2px solid var(--bg-hover);
+   border-radius: var(--radius-default);
 }
 
 .scrollbar-visible::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+  border-radius: var(--radius-default);
 }
 
 body {
@@ -1885,20 +2029,24 @@ body {
 :root.light body {
   background: #FFFFFF;
   color: #000000;
-}
+  border-radius: var(--radius-default);
+    }
 
 /* Mode light - Tous les SVG et icônes en noir/gris */
 :root.light svg {
   color: #474747;
+  border-radius: var(--radius-default);
 }
 
 :root.light button:hover svg,
 :root.light a:hover svg {
   color: #000000;
+  border-radius: var(--radius-default);
 }
 
 :root.light .active svg {
   color: var(--color-accent) !important;
+  border-radius: var(--radius-default);
 }
 
 /* Dashboard layout - Override body styles for proper scroll */
@@ -1932,6 +2080,7 @@ main {
 :root.light main {
   background: #FFFFFF;
   color: #000000;
+  border-radius: var(--radius-default);
 }
 
 h1 {
@@ -1996,6 +2145,7 @@ button {
   font-family: var(--font-funnel-display);
   font-size: 12px !important;
   font-weight: 500;
+  border-radius: var(--radius-default);
 }
 
 a {
@@ -2004,6 +2154,7 @@ a {
   font-weight: 500;
   color: var(--color-accent);
   transition: color 0.2s ease;
+  border-radius: var(--radius-default);
 }
 
 a:hover {
@@ -2056,18 +2207,20 @@ input, textarea, select {
   background-color: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-primary);
-  border-radius: none;
+  border-radius: var(--radius-default);
   padding: 0.2rem 0.75rem;
 }
 
 input::placeholder, textarea::placeholder {
   color: var(--text-placeholder);
+  border-radius: var(--radius-default);
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-bg);
+  border-radius: var(--radius-default);
 }
 
 /* Mode light - Form elements avec glass effect */
@@ -2078,11 +2231,13 @@ input:focus, textarea:focus, select:focus {
   border: 1px solid rgba(0, 0, 0, 0.15);
   color: #000000;
   backdrop-filter: blur(10px);
+  border-radius: var(--radius-default);
 }
 
 :root.light input::placeholder, 
 :root.light textarea::placeholder {
   color: #999999;
+  border-radius: var(--radius-default);
 }
 
 :root.light input:focus, 
@@ -2090,11 +2245,13 @@ input:focus, textarea:focus, select:focus {
 :root.light select:focus {
   border-color: rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-default);
 }
 
 /* Tables base */
 table {
   background-color: var(--bg-card);
+  border-radius: var(--radius-default);
 }
 
 th {
@@ -2107,6 +2264,7 @@ td {
   font-size: 12px !important;
   color: var(--text-primary);
   border-color: var(--border-default);
+  border-radius: var(--radius-default);
 }
 
 tbody tr {
@@ -2145,10 +2303,12 @@ tbody tr:hover {
 
 :root.light tbody tr:nth-child(even) {
   background-color:var(--bg-card);
+  border-radius: var(--radius-default);
 }
 
 :root.light tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-default);
 }
 
 /* ============================================
@@ -2176,7 +2336,8 @@ header button:hover svg {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
   border-color: rgba(0, 0, 0, 0.15);
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light header a, 
 :root.light header span, 
@@ -2199,27 +2360,33 @@ header button:hover svg {
 aside, [class*="sidebar"] {
   background: var(--gradient-sidebar);
   border-color: var(--border-default);
+  border-radius: var(--radius-default);
 }
 
 nav button, nav a {
   color: var(--text-secondary);
+  border-radius: var(--radius-default);
 }
 
 nav button span, nav a span {
   color: var(--text-primary);
+  border-radius: var(--radius-default);
 }
 
 nav svg {
   color: var(--text-muted);
+  border-radius: var(--radius-default);
 }
 
 nav button:hover, nav a:hover {
   background-color: var(--bg-hover);
+  border-radius: var(--radius-default);
 }
 
 nav button:hover span, nav a:hover span,
 nav button:hover svg, nav a:hover svg {
   color: var(--color-accent-border);
+  border-radius: var(--radius-default);
 }
 
 /* Mode light - Sidebar blanc avec texte noir */
@@ -2227,25 +2394,30 @@ nav button:hover svg, nav a:hover svg {
 :root.light [class*="sidebar"] {
   background: #FFFFFF;
   border-color: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-default);
 }
 
 :root.light nav button, 
 :root.light nav a {
   color: #474747;
+  border-radius: var(--radius-default);
 }
 
 :root.light nav button span, 
 :root.light nav a span {
   color: #000000;
+  border-radius: var(--radius-default);
 }
 
 :root.light nav svg {
   color: #474747;
+  border-radius: var(--radius-default);
 }
 
 :root.light nav button:hover, 
 :root.light nav a:hover {
   background-color: rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-default);
 }
 
 :root.light nav button:hover span, 
@@ -2253,7 +2425,8 @@ nav button:hover svg, nav a:hover svg {
 :root.light nav button:hover svg, 
 :root.light nav a:hover svg {
   color: var(--color-accent-border);
-}
+  border-radius: var(--radius-default);
+    }
 
 /* ============================================
    AUTH PAGES STYLES
@@ -2262,14 +2435,17 @@ nav button:hover svg, nav a:hover svg {
 .auth-container {
   border: 1px solid var(--border-default);
   background: linear-gradient(to bottom, var(--bg-card), var(--bg-page));
+  border-radius: var(--radius-default);
 }
 
 .auth-header {
   background-color: var(--bg-card);
+  border-radius: var(--radius-default);
 }
 
 .auth-content {
   background: linear-gradient(to bottom, var(--bg-card), var(--bg-page));
+  border-radius: var(--radius-default);
 }
 
 .auth-input {
@@ -2286,31 +2462,38 @@ nav button:hover svg, nav a:hover svg {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-bg);
+  border-radius: var(--radius-default);
 }
 
 .auth-error {
   background-color: var(--color-danger-bg);
   border: 1px solid var(--color-danger-border);
+  border-radius: var(--radius-default);
 }
 
 .auth-error p {
   color: var(--color-danger-text);
+  border-radius: var(--radius-default);
 }
 
 .auth-title {
   color: var(--text-primary);
+  border-radius: var(--radius-default);
 }
 
 .auth-subtitle {
   color: var(--text-secondary);
+  border-radius: var(--radius-default);
 }
 
 .auth-link {
   color: var(--color-accent);
+  border-radius: var(--radius-default);
 }
 
 .auth-link:hover {
   color: var(--color-accent-light);
+  border-radius: var(--radius-default);
 }
 
 /* Mode light - Auth pages avec glass effect */
@@ -2318,56 +2501,68 @@ nav button:hover svg, nav a:hover svg {
   border: 1px solid rgba(0, 0, 0, 0.15);
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #FFFFFF);
   backdrop-filter: blur(20px);
+  border-radius: var(--radius-default);
 }
 
 :root.light .auth-header {
   background-color: rgba(0, 0, 0, 0.05);
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-content {
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), #FFFFFF);
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-input {
   background-color: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.15);
   color: #000000;
   backdrop-filter: blur(10px);
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-input::placeholder {
   color: #999999;
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-input:focus {
   border-color: rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-error {
   background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.25);
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-error p {
   color: #000000;
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-title {
   color: #000000;
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-subtitle {
   color: #474747;
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-link {
   color: #000000;
-}
+  border-radius: var(--radius-default);
+  }
 
 :root.light .auth-link:hover {
   color: #1F1F1F;
-}
+  border-radius: var(--radius-default);
+      }
 
 /* ============================================
    KANBAN PIPELINE - Text contrast on light backgrounds
@@ -2443,6 +2638,7 @@ nav button:hover svg, nav a:hover svg {
 .email-preview-light {
   background-color: #ffffff !important;
   color: #333333 !important;
+  border-radius: var(--radius-default);
 }
 
 .email-preview-light div,
@@ -2458,7 +2654,8 @@ nav button:hover svg, nav a:hover svg {
 /* Ensure the preview container itself stays white */
 .email-preview-light > div {
   background-color: #ffffff !important;
-}
+  border-radius: var(--radius-default);
+  }
 
 /* ============================================
    PRINT STYLES
@@ -2477,19 +2674,24 @@ nav button:hover svg, nav a:hover svg {
     padding: 20mm !important;
     page-break-inside: avoid;
     break-inside: avoid;
+    border-radius: var(--radius-default);
   }
   .print-section {
     page-break-after: always;
     break-after: page;
+    border-radius: var(--radius-default);
   }
   body * {
     visibility: hidden !important;
+    border-radius: var(--radius-default);
   }
   .print-modal, .print-modal * {
     visibility: visible !important;
+    border-radius: var(--radius-default);
   }
   .no-print, .no-print * {
     display: none !important;
+    border-radius: var(--radius-default);
   }
 }
 
@@ -2501,11 +2703,13 @@ nav button:hover svg, nav a:hover svg {
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .h-safe-area-inset-bottom {
     height: env(safe-area-inset-bottom);
+    border-radius: var(--radius-default);
   }
   
   /* Bottom nav avec safe area */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
+    border-radius: var(--radius-default);
   }
 }
 
@@ -2517,6 +2721,7 @@ nav button:hover svg, nav a:hover svg {
   border-top: 1px solid rgba(var(--color-border-rgb, 200, 200, 200), 0.3);
   box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
   outline: none;
+  border-radius: var(--radius-default);
 }
 
 :root {
@@ -2539,6 +2744,7 @@ nav button:hover svg, nav a:hover svg {
 .mobile-drawer-glass * {
   outline: none !important;
   -webkit-tap-highlight-color: transparent;
+  border-radius: var(--radius-default);
 }
 
 .mobile-bottom-nav button:focus,
@@ -2547,37 +2753,45 @@ nav button:hover svg, nav a:hover svg {
 .mobile-header-glass button:focus-visible {
   outline: none !important;
   box-shadow: none !important;
+  border-radius: var(--radius-default);
 }
 
 /* Couleurs des nav items - unifié */
 .mobile-nav-icon {
   color: var(--color-text-muted);
+  border-radius: var(--radius-default);
 }
 
 .mobile-nav-icon svg {
   color: #777777;
   stroke: #777777;
+  border-radius: var(--radius-default);
 }
 
 .mobile-nav-icon.active {
   color: white;
+  border-radius: var(--radius-default);
 }
 
 .mobile-nav-icon.active svg {
   color: white;
   stroke: white;
+  border-radius: var(--radius-default);
 }
 
 .mobile-nav-label {
   color: #777777;
+  border-radius: var(--radius-default);
 }
 
 .mobile-nav-label.active {
   color: white;
+  border-radius: var(--radius-default);
 }
 
 .mobile-nav-indicator {
   background-color: var(--color-accent-border);
+  border-radius: var(--radius-default);
 }
 
 /* Mobile Header - Glass effect */
@@ -2591,6 +2805,7 @@ nav button:hover svg, nav a:hover svg {
   -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(46, 38, 72, 0.5);
+  border-radius: var(--radius-default);
 }
 
 /* Mobile Drawer Glass */
@@ -2603,6 +2818,7 @@ nav button:hover svg, nav a:hover svg {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-right: 1px solid rgba(46, 38, 72, 0.5);
+  border-radius: var(--radius-default);
 }
 
 /* Mobile bottom nav — light */
@@ -2612,7 +2828,8 @@ nav button:hover svg, nav a:hover svg {
     0 -4px 30px rgba(44, 58, 46, 0.06),
     inset 0 1px 0 rgba(123, 174, 127, 0.15);
   border-top: 1px solid rgba(123, 174, 127, 0.20);
-}
+  border-radius: var(--radius-default);
+  }
 
 /* Nav icons — light */
 :root.light .mobile-nav-icon svg    { color: #556B58; stroke: #556B58; }
@@ -2624,6 +2841,7 @@ nav button:hover svg, nav a:hover svg {
   background: var(--bg-card);
   border-color: rgba(123, 174, 127, 0.20);
   box-shadow: 0 4px 20px rgba(44, 58, 46, 0.08);
+  border-radius: var(--radius-default);
 }
 
 /* Mobile drawer — light */
@@ -2633,6 +2851,7 @@ nav button:hover svg, nav a:hover svg {
     rgba(245, 245, 238, 0.99) 100%
   );
   border-right-color: rgba(123, 174, 127, 0.20);
+  border-radius: var(--radius-default);
 }
 
 /* Animation pour le drawer */
@@ -2662,10 +2881,12 @@ nav button:hover svg, nav a:hover svg {
 .mobile-drawer-scroll {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  border-radius: var(--radius-default);
 }
 
 .mobile-drawer-scroll::-webkit-scrollbar {
   display: none;
+  border-radius: var(--radius-default);
 }
 
 /* Amélioration touch targets pour mobile */
