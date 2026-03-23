@@ -825,7 +825,7 @@ export default function ImageUpload({
                   <span className="!text-sm !text-muted w-12 !text-right">{rotation}°</span>
                   <button
                     onClick={() => setRotation(0)}
-                    className="px-2 py-1 !text-xs !text-secondary hover:!text-primary border border-default rounded hover:bg-hover transition-colors"
+                    className="px-2 py-1 rounded-lg !text-xs !text-secondary hover:!text-primary border border-default hover:bg-hover transition-colors"
                   >
                     Reset
                   </button>

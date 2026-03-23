@@ -363,7 +363,7 @@ export default function NewsletterComposePage() {
           <div className="flex items-center gap-2.5">
             <Link
               href="/dashboard/newsletters"
-              className="w-8 h-8 flex items-center justify-center rounded-md border border-black/13 text-[#6B6860] hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-lg border border-black/13 text-[#6B6860] hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
             >
               <IconArrowLeft className="w-3.5 h-3.5" stroke={1.8} />
             </Link>
@@ -375,7 +375,7 @@ export default function NewsletterComposePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="h-8 px-3.5 rounded-md border border-black/13 bg-transparent text-[#6B6860] text-[13px] flex items-center gap-1.5 hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
+              className="h-8 px-3.5 rounded-lg border border-black/13 bg-transparent text-[#6B6860] text-[13px] flex items-center gap-1.5 hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
             >
               <IconEye className="w-3.5 h-3.5" stroke={1.5} />
               {t('preview') || 'Aperçu'}
@@ -685,7 +685,7 @@ export default function NewsletterComposePage() {
                             <button
                               key={c.id}
                               onClick={() => addRecipient(c.email, c)}
-                              className="h-7 px-3 rounded-md border border-black/13 bg-transparent text-xs text-[#6B6860] hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
+                              className="h-7 px-3 rounded-lg border border-black/13 bg-transparent text-xs text-[#6B6860] hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
                             >
                               {c.email}
                             </button>
@@ -735,13 +735,13 @@ export default function NewsletterComposePage() {
                         <div className="flex bg-[#F8F7F4] rounded-[10px] p-0.5 gap-0.5 mb-3">
                           <button
                             onClick={() => setScheduleMode('now')}
-                            className={`flex-1 py-1.5 px-2.5 rounded-md text-xs text-center transition-all ${scheduleMode === 'now' ? 'bg-white text-[#1A1917] font-medium shadow-sm' : 'text-[#6B6860]'}`}
+                            className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs text-center transition-all ${scheduleMode === 'now' ? 'bg-white text-[#1A1917] font-medium shadow-sm' : 'text-[#6B6860]'}`}
                           >
                             Envoyer maintenant
                           </button>
                           <button
                             onClick={() => setScheduleMode('later')}
-                            className={`flex-1 py-1.5 px-2.5 rounded-md text-xs text-center transition-all ${scheduleMode === 'later' ? 'bg-white text-[#1A1917] font-medium shadow-sm' : 'text-[#6B6860]'}`}
+                            className={`flex-1 py-1.5 px-2.5 rounded-lg text-xs text-center transition-all ${scheduleMode === 'later' ? 'bg-white text-[#1A1917] font-medium shadow-sm' : 'text-[#6B6860]'}`}
                           >
                             Planifier
                           </button>
@@ -754,7 +754,7 @@ export default function NewsletterComposePage() {
                             className="w-full border border-black/13 rounded-[10px] px-2.5 py-2 text-xs text-[#1A1917] bg-white outline-none focus:border-[#1A1917]"
                           />
                         )}
-                        <div className="mt-2.5 py-2 px-2.5 bg-[#F8F7F4] rounded-md text-[11px] text-[#A09E98] flex items-center gap-1.5">
+                        <div className="mt-2.5 py-2 px-2.5 bg-[#F8F7F4] rounded-lg text-[11px] text-[#A09E98] flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#2D7D52] flex-shrink-0" />
                           Config SMTP vérifiée et prête
                         </div>

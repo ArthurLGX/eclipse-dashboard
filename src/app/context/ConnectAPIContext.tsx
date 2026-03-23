@@ -33,7 +33,7 @@ export function ConnectAPIProvider({ children }: { children: React.ReactNode }) 
       {children}
       {isOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/50">
-          <div className="bg-card border border-default  shadow-xl max-w-md mx-4 p-6 relative">
+          <div className="rounded-lg bg-card border border-default shadow-xl max-w-md mx-4 p-6 relative">
             <button
               onClick={closeConnectAPIModal}
               className="absolute top-4 right-4 p-1 rounded hover:bg-secondary text-muted hover:text-primary"

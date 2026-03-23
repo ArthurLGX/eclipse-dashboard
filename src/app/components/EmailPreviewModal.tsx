@@ -125,7 +125,7 @@ export default function EmailPreviewModal({
             <div className="flex justify-end p-2 border-b border-gray-200 flex-shrink-0">
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-md text-gray-600 transition-colors"
+                className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors"
                 aria-label="Fermer"
               >
                 <IconX className="w-5 h-5" />

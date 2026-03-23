@@ -4551,7 +4551,7 @@ function TaskGanttView({
                                     progress={effectiveProgress}
                                     onDateChange={handleTaskDateChange}
                                     onDragEnd={handleGanttBarDragEnd}
-                                    className="rounded-md"
+                                    className="rounded-lg"
                                   >
                                     <div
                                       className="flex items-center justify-between px-2.5 overflow-hidden h-full"

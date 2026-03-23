@@ -361,7 +361,7 @@ const TypingIndicator: React.FC<{ toolName?: string }> = ({ toolName }) => {
 
   return (
     <div className="flex justify-start">
-      <div className="bg-hover border border-default  rounded-bl-md px-4 py-3 max-w-[85%]">
+      <div className="bg-hover border border-default  rounded-bl-lg px-4 py-3 max-w-[85%]">
         <div className="flex items-center gap-3">
           {/* Animated dots */}
           <div className="flex items-center gap-1">
@@ -865,8 +865,8 @@ export default function AIChatAssistant() {
                       <div
                         className={`max-w-[85%]  px-4 py-2.5 ${
                           message.role === 'user'
-                            ? 'bg-muted !text-primary rounded-br-md'
-                            : 'bg-hover !text-primary border border-default rounded-bl-md'
+                            ? 'bg-muted !text-primary rounded-br-lg'
+                            : 'bg-hover !text-primary border border-default rounded-bl-lg'
                         }`}
                       >
                         {/* Render message parts */}

@@ -585,7 +585,7 @@ export default function LeadDetailModal({
                         <button
                           key={ch}
                           onClick={() => setChannel(ch)}
-                          className={`flex items-center gap-1.5 py-1.5 px-3 rounded-md border font-mono text-[11px] transition-colors ${
+                          className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg border font-mono text-[11px] transition-colors ${
                             channel === ch
                               ? activeStyles
                               : 'border-[#e2ddd8] text-[#8a8178] hover:border-[#d0cbc4]'

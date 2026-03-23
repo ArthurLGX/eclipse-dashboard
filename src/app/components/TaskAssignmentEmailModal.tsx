@@ -184,7 +184,7 @@ export default function TaskAssignmentEmailModal({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-card border border-default  shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
+            className="rounded-lg bg-card border border-default shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-default">

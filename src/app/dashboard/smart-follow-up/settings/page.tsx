@@ -441,7 +441,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'activation' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-md bg-success border border-success flex items-center justify-center !text-white">
+              <div className="w-8 h-8 rounded-lg bg-success border border-success flex items-center justify-center !text-white">
                 <IconCircleDot className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -472,7 +472,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'domaines' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-               <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+               <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconBan className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -504,7 +504,7 @@ export default function SmartFollowUpSettingsPage() {
                 {excludedDomains.map((d) => (
                   <span
                     key={d}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md font-mono !text-[11px] bg-muted border border-default !text-muted hover:border-danger hover:!text-danger transition-colors group"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-mono !text-[11px] bg-muted border border-default !text-muted hover:border-danger hover:!text-danger transition-colors group"
                   >
                     {d}
                     <button
@@ -527,7 +527,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'icp' && (
           <section className="bg-card border border-default w-full w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconUsers className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -662,7 +662,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'mots-cles' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-               <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+               <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconBolt className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -687,7 +687,7 @@ export default function SmartFollowUpSettingsPage() {
                       {(icpSettings.keywords[type] || []).map((kw) => (
                         <span
                           key={`${type}-${kw}`}
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium ${
+                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg font-mono !text-[11px] font-medium ${
                             type === 'b2b'
                               ? 'bg-blue-500/10 border border-blue-500/20 !text-blue-600'
                               : type === 'agence'
@@ -758,7 +758,7 @@ export default function SmartFollowUpSettingsPage() {
                   {priorityKeywords.map((kw) => (
                     <span
                       key={kw}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md font-mono !text-[11px] font-medium bg-danger border border-danger/20 !text-danger"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded-lg font-mono !text-[11px] font-medium bg-danger border border-danger/20 !text-danger"
                     >
                       {kw}
                       <button onClick={() => handleRemoveKeyword(kw)} className="opacity-50 hover:opacity-100">×</button>
@@ -774,7 +774,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'instruction' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+              <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconSparkles className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -864,7 +864,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'delais' && (
           <section className="bg-card border border-default w-full   overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-               <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+               <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconClock className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -901,7 +901,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'heures' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-md bg-success border border-success flex items-center justify-center !text-white">
+              <div className="w-8 h-8 rounded-lg bg-success border border-success flex items-center justify-center !text-white">
                 <IconCalendar className="w-4 h-4 !text-white" />
               </div>
               <div>
@@ -947,7 +947,7 @@ export default function SmartFollowUpSettingsPage() {
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center justify-between gap-2.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+                <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                   <IconShieldCheck className="w-4 h-4 !text-white" />
                 </div>
                 <div>
@@ -992,7 +992,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'notifications' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-md bg-accent border border-accent flex items-center justify-center !text-white">
+              <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconBell className="w-4 h-4 !text-white" />
               </div>  
               <div>
@@ -1036,7 +1036,7 @@ export default function SmartFollowUpSettingsPage() {
         {activeSection === 'whatsapp' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-md bg-[#25D366] border border-[#25D366] flex items-center justify-center !text-white">
+              <div className="w-8 h-8 rounded-lg bg-[#25D366] border border-[#25D366] flex items-center justify-center !text-white">
                 <IconBrandWhatsapp className="w-4 h-4 !text-white" />
               </div>
               <div>

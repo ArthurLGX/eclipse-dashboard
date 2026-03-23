@@ -760,14 +760,14 @@ export default function ClientDetailsPage() {
                               <div className="flex gap-1">
                                 <Link
                                   href={`/dashboard/factures/${generateSlug(`${f.reference}-${client.name || 'client'}`, f.documentId)}`}
-                                  className="w-8 h-8 rounded-md bg-accent !text-accent-text flex items-center justify-center hover:opacity-90 transition-opacity"
+                                  className="w-8 h-8 rounded-lg bg-accent !text-accent-text flex items-center justify-center hover:opacity-90 transition-opacity"
                                   title={t('view') || 'Voir'}
                                 >
                                   <IconEye className="w-4 h-4 shrink-0" stroke={2} />
                                 </Link>
                                 <Link
                                   href={`/dashboard/factures/${generateSlug(`${f.reference}-${client.name || 'client'}`, f.documentId)}?edit=1`}
-                                  className="w-8 h-8 rounded-md bg-accent !text-accent-text flex items-center justify-center hover:opacity-90 transition-opacity"
+                                  className="w-8 h-8 rounded-lg bg-accent !text-accent-text flex items-center justify-center hover:opacity-90 transition-opacity"
                                   title={t('edit') || 'Éditer'}
                                 >
                                   <IconPencil className="w-4 h-4 shrink-0" stroke={2} />

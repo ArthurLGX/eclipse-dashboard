@@ -507,7 +507,7 @@ export default function MediaPickerModal({
 
           {/* Footer fixe avec bouton de sélection (pour la bibliothèque) */}
           {activeTab === 'library' && selectedLibraryItem && (
-            <div className="border-t border-default bg-card p-4 flex items-center justify-between">
+            <div className="border-t border-default rounded-b-lg bg-card p-4 flex items-center justify-between">
               <p className="!text-sm !text-muted">
                 {t('selected') || 'Sélectionné'}: <span className="!text-primary font-medium">{selectedLibraryItem.name || 'Media'}</span>
               </p>

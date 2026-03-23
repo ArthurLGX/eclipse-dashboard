@@ -106,7 +106,7 @@ export default function NewslettersPage() {
             : { bg: 'bg-muted', text: '!text-muted', label: v };
         
         return (
-          <span className={`${statusConfig.bg} ${statusConfig.text} px-2 py-1 rounded-md !text-xs font-medium inline-block whitespace-nowrap`}>
+          <span className={`${statusConfig.bg} ${statusConfig.text} px-2 py-1 rounded-lg !text-xs font-medium inline-block whitespace-nowrap`}>
             {statusConfig.label}
           </span>
         );

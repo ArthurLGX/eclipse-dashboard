@@ -350,7 +350,7 @@ export default function TaskSectionRedesign({
             key={f}
             type="button"
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-md border font-mono !text-[11px] transition-colors ${
+            className={`px-3 py-1.5 rounded-lg border font-mono !text-[11px] transition-colors ${
               filter === f
                 ? 'bg-primary border-primary !text-white'
                 : 'bg-card border-default !text-muted hover:border-[#ccc8c2] hover:!text-primary'
@@ -368,7 +368,7 @@ export default function TaskSectionRedesign({
           <button
             type="button"
             onClick={() => setViewMode('list')}
-            className={`w-8 h-8 rounded-md border flex items-center justify-center transition-colors ${
+            className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
               viewMode === 'list' ? 'bg-primary border-primary !text-white' : 'bg-card border-default !text-muted hover:!text-primary'
             }`}
             title="Liste"
@@ -378,7 +378,7 @@ export default function TaskSectionRedesign({
           <button
             type="button"
             onClick={() => setViewMode('kanban')}
-            className={`w-8 h-8 rounded-md border flex items-center justify-center transition-colors ${
+            className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${
               viewMode === 'kanban' ? 'bg-primary border-primary !text-white' : 'bg-card border-default !text-muted hover:!text-primary'
             }`}
             title="Kanban"
@@ -486,14 +486,14 @@ export default function TaskSectionRedesign({
                   setNewTaskTitle('');
                   document.getElementById('newTaskInput')?.blur();
                 }}
-                className="px-2.5 py-1 rounded-md !text-[11px] font-medium bg-secondary border border-default !text-muted hover:!text-primary"
+                className="px-2.5 py-1 rounded-lg !text-[11px] font-medium bg-secondary border border-default !text-muted hover:!text-primary"
               >
                 Annuler
               </button>
               <button
                 type="button"
                 onClick={handleAddTask}
-                className="px-3 py-1 rounded-md !text-[11px] font-medium bg-primary !text-white hover:opacity-90"
+                className="px-3 py-1 rounded-lg !text-[11px] font-medium bg-primary !text-white hover:opacity-90"
               >
                 Ajouter
               </button>
@@ -710,7 +710,7 @@ function TaskCardRedesign({
                 onSwitchTab('edit');
                 onToggleExpand();
               }}
-              className="w-7 h-7 rounded-md border border-transparent flex items-center justify-center !text-muted hover:bg-secondary hover:border-default hover:!text-primary"
+              className="w-7 h-7 rounded-lg border border-transparent flex items-center justify-center !text-muted hover:bg-secondary hover:border-default hover:!text-primary"
               title="Modifier"
             >
               <IconEdit className="w-3.5 h-3.5" />
@@ -722,7 +722,7 @@ function TaskCardRedesign({
                 onSwitchTab('subtasks');
                 onToggleExpand();
               }}
-              className="w-7 h-7 rounded-md border border-transparent flex items-center justify-center !text-muted hover:bg-secondary hover:border-default hover:!text-primary"
+              className="w-7 h-7 rounded-lg border border-transparent flex items-center justify-center !text-muted hover:bg-secondary hover:border-default hover:!text-primary"
               title="Sous-tâches"
             >
               <IconSubtask className="w-3.5 h-3.5" />
@@ -730,7 +730,7 @@ function TaskCardRedesign({
             <button
               type="button"
               onClick={(e) => onDelete(e, task)}
-              className="w-7 h-7 rounded-md border border-transparent flex items-center justify-center !text-muted hover:bg-red-500/10 hover:border-red-500/20 hover:!text-red-600"
+              className="w-7 h-7 rounded-lg border border-transparent flex items-center justify-center !text-muted hover:bg-red-500/10 hover:border-red-500/20 hover:!text-red-600"
               title="Supprimer"
             >
               <IconTrash className="w-3.5 h-3.5" />
@@ -800,7 +800,7 @@ function TaskCardRedesign({
                           key={s}
                           type="button"
                           onClick={() => setEditStatus(s)}
-                          className={`px-3 py-1.5 rounded-md border font-mono !text-[11px] transition-colors ${
+                          className={`px-3 py-1.5 rounded-lg border font-mono !text-[11px] transition-colors ${
                             editStatus === s
                               ? s === 'todo'
                                 ? 'bg-secondary border-[#ccc8c2] !text-primary'
@@ -958,14 +958,14 @@ function TaskCardRedesign({
                             onAddSubtask(newSubtaskTitle);
                             setNewSubtaskTitle('');
                           }}
-                          className="px-2.5 py-1 rounded-md font-mono !text-[11px] font-medium bg-primary !text-white hover:opacity-90"
+                          className="px-2.5 py-1 rounded-lg font-mono !text-[11px] font-medium bg-primary !text-white hover:opacity-90"
                         >
                           Ajouter
                         </button>
                         <button
                           type="button"
                           onClick={() => setNewSubtaskTitle('')}
-                          className="px-2.5 py-1 rounded-md font-mono !text-[11px] font-medium bg-secondary border border-default !text-muted hover:!text-primary"
+                          className="px-2.5 py-1 rounded-lg font-mono !text-[11px] font-medium bg-secondary border border-default !text-muted hover:!text-primary"
                         >
                           ✕
                         </button>
@@ -1241,14 +1241,14 @@ export function TaskListRedesignView({
                   setNewTaskTitle('');
                   (document.activeElement as HTMLElement)?.blur();
                 }}
-                className="px-2.5 py-1 rounded-md !text-[11px] font-medium bg-secondary border border-default !text-muted hover:!text-primary"
+                className="px-2.5 py-1 rounded-lg !text-[11px] font-medium bg-secondary border border-default !text-muted hover:!text-primary"
               >
                 Annuler
               </button>
               <button
                 type="button"
                 onClick={handleAddTask}
-                className="px-3 py-1 rounded-md !text-[11px] font-medium bg-primary !text-white hover:opacity-90"
+                className="px-3 py-1 rounded-lg !text-[11px] font-medium bg-primary !text-white hover:opacity-90"
               >
                 Ajouter
               </button>

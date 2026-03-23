@@ -605,7 +605,7 @@ export default function FacturesPage() {
                               {openStatusId === id ? (
                                 <>
                                   <div className="fixed inset-0 z-40" onClick={() => setOpenStatusId(null)} />
-                                  <div className="absolute left-0 top-full mt-1 z-50 min-w-[140px] py-1 bg-card border border-default shadow-lg rounded-md">
+                                  <div className="absolute left-0 top-full mt-1 z-50 min-w-[140px] py-1 bg-card border border-default shadow-lg rounded-lg">
                                     {statusUpdateOptions.map(opt => (
                                       <button
                                         key={opt.value}

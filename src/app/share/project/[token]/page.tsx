@@ -330,14 +330,14 @@ export default function SharedProjectPage() {
           <div className="flex items-center gap-2 flex-shrink-0">
             <a
               href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium border border-default !text-primary hover:bg-muted/50 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium border border-default !text-primary hover:bg-muted/50 transition-colors"
             >
               <IconMail className="w-3.5 h-3.5" />
               {t('share_button')}
             </a>
             <a
               href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
             >
               <IconExternalLink className="w-3.5 h-3.5" />
               {t('access_project')}
@@ -377,7 +377,7 @@ export default function SharedProjectPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent to-accent/70" />
-                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
                   <IconChartBar className="w-4 h-4" />
                 </div>
                 <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('progression')}</div>
@@ -388,7 +388,7 @@ export default function SharedProjectPage() {
               </div>
               <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-accent/20" />
-                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
                   <IconCheck className="w-4 h-4" />
                 </div>
                 <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('tasks_completed')}</div>
@@ -397,7 +397,7 @@ export default function SharedProjectPage() {
               </div>
               <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-accent/20" />
-                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
                   <IconProgress className="w-4 h-4" />
                 </div>
                 <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('in_progress')}</div>
@@ -408,7 +408,7 @@ export default function SharedProjectPage() {
               </div>
               <div className="border border-default rounded-[10px] p-5 bg-card relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-0.5 bg-accent/20" />
-                <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center !text-accent mb-3.5">
                   <IconCalendar className="w-4 h-4" />
                 </div>
                 <div className="!text-[11px] font-semibold !text-muted uppercase tracking-wider mb-1.5">{t('deadline')}</div>
@@ -572,14 +572,14 @@ export default function SharedProjectPage() {
             <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
               <a
                 href="/login"
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium bg-white border border-accent/30 !text-accent hover:bg-accent/10 transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium bg-white border border-accent/30 !text-accent hover:bg-accent/10 transition-colors"
               >
                 <IconLogin className="w-3.5 h-3.5" />
                 {t('already_have_account')}
               </a>
               <a
                 href={`/register?redirect=/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
               >
                 <IconUserPlus className="w-3.5 h-3.5" />
                 {t('create_account_collaborate')}

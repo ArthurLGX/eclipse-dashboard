@@ -221,7 +221,7 @@ export default function AddClientModal({
         </div>
 
         {/* Section Statut et Actif - compact */}
-        <div className="flex items-center gap-4 p-3 bg-muted  border border-default">
+        <div className="flex items-center gap-4 p-3 rounded-lg bg-muted border border-default">
           {/* Sélecteur de statut */}
           <div className="flex-1">
             <label className="!text-secondary !text-xs mb-2 font-medium block">

@@ -431,7 +431,7 @@ export default function ImportClientsModal({ isOpen, onClose, onImport, t }: Imp
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="bg-card border border-default  w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+          className="rounded-lg bg-card border border-default w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
         >
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-default">

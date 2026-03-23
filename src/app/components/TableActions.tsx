@@ -141,7 +141,7 @@ export default function TableActions({
       {open && (
         <div
           ref={menuRef}
-          className="fixed z-[1000] p-2 w-fit min-w-[140px] bg-card border border-default shadow-lg py-1 animate-fade-in overflow-y-auto rounded-md"
+          className="fixed z-[1000] p-2 w-fit min-w-[140px] rounded-lg bg-card border border-default shadow-lg py-1 animate-fade-in overflow-y-auto"
           style={{
             top: menuPosition.top,
             left: menuPosition.left,

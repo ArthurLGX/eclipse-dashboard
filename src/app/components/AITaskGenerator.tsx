@@ -599,7 +599,7 @@ export default function AITaskGenerator({
                   {generatedTasks.map((task, taskIndex) => (
                     <div
                       key={taskIndex}
-                      className={`border  transition-colors ${
+                      className={`rounded-lg border transition-colors ${
                         task.selected ? 'border-success-border bg-success-light' : 'border-default bg-muted'
                       }`}
                     >
@@ -641,7 +641,7 @@ export default function AITaskGenerator({
                                 value={task.estimated_hours || ''}
                                 onChange={e => updateTaskField(taskIndex, 'estimated_hours', parseFloat(e.target.value) || undefined)}
                                 placeholder="0"
-                                className="w-16 px-2 py-1 bg-muted border border-default rounded !text-sm !text-center"
+                                className="w-16 px-2 py-1 rounded-lg bg-muted border border-default !text-sm !text-center"
                                 min="0"
                                 step="0.5"
                               />

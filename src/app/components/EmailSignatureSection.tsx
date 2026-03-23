@@ -349,7 +349,7 @@ export default function EmailSignatureSection() {
   
   if (loading) {
     return (
-      <div className="bg-card border border-default  p-6">
+      <div className="rounded-lg bg-card border border-default p-6">
         <div className="flex items-center justify-center py-12">
           <IconLoader2 className="w-8 h-8 !text-accent-text animate-spin" />
         </div>

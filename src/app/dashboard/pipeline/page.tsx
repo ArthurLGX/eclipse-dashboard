@@ -523,7 +523,7 @@ function ContactModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-default  hover:bg-hover transition-colors"
+              className="px-4 py-2 rounded-lg border border-default hover:bg-hover transition-colors"
             >
               {t('cancel') || 'Annuler'}
             </button>
@@ -971,7 +971,7 @@ export default function PipelinePage() {
           {onboardingCompleted && (
             <button
               onClick={() => { resetOnboarding(); setShowOnboarding(true); }}
-              className="flex items-center gap-1.5 px-2.5 py-2  border border-default !text-muted hover:!text-accent-text hover:bg-accent-light transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-default !text-muted hover:!text-accent-text hover:bg-accent-light transition-colors"
               title={t('replay_tutorial') || 'Revoir le tutoriel'}
             >
               <IconPlayerPlay size={16} />
@@ -980,7 +980,7 @@ export default function PipelinePage() {
           )}
           <button
             onClick={() => setShowKPIs(!showKPIs)}
-            className={`flex items-center gap-2 px-3 py-2  border transition-colors ${
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
               showKPIs 
                 ? 'bg-accent-light !text-accent-text border-accent' 
                 : 'bg-card !text-muted border-default hover:bg-hover'
@@ -992,7 +992,7 @@ export default function PipelinePage() {
           </button>
           <button
             onClick={() => setContactModal({ isOpen: true, contact: null })}
-            className="flex items-center gap-2 px-4 py-2 bg-accent !text-white  hover:bg-accent transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-accent !text-white hover:bg-accent transition-colors"
           >
             <IconPlus size={18} color="white" />
             {t('new_contact') || 'Nouveau contact'}

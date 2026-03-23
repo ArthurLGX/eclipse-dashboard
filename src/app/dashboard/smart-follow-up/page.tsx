@@ -846,7 +846,7 @@ export default function SmartFollowUpPage() {
                 <button
                   onClick={handleRefetchEmails}
                   disabled={syncingEmails}
-                  className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium  !text-primary border border-default hover:bg-hover transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium !text-primary border border-default hover:bg-hover transition-colors disabled:opacity-50"
                   title={t('sync_inbox') || 'Récupérer les emails reçus'}
                 >
                   <IconRefresh className={`w-3.5 h-3.5 ${syncingEmails ? 'animate-spin' : ''}`} />
@@ -854,7 +854,7 @@ export default function SmartFollowUpPage() {
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
-                  className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium  !text-primary border border-default hover:bg-hover transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium !text-primary border border-default hover:bg-hover transition-colors"
                 >
                   <IconTarget className="w-3.5 h-3.5" />
                   ICP
@@ -863,8 +863,8 @@ export default function SmartFollowUpPage() {
                   onClick={() => setShowInstructionDrawer(true)}
                   className={`flex items-center gap-1.5 px-3 py-2  !text-xs font-medium transition-colors ${
                     showInstructionDrawer
-                      ? 'bg-primary !text-white'
-                      : 'bg-secondary !text-primary border border-default hover:bg-hover'
+                      ? 'bg-primary !text-white rounded-lg'
+                      : 'bg-secondary !text-primary border border-default hover:bg-hover rounded-lg'
                   }`}
                 >
                   <span className={`relative flex ${hasAiInstruction ? 'animate-pulse' : ''}`}>
@@ -882,7 +882,7 @@ export default function SmartFollowUpPage() {
                 </button>
                 <button
                   onClick={() => setShowRulesModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
                 >
                   <IconFilter className="w-3.5 h-3.5" />
                   Filtres
@@ -891,7 +891,7 @@ export default function SmartFollowUpPage() {
                   <button
                     onClick={handleCleanNonICP}
                     disabled={cleaningNonICP}
-                    className="flex items-center gap-1.5 px-3 py-2  !text-xs font-medium bg-error/15 border border-error/30 !text-error hover:bg-error/25 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-error/15 border border-error/30 !text-error hover:bg-error/25 transition-colors disabled:opacity-50"
                     title={`Nettoyer ${nonQualifiedActions.length} emails non qualifiés`}
                   >
                     <IconTrash className="w-3.5 h-3.5" />
@@ -915,11 +915,11 @@ export default function SmartFollowUpPage() {
             </div>
 
             {/* Tabs pills */}
-            <div className="flex gap-0.5 bg-muted  p-0.5 w-fit">
+            <div className="flex gap-0.5 rounded-lg bg-muted p-0.5 w-fit">
               <button
                 onClick={() => setActiveTab('actions')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'actions' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
+                  activeTab === 'actions' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
                 }`}
               >
                 Leads
@@ -932,7 +932,7 @@ export default function SmartFollowUpPage() {
               <button
                 onClick={() => setActiveTab('tasks')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
+                  activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
                 }`}
               >
                 Tâches
@@ -945,7 +945,7 @@ export default function SmartFollowUpPage() {
               <button
                 onClick={() => setActiveTab('sent')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'sent' ? 'bg-card !text-primary shadow-sm border border-default' : '!text-muted hover:!text-primary'
+                  activeTab === 'sent' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
                 }`}
               >
                 <IconSend className="w-3.5 h-3.5" />
@@ -1086,7 +1086,7 @@ export default function SmartFollowUpPage() {
                     value={taskSearch}
                     onChange={(e) => setTaskSearch(e.target.value)}
                     placeholder="Rechercher…"
-                    className="w-full !pl-9 !pr-3 py-2 !text-sm border border-default  bg-card focus:outline-none focus:border-primary"
+                    className="w-full !pl-9 !pr-3 py-2 rounded-lg !text-sm border border-default bg-card focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div className="flex gap-1">
@@ -1096,8 +1096,8 @@ export default function SmartFollowUpPage() {
                       onClick={() => setFilterPrio(p)}
                       className={`px-2.5 py-1.5  !text-xs font-medium transition-all whitespace-nowrap ${
                         filterPrio === p
-                          ? 'bg-muted border border-default !text-primary'
-                          : 'bg-card border border-default !text-muted hover:!text-primary'
+                          ? 'bg-muted border border-default !text-primary rounded-lg'
+                          : 'bg-card border border-default !text-muted hover:!text-primary rounded-lg'
                       }`}
                     >
                       {p !== 'Toutes' && <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1 ${

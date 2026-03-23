@@ -284,7 +284,7 @@ export default function NotificationBell({ embedded = false }: NotificationBellP
       >
         <button
           onClick={handleToggle}
-          className="relative p-3  bg-card backdrop-blur-sm border border-default hover:bg-hover !text-muted hover:!text-primary transition-all shadow-theme-lg"
+          className="relative p-3 rounded-lg bg-card backdrop-blur-sm border border-default hover:bg-hover !text-muted hover:!text-primary transition-all shadow-theme-lg"
         >
           <IconBell className="w-5 h-5" />
           
@@ -308,7 +308,7 @@ export default function NotificationBell({ embedded = false }: NotificationBellP
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] bg-card border border-default  shadow-2xl overflow-hidden"
+              className="absolute right-0 top-full mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] rounded-lg bg-card border border-default shadow-2xl overflow-hidden"
             >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-default">

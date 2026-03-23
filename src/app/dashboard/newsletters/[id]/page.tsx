@@ -266,7 +266,7 @@ export default function NewsletterDetailPage() {
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => router.push('/dashboard/newsletters')}
-              className="w-8 h-8 rounded-md border border-default flex items-center justify-center !text-muted hover:bg-hover hover:!text-primary transition-colors"
+              className="w-8 h-8 rounded-lg border border-default flex items-center justify-center !text-muted hover:bg-hover hover:!text-primary transition-colors"
               title={t('back') || 'Retour'}
             >
               <IconArrowLeft className="w-3.5 h-3.5" stroke={1.8} />
@@ -278,19 +278,19 @@ export default function NewsletterDetailPage() {
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            <button onClick={handleExportHtml} className="h-8 px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
+            <button onClick={handleExportHtml} className="h-8 px-3 rounded-lg border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
               <IconDownload className="w-3 h-3" stroke={1.5} /> Exporter
             </button>
-            <button onClick={handleDuplicate} className="h-8 px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
+            <button onClick={handleDuplicate} className="h-8 px-3 rounded-lg border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
               <IconCopy className="w-3 h-3" stroke={1.5} /> Dupliquer
             </button>
-            <button onClick={handleEdit} className="h-8 px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
+            <button onClick={handleEdit} className="h-8 px-3 rounded-lg border border-default text-xs !text-muted flex items-center gap-1.5 hover:bg-hover hover:!text-primary">
               <IconPencil className="w-3 h-3" stroke={1.5} /> Modifier
             </button>
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="h-8 px-3.5 rounded-md border border-[rgba(181,58,42,0.25)] text-xs text-[#B53A2A] flex items-center gap-1.5 hover:bg-[#FDECEA] hover:border-[rgba(181,58,42,0.4)] disabled:opacity-50"
+              className="h-8 px-3.5 rounded-lg border border-[rgba(181,58,42,0.25)] text-xs text-[#B53A2A] flex items-center gap-1.5 hover:bg-[#FDECEA] hover:border-[rgba(181,58,42,0.4)] disabled:opacity-50"
             >
               <IconTrash className="w-3 h-3" stroke={1.5} /> {deleting ? '...' : 'Supprimer'}
             </button>
@@ -316,7 +316,7 @@ export default function NewsletterDetailPage() {
               </p>
             </div>
             {newsletter.n_status === 'sent' && (
-              <button className="h-8 px-3.5 rounded-md btn-primary text-xs font-medium flex items-center gap-1.5 hover:opacity-90 shrink-0">
+              <button className="h-8 px-3.5 rounded-lg btn-primary text-xs font-medium flex items-center gap-1.5 hover:opacity-90 shrink-0">
                 <IconSend className="w-3 h-3" stroke={1.8} /> Renvoyer
               </button>
             )}
@@ -411,13 +411,13 @@ export default function NewsletterDetailPage() {
                 <div className="flex gap-1.5">
                   <button
                     onClick={() => setPreviewDevice('desktop')}
-                    className={`h-6 px-2.5 rounded-md border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'desktop' ? 'btn-primary' : 'border-default !text-muted hover:bg-hover'}`}
+                    className={`h-6 px-2.5 rounded-lg border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'desktop' ? 'btn-primary' : 'border-default !text-muted hover:bg-hover'}`}
                   >
                     <IconDeviceDesktop className="w-2.5 h-2.5" stroke={1.4} /> Desktop
                   </button>
                   <button
                     onClick={() => setPreviewDevice('mobile')}
-                    className={`h-6 px-2.5 rounded-md border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'mobile' ? 'btn-primary' : 'border-default !text-muted hover:bg-hover'}`}
+                    className={`h-6 px-2.5 rounded-lg border text-[11px] flex items-center gap-1.5 transition-colors ${previewDevice === 'mobile' ? 'btn-primary' : 'border-default !text-muted hover:bg-hover'}`}
                   >
                     <IconDeviceMobile className="w-2.5 h-2.5" stroke={1.4} /> Mobile
                   </button>
@@ -429,7 +429,7 @@ export default function NewsletterDetailPage() {
                   <span className="w-2 h-2 rounded-full bg-[#FFBD2E]" />
                   <span className="w-2 h-2 rounded-full bg-[#27C93F]" />
                 </div>
-                <div className="flex-1 bg-card border border-default rounded-md h-[22px] px-2.5 flex items-center text-[10px] !text-muted">mail.google.com</div>
+                <div className="flex-1 bg-card border border-default rounded-lg h-[22px] px-2.5 flex items-center text-[10px] !text-muted">mail.google.com</div>
                 <span className="text-[10px] !text-muted">Aperçu boîte mail</span>
               </div>
               <div className="p-4 flex justify-center">
@@ -510,7 +510,7 @@ export default function NewsletterDetailPage() {
                 <div className="flex flex-col items-center justify-center gap-2 py-7 px-4 bg-card border border-default rounded-[14px]">
                   <IconUsers className="w-7 h-7 !text-muted opacity-60" stroke={1.2} />
                   <p className="text-xs !text-muted text-center">Aucun destinataire<br />enregistré pour cette newsletter</p>
-                  <button onClick={handleEdit} className="mt-1 text-[11px] h-8 px-3 rounded-md border border-default !text-muted hover:bg-hover hover:!text-primary">
+                  <button onClick={handleEdit} className="mt-1 text-[11px] h-8 px-3 rounded-lg border border-default !text-muted hover:bg-hover hover:!text-primary">
                     + Ajouter
                   </button>
                 </div>
@@ -540,16 +540,16 @@ export default function NewsletterDetailPage() {
             <div>
               <h3 className="text-[11px] font-semibold uppercase tracking-widest !text-muted mb-2.5">Actions</h3>
               <div className="flex flex-col gap-1.5">
-                <button onClick={handleDuplicate} className="w-full h-[34px] px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
+                <button onClick={handleDuplicate} className="w-full h-[34px] px-3 rounded-lg border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
                   <IconCopy className="w-3.5 h-3.5" stroke={1.4} /> Dupliquer la newsletter
                 </button>
-                <button onClick={handleExportHtml} className="w-full h-[34px] px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
+                <button onClick={handleExportHtml} className="w-full h-[34px] px-3 rounded-lg border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
                   <IconDownload className="w-3.5 h-3.5" stroke={1.4} /> Exporter le HTML
                 </button>
-                <button onClick={handleEdit} className="w-full h-[34px] px-3 rounded-md border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
+                <button onClick={handleEdit} className="w-full h-[34px] px-3 rounded-lg border border-default text-xs !text-muted flex items-center gap-2 hover:bg-hover hover:!text-primary">
                   <IconPencil className="w-3.5 h-3.5" stroke={1.4} /> Modifier le brouillon
                 </button>
-                <button onClick={handleDelete} disabled={deleting} className="w-full h-[34px] px-3 rounded-md border border-[rgba(181,58,42,0.25)] text-xs text-[#B53A2A] flex items-center gap-2 hover:bg-[#FDECEA] hover:border-[rgba(181,58,42,0.4)] disabled:opacity-50">
+                <button onClick={handleDelete} disabled={deleting} className="w-full h-[34px] px-3 rounded-lg border border-[rgba(181,58,42,0.25)] text-xs text-[#B53A2A] flex items-center gap-2 hover:bg-[#FDECEA] hover:border-[rgba(181,58,42,0.4)] disabled:opacity-50">
                   <IconTrash className="w-3.5 h-3.5" stroke={1.4} /> Supprimer
                 </button>
               </div>

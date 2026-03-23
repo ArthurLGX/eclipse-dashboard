@@ -395,7 +395,7 @@ export default function QuoteToProjectModal({
                   <div className="flex gap-3 mt-6 pt-4 border-t border-default">
                     <button
                       onClick={onClose}
-                      className="flex-1 py-3 border border-default !text-secondary  hover:bg-hover transition-colors"
+                      className="flex-1 py-3 rounded-lg border border-default !text-secondary hover:bg-hover transition-colors"
                     >
                       {t('later') || 'Plus tard'}
                     </button>
@@ -454,7 +454,7 @@ export default function QuoteToProjectModal({
                   </div>
 
                   {/* Timing scope */}
-                  <div className="p-3  border border-default bg-muted !space-y-3">
+                  <div className="p-3 rounded-lg border border-default bg-muted !space-y-3">
                     <div className="flex items-center gap-2 !text-sm font-medium !text-secondary">
                       <IconClock className="w-4 h-4" />
                       {t('timing_scope') || 'Périmètre temporel'} *
@@ -561,7 +561,7 @@ export default function QuoteToProjectModal({
                   <div className="flex gap-3 mt-6 pt-4 border-t border-default">
                     <button
                       onClick={() => setStep('options')}
-                      className="flex-1 py-3 border border-default !text-secondary  hover:bg-hover transition-colors"
+                      className="flex-1 py-3 rounded-lg border border-default !text-secondary hover:bg-hover transition-colors"
                     >
                       {t('back') || 'Retour'}
                     </button>
@@ -611,7 +611,7 @@ export default function QuoteToProjectModal({
                   <div className="flex gap-3">
                     <button
                       onClick={onClose}
-                      className="flex-1 py-3 border border-default !text-secondary  hover:bg-hover transition-colors"
+                      className="flex-1 py-3 rounded-lg border border-default !text-secondary hover:bg-hover transition-colors"
                     >
                       {t('close') || 'Fermer'}
                     </button>
