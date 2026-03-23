@@ -47,16 +47,16 @@ function EmailCard({
       initial={{ opacity: 0, x: -20, scale: 0.95 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
       transition={{ delay: animationDelay, duration: 0.3 }}
-      className="rounded-lg border overflow-hidden"
-    >
-      <div
-        className={`border p-3 space-y-1.5 transition-colors duration-500 ${
+      className={`rounded-lg border p-3 overflow-hidden transition-colors duration-500  ${
           phase === 'analyzing'
             ? 'bg-info border-info'
             : isLead
               ? 'bg-success border-success'
               : 'bg-danger border-danger'
         }`}
+    >
+      <div
+        className={` space-y-1.5 `}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
