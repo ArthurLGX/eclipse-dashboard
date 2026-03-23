@@ -64,19 +64,24 @@ export async function GET(request: NextRequest) {
   }
 }
 
+function toArray(x: unknown): unknown[] {
+  return Array.isArray(x) ? x : [];
+}
+
 function normalizeDigest(raw: Record<string, unknown>): Record<string, unknown> {
   const user = raw.user as { id?: number } | undefined;
+  const hotLeads = toArray(raw.hotLeads ?? raw.hot_leads);
+  const todayRdvs = toArray(raw.todayRdvs ?? raw.today_rdvs);
   return {
     userId: user?.id ?? raw.user_id,
     date: raw.date,
     generatedAt: raw.generatedAt ?? raw.generated_at ?? raw.createdAt,
-    hotLeads: raw.hotLeads ?? raw.hot_leads ?? [],
-    stalledLeads: raw.stalledLeads ?? raw.stalled_leads ?? [],
-    todayRdvs: raw.todayRdvs ?? raw.today_rdvs ?? [],
+    hotLeads,
+    stalledLeads: toArray(raw.stalledLeads ?? raw.stalled_leads),
+    todayRdvs,
     totalActionable:
       typeof raw.totalActionable === 'number'
         ? raw.totalActionable
-        : (raw.hotLeads ?? raw.hot_leads ?? []).length +
-          (raw.todayRdvs ?? raw.today_rdvs ?? []).length,
+        : hotLeads.length + todayRdvs.length,
   };
 }
