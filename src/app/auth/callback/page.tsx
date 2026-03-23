@@ -4,6 +4,7 @@ import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
+import { redirectAfterLogin } from '@/lib/auth-helpers';
 import { motion } from 'framer-motion';
 
 function CallbackContent() {
@@ -15,13 +16,14 @@ function CallbackContent() {
 
   useEffect(() => {
     if (processedRef.current) return;
-    const token = searchParams.get('token');
+
+    const token = searchParams.get('token') || searchParams.get('jwt') || searchParams.get('access_token');
     const userParam = searchParams.get('user');
     const error = searchParams.get('error');
 
     if (error) {
       processedRef.current = true;
-      showGlobalPopup(`Erreur d'authentification: ${error}`, 'error');
+      showGlobalPopup('Connexion Google échouée. Réessayez.', 'error');
       router.replace('/login');
       return;
     }
@@ -40,10 +42,10 @@ function CallbackContent() {
         const user = JSON.parse(userParam);
         await login(user, token);
         showGlobalPopup('Connexion Google réussie !', 'success');
-        router.replace('/');
+        await redirectAfterLogin(user.id, router);
       } catch (err) {
-        console.error('Error processing auth callback:', err);
-        showGlobalPopup('Erreur lors de la connexion', 'error');
+        console.error('[OAuth Callback] Erreur:', err);
+        showGlobalPopup('Erreur lors de la connexion. Réessayez.', 'error');
         router.replace('/login');
       }
     };

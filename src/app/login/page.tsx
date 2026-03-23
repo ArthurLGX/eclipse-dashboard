@@ -11,13 +11,9 @@ import {
   requestLoginCode,
   verifyLoginCode,
   fetchCreateAccount,
-  fetchSubscriptionsUser,
 } from '@/lib/api';
+import { redirectAfterLogin } from '@/lib/auth-helpers';
 import { useLanguage } from '@/app/context/LanguageContext';
-
-interface SubscriptionData {
-  subscription_status: string;
-}
 
 type Step = 'email' | 'code';
 
@@ -111,19 +107,7 @@ function LoginContent() {
 
   useEffect(() => {
     if (!hasHydrated || !authenticated || !user) return;
-    const checkSubscriptionAndRedirect = async () => {
-      try {
-        const subscription = await fetchSubscriptionsUser(user.id) as { data?: SubscriptionData[] };
-        if (subscription?.data?.length && (subscription.data[0].subscription_status === 'active' || subscription.data[0].subscription_status === 'trial')) {
-          router.push('/dashboard');
-        } else {
-          router.push('/pricing');
-        }
-      } catch {
-        router.push('/pricing');
-      }
-    };
-    checkSubscriptionAndRedirect();
+    redirectAfterLogin(user.id, router);
   }, [authenticated, hasHydrated, user, router]);
 
   const handleGoogleLogin = () => {
@@ -162,9 +146,16 @@ function LoginContent() {
     setIsSubmitting(true);
     try {
       const data = await fetchCreateAccount(username, email, password);
-      if (!data.error) {
-        router.push('/login');
-        showGlobalPopup(t('register_success_login') || 'Inscription réussie, connectez-vous pour continuer', 'success');
+      if (data.error) {
+        const errMsg = data.error?.message || (t('register_failed') || 'Erreur lors de l\'inscription');
+        setError(errMsg);
+        showGlobalPopup(errMsg, 'error');
+        return;
+      }
+      if (data.jwt && data.user) {
+        await login(data.user, data.jwt);
+        showGlobalPopup(language === 'fr' ? 'Bienvenue ! Votre compte est créé.' : 'Welcome! Your account has been created.', 'success');
+        await redirectAfterLogin(data.user.id, router);
       } else {
         setError(t('register_failed') || 'Erreur lors de l\'inscription');
         showGlobalPopup(t('register_failed') || 'Erreur lors de l\'inscription', 'error');

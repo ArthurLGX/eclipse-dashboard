@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  IconSparkles,
   IconCheck,
   IconArrowRight,
   IconArrowLeft,
@@ -21,10 +21,6 @@ import {
   IconShoppingCart,
   IconTool,
   IconChartBar,
-  IconClock,
-  IconCurrencyEuro,
-  IconUser,
-  IconTemplate,
 } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useModalFocus } from '@/hooks/useModalFocus';
@@ -588,9 +584,11 @@ export default function UnifiedOnboardingModal() {
     if (step === 'business' && selectedBusinessType) {
       setStep('objective');
     } else if (step === 'objective' && selectedObjective) {
-      // Pre-fill project name based on objective
-      const objLabel = language === 'en' ? selectedObjective.labelEn : selectedObjective.label;
-      setProjectName(`${objLabel} - ${clientName || 'Nouveau client'}`);
+      // Pre-fill project name based on objective (format: "Objectif 2026")
+      if (!projectName.trim()) {
+        const objLabel = language === 'en' ? selectedObjective.labelEn : selectedObjective.label;
+        setProjectName(`${objLabel} ${new Date().getFullYear()}`);
+      }
       setStep('project');
     } else if (step === 'project') {
       handleCreateProject();
@@ -600,6 +598,12 @@ export default function UnifiedOnboardingModal() {
   const handleBack = () => {
     if (step === 'objective') setStep('business');
     else if (step === 'project') setStep('objective');
+  };
+
+  const goToStep = (targetIndex: number) => {
+    if (targetIndex >= stepIndex) return;
+    const steps: OnboardingStep[] = ['business', 'objective', 'project', 'success'];
+    setStep(steps[targetIndex]);
   };
 
   // Create client, project, and tasks
@@ -773,146 +777,118 @@ export default function UnifiedOnboardingModal() {
   const stepIndex = ['business', 'objective', 'project', 'success'].indexOf(step);
   const progress = ((stepIndex + 1) / 4) * 100;
 
+  const stepLabels = [
+    t('step_business') || 'Métier',
+    t('step_objective') || 'Objectif',
+    t('step_project') || 'Projet',
+    t('onboarding_complete') || 'Terminé',
+  ];
+
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-hidden"
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-5 overflow-hidden bg-black/55 backdrop-blur-sm"
       >
         <motion.div
           ref={modalRef}
           tabIndex={-1}
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-4xl bg-card border border-default  shadow-2xl max-h-[90vh] flex flex-col outline-none overflow-hidden"
+          className="relative w-full max-w-[560px] max-h-[90vh] flex flex-col outline-none overflow-hidden rounded-[20px] bg-card border border-default shadow-2xl"
         >
-          {/* Scrollable content wrapper */}
-          <div 
-            className="flex-1 overflow-y-auto scrollbar-visible"
-            style={{ overscrollBehavior: 'contain' }}
-          >
-          {/* Header */}
-          <div className="relative px-8 pt-8 pb-6 bg-gradient-to-br from-accent via-accent-lightto-transparent">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-accent ">
-                <IconSparkles className="w-8 h-8 !text-white" />
+          {/* Header — Logo + Skip */}
+          <div className="flex items-center justify-between px-5 pt-[18px] shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-[30px] h-[30px] rounded-lg flex items-center justify-center overflow-hidden bg-[var(--color-primary)] dark:!bg-[var(--bg-input)]"
+              >
+                <Image src="/images/logo/eclipse-logo.png" alt="" width={18} height={18} className="object-contain invert dark:invert" />
               </div>
-              <div>
-                <h2 className="!text-2xl font-bold !text-primary">
-                  {step === 'success' 
-                    ? (t('onboarding_success_title') || '🎉 Votre espace est prêt !')
-                    : (t('unified_onboarding_title') || 'Bienvenue sur Eclipse !')
-                  }
-                </h2>
-                <p className="!text-muted">
-                  {step === 'success'
-                    ? (t('onboarding_success_subtitle') || 'Votre premier projet est configuré')
-                    : (t('unified_onboarding_subtitle') || 'Créons votre premier projet ensemble')
-                  }
-                </p>
-              </div>
+              <span className="font-bold text-[14px] tracking-tight !text-primary">
+                Eclipse Studio
+              </span>
             </div>
-
-            {/* Progress bar */}
-            {step !== 'success' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between !text-sm">
-                  <div className="flex items-center gap-4">
-                    {['business', 'objective', 'project'].map((s, i) => (
-                      <div 
-                        key={s}
-                        className={`flex items-center gap-2 ${
-                          stepIndex > i ? 'text-success' : 
-                          stepIndex === i ? 'text-accent' : 'text-muted'
-                        }`}
-                      >
-                        <div className={`
-                          w-6 h-6 rounded-full flex items-center justify-center !text-xs font-medium
-                          ${stepIndex > i ? 'bg-success !text-white' : 
-                            stepIndex === i ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
-                        `}>
-                          {stepIndex > i ? <IconCheck className="w-4 h-4" /> : i + 1}
-                        </div>
-                        <span className="hidden sm:inline">
-                          {i === 0 ? (t('step_business') || 'Métier') :
-                           i === 1 ? (t('step_objective') || 'Objectif') :
-                           (t('step_project') || 'Projet')}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <span className="!text-muted">{Math.round(progress)}%</span>
-                </div>
-                <div className="h-2 bg-accent rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    className="h-full bg-accent rounded-full"
-                  />
-                </div>
-              </div>
-            )}
+            <button
+              type="button"
+              onClick={handleSkip}
+              disabled={isSaving}
+              className="font-mono text-[11px] py-1 px-2 rounded-md transition-colors disabled:opacity-50 !text-muted hover:bg-muted"
+            >
+              {t('skip_onboarding') || 'Configurer plus tard'} →
+            </button>
           </div>
 
-          {/* Content */}
-          <div className="p-8">
+          {/* Progress bar — thin */}
+          {step !== 'success' && (
+            <div className="flex items-center gap-2.5 px-5 pt-4 shrink-0">
+              <div className="flex-1 h-[3px] rounded-full overflow-hidden bg-muted">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="h-full rounded-full bg-primary"
+                />
+              </div>
+              <span className="font-mono text-[10px] whitespace-nowrap !text-muted">
+                {stepIndex + 1} / 4
+              </span>
+            </div>
+          )}
+
+          {/* Body — scrollable */}
+          <div className="flex-1 overflow-y-auto px-5 pt-5 pb-4" style={{ overscrollBehavior: 'contain' }}>
+          <div className="pb-2">
             <AnimatePresence mode="wait">
               {/* Step 1: Business Type */}
               {step === 'business' && (
                 <motion.div
                   key="business"
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  <div className="!text-center">
-                    <h3 className="!text-xl font-bold !text-primary">
-                      {t('what_is_your_business') || 'Quel est votre métier ?'}
-                    </h3>
-                    <p className="!text-muted mt-2">
-                      {t('business_type_desc') || 'Nous adapterons votre expérience en conséquence'}
-                    </p>
-                  </div>
+                  <p className="font-mono text-[10px] uppercase tracking-wider mb-2 !text-muted">
+                    Étape 1 — {stepLabels[0]}
+                  </p>
+                  <h2 className="text-[22px] font-bold tracking-tight leading-tight mb-1.5 !text-primary">
+                    {t('what_is_your_business') || 'Quel est votre métier ?'}
+                  </h2>
+                  <p className="text-[13px] leading-relaxed mb-6 !text-muted">
+                    {t('business_type_desc') || 'Nous adapterons votre expérience en conséquence'}
+                  </p>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 gap-2">
                     {(Object.keys(BUSINESS_CONFIGS) as BusinessType[]).map((type, index) => {
                       const isSelected = selectedBusinessType === type;
                       return (
                         <motion.button
                           key={type}
-                          initial={{ opacity: 0, y: 20 }}
+                          type="button"
+                          initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.05 }}
+                          transition={{ delay: index * 0.03 }}
                           onClick={() => handleSelectBusinessType(type)}
                           className={`
-                            relative flex flex-col items-center gap-3 p-5  border-2 transition-all cursor-pointer
+                            flex items-center gap-2.5 p-3.5 rounded-lg border transition-all cursor-pointer text-left
                             ${isSelected 
-                              ? 'border-accent bg-accent-light !text-accent-text shadow-lg' 
-                              : 'border-default bg-card hover:border-accent hover:bg-accent-light'
+                              ? 'border-primary shadow-[0_0_0_3px_var(--color-primary-border)]' 
+                              : 'border-default hover:border-primary/50'
                             }
                           `}
+                          style={{ background: isSelected ? 'var(--bg-muted)' : 'var(--bg-card)' }}
                         >
-                          {isSelected && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="absolute top-2 right-2 w-6 h-6 bg-accent rounded-full flex items-center justify-center"
-                            >
-                              <IconCheck className="w-4 h-4 !text-white" />
-                            </motion.div>
-                          )}
-                          <div className={`
-                            p-3  transition-colors
-                            ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
-                          `}>
+                          <div
+                            className={`w-7 h-7 rounded-[7px] flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-primary !text-primary-text' : 'bg-muted !text-muted'}`}
+                          >
                             {BUSINESS_ICONS[type]}
                           </div>
-                          <span className={`font-medium !text-center !text-sm ${isSelected ? 'text-accent' : 'text-primary'}`}>
+                          <span className="font-medium text-[13px] !text-primary">
                             {getBusinessLabel(type)}
                           </span>
                         </motion.button>
@@ -926,76 +902,58 @@ export default function UnifiedOnboardingModal() {
               {step === 'objective' && (
                 <motion.div
                   key="objective"
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  <div className="!text-center">
-                    <h3 className="!text-xl font-bold !text-primary">
-                      {t('what_is_your_objective') || 'Quel est votre objectif ?'}
-                    </h3>
-                    <p className="!text-muted mt-2">
-                      {t('objective_desc') || 'Nous créerons un projet adapté avec des tâches pré-définies'}
-                    </p>
-                  </div>
+                  <p className="font-mono text-[10px] uppercase tracking-wider mb-2 !text-muted">
+                    Étape 2 — {stepLabels[1]}
+                  </p>
+                  <h2 className="text-[22px] font-bold tracking-tight leading-tight mb-1.5 !text-primary">
+                    {t('what_is_your_objective') || 'Votre premier projet sera…'}
+                  </h2>
+                  <p className="text-[13px] leading-relaxed mb-6 !text-muted">
+                    {t('objective_desc') || 'On prépare le bon template avec les tâches adaptées à votre activité.'}
+                  </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="flex flex-col gap-1.5">
                     {objectives.map((objective, index) => {
                       const isSelected = selectedObjective?.id === objective.id;
                       const template = PROJECT_TEMPLATES[objective.templateId];
                       const stats = template ? calculateTemplateTotals(template) : null;
+                      const subText = stats
+                        ? `${stats.taskCount} tâches · ~${stats.totalHours}h`
+                        : (language === 'en' ? objective.descriptionEn : objective.description);
 
                       return (
                         <motion.button
                           key={objective.id}
-                          initial={{ opacity: 0, y: 20 }}
+                          type="button"
+                          initial={{ opacity: 0, y: 6 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
+                          transition={{ delay: index * 0.05 }}
                           onClick={() => setSelectedObjective(objective)}
                           className={`
-                            relative flex flex-col items-start gap-3 p-5  border-2 transition-all cursor-pointer !text-left
-                            ${isSelected 
-                              ? 'border-accent bg-accent-light !text-accent-text shadow-lg' 
-                              : 'border-default bg-card hover:border-accent hover:bg-accent-light'
-                            }
+                            flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer text-left
+                            ${isSelected ? 'border-primary bg-muted' : 'border-default hover:border-primary/50 bg-card'}
                           `}
                         >
-                          {isSelected && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="absolute top-3 right-3 w-6 h-6 bg-accent rounded-full flex items-center justify-center"
-                            >
-                              <IconCheck className="w-4 h-4 !text-white" />
-                            </motion.div>
-                          )}
-                          <div className={`
-                            p-3  transition-colors
-                            ${isSelected ? 'bg-accent !text-white' : 'bg-muted !text-muted-foreground'}
-                          `}>
-                            {objective.icon}
+                          <div
+                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'border-primary bg-primary' : 'border-default'}`}
+                          >
+                            {isSelected && (
+                              <div className="w-1.5 h-1.5 rounded-full !bg-[var(--color-primary-text)]" />
+                            )}
                           </div>
-                          <div>
-                            <h4 className={`font-semibold ${isSelected ? 'text-accent' : 'text-primary'}`}>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-[13px] !text-primary">
                               {language === 'en' ? objective.labelEn : objective.label}
-                            </h4>
-                            <p className="!text-sm !text-muted mt-1">
-                              {language === 'en' ? objective.descriptionEn : objective.description}
-                            </p>
-                          </div>
-                          {stats && (
-                            <div className="flex items-center gap-3 !text-xs !text-muted mt-2">
-                              <span className="flex items-center gap-1">
-                                <IconTemplate className="w-3 h-3" />
-                                {stats.taskCount} {t('onboarding_tasks') || 'tâches'}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <IconClock className="w-3 h-3" />
-                                {stats.totalHours}h
-                              </span>
                             </div>
-                          )}
+                            <div className="font-mono text-[10px] mt-0.5 truncate !text-muted">
+                              {subText}
+                            </div>
+                          </div>
                         </motion.button>
                       );
                     })}
@@ -1007,121 +965,94 @@ export default function UnifiedOnboardingModal() {
               {step === 'project' && selectedTemplate && templateStats && (
                 <motion.div
                   key="project"
-                  initial={{ opacity: 0, x: 20 }}
+                  initial={{ opacity: 0, x: 12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="space-y-6"
+                  exit={{ opacity: 0, x: -12 }}
+                  transition={{ duration: 0.25 }}
                 >
-                  <div className="!text-center">
-                    <h3 className="!text-xl font-bold !text-primary">
-                      {t('create_first_project') || 'Créez votre premier projet'}
-                    </h3>
-                    <p className="!text-muted mt-2">
-                      {t('project_details_desc') || 'Quelques informations pour commencer'}
-                    </p>
+                  <p className="font-mono text-[10px] uppercase tracking-wider mb-2 !text-muted">
+                    Étape 3 — {stepLabels[2]}
+                  </p>
+                  <h2 className="text-[22px] font-bold tracking-tight leading-tight mb-1.5 !text-primary">
+                    {t('create_first_project') || 'Nommez votre projet'}
+                  </h2>
+                  <p className="text-[13px] leading-relaxed mb-6 !text-muted">
+                    {t('project_details_desc') || 'Ces infos servent à créer votre client et votre projet. Vous pouvez tout modifier après.'}
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                      <label className="block text-[12px] font-semibold mb-1.5 !text-primary">
+                        {t('client_name') || 'Nom du client'}
+                      </label>
+                      <input
+                        type="text"
+                        value={clientName}
+                        onChange={(e) => setClientName(e.target.value)}
+                        placeholder="ex: Mairie de Lyon"
+                        className="w-full px-3 py-2.5 rounded-lg border text-[13px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[12px] font-semibold mb-1.5 !text-primary">
+                        {t('onboarding_hourly_rate') || 'Taux horaire'}
+                      </label>
+                      <input
+                        type="number"
+                        value={hourlyRate}
+                        onChange={(e) => setHourlyRate(Number(e.target.value))}
+                        min={0}
+                        placeholder="ex: 75"
+                        className="w-full px-3 py-2.5 rounded-lg border text-[13px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
+                      />
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Left: Form */}
-                    <div className="space-y-5">
-                      <div>
-                        <label className="block !text-sm font-medium !text-primary mb-2">
-                          <IconUser className="w-4 h-4 inline mr-2" />
-                          {t('client_name') || 'Nom du client'}
-                        </label>
-                        <input
-                          type="text"
-                          value={clientName}
-                          onChange={(e) => setClientName(e.target.value)}
-                          placeholder={t('client_name_placeholder') || 'Ex: Entreprise ABC'}
-                          className="w-full px-4 py-3 bg-page border border-default  focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
-                        />
-                      </div>
+                  <div className="mb-5">
+                    <label className="block text-[12px] font-semibold mb-1 !text-primary">
+                      {t('onboarding_project_name') || 'Nom du projet'}
+                    </label>
+                    <p className="font-mono text-[10px] mb-1.5 !text-muted">
+                      Pré-rempli selon votre choix précédent
+                    </p>
+                    <input
+                      type="text"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                      placeholder="ex: Site vitrine 2026"
+                      className="w-full px-3 py-2.5 rounded-lg border text-[13px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
+                    />
+                  </div>
 
-                      <div>
-                        <label className="block !text-sm font-medium !text-primary mb-2">
-                          <IconBriefcase className="w-4 h-4 inline mr-2" />
-                          {t('onboarding_project_name') || 'Nom du projet'}
-                        </label>
-                        <input
-                          type="text"
-                          value={projectName}
-                          onChange={(e) => setProjectName(e.target.value)}
-                          placeholder={language === 'en' ? selectedTemplate.nameEn : selectedTemplate.name}
-                          className="w-full px-4 py-3 bg-page border border-default  focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block !text-sm font-medium !text-primary mb-2">
-                          <IconCurrencyEuro className="w-4 h-4 inline mr-2" />
-                          {t('onboarding_hourly_rate') || 'Taux horaire (€/h)'}
-                        </label>
-                        <input
-                          type="number"
-                          value={hourlyRate}
-                          onChange={(e) => setHourlyRate(Number(e.target.value))}
-                          min={0}
-                          className="w-full px-4 py-3 bg-page border border-default  focus:border-accent focus:ring-1 focus:ring-accent-light transition-all"
-                        />
-                      </div>
+                  {/* Preview card — compact */}
+                  <div className="rounded-lg border p-4 bg-muted border-default">
+                    <p className="font-mono text-[9px] uppercase tracking-wider mb-2.5 !text-muted">
+                      {t('onboarding_template_preview') || 'Aperçu de ce qui sera créé'}
+                    </p>
+                    <div className="flex items-center justify-between text-[12px] py-1 !text-muted">
+                      <span>Client</span>
+                      <span className="font-semibold font-mono text-[11px] !text-primary">
+                        {clientName || '—'}
+                      </span>
                     </div>
-
-                    {/* Right: Template Preview */}
-                    <div className="bg-muted-light  p-6 !space-y-4">
-                      <h4 className="font-semibold !text-primary flex items-center gap-2">
-                        <IconTemplate className="w-5 h-5 !text-accent-text" />
-                        {t('onboarding_template_preview') || 'Aperçu du template'}
-                      </h4>
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="!text-muted">{t('onboarding_tasks') || 'Tâches'}</span>
-                          <span className="font-medium !text-primary">{templateStats.taskCount}</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="!text-muted">{t('onboarding_estimated_time') || 'Temps estimé'}</span>
-                          <span className="font-medium !text-primary">{templateStats.totalHours}h</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="!text-muted">{t('onboarding_duration') || 'Durée'}</span>
-                          <span className="font-medium !text-primary">{selectedTemplate.estimated_duration_days} {t('onboarding_days') || 'jours'}</span>
-                        </div>
-                        <div className="flex items-center justify-between py-2 border-b border-default">
-                          <span className="!text-muted">{t('onboarding_phases') || 'Phases'}</span>
-                          <span className="font-medium !text-primary">{templateStats.phases.length}</span>
-                        </div>
-                      </div>
-
-                      {/* Estimated Value */}
-                        <div className="mt-4 p-4 bg-accent-light border border-accent ">
-                        <div className="flex items-center justify-between">
-                          <span className="!text-sm !text-accent-text font-medium">
-                            {t('onboarding_estimated_value') || 'Valeur estimée'}
-                          </span>
-                          <span className="!text-2xl font-bold !text-accent-text">
-                            {estimatedValue.toLocaleString('fr-FR')} €
-                          </span>
-                        </div>
-                        <p className="!text-xs !text-muted mt-1">
-                          {templateStats.totalHours}h × {hourlyRate}€/h
-                        </p>
-                      </div>
-
-                      {/* Phases */}
-                      <div className="mt-4">
-                        <p className="!text-sm !text-muted mb-2">{t('onboarding_phases') || 'Phases'} :</p>
-                        <div className="flex flex-wrap gap-2">
-                          {templateStats.phases.map((phase) => (
-                            <span 
-                              key={phase}
-                              className="px-3 py-1 bg-accent-light border border-accent !text-accent-text !text-xs rounded-full"
-                            >
-                              {phase}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-between text-[12px] py-1 !text-muted">
+                      <span>Projet</span>
+                      <span className="font-semibold font-mono text-[11px] truncate max-w-[180px] !text-primary">
+                        {projectName || '—'}
+                      </span>
+                    </div>
+                    <div className="h-px my-2 bg-[var(--border-default)]" />
+                    <div className="flex items-center justify-between text-[12px] py-1 !text-muted">
+                      <span>{t('onboarding_tasks') || 'Tâches créées'}</span>
+                      <span className="font-semibold font-mono text-[11px] !text-primary">
+                        {templateStats.taskCount} tâches
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[12px] py-1 !text-muted">
+                      <span>{t('onboarding_estimated_value') || 'Valeur estimée'}</span>
+                      <span className="font-semibold font-mono text-[11px] !text-primary">
+                        ~{estimatedValue.toLocaleString('fr-FR')} €
+                      </span>
                     </div>
                   </div>
                 </motion.div>
@@ -1131,75 +1062,86 @@ export default function UnifiedOnboardingModal() {
               {step === 'success' && (
                 <motion.div
                   key="success"
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="!text-center !space-y-8 py-8"
+                  transition={{ duration: 0.25 }}
+                  className="text-center"
                 >
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ delay: 0.2, type: 'spring' }}
-                    className="w-24 h-24 mx-auto bg-success rounded-full flex items-center justify-center"
+                    transition={{ delay: 0.15, type: 'spring', stiffness: 200 }}
+                    className="w-14 h-14 mx-auto mb-5 rounded-full flex items-center justify-center bg-success/10 border border-success/30"
                   >
-                    <IconCheck className="w-12 h-12 !text-white" />
+                    <IconCheck className="w-6 h-6 text-success" strokeWidth={2.5} />
                   </motion.div>
 
-                  <div>
-                    <h3 className="!text-2xl font-bold !text-primary mb-2">
-                      {t('onboarding_complete') || 'Configuration terminée !'}
-                    </h3>
-                    <p className="!text-muted">
-                      {t('onboarding_complete_desc') || 'Voici ce que nous avons créé pour vous :'}
-                    </p>
-                  </div>
+                  <h2 className="text-[22px] font-bold tracking-tight mb-1.5 !text-primary">
+                    {t('onboarding_success_title') || 'Votre espace est prêt !'}
+                  </h2>
+                  <p className="text-[13px] mb-6 !text-muted">
+                    {t('onboarding_complete_desc') || 'Tout a été créé. Vous pouvez commencer à travailler.'}
+                  </p>
 
-                  {/* Summary cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                    <div className="p-5 bg-success-light !text-success-text -text border border-success ">
-                      <IconUser className="w-8 h-8 !text-success-text -text mx-auto mb-2" />
-                      <p className="font-semibold !text-primary">{createdClient?.name || 'Client'}</p>
-                      <p className="!text-sm !text-muted">{t('client_created') || 'Client créé'}</p>
+                  {/* Success items — list with checks */}
+                  <div className="flex flex-col gap-2 mb-6 text-left">
+                    <div className="flex items-center gap-2.5 p-3 rounded-lg bg-muted border border-default">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 bg-success/10 border border-success/30">
+                        <IconCheck className="w-2.5 h-2.5 text-success" strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <div className="font-medium text-[13px] !text-primary">
+                          {createdClient?.name || 'Client'} — {t('client_created') || 'Client créé'}
+                        </div>
+                        <div className="font-mono text-[10px] !text-muted">
+                          Fiche client disponible dans Pipeline
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-5 bg-accent-light border border-accent ">
-                      <IconBriefcase className="w-8 h-8 !text-accent-text mx-auto mb-2" />
-                      <p className="font-semibold !text-primary truncate">{createdProject?.title || 'Projet'}</p>
-                      <p className="!text-sm !text-muted">{t('project_created') || 'Projet créé'}</p>
+                    <div className="flex items-center gap-2.5 p-3 rounded-lg bg-muted border border-default">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 bg-success/10 border border-success/30">
+                        <IconCheck className="w-2.5 h-2.5 text-success" strokeWidth={2.5} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-[13px] truncate !text-primary">
+                          {createdProject?.title || 'Projet'} — {t('project_created') || 'Projet créé'}
+                        </div>
+                        <div className="font-mono text-[10px] !text-muted">
+                          {createdTasksCount} {t('onboarding_tasks') || 'tâches'} générées automatiquement
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-5 bg-info-light border border-info ">
-                      <IconTemplate className="w-8 h-8 !text-info mx-auto mb-2" />
-                      <p className="font-semibold !text-primary">{createdTasksCount} {t('onboarding_tasks') || 'tâches'}</p>
-                      <p className="!text-sm !text-muted">{t('tasks_created') || 'Tâches créées'}</p>
+                    <div className="flex items-center gap-2.5 p-3 rounded-lg bg-muted border border-default">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 bg-success/10 border border-success/30">
+                        <IconCheck className="w-2.5 h-2.5 text-success" strokeWidth={2.5} />
+                      </div>
+                      <div>
+                        <div className="font-medium text-[13px] !text-primary">
+                          Préférences enregistrées
+                        </div>
+                        <div className="font-mono text-[10px] !text-muted">
+                          Dashboard personnalisé selon votre profil
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Estimated value highlight */}
-                  {templateStats && (
-                    <div className="max-w-md mx-auto p-6 bg-accent-light border border-accent ">
-                      <p className="!text-sm !text-accent-text mb-1">{t('potential_revenue') || 'Chiffre d\'affaires potentiel'}</p>
-                      <p className="!text-4xl font-bold !text-accent-text">
-                        {estimatedValue.toLocaleString('fr-FR')} €
-                      </p>
-                      <p className="!text-sm !text-muted mt-2">
-                        {templateStats.totalHours}h estimées × {hourlyRate}€/h
-                      </p>
-                    </div>
-                  )}
 
                   {/* Actions */}
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                  <div className="flex gap-2">
                     <button
-                      onClick={handleGoToProject}
-                      className="flex items-center gap-2 px-6 py-3 bg-accent !text-white  font-medium hover:bg-accent transition-colors"
-                    >
-                      <IconRocket className="w-5 h-5" />
-                      {t('go_to_project') || 'Voir mon projet'}
-                    </button>
-                    <button
+                      type="button"
                       onClick={handleExploreDashboard}
-                      className="flex items-center gap-2 px-6 py-3 bg-muted !text-primary  font-medium hover:bg-hover transition-colors"
+                      className="flex-1 py-3 px-5 rounded-lg border font-semibold text-[13px] transition-all border-default !text-muted hover:border-primary/50"
                     >
                       {t('explore_dashboard') || 'Explorer le dashboard'}
-                      <IconArrowRight className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleGoToProject}
+                      className="flex-1 py-3 px-5 rounded-lg font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all hover:shadow-lg hover:-translate-y-px bg-primary !text-primary-text"
+                    >
+                      {t('go_to_project') || 'Voir mon projet'}
+                      <IconArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
                     </button>
                   </div>
                 </motion.div>
@@ -1208,31 +1150,36 @@ export default function UnifiedOnboardingModal() {
           </div>
           </div>
 
+          {/* Dots navigation */}
+          {step !== 'success' && (
+            <div className="flex items-center justify-center gap-1.5 pb-4 shrink-0">
+              {[0, 1, 2, 3].map((i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goToStep(i)}
+                  disabled={i >= stepIndex}
+                  className={`h-1.5 rounded-full transition-all ${i === stepIndex ? 'w-5 bg-primary' : 'w-1.5 bg-[var(--border-default)]'} ${i < stepIndex ? 'cursor-pointer hover:bg-muted' : 'cursor-default'}`}
+                  aria-label={`Étape ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
+
           {/* Footer - Navigation buttons */}
           {step !== 'success' && (
-            <div className="px-8 pb-8 flex items-center justify-between border-t border-default pt-6 bg-card shrink-0">
-              <div>
-                {step === 'business' ? (
-                  <button
-                    onClick={handleSkip}
-                    disabled={isSaving}
-                    className="px-4 py-2 !text-muted hover:!text-primary transition-colors underline"
-                  >
-                    {t('skip_onboarding') || 'Configurer plus tard'}
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleBack}
-                    disabled={isSaving}
-                    className="flex items-center gap-2 px-4 py-2 !text-muted hover:!text-primary transition-colors"
-                  >
-                    <IconArrowLeft className="w-4 h-4" />
-                    {t('back') || 'Retour'}
-                  </button>
-                )}
-              </div>
-
+            <div className="px-5 pb-5 flex gap-2 shrink-0">
               <button
+                type="button"
+                onClick={handleBack}
+                disabled={isSaving || step === 'business'}
+                className="py-3 px-4 rounded-lg border font-medium text-[13px] transition-all disabled:opacity-30 disabled:cursor-not-allowed border-default !text-muted hover:border-primary/50"
+              >
+                <IconArrowLeft className="w-3.5 h-3.5 inline mr-1 -ml-0.5" strokeWidth={2} />
+                {t('back') || 'Retour'}
+              </button>
+              <button
+                type="button"
                 onClick={handleNext}
                 disabled={
                   isSaving ||
@@ -1240,29 +1187,30 @@ export default function UnifiedOnboardingModal() {
                   (step === 'objective' && !selectedObjective)
                 }
                 className={`
-                  flex items-center gap-2 px-6 py-2.5  font-medium transition-all
+                  flex-1 py-3 px-5 rounded-lg font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all
+                  disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none
                   ${(step === 'business' && selectedBusinessType) ||
                     (step === 'objective' && selectedObjective) ||
                     step === 'project'
-                    ? 'bg-accent !text-white hover:bg-accent'
-                    : 'bg-muted !text-muted-foreground cursor-not-allowed'
+                    ? 'bg-primary !text-primary-text hover:shadow-lg hover:-translate-y-px'
+                    : 'bg-muted !text-muted cursor-not-allowed'
                   }
                 `}
               >
                 {isSaving ? (
                   <>
-                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                    {t('creating') || 'Création...'}
+                    <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                    {t('creating') || 'Création en cours…'}
                   </>
                 ) : step === 'project' ? (
                   <>
-                    <IconRocket className="w-5 h-5" />
+                    <IconRocket className="w-3.5 h-3.5" strokeWidth={2} />
                     {t('create_project') || 'Créer mon projet'}
                   </>
                 ) : (
                   <>
                     {t('continue') || 'Continuer'}
-                    <IconArrowRight className="w-4 h-4" />
+                    <IconArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
                   </>
                 )}
               </button>
