@@ -9,6 +9,7 @@ import type {
   AutomationAction,
   AutomationLog,
   SmartFollowUpStats,
+  DailyDigest,
 } from '@/types/smart-follow-up';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
@@ -296,4 +297,26 @@ export async function fetchSmartFollowUpStats(): Promise<SmartFollowUpStats> {
     completedTasks: tasks.filter(t => t.status_follow_up === 'completed').length,
     successRate: tasks.length > 0 ? (tasks.filter(t => t.status_follow_up === 'completed').length / tasks.length) * 100 : 0,
   };
+}
+
+// ============================================================================
+// Daily Digest (Home View quotidienne)
+// ============================================================================
+
+export async function fetchDailyDigest(date?: string): Promise<DailyDigest | null> {
+  const token = getToken();
+  if (!token) return null;
+
+  const dateStr = date || new Date().toISOString().split('T')[0];
+  const url = `/api/smart-follow-up/daily-digest?date=${dateStr}`;
+
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
 }

@@ -37,7 +37,8 @@ import {
   useSmartFollowUpStats, 
   useFollowUpTasks, 
   useAutomationActions,
-  useAutomationSettings 
+  useAutomationSettings,
+  useDailyDigest,
 } from '@/hooks/useSmartFollowUp';
 import { 
   approveAutomationAction, 
@@ -76,6 +77,7 @@ export default function SmartFollowUpPage() {
   const { data: allActions, mutate: mutateActions } = useAutomationActions('pending');
   const { data: sentActions = [], mutate: mutateSentActions } = useAutomationActions(['executed', 'failed']);
   const { data: settings, mutate: mutateSettings } = useAutomationSettings();
+  const { data: todayDigest } = useDailyDigest();
   
   const [activeTab, setActiveTab] = useState<'actions' | 'tasks' | 'sent'>('actions');
   const [filterSentStatus, setFilterSentStatus] = useState<'Tous' | 'Envoyés' | 'Échoués'>('Tous');
@@ -961,6 +963,22 @@ export default function SmartFollowUpPage() {
         </div>
 
         <div className=" w-full py-6">
+          {/* Résumé du jour (Home View quotidienne) */}
+          {todayDigest && (todayDigest.totalActionable > 0 || (todayDigest.stalledLeads?.length || 0) > 0) && (
+            <DailyDigestCard
+              digest={todayDigest}
+              userName={user?.firstname || user?.username}
+              onOpenLead={(id) => {
+                const action = (allActions || []).find((a) => a.documentId === id)
+                  ?? (sentActions || []).find((a) => a.documentId === id);
+                if (action) {
+                  setSelectedAction(action);
+                  setShowDetailModal(true);
+                }
+              }}
+            />
+          )}
+
           {/* Bannière instruction IA active */}
           {hasAiInstruction && (
             <>

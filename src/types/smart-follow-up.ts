@@ -305,3 +305,25 @@ export interface SmartFollowUpStats {
   completedTasks: number;
   successRate: number;
 }
+
+/** Item du digest quotidien (Home View) */
+export interface DailyDigestItem {
+  id: string;
+  name: string;
+  signal: string;
+  score: 'hot' | 'warm' | 'neutral' | 'cold';
+  scheduledAt: string | null;
+  taskType?: string;
+  daysOld: number;
+}
+
+/** Digest quotidien matinal (généré à 7h, WhatsApp + dashboard) */
+export interface DailyDigest {
+  userId: string;
+  date: string;
+  generatedAt: string;
+  hotLeads: DailyDigestItem[];
+  stalledLeads: DailyDigestItem[];
+  todayRdvs: DailyDigestItem[];
+  totalActionable: number;
+}

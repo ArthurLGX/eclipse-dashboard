@@ -9,6 +9,7 @@ import {
   fetchAutomationActions,
   fetchAutomationLogs,
   fetchSmartFollowUpStats,
+  fetchDailyDigest,
 } from '@/lib/smart-follow-up-api';
 
 export function useAutomationSettings() {
@@ -39,4 +40,13 @@ export function useSmartFollowUpStats() {
   return useSWR('smart-follow-up-stats', fetchSmartFollowUpStats, {
     refreshInterval: 60000,
   });
+}
+
+export function useDailyDigest(date?: string) {
+  const dateStr = date || new Date().toISOString().split('T')[0];
+  return useSWR(
+    ['daily-digest', dateStr],
+    () => fetchDailyDigest(dateStr),
+    { revalidateOnFocus: false }
+  );
 }
