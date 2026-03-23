@@ -32,6 +32,7 @@ import InstructionIADrawer from '@/app/components/InstructionIADrawer';
 import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
 import SFUOnboarding, { hasSeenSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import SyncInboxToast from '@/app/components/SyncInboxToast';
+import { DailyDigestCard } from '@/app/components/smart-follow-up/DailyDigestCard';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
