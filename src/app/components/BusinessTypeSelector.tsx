@@ -71,14 +71,14 @@ export function BusinessTypeSelector({ selectedType, onSelect }: BusinessTypeSel
             )}
             
             <div className={`
-              p-3  transition-colors
+              p-3  transition-colors rounded-lg
               ${isSelected ? 'bg-success !text-black' : 'bg-warning !text-muted'}
             `}>
               {BUSINESS_ICONS[type]}
             </div>
             
             <span className={`
-              font-medium !text-center !text-sm
+              font-medium !text-center !text-xs
               ${isSelected ? '!text-success' : '!text-primary'}
             `}>
               {label}

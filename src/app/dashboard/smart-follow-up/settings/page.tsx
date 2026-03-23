@@ -407,7 +407,7 @@ export default function SmartFollowUpSettingsPage() {
           >
             {saved ? (
               <>
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 Enregistré

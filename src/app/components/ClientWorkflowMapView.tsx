@@ -1069,7 +1069,7 @@ export default function ClientWorkflowMapView({
                   <path
                     d={`M ${center.x} ${center.y} L ${linkCursor.x} ${linkCursor.y}`}
                     stroke="rgba(99,102,241,0.7)"
-                    strokeWidth="2"
+                    strokeWidth="1"
                     strokeDasharray="8,4"
                     fill="none"
                   />
@@ -1093,7 +1093,7 @@ export default function ClientWorkflowMapView({
                       <path
                         d={`M ${center.x} ${center.y} Q ${(center.x + x) / 2} ${(center.y + y) / 2 - 20}, ${x} ${y}`}
                         stroke={stroke}
-                        strokeWidth="2"
+                        strokeWidth="1"
                         fill="none"
                       />
                       <circle cx={x} cy={y} r="4" fill={stroke} />
@@ -1540,7 +1540,7 @@ export default function ClientWorkflowMapView({
                               <path
                                 d={`M ${cx} ${cy} Q ${(cx + x) / 2} ${(cy + y) / 2 - 15}, ${x} ${y}`}
                                 stroke="rgba(99,102,241,0.3)"
-                                strokeWidth="2"
+                                strokeWidth="1"
                                 fill="none"
                               />
                               <circle cx={cx} cy={cy} r="3" fill="rgba(99,102,241,0.6)" />

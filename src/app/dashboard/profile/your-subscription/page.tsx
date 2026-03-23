@@ -430,7 +430,7 @@ export default function YourSubscriptionPage() {
                     {featuresList.map(({ key, label, value }) => (
                       <div key={key} className="subscription-feature-item">
                         <div className="subscription-feature-check">
-                          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2">
+                          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1">
                             <path d="M2 5l2 2 4-4" />
                           </svg>
                         </div>

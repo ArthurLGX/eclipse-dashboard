@@ -565,19 +565,19 @@ export default function PersonalInformationPage() {
                 <div className="profile-plan-features-mini">
                   <div className="profile-plan-feat">
                     <div className="profile-plan-feat-check">
-                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 5l2 2 4-4" /></svg>
+                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1"><path d="M2 5l2 2 4-4" /></svg>
                     </div>
                     Newsletters incluses
                   </div>
                   <div className="profile-plan-feat">
                     <div className="profile-plan-feat-check">
-                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 5l2 2 4-4" /></svg>
+                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1"><path d="M2 5l2 2 4-4" /></svg>
                     </div>
                     Support inclus
                   </div>
                   <div className="profile-plan-feat">
                     <div className="profile-plan-feat-check">
-                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 5l2 2 4-4" /></svg>
+                      <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1"><path d="M2 5l2 2 4-4" /></svg>
                     </div>
                     Clients illimités
                   </div>

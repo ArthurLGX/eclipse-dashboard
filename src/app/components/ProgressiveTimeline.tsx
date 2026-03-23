@@ -392,7 +392,7 @@ const ProgressiveTimeline: React.FC<ProgressiveTimelineProps> = ({
                         x2={`calc(50% + ${radialX}px)`}
                         y2={`calc(50% + ${radialY}px)`}
                         stroke="var(--color-accent)"
-                        strokeWidth="2"
+                        strokeWidth="1"
                         strokeOpacity="0.4"
                         strokeDasharray="4 4"
                       />
