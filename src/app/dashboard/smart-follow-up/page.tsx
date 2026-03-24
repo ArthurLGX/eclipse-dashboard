@@ -206,7 +206,13 @@ export default function SmartFollowUpPage() {
     try {
       const prefs = (settings.notification_preferences as Record<string, unknown>) || {};
       await updateAutomationSettings(settings.documentId, {
-        notification_preferences: { ...prefs, channel: value },
+        notification_preferences: {
+          email: (prefs.email as boolean) ?? true,
+          dashboard: (prefs.dashboard as boolean) ?? true,
+          frequency: (prefs.frequency as string) ?? 'daily',
+          ...prefs,
+          channel: value,
+        },
       });
       mutateSettings();
     } catch {
