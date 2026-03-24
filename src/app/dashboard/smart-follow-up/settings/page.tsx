@@ -14,6 +14,7 @@ import {
   IconBolt,
   IconCalendar,
   IconSparkles,
+  IconPlug,
 } from '@tabler/icons-react';
 import { IconBrandWhatsapp } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
@@ -26,6 +27,7 @@ import FilterPipeline from '@/app/components/settings/FilterPipeline';
 import FilterSummary from '@/app/components/settings/FilterSummary';
 import { resetSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
+import { SourcesManager } from '@/app/components/smart-follow-up/SourcesManager';
 
 const DEFAULT_WHATSAPP_TEMPLATE =
   '{{emoji}} {{source}} · {{name}}\n{{title}}\n{{signal}}\n→ {{action_url}}';
@@ -518,6 +520,33 @@ export default function SmartFollowUpSettingsPage() {
                 {excludedDomains.length === 0 && (
                   <span className="font-mono !text-[11px] !text-muted">Aucun domaine exclu</span>
                 )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Sources de leads (détection dynamique) */}
+        {activeSection === 'sources' && settings?.documentId && (
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
+            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-primary border border-default flex items-center justify-center !text-white">
+                <IconPlug className="w-4 h-4 !text-white" />
+              </div>
+              <div>
+                <div className="!text-sm font-semibold !text-primary">Sources de leads</div>
+                <div className="font-mono !text-[11px] !text-muted">
+                  Outils de prospection dont les notifications sont qualifiées automatiquement (bypass ICP, WhatsApp)
+                </div>
+              </div>
+            </div>
+            <div className="p-4">
+              <div className="mb-3">
+                <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Outils connectés</h4>
+                <p className="font-mono !text-[11px] !text-muted mb-3">
+                  Recherchez un outil pour l’ajouter. Les emails correspondants contournent le filtre ICP et peuvent
+                  déclencher une notification WhatsApp selon la configuration.
+                </p>
+                <SourcesManager settingsId={settings.documentId} initialSources={settings.lead_sources} />
               </div>
             </div>
           </section>

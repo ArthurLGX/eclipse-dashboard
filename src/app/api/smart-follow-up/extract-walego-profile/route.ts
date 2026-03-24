@@ -1,13 +1,9 @@
 /**
- * API d'extraction du profil Walego depuis le HTML du mail.
- * Appelée par le pipeline Strapi lors du traitement d'un mail Walego.
- *
- * POST { htmlBody, leadId }
- * Returns { profilePicUrl, name, title, linkedinUrl, avatarPath }
+ * @deprecated Utiliser POST /api/smart-follow-up/extract-lead-profile
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { extractLeadProfile } from '@/utils/walego-profile-extractor';
+import { extractLeadProfileUnified } from '@/utils/extract-lead-profile';
 import { downloadAndCacheProfilePic } from '@/lib/walego-avatar-cache';
 
 export async function POST(req: NextRequest) {
@@ -16,20 +12,14 @@ export async function POST(req: NextRequest) {
     const { htmlBody, leadId } = body;
 
     if (!htmlBody || typeof htmlBody !== 'string') {
-      return NextResponse.json(
-        { error: 'htmlBody (string) is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'htmlBody (string) is required' }, { status: 400 });
     }
 
     if (!leadId || typeof leadId !== 'string') {
-      return NextResponse.json(
-        { error: 'leadId (string) is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'leadId (string) is required' }, { status: 400 });
     }
 
-    const profile = extractLeadProfile(htmlBody);
+    const profile = extractLeadProfileUnified(htmlBody, null, 'walego');
 
     let avatarPath: string | null = null;
     if (profile.profilePicUrl) {
@@ -45,9 +35,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.error('[extract-walego-profile] Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to extract Walego profile' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to extract Walego profile' }, { status: 500 });
   }
 }

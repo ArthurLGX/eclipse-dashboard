@@ -2,6 +2,8 @@
  * Types TypeScript pour Smart Follow-Up Engine
  */
 
+import type { LeadSource } from '@/types/lead-source';
+
 export interface FilterCondition {
   sender?: {
     type: 'contains' | 'equals' | 'starts_with' | 'ends_with' | 'regex';
@@ -107,6 +109,8 @@ export interface AutomationSettings {
   };
   /** Filtre source des leads affichés */
   source_filter?: 'both' | 'email' | 'whatsapp';
+  /** Sources de prospection (détection ICP, WhatsApp, etc.) */
+  lead_sources?: LeadSource[] | null;
   custom_rules: FilterRule[];
   icp_settings: ICPSettings;
   /** Instruction personnalisée pour l'IA (ex: contexte Walego, priorités) */
@@ -171,6 +175,8 @@ export interface TaskContext {
   lead_response_preview?: string;
   /** Source de qualification : 'contact' = contact connu (bypass ICP), etc. */
   source?: string;
+  /** Id source configurée (lead_sources) détectée à l’ingestion */
+  lead_source?: string;
 }
 
 export interface TaskAIAnalysis {
