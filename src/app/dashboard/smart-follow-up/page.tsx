@@ -1175,9 +1175,8 @@ const getContactType = (action: AutomationAction) => {
                   loading={statsLoading}
                 />
               </div>
-            )
+            )}
             </>
-            )
           ) : activeTab === 'sent' ? (
             /* RELANCES ENVOYÉES */
             <>
