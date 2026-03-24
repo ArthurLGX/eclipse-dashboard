@@ -65,6 +65,69 @@ export function extractWalegoLinkedInFromBody(html: string): string | null {
   return match ? match[1].trim() : null;
 }
 
+/** Mail Walego dont le HTML a été aplani : liens sous forme [https://…] */
+export function isWalegoPlainTextContent(text: string): boolean {
+  if (!text?.trim()) return false;
+  return /NEW\s+LEAD\s+IDENTIFIED|Profile\s+Picture|Lead\s+Status/i.test(text);
+}
+
+/**
+ * Photo de profil : ligne « Profile Picture » puis URL entre crochets, ou /im/…jpg (CDN Brevo).
+ */
+export function extractWalegoProfilePicFromPlainText(text: string): string | null {
+  if (!text?.trim()) return null;
+  const labeled = text.match(/Profile\s+Picture\s*\r?\n\s*\[(https?:\/\/[^\]\s]+)\]/i);
+  if (labeled?.[1]) return labeled[1].trim();
+  for (const m of text.matchAll(/\[(https?:\/\/[^\]\s]+)\]/g)) {
+    const u = m[1];
+    if (/\/im\//i.test(u) && /\.(jpe?g|png|webp|gif)(\?|$)/i.test(u)) return u;
+  }
+  return null;
+}
+
+/** Lien LinkedIn : « LinkedIn Profile » puis [https://…] */
+export function extractWalegoLinkedInFromPlainText(text: string): string | null {
+  if (!text?.trim()) return null;
+  const labeled = text.match(/LinkedIn\s+Profile\s*\r?\n\s*\[(https?:\/\/[^\]\s]+)\]/i);
+  if (labeled?.[1]) return labeled[1].trim();
+  const bracket = text.match(/\[(https?:\/\/[^\]]*linkedin\.com[^\]]*)\]/i);
+  return bracket?.[1]?.trim() ?? null;
+}
+
+/** Nom et titre : lignes suivant le bloc « Profile Picture » + [url] */
+export function extractWalegoNameAndTitleFromPlainText(text: string): {
+  name: string | null;
+  title: string | null;
+} {
+  const m = text.match(
+    /Profile\s+Picture\s*\r?\n\s*\[[^\]]+\]\s*\r?\n+\s*([^\r\n]+)\s*\r?\n+\s*([^\r\n]+)/i
+  );
+  if (!m?.[1]) return { name: null, title: null };
+  const name = m[1].trim();
+  const title = (m[2] ?? '').trim();
+  if (name.length < 2 || name.length >= 120) return { name: null, title: null };
+  const titleOut =
+    title && !/^linkedin\s+profile$/i.test(title) && !/^email\s*:/i.test(title) ? title : null;
+  return { name, title: titleOut };
+}
+
+export interface WalegoPlainTextProfile {
+  profilePicUrl: string | null;
+  name: string | null;
+  title: string | null;
+  linkedinUrl: string | null;
+}
+
+export function extractWalegoLeadProfileFromPlainText(text: string): WalegoPlainTextProfile {
+  const nt = extractWalegoNameAndTitleFromPlainText(text);
+  return {
+    profilePicUrl: extractWalegoProfilePicFromPlainText(text),
+    name: nt.name,
+    title: nt.title,
+    linkedinUrl: extractWalegoLinkedInFromPlainText(text),
+  };
+}
+
 export interface WalegoLeadStatus {
   status?: string;
   reasoning?: string;

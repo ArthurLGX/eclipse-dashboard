@@ -3,6 +3,10 @@
  */
 
 import { extractLeadProfile as tryExtractWalegoFormat } from '@/utils/walego-profile-extractor';
+import {
+  extractWalegoLeadProfileFromPlainText,
+  isWalegoPlainTextContent,
+} from '@/utils/walego-lead-status';
 
 export interface LeadProfileResult {
   profilePicUrl: string | null;
@@ -33,15 +37,34 @@ function extractFromTextGeneric(text: string): Partial<LeadProfileResult> {
   return { name, linkedinUrl };
 }
 
+function mergeLeadProfile(
+  a: LeadProfileResult,
+  b: Partial<LeadProfileResult>
+): LeadProfileResult {
+  return {
+    profilePicUrl: a.profilePicUrl ?? b.profilePicUrl ?? null,
+    name: a.name ?? b.name ?? null,
+    title: a.title ?? b.title ?? null,
+    linkedinUrl: a.linkedinUrl ?? b.linkedinUrl ?? null,
+  };
+}
+
 export function extractLeadProfileUnified(
   contentHtml: string | null | undefined,
   contentText: string | null | undefined,
   _sourceId?: string
 ): LeadProfileResult {
+  let result: LeadProfileResult = {
+    profilePicUrl: null,
+    name: null,
+    title: null,
+    linkedinUrl: null,
+  };
+
   if (contentHtml?.trim()) {
     const w = tryExtractWalegoFormat(contentHtml);
     if (w.name || w.profilePicUrl || w.linkedinUrl) {
-      return {
+      result = {
         profilePicUrl: w.profilePicUrl,
         name: w.name,
         title: w.title,
@@ -49,14 +72,20 @@ export function extractLeadProfileUnified(
       };
     }
   }
-  if (contentText?.trim()) {
-    const t = extractFromTextGeneric(contentText);
-    return {
-      profilePicUrl: null,
-      name: t.name ?? null,
-      title: null,
-      linkedinUrl: t.linkedinUrl ?? null,
-    };
+
+  // Walego en texte brut (HTML vide ou dégradé : liens [https://…] sous « Profile Picture »)
+  if (contentText?.trim() && isWalegoPlainTextContent(contentText)) {
+    const plain = extractWalegoLeadProfileFromPlainText(contentText);
+    result = mergeLeadProfile(result, plain);
   }
-  return { profilePicUrl: null, name: null, title: null, linkedinUrl: null };
+
+  if (contentText?.trim() && !result.name && !result.profilePicUrl) {
+    const t = extractFromTextGeneric(contentText);
+    result = mergeLeadProfile(result, {
+      name: t.name ?? null,
+      linkedinUrl: t.linkedinUrl ?? null,
+    });
+  }
+
+  return result;
 }
