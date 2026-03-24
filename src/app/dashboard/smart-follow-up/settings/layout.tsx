@@ -77,7 +77,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
           ))}
 
           <div className="mt-auto pt-4 border-t border-default">
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-success border border-success/20 rounded-lg !text-success !text-sm font-medium">
+            <div className="flex items-center gap-2 px-3 py-2.5 bg-success border border-success rounded-lg !text-success !text[11px] font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
               Système actif · {rulesCount} règles
             </div>
