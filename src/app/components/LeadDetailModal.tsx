@@ -412,7 +412,7 @@ export default function LeadDetailModal({
                         {displayName}
                       </h2>
                       {detail?.lead_title && (
-                        <p className="text-[13px] text-[#8a8178] mt-0.5">{detail.lead_title}</p>
+                        <p className="text-[11px] text-[#8a8178] mt-0.5">{detail.lead_title}</p>
                       )}
                       {detail?.follow_up_task?.context?.source === 'contact' && (
                         <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
@@ -445,11 +445,11 @@ export default function LeadDetailModal({
                 {loading ? (
                   <div className="flex items-center gap-2 py-2.5 px-3.5  bg-[#f0ede8] border border-[#e2ddd8]">
                     <IconLoader2 className="w-4 h-4 animate-spin text-[#8a8178]" />
-                    <span className="text-[13px] text-[#8a8178]">Chargement...</span>
+                    <span className="text-[11px] text-[#8a8178]">Chargement...</span>
                   </div>
                 ) : (
                   <div
-                    className={`flex items-center gap-2 py-2.5 px-3.5  border text-[13px] font-medium ${signalBarClass}`}
+                    className={`flex items-center gap-2 py-2.5 px-3.5  border text-[11px] font-medium ${signalBarClass}`}
                   >
                     <div className="w-2 h-2 rounded-full bg-current animate-pulse flex-shrink-0" />
                     <span className="flex-1">
@@ -487,7 +487,7 @@ export default function LeadDetailModal({
                     ) : emailBody ? (
                       <>
                         <p className="text-[11px] text-[#b5afa9] mb-2 font-mono uppercase tracking-wider">Aperçu brut (extraction non reconnue)</p>
-                        <blockquote className="text-[13px] text-[#1a1714] leading-relaxed !pl-3.5 border-l-2 border-[#d0cbc4] max-h-32 overflow-y-auto">
+                        <blockquote className="text-[11px] text-[#1a1714] leading-relaxed !pl-3.5 border-l-2 border-[#d0cbc4] max-h-32 overflow-y-auto">
                           {emailBody.slice(0, 600)}
                           {emailBody.length > 600 && '…'}
                         </blockquote>
@@ -496,7 +496,7 @@ export default function LeadDetailModal({
                         </p>
                       </>
                     ) : (
-                      <p className="text-[13px] text-[#8a8178] italic">
+                      <p className="text-[11px] text-[#8a8178] italic">
                         Aucun contenu email disponible (content_text/html absent de l&apos;API)
                       </p>
                     )}
@@ -516,7 +516,7 @@ export default function LeadDetailModal({
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-[#1a1714] mb-0.5">Signal détecté</p>
-                        <p className="text-[13px] text-[#8a8178] leading-relaxed">
+                        <p className="text-[11px] text-[#8a8178] leading-relaxed">
                           {parsed.signal || analysis?.reasoning?.slice(0, 200) || '—'}
                         </p>
                       </div>
@@ -527,7 +527,7 @@ export default function LeadDetailModal({
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-[#1a1714] mb-0.5">Risque fog</p>
-                        <p className="text-[13px] text-[#8a8178] leading-relaxed">
+                        <p className="text-[11px] text-[#8a8178] leading-relaxed">
                           {parsed.fogExplanation || (parsed.fogRisk ? 'Oui' : 'Non')}
                         </p>
                         {parsed.fogRisk && (
@@ -543,7 +543,7 @@ export default function LeadDetailModal({
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-[#1a1714] mb-0.5">Profil</p>
-                        <p className="text-[13px] text-[#8a8178] leading-relaxed">
+                        <p className="text-[11px] text-[#8a8178] leading-relaxed">
                           {parsed.profil || detail?.lead_title || '—'}
                         </p>
                       </div>
@@ -693,7 +693,7 @@ export default function LeadDetailModal({
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                     placeholder="Message adressé au lead..."
-                    className="w-full min-h-[110px] bg-[#f0ede8] border border-[#e2ddd8]  px-4 py-3.5 text-[13px] text-[#1a1714] leading-relaxed resize-y outline-none focus:border-[#d0cbc4] transition-colors font-sans"
+                    className="w-full min-h-[110px] bg-[#f0ede8] border border-[#e2ddd8]  px-4 py-3.5 text-[11px] text-[#1a1714] leading-relaxed resize-y outline-none focus:border-[#d0cbc4] transition-colors font-sans"
                     rows={5}
                   />
 

@@ -375,7 +375,7 @@ export default function NewsletterComposePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="h-8 px-3.5 rounded-lg border border-black/13 bg-transparent text-[#6B6860] text-[13px] flex items-center gap-1.5 hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
+              className="h-8 px-3.5 rounded-lg border border-black/13 bg-transparent text-[#6B6860] text-[11px] flex items-center gap-1.5 hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors"
             >
               <IconEye className="w-3.5 h-3.5" stroke={1.5} />
               {t('preview') || 'Aperçu'}
@@ -409,7 +409,7 @@ export default function NewsletterComposePage() {
                   {step > s.id ? <IconCheck className="w-3 h-3" /> : s.id + 1}
                 </div>
                 <div className="flex flex-col">
-                  <span className={`text-[13px] ${step === s.id ? 'text-[#1A1917] font-medium' : 'text-[#6B6860]'}`}>
+                  <span className={`text-[11px] ${step === s.id ? 'text-[#1A1917] font-medium' : 'text-[#6B6860]'}`}>
                     {s.name}
                   </span>
                   <span className="text-[11px] text-[#A09E98]">{s.desc}</span>
@@ -453,7 +453,7 @@ export default function NewsletterComposePage() {
                     <h2 className="font-serif text-[26px] font-normal text-[#1A1917] leading-tight">
                       {t('choose_template') || 'Choisissez un template'}
                     </h2>
-                    <p className="text-[13px] text-[#6B6860] mt-1.5">
+                    <p className="text-[11px] text-[#6B6860] mt-1.5">
                       Le style structurel de votre newsletter — vous pourrez personnaliser les couleurs à l'étape suivante.
                     </p>
                     <div className="grid grid-cols-4 gap-3 mt-6">
@@ -493,7 +493,7 @@ export default function NewsletterComposePage() {
                     </div>
                     <hr className="border-0 border-t border-black/8 my-7" />
                     <div className="flex items-center justify-between mb-3.5">
-                      <div className="text-[13px] font-medium flex items-center gap-2 text-[#1A1917]">
+                      <div className="text-[11px] font-medium flex items-center gap-2 text-[#1A1917]">
                         <IconPalette className="w-3.5 h-3.5 text-[#6B6860]" stroke={1.4} />
                         Mes thèmes sauvegardés
                       </div>
@@ -523,7 +523,7 @@ export default function NewsletterComposePage() {
                     <h2 className="font-serif text-[26px] font-normal text-[#1A1917] leading-tight">
                       {t('content') || 'Rédigez votre contenu'}
                     </h2>
-                    <p className="text-[13px] text-[#6B6860] mt-1.5">
+                    <p className="text-[11px] text-[#6B6860] mt-1.5">
                       Ce que verront vos destinataires dans leur boîte de réception.
                     </p>
                     <div className="flex flex-col gap-4 mt-7">
@@ -535,7 +535,7 @@ export default function NewsletterComposePage() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Ex : Newsletter Mars 2026"
-                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
+                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
                           />
                           <span className="text-[11px] text-[#A09E98]">Visible uniquement dans votre dashboard</span>
                         </div>
@@ -547,7 +547,7 @@ export default function NewsletterComposePage() {
                             onChange={(e) => setSubject(e.target.value)}
                             placeholder="Ce que verront vos destinataires…"
                             maxLength={80}
-                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
+                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
                           />
                           <div className="flex justify-between">
                             <span className="text-[11px] text-[#A09E98]">Vise 30–50 caractères pour le mobile</span>
@@ -567,7 +567,7 @@ export default function NewsletterComposePage() {
                           onChange={(e) => setPreview(e.target.value)}
                           placeholder="Court résumé visible dans la boîte de réception…"
                           maxLength={130}
-                          className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
+                          className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
                         />
                         <div className="flex justify-between">
                           <span className="text-[11px] text-[#A09E98]">Complète le sujet pour augmenter le taux d'ouverture</span>
@@ -581,7 +581,7 @@ export default function NewsletterComposePage() {
                           onChange={(e) => setBody(e.target.value)}
                           placeholder="Rédigez votre newsletter ici…"
                           rows={8}
-                          className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none resize-y min-h-[160px] focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10 leading-relaxed"
+                          className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none resize-y min-h-[160px] focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10 leading-relaxed"
                         />
                       </div>
                       <hr className="border-0 border-t border-black/8 my-1" />
@@ -593,7 +593,7 @@ export default function NewsletterComposePage() {
                             value={ctaText}
                             onChange={(e) => setCtaText(e.target.value)}
                             placeholder="Ex : Découvrir →"
-                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
+                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
                           />
                         </div>
                         <div className="flex flex-col gap-1.5">
@@ -603,7 +603,7 @@ export default function NewsletterComposePage() {
                             value={ctaUrl}
                             onChange={(e) => setCtaUrl(e.target.value)}
                             placeholder="https://…"
-                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
+                            className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
                           />
                         </div>
                       </div>
@@ -616,7 +616,7 @@ export default function NewsletterComposePage() {
                           value={bannerUrl}
                           onChange={(e) => setBannerUrl(e.target.value)}
                           placeholder="https://… image d'en-tête"
-                          className="border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
+                          className="border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917] focus:ring-2 focus:ring-[#1A1917]/10"
                         />
                       </div>
                     </div>
@@ -629,7 +629,7 @@ export default function NewsletterComposePage() {
                     <h2 className="font-serif text-[26px] font-normal text-[#1A1917] leading-tight">
                       {t('recipients') || 'Choisissez les destinataires'}
                     </h2>
-                    <p className="text-[13px] text-[#6B6860] mt-1.5">
+                    <p className="text-[11px] text-[#6B6860] mt-1.5">
                       Sélectionnez des clients existants ou ajoutez des adresses email manuellement.
                     </p>
                     <div className="flex flex-col gap-4 mt-7">
@@ -642,11 +642,11 @@ export default function NewsletterComposePage() {
                             onChange={(e) => setRecipientInput(e.target.value)}
                             onKeyDown={handleRecipientKeyDown}
                             placeholder="Rechercher un client ou entrer un email…"
-                            className="flex-1 border border-black/13 rounded-[10px] px-3 py-2 text-[13px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917]"
+                            className="flex-1 border border-black/13 rounded-[10px] px-3 py-2 text-[11px] text-[#1A1917] bg-white outline-none focus:border-[#1A1917]"
                           />
                           <button
                             onClick={() => addRecipient(recipientInput)}
-                            className="h-[38px] px-4 rounded-[10px] border border-black/13 bg-white text-[13px] text-[#1A1917] flex items-center gap-1.5 hover:bg-[#F8F7F4] transition-colors whitespace-nowrap"
+                            className="h-[38px] px-4 rounded-[10px] border border-black/13 bg-white text-[11px] text-[#1A1917] flex items-center gap-1.5 hover:bg-[#F8F7F4] transition-colors whitespace-nowrap"
                           >
                             <IconCirclePlus className="w-3 h-3" stroke={2} />
                             Ajouter
@@ -702,7 +702,7 @@ export default function NewsletterComposePage() {
                     <h2 className="font-serif text-[26px] font-normal text-[#1A1917] leading-tight">
                       {t('review_and_send') || 'Vérifier et envoyer'}
                     </h2>
-                    <p className="text-[13px] text-[#6B6860] mt-1.5">
+                    <p className="text-[11px] text-[#6B6860] mt-1.5">
                       Relisez le récapitulatif avant de lancer l'envoi.
                     </p>
                     <div className="grid grid-cols-2 gap-4 mt-7">
@@ -777,14 +777,14 @@ export default function NewsletterComposePage() {
             <button
               onClick={goPrev}
               disabled={step === 0}
-              className="h-9 px-4 rounded-[10px] border border-black/13 bg-transparent text-[13px] text-[#6B6860] disabled:opacity-35 disabled:cursor-default hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors disabled:hover:bg-transparent disabled:hover:text-[#6B6860]"
+              className="h-9 px-4 rounded-[10px] border border-black/13 bg-transparent text-[11px] text-[#6B6860] disabled:opacity-35 disabled:cursor-default hover:bg-[#F8F7F4] hover:text-[#1A1917] transition-colors disabled:hover:bg-transparent disabled:hover:text-[#6B6860]"
             >
               ← Précédent
             </button>
             <button
               onClick={goNext}
               disabled={(step === 1 && !validateContent()) || (step === 2 && !validateRecipients())}
-              className={`h-9 px-5 rounded-[10px] font-medium text-[13px] text-white flex items-center gap-2 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed
+              className={`h-9 px-5 rounded-[10px] font-medium text-[11px] text-white flex items-center gap-2 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed
                 ${step === 3 ? 'bg-[#2D7D52] hover:opacity-90' : 'bg-[#1A1917] hover:opacity-90'}`}
             >
               {sending ? (

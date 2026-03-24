@@ -399,7 +399,7 @@ export default function SmartFollowUpSettingsPage() {
           <button
             onClick={handleSave}
             disabled={loading}
-            className={`flex items-center gap-2 px-5 py-2.5  font-semibold !text-[13px] transition-all flex-shrink-0 ${
+            className={`flex items-center gap-2 px-5 py-2.5  font-semibold !text-[11px] transition-all flex-shrink-0 ${
               saved
                 ? 'bg-success !text-white'
                 : 'bg-primary !text-white hover:opacity-90 disabled:opacity-50'
@@ -452,14 +452,14 @@ export default function SmartFollowUpSettingsPage() {
             <div>
               <div className={settingRow}>
                 <div className={settingLabel}>
-                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Smart Follow-Up activé</h4>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Smart Follow-Up activé</h4>
                   <p className="font-mono !text-[11px] !text-muted">Activer ou désactiver le système de relances automatiques</p>
                 </div>
                 <SettingToggle checked={enabled} onChange={setEnabled} />
               </div>
               <div className={settingRow}>
                 <div className={settingLabel}>
-                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Approbation automatique</h4>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Approbation automatique</h4>
                   <p className="font-mono !text-[11px] !text-muted">Les actions à haute confiance (&gt;90%) seront approuvées automatiquement</p>
                 </div>
                 <SettingToggleOrange checked={autoApprove} onChange={setAutoApprove} />
@@ -538,7 +538,7 @@ export default function SmartFollowUpSettingsPage() {
             <div>
               <div className={settingRow}>
                 <div className={settingLabel}>
-                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Activer le filtrage ICP</h4>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Activer le filtrage ICP</h4>
                   <p className="font-mono !text-[11px] !text-muted">Ne traiter que les emails qui correspondent à votre profil client idéal</p>
                 </div>
                 <SettingToggle checked={icpSettings.enabled} onChange={(v) => setICPSettings({ ...icpSettings, enabled: v })} />
@@ -548,7 +548,7 @@ export default function SmartFollowUpSettingsPage() {
                 <>
                   <div className={`${settingRow} flex-col items-stretch`}>
                     <div className={settingLabel}>
-                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Score minimum de qualification</h4>
+                      <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Score minimum de qualification</h4>
                       <p className="font-mono !text-[11px] !text-muted">Un email doit atteindre ce score pour être considéré comme un lead</p>
                     </div>
                     <div className="flex items-center gap-3">
@@ -565,7 +565,7 @@ export default function SmartFollowUpSettingsPage() {
                   </div>
 
                   <div className={`${settingRow} flex-col items-stretch`}>
-                    <div className={settingLabel}><h4 className="!text-[13px] font-medium !text-primary mb-1">Types de clients à cibler</h4></div>
+                    <div className={settingLabel}><h4 className="!text-[11px] font-medium !text-primary mb-1">Types de clients à cibler</h4></div>
                     <div className="grid grid-cols-2 gap-2 w-full">
                       {(['b2b', 'b2c', 'agence', 'freelance'] as const).map((type) => (
                         <label
@@ -581,7 +581,7 @@ export default function SmartFollowUpSettingsPage() {
                           >
                             {icpSettings.types_enabled[type] && <span className="!text-white !text-[10px]">✓</span>}
                           </div>
-                          <span className="!text-[13px] font-medium capitalize">{type}</span>
+                          <span className="!text-[11px] font-medium capitalize">{type}</span>
                           <input
                             type="checkbox"
                             checked={icpSettings.types_enabled[type]}
@@ -608,7 +608,7 @@ export default function SmartFollowUpSettingsPage() {
                         {icpSettings.boost_responses && <span className="!text-white !text-[10px]">✓</span>}
                       </div>
                       <div>
-                        <h4 className="!text-[13px] font-medium !text-primary">Booster les réponses</h4>
+                        <h4 className="!text-[11px] font-medium !text-primary">Booster les réponses</h4>
                         <p className="font-mono !text-[11px] !text-muted">Augmenter automatiquement le score des emails de réponse (+9 points)</p>
                       </div>
                       <input
@@ -630,7 +630,7 @@ export default function SmartFollowUpSettingsPage() {
                         {icpSettings.require_response_thread && <span className="!text-white !text-[10px]">✓</span>}
                       </div>
                       <div>
-                        <h4 className="!text-[13px] font-medium !text-primary">Uniquement les threads de réponses</h4>
+                        <h4 className="!text-[11px] font-medium !text-primary">Uniquement les threads de réponses</h4>
                         <p className="font-mono !text-[11px] !text-muted">Ne traiter que les emails qui sont des réponses (Re:, rtr:, ftr:)</p>
                       </div>
                       <input
@@ -677,7 +677,7 @@ export default function SmartFollowUpSettingsPage() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="!text-base">🎯</span>
-                  <h4 className="!text-[13px] font-semibold !text-primary">Profil client</h4>
+                  <h4 className="!text-[11px] font-semibold !text-primary">Profil client</h4>
                 </div>
                 <p className="font-mono !text-[11px] !text-muted mb-3">Ces mots identifient le type de prospect</p>
                 <div className="space-y-2 mb-3">
@@ -737,7 +737,7 @@ export default function SmartFollowUpSettingsPage() {
               <div className="pt-4 border-t border-default">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="!text-base">⚡</span>
-                  <h4 className="!text-[13px] font-semibold !text-primary">Priorité haute</h4>
+                  <h4 className="!text-[11px] font-semibold !text-primary">Priorité haute</h4>
                 </div>
                 <p className="font-mono !text-[11px] !text-muted mb-3">Ces mots font remonter l&apos;email en tête de liste</p>
                 <div className="flex gap-2 mb-3">
@@ -821,7 +821,7 @@ export default function SmartFollowUpSettingsPage() {
                     onChange={(e) => setSeasonalInstruction((s) => ({ ...s, enabled: e.target.checked }))}
                     className="w-4 h-4"
                   />
-                  <span className="!text-[13px] font-medium !text-primary">Activer une instruction saisonnière</span>
+                  <span className="!text-[11px] font-medium !text-primary">Activer une instruction saisonnière</span>
                 </label>
                 <p className="font-mono !text-[11px] !text-muted mb-3">Du [date] au [date] — contexte temporaire (ex: période refonte)</p>
                 {seasonalInstruction.enabled && (
@@ -974,7 +974,7 @@ export default function SmartFollowUpSettingsPage() {
                       className="flex items-center gap-3 p-3 bg-muted border border-default  hover:border-[#ccc8c2] transition-colors"
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
-                      <span className="flex-1 !text-[13px] font-medium !text-primary">{rule.name}</span>
+                      <span className="flex-1 !text-[11px] font-medium !text-primary">{rule.name}</span>
                       <span className="font-mono !text-[10px] px-2 py-0.5 rounded bg-success !text-success border border-success/20">
                         Priorité {rule.priority}
                       </span>
@@ -1003,20 +1003,20 @@ export default function SmartFollowUpSettingsPage() {
             <div>
               <div className={settingRow}>
                 <div className={settingLabel}>
-                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Notifications email</h4>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Notifications email</h4>
                   <p className="font-mono !text-[11px] !text-muted">Recevoir un email pour chaque action</p>
                 </div>
                 <SettingToggle checked={notificationPreferences.email} onChange={(v) => setNotificationPreferences({ ...notificationPreferences, email: v })} />
               </div>
               <div className={settingRow}>
                 <div className={settingLabel}>
-                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Notifications dashboard</h4>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Notifications dashboard</h4>
                   <p className="font-mono !text-[11px] !text-muted">Afficher les notifications dans l&apos;interface</p>
                 </div>
                 <SettingToggle checked={notificationPreferences.dashboard} onChange={(v) => setNotificationPreferences({ ...notificationPreferences, dashboard: v })} />
               </div>
               <div className={`${settingRow} flex-col items-stretch`}>
-                <div className={settingLabel}><h4 className="!text-[13px] font-medium !text-primary mb-1">Fréquence des notifications</h4></div>
+                <div className={settingLabel}><h4 className="!text-[11px] font-medium !text-primary mb-1">Fréquence des notifications</h4></div>
                 <select
                   value={notificationPreferences.frequency}
                   onChange={(e) => setNotificationPreferences({ ...notificationPreferences, frequency: e.target.value })}
@@ -1047,7 +1047,7 @@ export default function SmartFollowUpSettingsPage() {
             <div>
               <div className={settingRow}>
                 <div className={settingLabel}>
-                  <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Activer les notifications</h4>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Activer les notifications</h4>
                   <p className="font-mono !text-[11px] !text-muted">Envoyer un message WhatsApp à chaque nouveau lead</p>
                 </div>
                 <SettingToggle
@@ -1061,7 +1061,7 @@ export default function SmartFollowUpSettingsPage() {
                   {/* Sélecteur Provider */}
                   <div className={settingRow}>
                     <div className={settingLabel}>
-                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Provider</h4>
+                      <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Provider</h4>
                       <p className="font-mono !text-[11px] !text-muted">Twilio ou Meta API (WhatsApp Business)</p>
                     </div>
                     <select
@@ -1079,7 +1079,7 @@ export default function SmartFollowUpSettingsPage() {
                     <>
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Account SID</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Account SID</h4>
                           <p className="font-mono !text-[11px] !text-muted">Console Twilio → Account</p>
                         </div>
                         <input
@@ -1095,7 +1095,7 @@ export default function SmartFollowUpSettingsPage() {
                       </div>
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Auth Token</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Auth Token</h4>
                           <p className="font-mono !text-[11px] !text-muted">Token secret Twilio</p>
                         </div>
                         <input
@@ -1111,7 +1111,7 @@ export default function SmartFollowUpSettingsPage() {
                       </div>
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">From number</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">From number</h4>
                           <p className="font-mono !text-[11px] !text-muted">Numéro Twilio WhatsApp (ex: whatsapp:+14155238886)</p>
                         </div>
                         <input
@@ -1127,7 +1127,7 @@ export default function SmartFollowUpSettingsPage() {
                       </div>
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">To number</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">To number</h4>
                           <p className="font-mono !text-[11px] !text-muted">Votre numéro WhatsApp (ex: 33612345678)</p>
                         </div>
                         <input
@@ -1150,7 +1150,7 @@ export default function SmartFollowUpSettingsPage() {
                       {/* Toggles template Meta */}
                       <div className={`${settingRow} flex-col items-stretch`}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Template Meta</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Template Meta</h4>
                           <p className="font-mono !text-[11px] !text-muted">Choisir le template WhatsApp Business</p>
                         </div>
                         <div className="flex flex-wrap gap-4">
@@ -1159,21 +1159,21 @@ export default function SmartFollowUpSettingsPage() {
                               checked={!whatsappConfig.use_smart_follow_up_template}
                               onChange={(v) => setWhatsappConfig({ ...whatsappConfig, use_smart_follow_up_template: !v })}
                             />
-                            <span className="!text-[13px]">hello_world (pour le moment)</span>
+                            <span className="!text-[11px]">hello_world (pour le moment)</span>
                           </label>
                           <label className="flex items-center gap-2.5 cursor-pointer">
                             <SettingToggle
                               checked={whatsappConfig.use_smart_follow_up_template}
                               onChange={(v) => setWhatsappConfig({ ...whatsappConfig, use_smart_follow_up_template: v })}
                             />
-                            <span className="!text-[13px]">smart_follow_up_notification (quand approuvé)</span>
+                            <span className="!text-[11px]">smart_follow_up_notification (quand approuvé)</span>
                           </label>
                         </div>
                       </div>
 
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Phone Number ID</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Phone Number ID</h4>
                           <p className="font-mono !text-[11px] !text-muted">Meta for Developers → App → WhatsApp → Getting Started</p>
                         </div>
                         <input
@@ -1189,7 +1189,7 @@ export default function SmartFollowUpSettingsPage() {
                       </div>
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Access Token</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Access Token</h4>
                           <p className="font-mono !text-[11px] !text-muted">Token permanent depuis Meta Business Suite</p>
                         </div>
                         <input
@@ -1205,7 +1205,7 @@ export default function SmartFollowUpSettingsPage() {
                       </div>
                       <div className={settingRow}>
                         <div className={settingLabel}>
-                          <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Votre numéro WhatsApp</h4>
+                          <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Votre numéro WhatsApp</h4>
                           <p className="font-mono !text-[11px] !text-muted">Format international sans + ni espaces (ex: 33612345678)</p>
                         </div>
                         <input
@@ -1225,7 +1225,7 @@ export default function SmartFollowUpSettingsPage() {
                   {/* Template de notification */}
                   <div className={`${settingRow} flex-col items-stretch`}>
                     <div className={settingLabel}>
-                      <h4 className="!text-[13px] font-medium !text-primary mb-0.5">Template du message</h4>
+                      <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Template du message</h4>
                       <p className="font-mono !text-[11px] !text-muted">Personnalisez le message WhatsApp reçu pour chaque lead</p>
                     </div>
                     <div className="w-full flex flex-col gap-2">
@@ -1252,7 +1252,7 @@ export default function SmartFollowUpSettingsPage() {
                       </div>
                       <div className="bg-muted/50 border border-default rounded p-3">
                         <div className="font-mono !text-[10px] !text-muted mb-2">APERÇU</div>
-                        <pre className="font-sans !text-[13px] !text-primary whitespace-pre-wrap break-words m-0 leading-relaxed">
+                        <pre className="font-sans !text-[11px] !text-primary whitespace-pre-wrap break-words m-0 leading-relaxed">
                           {renderWhatsAppPreview(whatsappConfig.notification_template)}
                         </pre>
                       </div>

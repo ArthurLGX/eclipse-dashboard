@@ -63,7 +63,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-2.5 px-2.5 py-2  transition-all !text-[13px] font-medium ${
+                  className={`w-full flex items-center gap-2.5 px-2.5 py-2  transition-all !text-[11px] font-medium ${
                     activeSection === item.id ? 'bg-muted !text-primary border border-default rounded-lg' : '!text-muted hover:bg-muted/50 border border-transparent rounded-lg'
                   }`}
                 >

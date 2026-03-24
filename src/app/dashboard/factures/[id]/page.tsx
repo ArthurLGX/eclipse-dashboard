@@ -955,18 +955,18 @@ export default function FacturePage() {
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('reference')}</div>
                 {editing ? (
                   <input type="text" name="reference" value={formData?.reference || ''} onChange={handleInputChange}
-                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
+                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[11px]" />
                 ) : (
-                  <div className="meta-val font-semibold text-[13px]" style={{ color: 'var(--fd-ink)' }}>{facture?.reference}</div>
+                  <div className="meta-val font-semibold text-[11px]" style={{ color: 'var(--fd-ink)' }}>{facture?.reference}</div>
                 )}
               </div>
               <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('emission_date')}</div>
                 {editing ? (
                   <input type="date" name="date" value={formData?.date ? formData.date.slice(0, 10) : ''} onChange={handleInputChange}
-                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
+                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[11px]" />
                 ) : (
-                  <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.date ? new Date(facture.date).toLocaleDateString('fr-FR') : ''}</div>
+                  <div className="meta-val text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.date ? new Date(facture.date).toLocaleDateString('fr-FR') : ''}</div>
                 )}
               </div>
               <div className="doc-meta-cell p-4 px-8 border-r border-cell-facture min-w-0">
@@ -976,13 +976,13 @@ export default function FacturePage() {
                 {editing ? (
                   isQuote ? (
                     <input type="date" name="valid_until" value={formData?.valid_until ? formData.valid_until.slice(0, 10) : ''} onChange={handleInputChange}
-                      className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
+                      className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[11px]" />
                   ) : (
                     <input type="date" name="due_date" value={formData?.due_date ? formData.due_date.slice(0, 10) : ''} onChange={handleInputChange}
-                      className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]" />
+                      className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[11px]" />
                   )
                 ) : (
-                  <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>
+                  <div className="meta-val text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>
                     {isQuote ? (facture?.valid_until ? new Date(facture.valid_until).toLocaleDateString('fr-FR') : '-') : (facture?.due_date ? new Date(facture.due_date).toLocaleDateString('fr-FR') : '')}
                   </div>
                 )}
@@ -1008,13 +1008,13 @@ export default function FacturePage() {
                 <div className="meta-lbl text-[10.5px] font-semibold uppercase tracking-wide mb-1" style={{ color: 'var(--fd-ink3)' }}>{t('currency')}</div>
                 {editing ? (
                   <select name="currency" value={formData?.currency || ''} onChange={handleInputChange}
-                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[13px]">
+                    className="input border w-full p-2 !bg-zinc-50 !border-zinc-200 !text-zinc-900 text-[11px]">
                     <option value="EUR">EUR — Euro</option>
                     <option value="USD">USD — Dollar</option>
                     <option value="GBP">GBP — Livre</option>
                   </select>
                 ) : (
-                  <div className="meta-val text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.currency || 'EUR'} — {facture?.currency === 'USD' ? 'Dollar' : facture?.currency === 'GBP' ? 'Livre' : 'Euro'}</div>
+                  <div className="meta-val text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture?.currency || 'EUR'} — {facture?.currency === 'USD' ? 'Dollar' : facture?.currency === 'GBP' ? 'Livre' : 'Euro'}</div>
                 )}
               </div>
               <div className="doc-meta-cell p-4 px-8 min-w-0">
@@ -1032,7 +1032,7 @@ export default function FacturePage() {
                     <button type="button" onClick={() => window.open('/dashboard/projects?new=1', '_blank')} className="px-3 py-2 shrink-0 bg-emerald-500/10 !text-emerald-600 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors !text-sm font-medium whitespace-nowrap" title={t('create_new_project') || 'Nouveau'}>+ {t('new_project') || 'Nouveau'}</button>
                   </div>
                 ) : (
-                  <div className="meta-val muted text-[13px] font-medium" style={{ color: 'var(--fd-ink3)' }}>{facture?.project?.title || '—'}</div>
+                  <div className="meta-val muted text-[11px] font-medium" style={{ color: 'var(--fd-ink3)' }}>{facture?.project?.title || '—'}</div>
                 )}
               </div>
             </div>
@@ -1068,7 +1068,7 @@ export default function FacturePage() {
             {/* Prestations - facture-detail_1 */}
             <div className="doc-prestations overflow-hidden">
               <div className="prest-title-row flex items-center justify-between py-3.5 px-8 pb-3 border-b border-cell-facture">
-                <div className="prest-title text-[13px] font-bold" style={{ color: 'var(--fd-ink)' }}>{t('services')}</div>
+                <div className="prest-title text-[11px] font-bold" style={{ color: 'var(--fd-ink)' }}>{t('services')}</div>
                 {editing && (
                   <button type="button" onClick={handleAddLine} className="prest-add inline-flex items-center gap-1.5 text-[11.5px] font-medium hover:underline" style={{ color: 'var(--color-accent)' }}>
                     + {t('add_line')}
@@ -1227,11 +1227,11 @@ export default function FacturePage() {
             {/* Totaux - facture-detail_1 */}
             <div className="doc-totals py-5 px-8 pb-6 border-t border-cell-facture flex justify-end" style={{ background: 'var(--fd-surf)' }}>
               <div className="totals-table w-80">
-                <div className="tot-row flex justify-between items-center py-1 text-[13px]" style={{ color: 'var(--fd-ink2)' }}>
+                <div className="tot-row flex justify-between items-center py-1 text-[11px]" style={{ color: 'var(--fd-ink2)' }}>
                   <span>Sous-total HT</span>
                   <span>{subtotal.toFixed(2).replace('.', ',')} €</span>
                 </div>
-                <div className="tot-row flex justify-between items-center py-1 text-[13px]" style={{ color: 'var(--fd-ink2)' }}>
+                <div className="tot-row flex justify-between items-center py-1 text-[11px]" style={{ color: 'var(--fd-ink2)' }}>
                   <span>TVA ({tvaApplicable ? `${tvaRate}%` : '0%'})</span>
                   <span style={{ color: tvaApplicable ? 'var(--fd-ink2)' : 'var(--fd-ink3)' }}>{tvaApplicable ? `${tvaAmount.toFixed(2).replace('.', ',')} €` : '—'}</span>
                 </div>

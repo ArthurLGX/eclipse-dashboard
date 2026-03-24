@@ -330,14 +330,14 @@ export default function SharedProjectPage() {
           <div className="flex items-center gap-2 flex-shrink-0">
             <a
               href={`mailto:?subject=${t('project_progress')} - ${project.title}&body=${t('view_project_progress')} : ${typeof window !== 'undefined' ? window.location.href : ''}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium border border-default !text-primary hover:bg-muted/50 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg !text-[11px] font-medium border border-default !text-primary hover:bg-muted/50 transition-colors"
             >
               <IconMail className="w-3.5 h-3.5" />
               {t('share_button')}
             </a>
             <a
               href={`/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg !text-[11px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
             >
               <IconExternalLink className="w-3.5 h-3.5" />
               {t('access_project')}
@@ -356,7 +356,7 @@ export default function SharedProjectPage() {
           >
             <div 
               className="bg-muted/30 border border-default rounded-[10px] p-5 md:p-6 prose prose-sm max-w-none
-                [&_p]:!text-[13px] [&_p]:!text-muted [&_p]:leading-relaxed [&_p]:mb-2
+                [&_p]:!text-[11px] [&_p]:!text-muted [&_p]:leading-relaxed [&_p]:mb-2
                 [&_p:last-child]:mb-0 [&_strong]:!text-primary
                 [&_a]:!text-accent [&_a]:underline [&_img]:max-w-full"
               dangerouslySetInnerHTML={{ __html: project.description }}
@@ -450,7 +450,7 @@ export default function SharedProjectPage() {
                   <button
                     key={option.value}
                     onClick={() => setStatusFilter(option.value)}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 !text-[13px] border-b-2 -mb-px transition-all whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-3.5 py-2.5 !text-[11px] border-b-2 -mb-px transition-all whitespace-nowrap ${
                       isActive
                         ? '!text-accent border-accent font-medium'
                         : '!text-muted hover:!text-primary border-transparent'
@@ -565,21 +565,21 @@ export default function SharedProjectPage() {
               <h3 className="!text-xl md:!text-[22px] font-extrabold !text-white mb-2 tracking-tight">
                 {t('want_to_collaborate')}
               </h3>
-              <p className="!text-[13px] !text-white leading-relaxed">
+              <p className="!text-[11px] !text-white leading-relaxed">
                 {t('collaborate_description')}
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
               <a
                 href="/login"
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium bg-white border border-accent/30 !text-accent hover:bg-accent/10 transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg !text-[11px] font-medium bg-white border border-accent/30 !text-accent hover:bg-accent/10 transition-colors"
               >
                 <IconLogin className="w-3.5 h-3.5" />
                 {t('already_have_account')}
               </a>
               <a
                 href={`/register?redirect=/dashboard/projects/${generateSlug(project.title, project.documentId)}`}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg !text-[13px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg !text-[11px] font-medium bg-accent !text-white hover:opacity-90 transition-opacity"
               >
                 <IconUserPlus className="w-3.5 h-3.5" />
                 {t('create_account_collaborate')}
@@ -678,7 +678,7 @@ function TaskRow({ task, taskStatusOptions }: { task: ProjectTask; taskStatusOpt
         <span className={`!text-xs font-medium px-2.5 py-1 rounded-full ${pillClass}`}>
           {statusConfig.label}
         </span>
-        <span className="!text-[13px] font-bold !text-muted min-w-[30px] !text-right">{progress}%</span>
+        <span className="!text-[11px] font-bold !text-muted min-w-[30px] !text-right">{progress}%</span>
       </div>
     </div>
   );

@@ -859,7 +859,7 @@ export default function UnifiedOnboardingModal() {
                   <h2 className="text-[22px] font-bold tracking-tight leading-tight mb-1.5 !text-primary">
                     {t('what_is_your_business') || 'Quel est votre métier ?'}
                   </h2>
-                  <p className="text-[13px] leading-relaxed mb-6 !text-muted">
+                  <p className="text-[11px] leading-relaxed mb-6 !text-muted">
                     {t('business_type_desc') || 'Nous adapterons votre expérience en conséquence'}
                   </p>
 
@@ -888,7 +888,7 @@ export default function UnifiedOnboardingModal() {
                           >
                             {BUSINESS_ICONS[type]}
                           </div>
-                          <span className="font-medium text-[13px] !text-primary">
+                          <span className="font-medium text-[11px] !text-primary">
                             {getBusinessLabel(type)}
                           </span>
                         </motion.button>
@@ -913,7 +913,7 @@ export default function UnifiedOnboardingModal() {
                   <h2 className="text-[22px] font-bold tracking-tight leading-tight mb-1.5 !text-primary">
                     {t('what_is_your_objective') || 'Votre premier projet sera…'}
                   </h2>
-                  <p className="text-[13px] leading-relaxed mb-6 !text-muted">
+                  <p className="text-[11px] leading-relaxed mb-6 !text-muted">
                     {t('objective_desc') || 'On prépare le bon template avec les tâches adaptées à votre activité.'}
                   </p>
 
@@ -947,7 +947,7 @@ export default function UnifiedOnboardingModal() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-[13px] !text-primary">
+                            <div className="font-medium text-[11px] !text-primary">
                               {language === 'en' ? objective.labelEn : objective.label}
                             </div>
                             <div className="font-mono text-[10px] mt-0.5 truncate !text-muted">
@@ -976,7 +976,7 @@ export default function UnifiedOnboardingModal() {
                   <h2 className="text-[22px] font-bold tracking-tight leading-tight mb-1.5 !text-primary">
                     {t('create_first_project') || 'Nommez votre projet'}
                   </h2>
-                  <p className="text-[13px] leading-relaxed mb-6 !text-muted">
+                  <p className="text-[11px] leading-relaxed mb-6 !text-muted">
                     {t('project_details_desc') || 'Ces infos servent à créer votre client et votre projet. Vous pouvez tout modifier après.'}
                   </p>
 
@@ -990,7 +990,7 @@ export default function UnifiedOnboardingModal() {
                         value={clientName}
                         onChange={(e) => setClientName(e.target.value)}
                         placeholder="ex: Mairie de Lyon"
-                        className="w-full px-3 py-2.5 rounded-lg border text-[13px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
+                        className="w-full px-3 py-2.5 rounded-lg border text-[11px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
                       />
                     </div>
                     <div>
@@ -1003,7 +1003,7 @@ export default function UnifiedOnboardingModal() {
                         onChange={(e) => setHourlyRate(Number(e.target.value))}
                         min={0}
                         placeholder="ex: 75"
-                        className="w-full px-3 py-2.5 rounded-lg border text-[13px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
+                        className="w-full px-3 py-2.5 rounded-lg border text-[11px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
                       />
                     </div>
                   </div>
@@ -1020,7 +1020,7 @@ export default function UnifiedOnboardingModal() {
                       value={projectName}
                       onChange={(e) => setProjectName(e.target.value)}
                       placeholder="ex: Site vitrine 2026"
-                      className="w-full px-3 py-2.5 rounded-lg border text-[13px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
+                      className="w-full px-3 py-2.5 rounded-lg border text-[11px] outline-none transition-colors placeholder:!text-placeholder focus:border-primary bg-input !text-primary border-default"
                     />
                   </div>
 
@@ -1079,7 +1079,7 @@ export default function UnifiedOnboardingModal() {
                   <h2 className="text-[22px] font-bold tracking-tight mb-1.5 !text-primary">
                     {t('onboarding_success_title') || 'Votre espace est prêt !'}
                   </h2>
-                  <p className="text-[13px] mb-6 !text-muted">
+                  <p className="text-[11px] mb-6 !text-muted">
                     {t('onboarding_complete_desc') || 'Tout a été créé. Vous pouvez commencer à travailler.'}
                   </p>
 
@@ -1090,7 +1090,7 @@ export default function UnifiedOnboardingModal() {
                         <IconCheck className="w-2.5 h-2.5 text-success" strokeWidth={2.5} />
                       </div>
                       <div>
-                        <div className="font-medium text-[13px] !text-primary">
+                        <div className="font-medium text-[11px] !text-primary">
                           {createdClient?.name || 'Client'} — {t('client_created') || 'Client créé'}
                         </div>
                         <div className="font-mono text-[10px] !text-muted">
@@ -1103,7 +1103,7 @@ export default function UnifiedOnboardingModal() {
                         <IconCheck className="w-2.5 h-2.5 text-success" strokeWidth={2.5} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-[13px] truncate !text-primary">
+                        <div className="font-medium text-[11px] truncate !text-primary">
                           {createdProject?.title || 'Projet'} — {t('project_created') || 'Projet créé'}
                         </div>
                         <div className="font-mono text-[10px] !text-muted">
@@ -1116,7 +1116,7 @@ export default function UnifiedOnboardingModal() {
                         <IconCheck className="w-2.5 h-2.5 text-success" strokeWidth={2.5} />
                       </div>
                       <div>
-                        <div className="font-medium text-[13px] !text-primary">
+                        <div className="font-medium text-[11px] !text-primary">
                           Préférences enregistrées
                         </div>
                         <div className="font-mono text-[10px] !text-muted">
@@ -1131,14 +1131,14 @@ export default function UnifiedOnboardingModal() {
                     <button
                       type="button"
                       onClick={handleExploreDashboard}
-                      className="flex-1 py-3 px-5 rounded-lg border font-semibold text-[13px] transition-all border-default !text-muted hover:border-primary/50"
+                      className="flex-1 py-3 px-5 rounded-lg border font-semibold text-[11px] transition-all border-default !text-muted hover:border-primary/50"
                     >
                       {t('explore_dashboard') || 'Explorer le dashboard'}
                     </button>
                     <button
                       type="button"
                       onClick={handleGoToProject}
-                      className="flex-1 py-3 px-5 rounded-lg font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all hover:shadow-lg hover:-translate-y-px bg-primary !text-primary-text"
+                      className="flex-1 py-3 px-5 rounded-lg font-semibold text-[11px] flex items-center justify-center gap-1.5 transition-all hover:shadow-lg hover:-translate-y-px bg-primary !text-primary-text"
                     >
                       {t('go_to_project') || 'Voir mon projet'}
                       <IconArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
@@ -1173,7 +1173,7 @@ export default function UnifiedOnboardingModal() {
                 type="button"
                 onClick={handleBack}
                 disabled={isSaving || step === 'business'}
-                className="py-3 px-4 rounded-lg border font-medium text-[13px] transition-all disabled:opacity-30 disabled:cursor-not-allowed border-default !text-muted hover:border-primary/50"
+                className="py-3 px-4 rounded-lg border font-medium text-[11px] transition-all disabled:opacity-30 disabled:cursor-not-allowed border-default !text-muted hover:border-primary/50"
               >
                 <IconArrowLeft className="w-3.5 h-3.5 inline mr-1 -ml-0.5" strokeWidth={2} />
                 {t('back') || 'Retour'}
@@ -1187,7 +1187,7 @@ export default function UnifiedOnboardingModal() {
                   (step === 'objective' && !selectedObjective)
                 }
                 className={`
-                  flex-1 py-3 px-5 rounded-lg font-semibold text-[13px] flex items-center justify-center gap-1.5 transition-all
+                  flex-1 py-3 px-5 rounded-lg font-semibold text-[11px] flex items-center justify-center gap-1.5 transition-all
                   disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none
                   ${(step === 'business' && selectedBusinessType) ||
                     (step === 'objective' && selectedObjective) ||

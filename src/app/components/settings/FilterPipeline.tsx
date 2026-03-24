@@ -21,7 +21,7 @@ function Step({ number, label, status, statusType = 'analyze' }: StepProps) {
         {number}
       </div>
       <div className="min-w-0">
-        <div className="!text-[13px] font-medium !text-primary truncate">{label}</div>
+        <div className="!text-[11px] font-medium !text-primary truncate">{label}</div>
         <div className={`font-mono !text-[10px] truncate px-1.5 py-0.5 rounded border inline-block ${color}`}>
           {status}
         </div>

@@ -493,7 +493,7 @@ export default function LandingPage() {
         <div>
           <div className="landing-footer-logo">
             <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={26} height={26} className="landing-footer-logo-mark object-contain" />
-            <span className="font-bold text-[13px] tracking-tight" style={{ color: 'var(--landing-text)' }}>Eclipse Studio Dashboard</span>
+            <span className="font-bold text-[11px] tracking-tight" style={{ color: 'var(--landing-text)' }}>Eclipse Studio Dashboard</span>
           </div>
           <div className="landing-footer-tagline">{t('landing_footer_tagline')}</div>
         </div>

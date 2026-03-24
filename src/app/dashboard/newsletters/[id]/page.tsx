@@ -231,7 +231,7 @@ export default function NewsletterDetailPage() {
         <div className="min-h-screen bg-page flex items-center justify-center">
           <div className="text-center">
             <IconLoader2 className="w-12 h-12 animate-spin !text-muted mx-auto mb-4" />
-            <p className="text-[13px] !text-muted">{t('loading_newsletter') || 'Chargement...'}</p>
+            <p className="text-[11px] !text-muted">{t('loading_newsletter') || 'Chargement...'}</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -311,7 +311,7 @@ export default function NewsletterDetailPage() {
               <h1 className="font-serif text-[32px] font-normal !text-primary tracking-tight leading-tight mb-1.5">
                 {newsletter.title}
               </h1>
-              <p className="text-[13px] !text-muted">
+              <p className="text-[11px] !text-muted">
                 Objet : <span className="!text-primary font-medium">{newsletter.subject}</span>
               </p>
             </div>
@@ -380,7 +380,7 @@ export default function NewsletterDetailPage() {
             {/* Info section */}
             <div className="bg-card border border-default rounded-[14px] overflow-hidden">
               <div className="flex items-center justify-between py-3.5 px-4 border-b border-default">
-                <h3 className="text-[13px] font-medium !text-primary flex items-center gap-2">
+                <h3 className="text-[11px] font-medium !text-primary flex items-center gap-2">
                   <IconFileText className="w-3.5 h-3.5 !text-muted" stroke={1.4} /> Informations
                 </h3>
                 <button onClick={handleEdit} className="text-[11px] !text-secondary font-medium hover:underline cursor-pointer">Modifier →</button>
@@ -396,7 +396,7 @@ export default function NewsletterDetailPage() {
                 ].map(({ label, val, muted }) => (
                   <div key={label} className="py-3 px-4 border-b border-r border-default last:border-b-0 [&:nth-child(2n)]:border-r-0">
                     <p className="text-[10px] font-semibold uppercase tracking-widest !text-muted mb-1">{label}</p>
-                    <div className={`text-[13px] ${muted ? '!text-muted font-normal' : '!text-primary font-medium'}`}>{val}</div>
+                    <div className={`text-[11px] ${muted ? '!text-muted font-normal' : '!text-primary font-medium'}`}>{val}</div>
                   </div>
                 ))}
               </div>
@@ -405,7 +405,7 @@ export default function NewsletterDetailPage() {
             {/* Email Preview */}
             <div className="bg-card border border-default rounded-[14px] overflow-hidden">
               <div className="flex items-center justify-between py-3.5 px-4 border-b border-default">
-                <h3 className="text-[13px] font-medium !text-primary flex items-center gap-2">
+                <h3 className="text-[11px] font-medium !text-primary flex items-center gap-2">
                   <IconEye className="w-3.5 h-3.5 !text-muted" stroke={1.4} /> Aperçu de l&apos;email
                 </h3>
                 <div className="flex gap-1.5">
@@ -468,7 +468,7 @@ export default function NewsletterDetailPage() {
             {/* Timeline */}
             <div className="bg-card border border-default rounded-[14px] overflow-hidden">
               <div className="py-3.5 px-4 border-b border-default">
-                <h3 className="text-[13px] font-medium !text-primary flex items-center gap-2">
+                <h3 className="text-[11px] font-medium !text-primary flex items-center gap-2">
                   <IconClock className="w-3.5 h-3.5 !text-muted" stroke={1.4} /> Historique
                 </h3>
               </div>

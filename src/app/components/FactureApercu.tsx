@@ -163,13 +163,13 @@ export default function FactureApercu({
           <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--fd-ink3)' }}>
             {t('reference') || 'Référence'}
           </div>
-          <div className="font-mono text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture.reference || '-'}</div>
+          <div className="font-mono text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>{facture.reference || '-'}</div>
         </div>
         <div className="py-4 px-6 border-r border-cell-facture">
           <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--fd-ink3)' }}>
             {t('emission_date') || 'Date d\'émission'}
           </div>
-          <div className="text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>
+          <div className="text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>
             {facture.date ? formatDate(facture.date) : '-'}
           </div>
         </div>
@@ -177,7 +177,7 @@ export default function FactureApercu({
           <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--fd-ink3)' }}>
             {isQuote ? (t('valid_until') || 'Valide jusqu\'au') : (t('due_date') || 'Date d\'échéance')}
           </div>
-          <div className="text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>
+          <div className="text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>
             {(isQuote ? facture.valid_until : facture.due_date) ? formatDate((isQuote ? facture.valid_until : facture.due_date) || '') : '-'}
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function FactureApercu({
           <div className="text-[9.5px] font-semibold uppercase tracking-[0.1em] mb-1" style={{ color: 'var(--fd-ink3)' }}>
             {t('currency') || 'Devise'}
           </div>
-          <div className="text-[13px] font-medium" style={{ color: 'var(--fd-ink)' }}>
+          <div className="text-[11px] font-medium" style={{ color: 'var(--fd-ink)' }}>
             {facture.currency || 'EUR'} — {facture.currency === 'EUR' ? 'Euro' : facture.currency}
           </div>
         </div>
@@ -251,7 +251,7 @@ export default function FactureApercu({
         <tbody>
           {invoiceLines.map((line, index) => (
             <tr key={line.id || index} className="border-b border-cell-facture last:border-b-0">
-              <td className="py-3.5 px-4 !pl-12 text-[13px] align-top" style={{ color: 'var(--fd-ink)' }}>
+              <td className="py-3.5 px-4 !pl-12 text-[11px] align-top" style={{ color: 'var(--fd-ink)' }}>
                 <div className="font-semibold">{line.description || '-'}</div>
               </td>
               <td className="py-3.5 px-4">
@@ -288,7 +288,7 @@ export default function FactureApercu({
           </div>
           <div className="h-px my-3" style={{ background: 'var(--fd-bdr)' }} />
           <div className="flex justify-between items-baseline pt-2.5">
-            <span className="text-[13px] font-bold" style={{ color: 'var(--fd-ink)' }}>{t('total_ttc') || 'Total TTC'}</span>
+            <span className="text-[11px] font-bold" style={{ color: 'var(--fd-ink)' }}>{t('total_ttc') || 'Total TTC'}</span>
             <span className="fd-tot-final-val" style={{ color: 'var(--fd-ink)' }}>
               {formatCurrency(total)}
             </span>

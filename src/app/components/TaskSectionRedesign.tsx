@@ -331,7 +331,7 @@ export default function TaskSectionRedesign({
 
       {/* Progress */}
       <div className="bg-card border border-default  py-3.5 px-5 flex items-center gap-4">
-        <span className="!text-[13px] font-medium !text-muted whitespace-nowrap">Progression globale</span>
+        <span className="!text-[11px] font-medium !text-muted whitespace-nowrap">Progression globale</span>
         <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
           <motion.div
             className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full"
@@ -822,7 +822,7 @@ function TaskCardRedesign({
                       type="date"
                       value={editStartDate}
                       onChange={(e) => setEditStartDate(e.target.value)}
-                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[11px] !text-primary outline-none focus:border-primary"
                     />
                   </div>
                   <div>
@@ -831,7 +831,7 @@ function TaskCardRedesign({
                       type="date"
                       value={editDueDate}
                       onChange={(e) => setEditDueDate(e.target.value)}
-                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[11px] !text-primary outline-none focus:border-primary"
                     />
                   </div>
                   </div>
@@ -841,7 +841,7 @@ function TaskCardRedesign({
                       value={editEstimated}
                       onChange={(e) => setEditEstimated(e.target.value)}
                       placeholder="Ex: 10h"
-                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[11px] !text-primary outline-none focus:border-primary"
                     />
                   </div>
                   <div>
@@ -849,7 +849,7 @@ function TaskCardRedesign({
                     <select
                       value={editAssigned}
                       onChange={(e) => setEditAssigned(e.target.value)}
-                      className="w-full bg-card border border-default  px-3 py-2 !text-[13px] !text-primary outline-none focus:border-primary appearance-none cursor-pointer"
+                      className="w-full bg-card border border-default  px-3 py-2 !text-[11px] !text-primary outline-none focus:border-primary appearance-none cursor-pointer"
                     >
                       <option value="">Non assigné</option>
                       {allMembers.map((m) => (
@@ -907,7 +907,7 @@ function TaskCardRedesign({
                         >
                           {st.task_status === 'completed' && <IconCheck className="w-2 h-2 !text-white" strokeWidth={3} />}
                         </button>
-                        <span className={`flex-1 !text-[13px] !text-primary ${st.task_status === 'completed' ? 'line-through !text-muted' : ''}`}>{st.title}</span>
+                        <span className={`flex-1 !text-[11px] !text-primary ${st.task_status === 'completed' ? 'line-through !text-muted' : ''}`}>{st.title}</span>
                         {onEditSubtask && (
                           <button
                             type="button"
@@ -948,7 +948,7 @@ function TaskCardRedesign({
                         if (e.key === 'Escape') setNewSubtaskTitle('');
                       }}
                       placeholder="Ajouter une sous-tâche… (Entrée pour valider)"
-                      className="flex-1 border-none bg-transparent !text-[13px] !text-primary outline-none placeholder:!text-muted2"
+                      className="flex-1 border-none bg-transparent !text-[11px] !text-primary outline-none placeholder:!text-muted2"
                     />
                     {(subtaskInputFocused || newSubtaskTitle) && (
                       <div className="flex gap-2">

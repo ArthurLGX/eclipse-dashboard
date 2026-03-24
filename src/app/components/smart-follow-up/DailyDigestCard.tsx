@@ -28,7 +28,7 @@ function DigestItemRow({ item, showTime, onClick }: DigestItemRowProps) {
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <span className="font-medium text-[13px] !text-primary truncate">
+        <span className="font-medium text-[11px] !text-primary truncate">
           {item.name}
         </span>
         {timeStr && (
