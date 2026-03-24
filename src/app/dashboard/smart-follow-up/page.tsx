@@ -149,19 +149,20 @@ export default function SmartFollowUpPage() {
     });
   };
 
-  /** Walego / Folk : même logique que le bypass ICP côté ingestion — visibles dans le tableau principal même si le score IA est bas. */
-  const isLeadSourceBypassICP = (action: AutomationAction): boolean => {
-    const ctx = action.follow_up_task?.context;
-    const fromEmail = action.follow_up_task?.received_email?.from_email ?? '';
-    const subject = action.proposed_content?.subject ?? '';
-    const fe = fromEmail.toLowerCase();
-    const s = subject.toLowerCase();
-    if (ctx?.source === 'walego' || ctx?.lead_source === 'walego') return true;
-    if (ctx?.source === 'folk' || ctx?.lead_source === 'folk') return true;
-    if (fe.includes('walego') || s.includes('walego')) return true;
-    if (fe.includes('folk') || s.includes('folk')) return true;
-    return false;
-  };
+  /** Aligné sur lead_sources + detectLeadSource (notification de lead, pas tout mail outil). */
+  const isLeadSourceBypassICP = useCallback(
+    (action: AutomationAction): boolean => {
+      const ctx = action.follow_up_task?.context;
+      const fromEmail = action.follow_up_task?.received_email?.from_email ?? '';
+      const subject = action.proposed_content?.subject ?? '';
+      const detected = detectLeadSource(
+        { from_email: fromEmail, subject, source: ctx?.source },
+        mergedLeadSources
+      );
+      return Boolean(detected?.bypass_icp);
+    },
+    [mergedLeadSources]
+  );
 
   const qualifiedActions = allActions?.filter((a) => {
     const meetsScore = a.confidence_score >= minScoreThreshold;

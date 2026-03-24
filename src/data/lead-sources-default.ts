@@ -63,7 +63,14 @@ export const DEFAULT_LEAD_SOURCES: LeadSource[] = [
     enabled: true,
     detection: {
       from_email_contains: ['folk.app', 'folk.com'],
-      match_mode: 'OR',
+      subject_contains: [
+        'new message',
+        'new reply',
+        'replied to your',
+        'has replied',
+        'someone replied',
+      ],
+      match_mode: 'AND',
     },
     bypass_icp: true,
     base_confidence: 0.7,
