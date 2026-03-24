@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { IconX, IconCheck, IconX as IconReject } from '@tabler/icons-react';
+import { IconX, IconCheck, IconX as IconReject, IconRefresh } from '@tabler/icons-react';
 
 export interface ProcessedEmail {
   name: string;
   email: string;
   snippet: string;
   confidence: number;
-  status: 'lead' | 'rejected';
+  status: 'lead' | 'rejected' | 'duplicate';
   reason: string;
 }
 
@@ -31,6 +31,7 @@ function EmailCard({
 }) {
   const [phase, setPhase] = useState<'analyzing' | 'done'>('analyzing');
   const isLead = email.status === 'lead';
+  const isDuplicate = email.status === 'duplicate';
   const confidencePercent = Math.round(email.confidence * 100);
 
   useEffect(() => {
@@ -52,7 +53,9 @@ function EmailCard({
             ? 'bg-info border-info'
             : isLead
               ? 'bg-success border-success'
-              : 'bg-danger border-danger'
+              : isDuplicate
+                ? 'bg-muted border-default'
+                : 'bg-danger border-danger'
         }`}
     >
       <div
@@ -72,11 +75,17 @@ function EmailCard({
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                 className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  isLead ? 'bg-success !text-success-text' : 'bg-danger !text-danger-text'
+                  isLead
+                    ? 'bg-success !text-success-text'
+                    : isDuplicate
+                      ? 'bg-muted !text-primary border border-default'
+                      : 'bg-danger !text-danger-text'
                 }`}
               >
                 {isLead ? (
                   <IconCheck className="w-3.5 h-3.5" stroke={2.5} />
+                ) : isDuplicate ? (
+                  <IconRefresh className="w-3.5 h-3.5 !text-muted" stroke={2} title="Déjà importé" />
                 ) : (
                   <IconReject className="w-3.5 h-3.5" stroke={2.5} />
                 )}
@@ -93,10 +102,12 @@ function EmailCard({
           <span
             className={`font-mono !text-[10px] px-1.5 py-0.5 rounded transition-colors duration-300 ${
               phase === 'analyzing'
-                  ? 'bg-info !text-info'
+                ? 'bg-info !text-info'
                 : isLead
                   ? 'bg-success !text-success-text'
-                  : 'bg-danger !text-danger-text'
+                  : isDuplicate
+                    ? 'bg-card border border-default !text-muted'
+                    : 'bg-danger !text-danger-text'
             }`}
           >
             {phase === 'analyzing' ? '...' : `${confidencePercent}%`}
@@ -107,7 +118,7 @@ function EmailCard({
                 key="reason"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="!text-[10px] !text-muted truncate max-w-[180px]"
+                className={`!text-[10px] !text-muted ${isDuplicate ? 'line-clamp-3' : 'truncate max-w-[180px]'}`}
               >
                 {email.reason}
               </motion.span>

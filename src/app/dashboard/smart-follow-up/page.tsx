@@ -109,7 +109,14 @@ export default function SmartFollowUpPage() {
   const [syncToast, setSyncToast] = useState<{
     isOpen: boolean;
     loading: boolean;
-    processedEmails: Array<{ name: string; email: string; snippet: string; confidence: number; status: 'lead' | 'rejected'; reason: string }>;
+    processedEmails: Array<{
+      name: string;
+      email: string;
+      snippet: string;
+      confidence: number;
+      status: 'lead' | 'rejected' | 'duplicate';
+      reason: string;
+    }>;
   }>({ isOpen: false, loading: false, processedEmails: [] });
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [savingFilter, setSavingFilter] = useState(false);

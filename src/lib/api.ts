@@ -2890,7 +2890,8 @@ export interface ProcessedEmail {
   email: string;
   snippet: string;
   confidence: number;
-  status: 'lead' | 'rejected';
+  /** duplicate = déjà importé (pas une erreur) */
+  status: 'lead' | 'rejected' | 'duplicate';
   reason: string;
 }
 
