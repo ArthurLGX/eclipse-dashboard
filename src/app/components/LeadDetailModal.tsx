@@ -98,6 +98,8 @@ interface LeadDetailModalProps {
   /** Mots-clés qui, s'ils apparaissent dans le sujet/corps, signent un lead chaud */
   hotLeadKeywords?: string[];
   onSuccess?: () => void;
+  /** Panneau latéral droit (Linear/Notion) au lieu d’une modale centrée */
+  variant?: 'modal' | 'drawer';
 }
 
 export default function LeadDetailModal({
@@ -105,7 +107,9 @@ export default function LeadDetailModal({
   onClose,
   action,
   onSuccess,
+  variant = 'modal',
 }: LeadDetailModalProps) {
+  const isDrawer = variant === 'drawer';
   const { showGlobalPopup } = usePopup();
   const modalRef = useModalFocus(isOpen);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -409,25 +413,45 @@ export default function LeadDetailModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9998] flex items-center justify-center bg-black/45 backdrop-blur-sm overflow-hidden overscroll-contain p-4"
-          onClick={onClose}
-          onWheel={(e) => e.stopPropagation()}
-        >
+        <>
+          {isDrawer && (
+            <motion.div
+              key="sfu-drawer-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[9998] bg-black/35 backdrop-blur-[2px]"
+              onClick={onClose}
+            />
+          )}
           <motion.div
-            ref={modalRef}
-            tabIndex={-1}
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.98 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="w-full max-w-[780px] max-h-[92vh] overflow-hidden flex flex-col rounded-[20px] shadow-2xl border border-[#e2ddd8] bg-[#ffffff] outline-none overscroll-contain"
-            onClick={(e) => e.stopPropagation()}
+            key={isDrawer ? 'sfu-drawer-wrap' : 'sfu-modal-wrap'}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={
+              isDrawer
+                ? 'fixed inset-0 z-[9999] pointer-events-none flex justify-end'
+                : 'fixed inset-0 z-[9998] flex items-center justify-center bg-black/45 backdrop-blur-sm overflow-hidden overscroll-contain p-4'
+            }
+            onClick={isDrawer ? undefined : onClose}
             onWheel={(e) => e.stopPropagation()}
           >
+            <motion.div
+              ref={modalRef}
+              tabIndex={-1}
+              initial={isDrawer ? { x: '100%' } : { opacity: 0, y: 20, scale: 0.98 }}
+              animate={isDrawer ? { x: 0 } : { opacity: 1, y: 0, scale: 1 }}
+              exit={isDrawer ? { x: '100%' } : { opacity: 0, y: 20, scale: 0.98 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className={
+                isDrawer
+                  ? 'pointer-events-auto h-full w-full max-w-[min(780px,100vw)] overflow-hidden flex flex-col shadow-2xl border-l border-[#e2ddd8] bg-[#ffffff] outline-none overscroll-contain'
+                  : 'w-full max-w-[780px] max-h-[92vh] overflow-hidden flex flex-col rounded-[20px] shadow-2xl border border-[#e2ddd8] bg-[#ffffff] outline-none overscroll-contain'
+              }
+              onClick={(e) => e.stopPropagation()}
+              onWheel={(e) => e.stopPropagation()}
+            >
             <div
               ref={scrollRef}
               className="overflow-y-auto flex-1 outline-none overscroll-contain"
@@ -435,7 +459,9 @@ export default function LeadDetailModal({
               tabIndex={-1}
             >
               {/* Sticky header : hero + signal */}
-              <div className="sticky top-0 z-10 bg-white border-b border-[#e2ddd8] rounded-t-[20px]">
+              <div
+                className={`sticky top-0 z-10 bg-white border-b border-[#e2ddd8] ${isDrawer ? '' : 'rounded-t-[20px]'}`}
+              >
                 <div className="relative px-7 pt-6 pb-4">
                   <button
                     type="button"
@@ -915,6 +941,7 @@ export default function LeadDetailModal({
             </div>
           </motion.div>
         </motion.div>
+        </>
       )}
     </AnimatePresence>
   );

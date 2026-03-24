@@ -14,7 +14,7 @@ import {
   sfuLeadToAutomationAction,
 } from '@/lib/smart-follow-up-api';
 import { useMemo, useCallback } from 'react';
-import type { AutomationAction } from '@/types/smart-follow-up';
+import type { AutomationAction, SfuLead } from '@/types/smart-follow-up';
 
 export function useAutomationSettings() {
   return useSWR('automation-settings', fetchAutomationSettings, {
@@ -71,6 +71,35 @@ export function useSfuLeadsMapped() {
     mutateActions,
     mutateSentActions,
     isLoading: loadingInbox || loadingSent,
+  };
+}
+
+const SFU_LEAD_STATUSES_ALL: SfuLead['status'][] = [
+  'new',
+  'seen',
+  'replied',
+  'snoozed',
+  'archived',
+];
+
+/** Tous les leads (5 statuts) en un seul fetch — stats + onglets par statut. */
+export function useSfuLeadsAll() {
+  const { data, mutate, isLoading } = useSWR(
+    ['sfu-leads-all', SFU_LEAD_STATUSES_ALL.join(',')],
+    () => fetchSfuLeads(SFU_LEAD_STATUSES_ALL),
+    { refreshInterval: 60000 }
+  );
+
+  const allLeads = data ?? [];
+
+  const mutateLeads = useCallback(async () => {
+    await mutate();
+  }, [mutate]);
+
+  return {
+    allLeads,
+    mutateLeads,
+    isLoading,
   };
 }
 

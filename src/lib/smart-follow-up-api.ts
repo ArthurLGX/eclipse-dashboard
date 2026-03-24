@@ -288,6 +288,7 @@ export function sfuLeadToAutomationAction(lead: SfuLead): AutomationAction {
       task_type: lead.task_type || 'custom',
       context: {
         lead_source: lead.source || undefined,
+        source: lead.source || undefined,
         from_email: lead.email || undefined,
       },
       ai_analysis: lead.ai_analysis as TaskAIAnalysis | undefined,
@@ -359,37 +360,34 @@ export async function fetchSfuLeadDetail(documentId: string): Promise<SfuLead | 
 }
 
 export async function archiveSfuLead(leadDocumentId: string): Promise<void> {
-  const token = getToken();
-  if (!token) throw new Error('Non authentifié');
-  const res = await fetch(`${API_URL}/api/smart-follow-up/lead-archive`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ leadDocumentId }),
+  await apiRequest(`leads/${leadDocumentId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      data: {
+        status: 'archived',
+        archived_at: new Date().toISOString(),
+      },
+    }),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { error?: { message?: string } })?.error?.message || 'Erreur archivage');
-  }
+}
+
+function snoozedUntilTomorrow(): string {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(9, 0, 0, 0);
+  return d.toISOString();
 }
 
 export async function snoozeSfuLeadTomorrow(leadDocumentId: string): Promise<void> {
-  const token = getToken();
-  if (!token) throw new Error('Non authentifié');
-  const res = await fetch(`${API_URL}/api/smart-follow-up/lead-snooze`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ leadDocumentId }),
+  await apiRequest(`leads/${leadDocumentId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      data: {
+        status: 'snoozed',
+        snoozed_until: snoozedUntilTomorrow(),
+      },
+    }),
   });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { error?: { message?: string } })?.error?.message || 'Erreur report');
-  }
 }
 
 export async function updateSfuLead(

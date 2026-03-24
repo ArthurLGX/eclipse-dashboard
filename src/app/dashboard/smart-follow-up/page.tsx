@@ -6,10 +6,8 @@ import { detectLeadSource } from '@/lib/lead-source-detector';
 import { useRouter } from 'next/navigation';
 import AddClientModal from '@/app/dashboard/clients/AddClientModal';
 import Image from 'next/image';
-import { 
-  IconSettings, 
-  IconPlayerPause, 
-  IconPlayerPlay,
+import {
+  IconSettings,
   IconAlertCircle,
   IconFilter,
   IconCheck,
@@ -17,40 +15,26 @@ import {
   IconUser,
   IconTarget,
   IconTrash,
-  IconBriefcase,
-  IconBuilding,
-  IconSearch,
   IconSparkles,
-  IconSend,
   IconRefresh,
   IconPlug,
   IconLoader2,
 } from '@tabler/icons-react';
-import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
+import DataTable, { Column } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
 import LeadDetailModal from '@/app/components/LeadDetailModal';
-import TaskDetailModal from '@/app/components/TaskDetailModal';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
-import DeleteConfirmModal from '@/app/components/DeleteConfirmModal';
 import InstructionIADrawer from '@/app/components/InstructionIADrawer';
 import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
 import SFUOnboarding, { hasSeenSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import SyncInboxToast from '@/app/components/SyncInboxToast';
 import { DailyDigestCard } from '@/app/components/smart-follow-up/DailyDigestCard';
-import { SourcesManager } from '@/app/components/smart-follow-up/SourcesManager';
 import { usePopup } from '@/app/context/PopupContext';
-import { 
-  useSmartFollowUpStats, 
-  useFollowUpTasks, 
-  useSfuLeadsMapped,
-  useAutomationSettings,
-  useDailyDigest,
-} from '@/hooks/useSmartFollowUp';
-import { 
+import { useSfuLeadsAll, useAutomationSettings, useDailyDigest } from '@/hooks/useSmartFollowUp';
+import {
   updateSfuLead,
   archiveSfuLead,
-  updateFollowUpTask,
-  deleteFollowUpTask,
+  sfuLeadToAutomationAction,
   updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
 import { addClientUser, syncInboxStream, fetchSmtpConfig, type ProcessedEmail } from '@/lib/api';
@@ -63,8 +47,10 @@ import { clearCache } from '@/hooks/useApi';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { resolveLeadAvatarSrc, resolveLeadDisplayName } from '@/lib/lead-display';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
-import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
+import type { AutomationAction, SfuLead } from '@/types/smart-follow-up';
 import type { CreateClientData } from '@/types';
+
+type LeadTableRow = { lead: SfuLead; action: AutomationAction };
 
 function formatRelativeTime(date: Date): string {
   const now = new Date();
@@ -82,30 +68,18 @@ export default function SmartFollowUpPage() {
   const { user } = useAuth();
   const { t } = useLanguage();
   const { showGlobalPopup } = usePopup();
-  const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
-  const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
-  const { allActions, sentActions, mutateActions, mutateSentActions } = useSfuLeadsMapped();
+  const { allLeads: allLeadsRaw, mutateLeads, isLoading: leadsLoading } = useSfuLeadsAll();
   const { data: settings, mutate: mutateSettings, isLoading: settingsLoading } = useAutomationSettings();
   const { data: todayDigest } = useDailyDigest();
-  
-  const [activeTab, setActiveTab] = useState<'actions' | 'tasks' | 'sent' | 'sources'>('actions');
-  const [filterSentStatus, setFilterSentStatus] = useState<'Tous' | 'Envoyés' | 'Échoués'>('Tous');
+
+  const [leadStatusTab, setLeadStatusTab] = useState<SfuLead['status']>('new');
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [togglingPause, setTogglingPause] = useState(false);
   const [showRulesModal, setShowRulesModal] = useState(false);
   const [showLowScoreEmails, setShowLowScoreEmails] = useState(false);
   const [cleaningNonICP, setCleaningNonICP] = useState(false);
-  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; task: FollowUpTask | null }>({
-    isOpen: false,
-    task: null,
-  });
-  const [selectedTask, setSelectedTask] = useState<FollowUpTask | null>(null);
-  const [showTaskDetailModal, setShowTaskDetailModal] = useState(false);
   const [showInstructionDrawer, setShowInstructionDrawer] = useState(false);
-  const [taskSearch, setTaskSearch] = useState('');
-  const [filterPrio, setFilterPrio] = useState<'Toutes' | 'Urgent' | 'Prioritaire' | 'Normal'>('Toutes');
-  const [filterStatut, setFilterStatut] = useState<'Tous' | 'En attente' | 'Annulé' | 'Terminé'>('Tous');
   const [showSimulationDrawer, setShowSimulationDrawer] = useState(false);
   const [addClientModal, setAddClientModal] = useState<{
     isOpen: boolean;
@@ -197,7 +171,7 @@ export default function SmartFollowUpPage() {
       const fromEmail = action.follow_up_task?.received_email?.from_email ?? '';
       const subject = action.proposed_content?.subject ?? '';
       const detected = detectLeadSource(
-        { from_email: fromEmail, subject, source: ctx?.source },
+        { from_email: fromEmail, subject, source: ctx?.source as string | undefined },
         mergedLeadSources
       );
       return Boolean(detected?.bypass_icp);
@@ -205,18 +179,29 @@ export default function SmartFollowUpPage() {
     [mergedLeadSources]
   );
 
-  const qualifiedActions = allActions?.filter((a) => {
-    const meetsScore = a.confidence_score >= minScoreThreshold;
-    const fromPriorityDomain = isLeadFromPriorityDomain(a);
-    const sourceBypass = isLeadSourceBypassICP(a);
-    return meetsScore || fromPriorityDomain || sourceBypass;
-  }) ?? [];
-  const nonQualifiedActions = allActions?.filter((a) => {
-    const meetsScore = a.confidence_score >= minScoreThreshold;
-    const fromPriorityDomain = isLeadFromPriorityDomain(a);
-    const sourceBypass = isLeadSourceBypassICP(a);
-    return !meetsScore && !fromPriorityDomain && !sourceBypass;
-  }) ?? [];
+  const leadQualifies = useCallback(
+    (lead: SfuLead) => {
+      const a = sfuLeadToAutomationAction(lead);
+      const meetsScore = a.confidence_score >= minScoreThreshold;
+      const fromPriorityDomain = isLeadFromPriorityDomain(a);
+      const sourceBypass = isLeadSourceBypassICP(a);
+      return meetsScore || fromPriorityDomain || sourceBypass;
+    },
+    [minScoreThreshold, isLeadFromPriorityDomain, isLeadSourceBypassICP]
+  );
+
+  const allActions = useMemo(
+    () => (allLeadsRaw ?? []).map((l) => sfuLeadToAutomationAction(l)) as AutomationAction[],
+    [allLeadsRaw]
+  );
+
+  const nonQualifiedActions = useMemo(() => {
+    return (allLeadsRaw ?? [])
+      .filter((l) => ['new', 'seen', 'snoozed'].includes(l.status))
+      .filter((l) => !leadQualifies(l))
+      .map((l) => sfuLeadToAutomationAction(l)) as AutomationAction[];
+  }, [allLeadsRaw, leadQualifies]);
+
   // Filtrage par source (email / whatsapp / both)
   const sourceFilter = (settings?.source_filter as 'both' | 'email' | 'whatsapp') || 'both';
   const notificationChannel = (settings?.notification_preferences as { channel?: 'both' | 'email' | 'whatsapp' })?.channel || 'both';
@@ -225,24 +210,74 @@ export default function SmartFollowUpPage() {
     [mergedLeadSources]
   );
 
-  const isActionWhatsApp = (a: AutomationAction) => {
-    const ctx = a.follow_up_task?.context;
-    const fromEmail = a.follow_up_task?.received_email?.from_email ?? '';
-    const subject = a.proposed_content?.subject ?? '';
-    return ctx?.source === 'whatsapp' || fromEmail?.endsWith('@whatsapp') || subject?.startsWith('WhatsApp ·');
-  };
-  const filterBySource = (list: AutomationAction[]) => {
-    if (sourceFilter === 'both') return list;
-    return list.filter((a) => {
-      const isWa = isActionWhatsApp(a);
-      if (sourceFilter === 'whatsapp') return isWa;
-      if (sourceFilter === 'email') return !isWa;
-      return true;
-    });
-  };
+  const isLeadWhatsApp = useCallback((lead: SfuLead) => {
+    const fromEmail = lead.received_email?.from_email ?? '';
+    const subject = (lead.proposed_content as { subject?: string } | null)?.subject ?? '';
+    return (
+      lead.source === 'whatsapp' ||
+      fromEmail.endsWith('@whatsapp') ||
+      subject.startsWith('WhatsApp ·')
+    );
+  }, []);
 
-  const baseActions = showLowScoreEmails ? allActions : qualifiedActions;
-  const actions = useMemo(() => filterBySource(baseActions ?? []), [baseActions, sourceFilter]);
+  const filterLeadsBySource = useCallback(
+    (list: SfuLead[]) => {
+      if (sourceFilter === 'both') return list;
+      return list.filter((l) => {
+        const isWa = isLeadWhatsApp(l);
+        if (sourceFilter === 'whatsapp') return isWa;
+        if (sourceFilter === 'email') return !isWa;
+        return true;
+      });
+    },
+    [sourceFilter, isLeadWhatsApp]
+  );
+
+  const leadsInTab = useMemo(() => {
+    const list = (allLeadsRaw ?? []).filter((l) => l.status === leadStatusTab);
+    return filterLeadsBySource(list);
+  }, [allLeadsRaw, leadStatusTab, filterLeadsBySource]);
+
+  const qualifiedLeadsInTab = useMemo(
+    () => leadsInTab.filter((l) => leadQualifies(l)),
+    [leadsInTab, leadQualifies]
+  );
+
+  const displayedLeads = useMemo(
+    () => (showLowScoreEmails ? leadsInTab : qualifiedLeadsInTab),
+    [showLowScoreEmails, leadsInTab, qualifiedLeadsInTab]
+  );
+
+  const leadRows: LeadTableRow[] = useMemo(
+    () => displayedLeads.map((lead) => ({ lead, action: sfuLeadToAutomationAction(lead) })),
+    [displayedLeads]
+  );
+
+  const statsLeads = useMemo(() => (allLeadsRaw ?? []).filter((l) => l.status !== 'archived'), [allLeadsRaw]);
+  const hotCount = useMemo(() => statsLeads.filter((l) => l.score === 'hot').length, [statsLeads]);
+  const warmCount = useMemo(() => statsLeads.filter((l) => l.score === 'warm').length, [statsLeads]);
+  const totalActiveLeads = statsLeads.length;
+  const repliedCount = useMemo(
+    () => (allLeadsRaw ?? []).filter((l) => l.status === 'replied').length,
+    [allLeadsRaw]
+  );
+  const pipelineForRate = useMemo(
+    () => (allLeadsRaw ?? []).filter((l) => ['new', 'seen', 'snoozed', 'replied'].includes(l.status)).length,
+    [allLeadsRaw]
+  );
+  const responseRatePct =
+    pipelineForRate > 0 ? Math.round((repliedCount / pipelineForRate) * 1000) / 10 : 0;
+
+  const statusCounts = useMemo(() => {
+    const list = allLeadsRaw ?? [];
+    return {
+      new: list.filter((l) => l.status === 'new').length,
+      seen: list.filter((l) => l.status === 'seen').length,
+      replied: list.filter((l) => l.status === 'replied').length,
+      snoozed: list.filter((l) => l.status === 'snoozed').length,
+      archived: list.filter((l) => l.status === 'archived').length,
+    };
+  }, [allLeadsRaw]);
 
   const handleToggleSystem = async (newEnabled?: boolean) => {
     if (!settings?.documentId) {
@@ -319,8 +354,7 @@ export default function SmartFollowUpPage() {
       } else {
         showGlobalPopup('Aucun nouvel email trouvé.', 'info');
       }
-      mutateActions();
-      mutateTasks();
+      mutateLeads();
     } catch (error) {
       console.error('Refetch emails error:', error);
       setSyncToast({ isOpen: false, loading: false, processedEmails: [] });
@@ -342,8 +376,7 @@ export default function SmartFollowUpPage() {
         await archiveSfuLead(action.documentId);
         showGlobalPopup('Lead rejeté', 'info');
       }
-      mutateActions();
-      mutateSentActions();
+      mutateLeads();
     } catch (error) {
       console.error('Erreur:', error);
       showGlobalPopup('Erreur', 'error');
@@ -368,7 +401,7 @@ export default function SmartFollowUpPage() {
       });
       showGlobalPopup(t('client_added_success') || 'Contact créé avec succès', 'success');
       clearCache('clients');
-      mutateActions();
+      mutateLeads();
       setAddClientModal({ isOpen: false });
     } catch (err) {
       throw err;
@@ -391,7 +424,7 @@ export default function SmartFollowUpPage() {
           console.error(`Erreur:`, error);
         }
       }
-      mutateActions();
+      mutateLeads();
       showGlobalPopup(`✓ ${rejected} emails rejetés`, 'success');
     } catch (error) {
       console.error('Erreur:', error);
@@ -399,43 +432,6 @@ export default function SmartFollowUpPage() {
     } finally {
       setCleaningNonICP(false);
     }
-  };
-
-  const handleDeleteTask = async () => {
-    if (!deleteModal.task?.documentId) return;
-    
-    try {
-      await deleteFollowUpTask(deleteModal.task.documentId);
-      showGlobalPopup('Tâche supprimée', 'success');
-      mutateTasks();
-      setDeleteModal({ isOpen: false, task: null });
-    } catch (error) {
-      console.error('Erreur:', error);
-      showGlobalPopup('Erreur lors de la suppression', 'error');
-    }
-  };
-
-  const handleUpdateTask = (task: FollowUpTask, updates: Partial<FollowUpTask>) => {
-    updateFollowUpTask(task.documentId, updates)
-      .then(() => {
-        mutateTasks();
-        showGlobalPopup('Tâche mise à jour', 'success');
-      })
-      .catch((error) => {
-        console.error('Erreur:', error);
-        showGlobalPopup('Erreur', 'error');
-      });
-  };
-
-const getContactType = (action: AutomationAction) => {
-    const subject = action.proposed_content.subject.toLowerCase();
-    const body = action.proposed_content.body.toLowerCase();
-    const text = `${subject} ${body}`;
-
-    if (text.includes('freelance') || text.includes('indépendant')) return { label: 'Freelance', icon: IconUser, color: 'text-blue-500' };
-    if (text.includes('agence') || text.includes('agency')) return { label: 'Agence', icon: IconBriefcase, color: 'text-purple-500' };
-    if (text.includes('b2b') || text.includes('entreprise')) return { label: 'B2B', icon: IconBuilding, color: 'text-green-500' };
-    return { label: 'B2C', icon: IconUser, color: 'text-orange-500' };
   };
 
   const getSourceBadge = (action: AutomationAction) => {
@@ -461,535 +457,222 @@ const getContactType = (action: AutomationAction) => {
 
   const isSystemEnabled = settings?.enabled ?? true;
 
-  // Filtrage des tâches
-  const getTaskPriority = (task: FollowUpTask): 'Urgent' | 'Prioritaire' | 'Normal' => {
-    const u = task.ai_analysis?.urgency;
-    if (u === 'urgent') return 'Urgent';
-    if (u === 'high') return 'Prioritaire';
-    return 'Normal';
-  };
-  const getTaskStatusLabel = (task: FollowUpTask): string => {
-    const s = task.status_follow_up;
-    if (s === 'pending' || s === 'in_progress') return 'En attente';
-    if (s === 'cancelled') return 'Annulé';
-    if (s === 'completed') return 'Terminé';
-    return 'En attente';
+  const leadLeadScoreLabel = (lead: SfuLead) => {
+    const s = lead.score;
+    if (s === 'hot') return '🔴 Chaud';
+    if (s === 'warm') return '🟠 Tiède';
+    if (s === 'cold') return '⚫ Froid';
+    if (s === 'neutral') return '🟡 Neutre';
+    return '—';
   };
 
-  const filteredTasks = useMemo(() => {
-    const list = tasks || [];
-    return list.filter(t => {
-      const mp = filterPrio === 'Toutes' || getTaskPriority(t) === filterPrio;
-      const ms = filterStatut === 'Tous' || getTaskStatusLabel(t) === filterStatut;
-      const contact = (t.contact?.name || t.context?.from_name || t.context?.from_email || '').toLowerCase();
-      const subject = (t.context?.original_subject || '').toLowerCase();
-      const mq = !taskSearch || contact.includes(taskSearch.toLowerCase()) || subject.includes(taskSearch.toLowerCase());
-      return mp && ms && mq;
-    });
-  }, [tasks, filterPrio, filterStatut, taskSearch]);
+  const leadColumns: Column<LeadTableRow>[] = useMemo(
+    () => [
+      {
+        key: 'client',
+        label: 'Contact',
+        render: (_, row) => {
+          const action = row.action;
+          const fromPriorityDomain = isLeadFromPriorityDomain(action);
+          const sourceBypass = isLeadSourceBypassICP(action);
+          const isLowScore = action.confidence_score < minScoreThreshold && !fromPriorityDomain && !sourceBypass;
+          const mailOrCachedAvatar = resolveLeadAvatarSrc(action);
+          const avatarPath =
+            mailOrCachedAvatar ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
+          const displayName = resolveLeadDisplayName(action);
+          const hasLeadPhoto = Boolean(mailOrCachedAvatar || action.avatar_path);
 
-  const taskCounts = useMemo(() => ({
-    attente: (tasks || []).filter(t => getTaskStatusLabel(t) === 'En attente').length,
-    annule: (tasks || []).filter(t => getTaskStatusLabel(t) === 'Annulé').length,
-    urgent: (tasks || []).filter(t => getTaskPriority(t) === 'Urgent').length,
-  }), [tasks]);
-
-  const filteredSentActions = useMemo(() => {
-    const list = sentActions || [];
-    if (filterSentStatus === 'Tous') return list;
-    if (filterSentStatus === 'Envoyés') return list.filter(a => a.status_automation_action === 'executed');
-    return list.filter(a => a.status_automation_action === 'failed');
-  }, [sentActions, filterSentStatus]);
-
-  const getContentSent = (action: AutomationAction) =>
-    (action.edited_content as { subject?: string; body?: string; to?: string[] } | null) || action.proposed_content;
-
-  const getBodyPreview = (body: string | undefined, maxLen = 120) => {
-    if (!body) return '—';
-    const text = body.replace(/<[^>]*>/g, '').trim();
-    return text.length <= maxLen ? text : `${text.slice(0, maxLen)}…`;
-  };
-
-  // Colonnes pour les actions (leads)
-  const actionColumns: Column<AutomationAction>[] = useMemo(() => [
-    {
-      key: 'client',
-      label: 'Contact',
-      render: (_, action) => {
-        const contactType = getContactType(action);
-        const ContactIcon = contactType.icon;
-        const fromPriorityDomain = isLeadFromPriorityDomain(action);
-        const sourceBypass = isLeadSourceBypassICP(action);
-        const isLowScore = action.confidence_score < minScoreThreshold && !fromPriorityDomain && !sourceBypass;
-        const mailOrCachedAvatar = resolveLeadAvatarSrc(action);
-        const avatarPath =
-          mailOrCachedAvatar ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
-        const displayName = resolveLeadDisplayName(action);
-        const hasLeadPhoto = Boolean(mailOrCachedAvatar || action.avatar_path);
-
-        return (
-          <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
-                !hasLeadPhoto && (fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
-              }`}
-            >
-              {avatarPath ? (
-                <>
-                  <Image
-                    src={avatarPath}
-                    alt={displayName}
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-cover"
-                    unoptimized
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      const fallback = e.currentTarget.nextElementSibling as HTMLElement;
-                      if (fallback) fallback.style.display = 'flex';
-                    }}
+          return (
+            <div className="flex items-center gap-3">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
+                  !hasLeadPhoto &&
+                  (fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
+                }`}
+              >
+                {avatarPath ? (
+                  <>
+                    <Image
+                      src={avatarPath}
+                      alt={displayName}
+                      width={40}
+                      height={40}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                    <div
+                      className={`w-full h-full hidden items-center justify-center ${
+                        fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
+                      }`}
+                    >
+                      <IconUser
+                        className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : 'text-muted'}`}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <IconUser
+                    className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : 'text-muted'}`}
                   />
-                  <div
-                    className={`w-full h-full hidden items-center justify-center ${
-                      fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
-                    }`}
-                  >
-                    <ContactIcon className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
-                  </div>
-                </>
-              ) : (
-                <ContactIcon className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
-              )}
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-medium text-primary truncate">
-                  {displayName}
-                </p>
-                {fromPriorityDomain && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700">
-                    Priorité domaine
-                  </span>
-                )}
-                {sourceBypass && !fromPriorityDomain && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-blue-100 text-blue-700">
-                    Source partenaire
-                  </span>
-                )}
-                {!fromPriorityDomain && !sourceBypass && isLowScore && (
-                  <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600">
-                    Non qualifié
-                  </span>
                 )}
               </div>
-              <p className="text-xs text-muted truncate">{action.client?.email || 'aucun email'}</p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-medium text-primary truncate">{displayName}</p>
+                  {fromPriorityDomain && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700">
+                      Priorité domaine
+                    </span>
+                  )}
+                  {sourceBypass && !fromPriorityDomain && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-blue-100 text-blue-700">
+                      Source partenaire
+                    </span>
+                  )}
+                  {!fromPriorityDomain && !sourceBypass && isLowScore && (
+                    <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600">
+                      Non qualifié
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted truncate">{action.client?.email || 'aucun email'}</p>
+              </div>
             </div>
-          </div>
-        );
+          );
+        },
       },
-    },
-    {
-      key: 'subject',
-      label: 'Sujet',
-      className: 'min-w-[280px]',
-      render: (_, action) => {
-        const nameRaw = resolveLeadDisplayName(action);
-        const name = nameRaw === 'Contact inconnu' ? 'Contact' : nameRaw;
-        const title = action.lead_title || '';
-        const preview = action.follow_up_task?.context?.lead_response_preview as string | undefined;
-        const subjectLine = [name, title].filter(Boolean).join(' · ');
-        const previewLine = preview ? `"${preview}"` : '';
-        return (
-          <div className="min-w-0 break-words">
-            <p className="text-sm font-medium text-primary mb-0.5">
-              {subjectLine || action.proposed_content.subject}
+      {
+        key: 'signal',
+        label: 'Signal',
+        className: 'min-w-[200px] max-w-[320px]',
+        render: (_, row) => {
+          const preview = row.action.follow_up_task?.context?.lead_response_preview as string | undefined;
+          const raw =
+            row.lead.signal?.trim() ||
+            preview ||
+            row.action.proposed_content.subject ||
+            '—';
+          const short = raw.length > 140 ? `${raw.slice(0, 140)}…` : raw;
+          return (
+            <p className="text-sm text-primary line-clamp-2" title={raw}>
+              {short}
             </p>
-            {previewLine ? (
-              <p className="text-xs text-muted italic break-words">
-                {previewLine}
-              </p>
-            ) : null}
-          </div>
-        );
+          );
+        },
       },
-    },
-    {
-      key: 'type',
-      label: 'Type',
-      render: (_, action) => {
-        const contactType = getContactType(action);
-        return (
-          <span className={`px-2 py-1 text-xs font-medium rounded whitespace-nowrap ${contactType.color} bg-current/10`}>
-            {contactType.label}
-          </span>
-        );
+      {
+        key: 'score',
+        label: 'Score',
+        render: (_, row) => {
+          const action = row.action;
+          const lead = row.lead;
+          const fromPriorityDomain = isLeadFromPriorityDomain(action);
+          const sourceBypass = isLeadSourceBypassICP(action);
+          const pct = fromPriorityDomain ? '100%' : `${(action.confidence_score * 100).toFixed(0)}%`;
+          const tier = leadLeadScoreLabel(lead);
+          return (
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-medium text-primary whitespace-nowrap">{tier}</span>
+              <span
+                className={`px-2 py-0.5 text-[10px] font-semibold rounded-full w-fit ${
+                  fromPriorityDomain || sourceBypass || action.confidence_score >= 0.8
+                    ? 'bg-success-light text-success-text'
+                    : action.confidence_score >= 0.6
+                      ? 'bg-warning-light text-warning-text'
+                      : 'bg-error-light text-error-text'
+                }`}
+              >
+                ICP {pct}
+              </span>
+            </div>
+          );
+        },
       },
-    },
-    {
-      key: 'source',
-      label: 'Source',
-      render: (_, action) => {
-        const badge = getSourceBadge(action);
-        return (
-          <span className={`px-2 py-1 text-xs font-medium rounded whitespace-nowrap ${badge.color}`}>
-            {badge.label}
-          </span>
-        );
+      {
+        key: 'source',
+        label: 'Source',
+        render: (_, row) => {
+          const badge = getSourceBadge(row.action);
+          return (
+            <span className={`px-2 py-1 text-xs font-medium rounded whitespace-nowrap ${badge.color}`}>
+              {badge.label}
+            </span>
+          );
+        },
       },
-    },
-    {
-      key: 'approval_status',
-      label: 'Validation',
-      render: (_, action) =>
-        action.status_automation_action === 'approved' ? (
-          <span className="px-2 py-1 text-xs font-medium rounded whitespace-nowrap bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
-            Auto-approuvé
-          </span>
-        ) : (
-          <span className="px-2 py-1 text-xs font-medium rounded whitespace-nowrap bg-amber-100 text-amber-900 dark:bg-amber-500/15 dark:text-amber-200">
-            À traiter
+      {
+        key: 'createdAt',
+        label: 'Date',
+        render: (_, row) => (
+          <span className="text-xs text-muted whitespace-nowrap">
+            {formatRelativeTime(new Date(row.action.createdAt))}
           </span>
         ),
-    },
-    {
-      key: 'score',
-      label: 'Score ICP',
-      render: (_, action) => {
-        const fromPriorityDomain = isLeadFromPriorityDomain(action);
-        const sourceBypass = isLeadSourceBypassICP(action);
-        const displayScore = fromPriorityDomain ? 1 : action.confidence_score;
-        const scoreTrusted = fromPriorityDomain || sourceBypass;
-        return (
-          <div className="flex items-center gap-1 flex-wrap">
-            <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
-              scoreTrusted || displayScore >= 0.8
-                ? 'bg-success-light text-success-text' 
-                : displayScore >= 0.6
-                  ? 'bg-warning-light text-warning-text'
-                  : 'bg-error-light text-error-text'
-            }`}>
-              {fromPriorityDomain ? '100%' : `${(action.confidence_score * 100).toFixed(0)}%`}
-            </span>
-          </div>
-        );
       },
-    },
-    {
-      key: 'createdAt',
-      label: 'Reçu',
-      render: (_, action) => (
-        <span className="text-xs text-muted whitespace-nowrap">
-          {formatRelativeTime(new Date(action.createdAt))}
-        </span>
-      ),
-    },
-    {
-      key: 'actions',
-      label: 'Actions',
-      render: (_, action) => (
-        <div className="flex items-center gap-2 whitespace-nowrap">
-          {!action.client && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                const email = action.proposed_content?.to?.[0] || '';
-                const resolvedName = resolveLeadDisplayName(action);
-                const nameForClient =
-                  resolvedName !== 'Contact inconnu'
-                    ? resolvedName
-                    : extractWalegoLeadName(action.proposed_content?.subject || '') || email?.split('@')[0] || '';
-                setAddClientModal({
-                  isOpen: true,
-                  initialData: {
-                    name: nameForClient,
-                    email,
-                    enterprise: action.lead_title || '',
-                  },
-                });
-              }}
-              className="px-2 py-1 bg-blue-500 text-white rounded text-xs font-medium hover:opacity-90"
-              title="Créer fiche contact"
-            >
-              <IconUser className="w-3.5 h-3.5 !text-white" />
-            </button>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleQualifyLead(action, 'qualified');
-            }}
-            className="px-2 py-1 bg-success text-white rounded text-xs font-medium hover:opacity-90"
-            title="Qualifier"
-          >
-            <IconCheck className="w-3.5 h-3.5 !text-white" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleQualifyLead(action, 'rejected');
-            }}
-            className="px-2 py-1 bg-danger rounded text-xs font-medium hover:bg-danger"
-            title="Rejeter"
-          >
-            <IconX className="w-3.5 h-3.5 !text-white" />
-          </button>
-        </div>
-      ),
-    },
-  ], [minScoreThreshold, priorityKeywords, handleQualifyLead, isLeadFromPriorityDomain, isLeadSourceBypassICP]);
-
-  // Colonnes pour les tâches
-  const taskColumns: Column<FollowUpTask>[] = useMemo(() => [
-    {
-      key: 'contact',
-      label: 'Contact',
-      render: (_, task) => (
-        <div className="min-w-0">
-          <p className="font-medium text-primary truncate">
-            {task.contact?.name || task.context?.from_name || extractWalegoLeadName(task.context?.original_subject || task.received_email?.subject || '') || task.context?.from_email || 'Contact inconnu'}
-          </p>
-          {task.context?.from_email && (
-            <p className="text-xs text-muted truncate">{task.context.from_email}</p>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: 'subject',
-      label: 'Sujet',
-      className: 'min-w-[280px]',
-      render: (_, task) => (
-        <p className="text-sm text-primary break-words">
-          {task.context?.original_subject || 'N/A'}
-        </p>
-      ),
-    },
-    {
-      key: 'task_type',
-      label: 'Type',
-      render: (_, task) => (
-        <span className="px-2 py-1 text-xs font-medium rounded bg-purple-100 text-purple-600 whitespace-nowrap">
-          {task.task_type === 'payment_reminder' ? 'Relance paiement' :
-           task.task_type === 'proposal_follow_up' ? 'Suivi devis' :
-           task.task_type === 'meeting_follow_up' ? 'Suivi réunion' :
-           task.task_type === 'check_in' ? 'Prise de nouvelles' :
-           task.task_type === 'thank_you' ? 'Remerciement' : 'Autre'}
-        </span>
-      ),
-    },
-    {
-      key: 'status',
-      label: 'Statut',
-      render: (_, task) => (
-        <span className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
-          task.status_follow_up === 'pending' ? 'bg-info-light text-info-text' :
-          task.status_follow_up === 'in_progress' ? 'bg-warning-light text-warning-text' :
-          task.status_follow_up === 'completed' ? 'bg-success-light text-success-text' :
-          'bg-muted text-muted'
-        }`}>
-          {task.status_follow_up === 'pending' ? 'En attente' :
-           task.status_follow_up === 'in_progress' ? 'En cours' :
-           task.status_follow_up === 'completed' ? 'Terminé' :
-           task.status_follow_up === 'cancelled' ? 'Annulé' : 'Échoué'}
-        </span>
-      ),
-    },
-    {
-      key: 'ai_analysis',
-      label: 'Analyse',
-      render: (_, task) => (
-        <div className="flex items-center gap-1 whitespace-nowrap">
-          {task.ai_analysis?.sentiment && (
-            <span className={`px-1.5 py-0.5 text-[10px] rounded ${
-              task.ai_analysis.sentiment === 'positive' ? 'bg-green-100 text-green-700' :
-              task.ai_analysis.sentiment === 'negative' ? 'bg-red-100 text-red-700' :
-              'bg-gray-100 text-gray-700'
-            }`}>
-              {task.ai_analysis.sentiment === 'positive' ? '😊' :
-               task.ai_analysis.sentiment === 'negative' ? '😟' : '😐'}
-            </span>
-          )}
-          {task.ai_analysis?.urgency && (
-            <span className={`px-1.5 py-0.5 text-[10px] font-medium rounded ${
-              task.ai_analysis.urgency === 'urgent' ? 'bg-red-100 text-red-700' :
-              task.ai_analysis.urgency === 'high' ? 'bg-orange-100 text-orange-700' :
-              task.ai_analysis.urgency === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-              'bg-gray-100 text-gray-700'
-            }`}>
-              {task.ai_analysis.urgency === 'urgent' ? 'URGENT' :
-               task.ai_analysis.urgency === 'high' ? 'Prioritaire' :
-               task.ai_analysis.urgency === 'medium' ? 'Normal' : 'Faible'}
-            </span>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: 'scheduled_for',
-      label: 'Planifié',
-      render: (_, task) => (
-        <span className="text-xs text-muted whitespace-nowrap">
-          {new Date(task.scheduled_for).toLocaleDateString('fr-FR', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
-        </span>
-      ),
-    },
-    {
-      key: 'task_actions',
-      label: 'Actions',
-      render: (_, task) => (
-        <div className="flex items-center gap-1 whitespace-nowrap">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleUpdateTask(task, { 
-                status_follow_up: task.status_follow_up === 'cancelled' ? 'pending' : 'cancelled' 
-              });
-            }}
-            disabled={task.status_follow_up === 'completed'}
-            className="p-1.5 hover:bg-secondary rounded transition-colors disabled:opacity-50"
-            title={task.status_follow_up === 'cancelled' ? 'Réactiver' : 'Mettre en pause'}
-          >
-            {task.status_follow_up === 'cancelled' ? (
-              <IconPlayerPlay className="w-4 h-4 text-success" />
-            ) : (
-              <IconPlayerPause className="w-4 h-4 text-warning" />
-            )}
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setDeleteModal({ isOpen: true, task });
-            }}
-            className="p-1.5 hover:bg-secondary rounded transition-colors"
-            title="Supprimer"
-          >
-            <IconTrash className="w-4 h-4 text-error" />
-          </button>
-        </div>
-      ),
-    },
-  ], [handleUpdateTask, setDeleteModal]);
-
-  // Colonnes pour l'historique des relances envoyées
-  const sentColumns: Column<AutomationAction>[] = useMemo(() => [
-    {
-      key: 'client',
-      label: 'Contact',
-      render: (_, action) => (
-        <div className="min-w-0">
-          <p className="font-medium text-primary truncate">
-            {resolveLeadDisplayName(action)}
-          </p>
-          <p className="text-xs text-muted truncate">{action.client?.email || '—'}</p>
-        </div>
-      ),
-    },
-    {
-      key: 'to',
-      label: 'Destinataire(s)',
-      render: (_, action) => {
-        const content = getContentSent(action);
-        const to = content?.to;
-        const toStr = Array.isArray(to) ? to.join(', ') : typeof to === 'string' ? to : '—';
-        return <span className="text-sm truncate max-w-[200px] block" title={toStr}>{toStr || '—'}</span>;
+      {
+        key: 'actions',
+        label: 'Actions',
+        render: (_, row) => {
+          const action = row.action;
+          return (
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              {!action.client && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const email = action.proposed_content?.to?.[0] || '';
+                    const resolvedName = resolveLeadDisplayName(action);
+                    const nameForClient =
+                      resolvedName !== 'Contact inconnu'
+                        ? resolvedName
+                        : extractWalegoLeadName(action.proposed_content?.subject || '') || email?.split('@')[0] || '';
+                    setAddClientModal({
+                      isOpen: true,
+                      initialData: {
+                        name: nameForClient,
+                        email,
+                        enterprise: action.lead_title || '',
+                      },
+                    });
+                  }}
+                  className="px-2 py-1 bg-blue-500 text-white rounded text-xs font-medium hover:opacity-90"
+                  title="Créer fiche contact"
+                >
+                  <IconUser className="w-3.5 h-3.5 !text-white" />
+                </button>
+              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleQualifyLead(action, 'qualified');
+                }}
+                className="px-2 py-1 bg-success text-white rounded text-xs font-medium hover:opacity-90"
+                title="Qualifier / vu"
+              >
+                <IconCheck className="w-3.5 h-3.5 !text-white" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleQualifyLead(action, 'rejected');
+                }}
+                className="px-2 py-1 bg-danger rounded text-xs font-medium hover:bg-danger"
+                title="Archiver"
+              >
+                <IconX className="w-3.5 h-3.5 !text-white" />
+              </button>
+            </div>
+          );
+        },
       },
-    },
-    {
-      key: 'subject',
-      label: 'Sujet',
-      className: 'min-w-[200px]',
-      render: (_, action) => {
-        const content = getContentSent(action);
-        return <p className="text-sm text-primary truncate">{content?.subject || '—'}</p>;
-      },
-    },
-    {
-      key: 'body_preview',
-      label: 'Contenu envoyé',
-      className: 'max-w-[280px]',
-      render: (_, action) => {
-        const content = getContentSent(action);
-        const preview = getBodyPreview(content?.body);
-        return (
-          <p className="text-xs text-muted truncate" title={preview}>
-            {preview}
-          </p>
-        );
-      },
-    },
-    {
-      key: 'executed_at',
-      label: 'Date d\'envoi',
-      render: (_, action) => (
-        <span className="text-xs text-muted whitespace-nowrap">
-          {action.executed_at
-            ? new Date(action.executed_at).toLocaleString('fr-FR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })
-            : '—'}
-        </span>
-      ),
-    },
-    {
-      key: 'status_sent',
-      label: 'Statut',
-      render: (_, action) => {
-        const isSuccess = action.status_automation_action === 'executed';
-        const msg = isSuccess
-          ? 'Envoyé'
-          : (action.execution_result as { message?: string })?.message || 'Échec';
-        return (
-          <span
-            className={`px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
-              isSuccess ? 'bg-success-light text-success-text' : 'bg-error-light text-error-text'
-            }`}
-            title={!isSuccess ? msg : undefined}
-          >
-            {isSuccess ? '✓ Envoyé' : '✗ Échec'}
-          </span>
-        );
-      },
-    },
-  ], []);
-
-  const handleDeleteMultipleTasks = async (tasksToDelete: FollowUpTask[]) => {
-    let successCount = 0;
-    let errorCount = 0;
-
-    for (const task of tasksToDelete) {
-      if (!task.documentId) continue;
-      try {
-        await deleteFollowUpTask(task.documentId);
-        successCount++;
-      } catch (error) {
-        console.error(`Erreur suppression tâche ${task.id}:`, error);
-        errorCount++;
-      }
-    }
-
-    if (successCount > 0) {
-      showGlobalPopup(
-        `${successCount} tâche(s) supprimée(s)`,
-        errorCount > 0 ? 'warning' : 'success'
-      );
-    }
-
-    if (errorCount > 0) {
-      showGlobalPopup(`${errorCount} erreur(s)`, 'error');
-    }
-
-    mutateTasks();
-  };
+    ],
+    [minScoreThreshold, handleQualifyLead, isLeadFromPriorityDomain, isLeadSourceBypassICP]
+  );
 
   const aiInstruction = settings?.ai_instruction ?? '';
   const aiInstructionHistory = settings?.ai_instruction_history ?? [];
@@ -1008,25 +691,6 @@ const getContactType = (action: AutomationAction) => {
     mutateSettings();
     showGlobalPopup('✓ Instruction IA enregistrée', 'success');
   };
-
-  const customTaskActions: CustomAction<FollowUpTask>[] = useMemo(() => [
-    {
-      label: 'Mettre en pause',
-      icon: <IconPlayerPause className="w-4 h-4" />,
-      onClick: async (tasksToUpdate) => {
-        tasksToUpdate.forEach(task => handleUpdateTask(task, { status_follow_up: 'cancelled' }));
-      },
-      variant: 'warning',
-    },
-    {
-      label: 'Marquer comme terminé',
-      icon: <IconCheck className="w-4 h-4" />,
-      onClick: async (tasksToUpdate) => {
-        tasksToUpdate.forEach(task => handleUpdateTask(task, { status_follow_up: 'completed' }));
-      },
-      variant: 'success',
-    },
-  ], [handleUpdateTask]);
 
   if (!smtpReady || settingsLoading) {
     return (
@@ -1139,61 +803,46 @@ const getContactType = (action: AutomationAction) => {
               </div>
             </div>
 
-            {/* Tabs pills */}
-            <div className="flex gap-0.5 rounded-lg bg-muted p-0.5 w-fit">
+            {/* Onglets statut lead */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex gap-0.5 rounded-lg bg-muted p-0.5 w-fit flex-wrap">
+                {(
+                  [
+                    { id: 'new' as const, label: 'Nouveaux' },
+                    { id: 'seen' as const, label: 'Vus' },
+                    { id: 'replied' as const, label: 'Répondus' },
+                    { id: 'snoozed' as const, label: 'Reportés' },
+                    { id: 'archived' as const, label: 'Archivés' },
+                  ] as const
+                ).map(({ id, label }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setLeadStatusTab(id)}
+                    className={`flex items-center gap-1.5 px-3.5 py-1.5 !text-sm font-medium transition-all ${
+                      leadStatusTab === id
+                        ? 'bg-card !text-primary shadow-sm border border-default rounded-lg'
+                        : '!text-muted hover:!text-primary rounded-lg'
+                    }`}
+                  >
+                    {label}
+                    <span
+                      className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                        leadStatusTab === id ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
+                      }`}
+                    >
+                      {statusCounts[id]}
+                    </span>
+                  </button>
+                ))}
+              </div>
               <button
-                onClick={() => setActiveTab('actions')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'actions' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
-                }`}
-              >
-                Leads
-                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  activeTab === 'actions' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
-                }`}>
-                  {qualifiedActions.length}
-                </span>
-              </button>
-              <button
-                onClick={() => setActiveTab('sources')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'sources' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
-                }`}
+                type="button"
+                onClick={() => router.push('/dashboard/smart-follow-up/settings')}
+                className="flex items-center gap-1.5 px-3 py-1.5 !text-xs font-medium !text-muted border border-dashed border-default rounded-lg hover:!text-primary hover:bg-hover transition-colors"
               >
                 <IconPlug className="w-3.5 h-3.5" />
-                Sources
-                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  activeTab === 'sources' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
-                }`}>
-                  {enabledLeadSourcesCount}
-                </span>
-              </button>
-              <button
-                onClick={() => setActiveTab('tasks')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
-                }`}
-              >
-                Tâches
-                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  activeTab === 'tasks' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
-                }`}>
-                  {tasks?.length || 0}
-                </span>
-              </button>
-              <button
-                onClick={() => setActiveTab('sent')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
-                  activeTab === 'sent' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
-                }`}
-              >
-                <IconSend className="w-3.5 h-3.5" />
-                Envoyés
-                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
-                  activeTab === 'sent' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
-                }`}>
-                  {sentActions?.length || 0}
-                </span>
+                Sources ({enabledLeadSourcesCount})
               </button>
             </div>
           </div>
@@ -1206,8 +855,7 @@ const getContactType = (action: AutomationAction) => {
               digest={todayDigest}
               userName={user?.firstname || user?.username}
               onOpenLead={(id) => {
-                const action = (allActions || []).find((a) => a.documentId === id)
-                  ?? (sentActions || []).find((a) => a.documentId === id);
+                const action = (allActions || []).find((a) => a.documentId === id);
                 if (action) {
                   setSelectedAction(action);
                   setShowDetailModal(true);
@@ -1235,23 +883,42 @@ const getContactType = (action: AutomationAction) => {
             </>
           )}
 
-          {/* KPIs */}
+          {/* Stats bar */}
           <div className="flex gap-3 mb-5 flex-wrap">
-            {[
-              { label: 'Qualifiés ICP', value: statsLoading ? '...' : qualifiedActions.length, color: '!text-muted' },
-              { label: "Aujourd'hui", value: statsLoading ? '...' : (stats?.dueToday ?? taskCounts.attente), color: '!text-blue-500' },
-              { label: 'Cette semaine', value: statsLoading ? '...' : (stats?.sentThisWeek ?? 0), color: '!text-primary' },
-              { label: 'Taux de succès', value: statsLoading ? '...' : `${stats?.successRate?.toFixed(0) ?? 0}%`, color: '!text-violet-500' },
-            ].map(k => (
-              <div key={k.label} className="bg-card flex-1 min-w-[140px] p-3.5 rounded-lg">
+            {(
+              [
+                { label: 'Leads chauds 🔴', value: leadsLoading ? '…' : hotCount, color: '!text-red-600' },
+                { label: 'Leads tièdes 🟠', value: leadsLoading ? '…' : warmCount, color: '!text-orange-600' },
+                { label: 'Total', value: leadsLoading ? '…' : totalActiveLeads, color: '!text-primary' },
+                {
+                  label: 'Taux de réponse',
+                  value: leadsLoading ? '…' : `${responseRatePct}%`,
+                  color: '!text-violet-600',
+                },
+              ] as const
+            ).map((k) => (
+              <div key={k.label} className="bg-card flex-1 min-w-[120px] p-3.5 rounded-lg border border-default">
                 <div className="!text-xs !text-muted mb-1">{k.label}</div>
                 <div className={`!text-[22px] font-bold tracking-tight ${k.color}`}>{k.value}</div>
               </div>
             ))}
+            <button
+              type="button"
+              onClick={() => router.push('/dashboard/smart-follow-up/settings')}
+              className="bg-card flex-1 min-w-[120px] p-3.5 rounded-lg border border-default text-left cursor-pointer hover:bg-hover transition-colors"
+            >
+              <div className="!text-xs !text-muted mb-1">Sources actives</div>
+              <div className="!text-[22px] font-bold tracking-tight !text-emerald-600">
+                {leadsLoading ? '…' : enabledLeadSourcesCount}
+              </div>
+            </button>
           </div>
 
           {/* Bannière filtre ICP */}
-          {activeTab === 'actions' && nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
+          {['new', 'seen', 'snoozed'].includes(leadStatusTab) &&
+            nonQualifiedActions &&
+            nonQualifiedActions.length > 0 &&
+            !showLowScoreEmails && (
             <div className="p-2 bg-info border border-info  flex items-center justify-between mb-4 rounded-lg">
                 <div className="flex items-center gap-2 !text-sm !text-info">
                 <IconFilter className="w-4 h-4 !text-info" />
@@ -1262,7 +929,10 @@ const getContactType = (action: AutomationAction) => {
               </button>
             </div>
           )}
-          {activeTab === 'actions' && showLowScoreEmails && nonQualifiedActions && nonQualifiedActions.length > 0 && (
+          {['new', 'seen', 'snoozed'].includes(leadStatusTab) &&
+            showLowScoreEmails &&
+            nonQualifiedActions &&
+            nonQualifiedActions.length > 0 && (
             <div className="p-3 bg-amber-50 border border-amber-200  flex items-center justify-between mb-4 rounded-lg">
               <div className="flex items-center gap-2 !text-sm !text-amber-700">
                 <IconAlertCircle className="w-4 h-4" />
@@ -1274,9 +944,7 @@ const getContactType = (action: AutomationAction) => {
             </div>
           )}
 
-          {activeTab === 'actions' ? (
-            /* LEADS */
-            <>
+          <>
             {/* Filtres Source + Notifications */}
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <div className="flex items-center gap-2">
@@ -1306,181 +974,45 @@ const getContactType = (action: AutomationAction) => {
                 </select>
               </div>
               <span className="!text-xs !text-muted ml-auto">
-                {actions?.length ?? 0} lead{(actions?.length ?? 0) > 1 ? 's' : ''} affiché{(actions?.length ?? 0) > 1 ? 's' : ''}
+                {leadRows.length} lead{leadRows.length > 1 ? 's' : ''} affiché{leadRows.length > 1 ? 's' : ''}
               </span>
             </div>
-            {(actions?.length ?? 0) === 0 ? (
-              <div className="bg-card p-16 text-center rounded-lg">
-                <div className="w-14 h-14 bg-muted  flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
-                <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead en attente</div>
+            {leadRows.length === 0 ? (
+              <div className="bg-card p-16 text-center rounded-lg border border-default">
+                <div className="w-14 h-14 bg-muted flex items-center justify-center mx-auto mb-4 !text-2xl">◎</div>
+                <div className="!text-base font-semibold !text-primary mb-1.5">Aucun lead dans cet onglet</div>
                 <div className="!text-sm !text-muted max-w-xs mx-auto">
-                  Les leads qualifiés ICP apparaîtront ici une fois reçus et analysés.
+                  Les leads apparaissent ici selon leur statut (nouveau, vu, répondu, etc.).
                 </div>
               </div>
             ) : (
-              <div className="bg-card border border-default  overflow-hidden">
-                <DataTable<AutomationAction>
-                  columns={actionColumns}
-                  data={actions || []}
-                  emptyMessage="Aucun lead en attente"
-                  onRowClick={(row) => { setSelectedAction(row); setShowDetailModal(true); }}
-                  loading={statsLoading}
+              <div className="bg-card border border-default overflow-hidden">
+                <DataTable<LeadTableRow>
+                  columns={leadColumns}
+                  data={leadRows}
+                  emptyMessage="Aucun lead"
+                  onRowClick={(row) => {
+                    setSelectedAction(row.action);
+                    setShowDetailModal(true);
+                  }}
+                  loading={leadsLoading}
                 />
               </div>
             )}
-            </>
-          ) : activeTab === 'sources' ? (
-            /* SOURCES DE LEADS */
-            <div className="bg-card border border-default rounded-lg overflow-visible p-4 mb-4">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-9 h-9 rounded-lg bg-primary/10 border border-default flex items-center justify-center shrink-0">
-                  <IconPlug className="w-4 h-4 !text-primary" />
-                </div>
-                <div>
-                  <h3 className="!text-sm font-semibold !text-primary">Sources de prospection</h3>
-                  <p className="font-mono !text-[11px] !text-muted mt-0.5 max-w-2xl">
-                    Définissez les outils (domaines, sujets) pour le bypass ICP et les notifications. Identique aux
-                    paramètres → Sources de leads.
-                  </p>
-                </div>
-              </div>
-              {settings?.documentId ? (
-                <SourcesManager settingsId={settings.documentId} initialSources={settings.lead_sources} />
-              ) : (
-                <div className="p-6 text-center rounded-lg border border-dashed border-default">
-                  <p className="!text-sm !text-muted mb-3">Créez d’abord la configuration Smart Follow-Up.</p>
-                  <button
-                    type="button"
-                    onClick={() => router.push('/dashboard/smart-follow-up/settings')}
-                    className="px-4 py-2 rounded-lg bg-primary !text-white !text-xs font-semibold"
-                  >
-                    Ouvrir les paramètres
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : activeTab === 'sent' ? (
-            /* RELANCES ENVOYÉES */
-            <>
-              <div className="flex items-center gap-2 flex-wrap mb-4">
-                <span className="!text-sm !text-muted">Filtrer par statut :</span>
-                <div className="flex gap-1">
-                  {(['Tous', 'Envoyés', 'Échoués'] as const).map(s => (
-                    <button
-                      key={s}
-                      onClick={() => setFilterSentStatus(s)}
-                      className={`px-2.5 py-1.5 !text-xs font-medium transition-all whitespace-nowrap ${
-                        filterSentStatus === s
-                          ? 'bg-muted border border-default !text-primary'
-                          : 'bg-card border border-default !text-muted hover:!text-primary'
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-                <span className="ml-auto !text-xs !text-muted">
-                  {filteredSentActions.length} relance{filteredSentActions.length > 1 ? 's' : ''} affichée{filteredSentActions.length > 1 ? 's' : ''}
-                </span>
-              </div>
-              <div className="bg-card border border-default overflow-hidden">
-                <DataTable<AutomationAction>
-                  columns={sentColumns}
-                  data={filteredSentActions}
-                  emptyMessage="Aucune relance envoyée"
-                  onRowClick={(row) => { setSelectedAction(row); setShowDetailModal(true); }}
-                  loading={statsLoading}
-                />
-              </div>
-            </>
-          ) : (
-            /* TÂCHES */
-            <>
-              {/* Toolbar */}
-              <div className="flex items-center gap-2 flex-wrap mb-4">
-                <div className="relative w-64">
-                  <IconSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 !text-muted z-10" />
-                  <input
-                    type="text"
-                    value={taskSearch}
-                    onChange={(e) => setTaskSearch(e.target.value)}
-                    placeholder="Rechercher…"
-                    className="w-full !pl-9 !pr-3 py-2 rounded-lg !text-sm border border-default bg-card focus:outline-none focus:border-primary"
-                  />
-                </div>
-                <div className="flex gap-1">
-                  {(['Toutes', 'Urgent', 'Prioritaire', 'Normal'] as const).map(p => (
-                    <button
-                      key={p}
-                      onClick={() => setFilterPrio(p)}
-                      className={`px-2.5 py-1.5  !text-xs font-medium transition-all whitespace-nowrap ${
-                        filterPrio === p
-                          ? 'bg-muted border border-default !text-primary rounded-lg'
-                          : 'bg-card border border-default !text-muted hover:!text-primary rounded-lg'
-                      }`}
-                    >
-                      {p !== 'Toutes' && <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1 ${
-                        p === 'Urgent' ? 'bg-red-500' : p === 'Prioritaire' ? 'bg-amber-500' : 'bg-muted'
-                      }`} />}
-                      {p}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex gap-1">
-                  {(['Tous', 'En attente', 'Annulé'] as const).map(s => (
-                    <button
-                      key={s}
-                      onClick={() => setFilterStatut(s)}
-                      className={`px-2.5 py-1.5  !text-xs font-medium transition-all ${
-                        filterStatut === s ? 'bg-muted border border-default !text-primary' : 'bg-card border border-default !text-muted hover:!text-primary'
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-                <div className="ml-auto flex gap-3 !text-xs !text-muted items-center">
-                  <span><strong className="!text-primary">{taskCounts.attente}</strong> en attente</span>
-                  <span><strong className="!text-red-500">{taskCounts.urgent}</strong> urgents</span>
-                </div>
-              </div>
-
-              <div className="bg-card border border-default  overflow-hidden">
-                <DataTable<FollowUpTask>
-                  columns={taskColumns}
-                  data={filteredTasks}
-                  emptyMessage="Aucune tâche trouvée"
-                  selectable={true}
-                  onRowClick={(row) => {
-                    setSelectedTask(row);
-                    setShowTaskDetailModal(true);
-                  }}
-                  onDeleteSelected={handleDeleteMultipleTasks}
-                  customActions={customTaskActions}
-                  getItemId={(item) => item.documentId || ''}
-                  getItemName={(item) => item.contact?.name || item.context?.from_name || 'Contact'}
-                  loading={statsLoading}
-                />
-              </div>
-
-              <div className="mt-3 flex items-center justify-between">
-                <span className="!text-xs !text-muted">{filteredTasks.length} tâche{filteredTasks.length > 1 ? 's' : ''} affichée{filteredTasks.length > 1 ? 's' : ''}</span>
-              </div>
-            </>
-          )}
+          </>
         </div>
       </div>
 
       <LeadDetailModal
         action={selectedAction}
         isOpen={showDetailModal}
+        variant="drawer"
         onClose={() => {
           setShowDetailModal(false);
           setSelectedAction(null);
         }}
         onSuccess={() => {
-          mutateActions();
-          mutateSentActions();
+          mutateLeads();
           setShowDetailModal(false);
           setSelectedAction(null);
         }}
@@ -1504,26 +1036,6 @@ const getContactType = (action: AutomationAction) => {
             }
           }
         }}
-      />
-
-      <DeleteConfirmModal
-        isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, task: null })}
-        onConfirm={handleDeleteTask}
-        title="Supprimer la tâche"
-        itemName={deleteModal.task?.context?.original_subject || 'cette tâche'}
-        itemType="tâche"
-      />
-
-      <TaskDetailModal
-        isOpen={showTaskDetailModal}
-        onClose={() => {
-          setShowTaskDetailModal(false);
-          setSelectedTask(null);
-        }}
-        task={selectedTask}
-        aiInstruction={aiInstruction || undefined}
-        hotLeadKeywords={settings?.priority_keywords}
       />
 
       <AddClientModal
