@@ -1,8 +1,12 @@
+/** AND = expéditeur et sujet doivent matcher (notifications de lead). OR = défaut, une des conditions suffit. */
+export type LeadSourceMatchMode = 'AND' | 'OR';
+
 export interface LeadSourceDetection {
   from_email_contains?: string[];
   subject_contains?: string[];
   from_email_ends_with?: string[];
   source_field?: string;
+  match_mode?: LeadSourceMatchMode;
 }
 
 export interface LeadSource {

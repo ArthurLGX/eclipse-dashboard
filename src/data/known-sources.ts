@@ -14,7 +14,8 @@ export const KNOWN_SOURCES: KnownSourceTemplate[] = [
     domain: 'lemlist.com',
     detection: {
       from_email_contains: ['lemlist.com'],
-      subject_contains: ['replied to your campaign', 'new reply'],
+      subject_contains: ['replied to your campaign', 'new reply', '🔥'],
+      match_mode: 'AND',
     },
   },
   {
@@ -23,7 +24,8 @@ export const KNOWN_SOURCES: KnownSourceTemplate[] = [
     domain: 'instantly.ai',
     detection: {
       from_email_contains: ['instantly.ai'],
-      subject_contains: ['new reply', 'replied to'],
+      subject_contains: ['new reply', 'replied to your'],
+      match_mode: 'AND',
     },
   },
   {
@@ -32,7 +34,8 @@ export const KNOWN_SOURCES: KnownSourceTemplate[] = [
     domain: 'apollo.io',
     detection: {
       from_email_contains: ['apollo.io', 'apolloapp.io'],
-      subject_contains: ['new reply in your sequence'],
+      subject_contains: ['new reply in your sequence', 'replied to'],
+      match_mode: 'AND',
     },
   },
   {
@@ -42,6 +45,7 @@ export const KNOWN_SOURCES: KnownSourceTemplate[] = [
     detection: {
       from_email_contains: ['hunter.io'],
       subject_contains: ['new reply from'],
+      match_mode: 'AND',
     },
   },
   {

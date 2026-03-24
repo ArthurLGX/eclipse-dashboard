@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { KNOWN_SOURCES } from '@/data/known-sources';
-import { DEFAULT_LEAD_SOURCES } from '@/data/lead-sources-default';
+import { mergeLeadSourcesWithDefaults, NATIVE_SOURCE_IDS } from '@/data/lead-sources-default';
 import { updateAutomationSettings } from '@/lib/smart-follow-up-api';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
 import type { LeadSource } from '@/types/lead-source';
 import type { KnownSourceTemplate } from '@/data/known-sources';
-
-const NATIVE_SOURCES = ['walego', 'folk', 'whatsapp'];
 
 function getFaviconUrl(domain: string): string {
   return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
@@ -38,18 +36,37 @@ export function SourcesManager({
   initialSources: LeadSource[] | null | undefined;
 }) {
   const { mutate } = useAutomationSettings();
-  const mergedInitial =
-    initialSources && initialSources.length > 0 ? initialSources : DEFAULT_LEAD_SOURCES;
+  const mergedInitial = mergeLeadSourcesWithDefaults(initialSources);
   const [sources, setSources] = useState<LeadSource[]>(mergedInitial);
   const [query, setQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [saving, setSaving] = useState(false);
+  const repairDoneRef = useRef(false);
 
   useEffect(() => {
-    const next =
-      initialSources && initialSources.length > 0 ? initialSources : DEFAULT_LEAD_SOURCES;
-    setSources(next);
+    setSources(mergeLeadSourcesWithDefaults(initialSources));
   }, [initialSources]);
+
+  /** Restaure une source native manquante en base (ex. WhatsApp) et persiste une fois */
+  useEffect(() => {
+    if (!settingsId || repairDoneRef.current) return;
+    const api = initialSources ?? [];
+    const apiIds = new Set(api.map((s) => s.id));
+    const missingNative = NATIVE_SOURCE_IDS.some((id) => !apiIds.has(id));
+    if (!missingNative) return;
+    repairDoneRef.current = true;
+    const merged = mergeLeadSourcesWithDefaults(initialSources);
+    setSources(merged);
+    void (async () => {
+      try {
+        await updateAutomationSettings(settingsId, { lead_sources: merged });
+        await mutate();
+      } catch (e) {
+        console.error('[SourcesManager] Réparation lead_sources:', e);
+        repairDoneRef.current = false;
+      }
+    })();
+  }, [settingsId, initialSources, mutate]);
 
   const suggestions =
     query.length >= 1
@@ -112,7 +129,7 @@ export function SourcesManager({
   }
 
   async function removeSource(id: string) {
-    if (NATIVE_SOURCES.includes(id)) return;
+    if (NATIVE_SOURCE_IDS.includes(id as (typeof NATIVE_SOURCE_IDS)[number])) return;
     const updated = sources.filter((s) => s.id !== id);
     setSources(updated);
     await save(updated);
@@ -200,7 +217,7 @@ export function SourcesManager({
               <span className="!text-xs font-medium !text-primary truncate">{source.name}</span>
               <span className="font-mono !text-[10px] !text-muted truncate">{source.domain}</span>
             </div>
-            {NATIVE_SOURCES.includes(source.id) && (
+            {NATIVE_SOURCE_IDS.includes(source.id as (typeof NATIVE_SOURCE_IDS)[number]) && (
               <span className="font-mono !text-[9px] px-1.5 py-0.5 rounded bg-muted border border-default !text-muted flex-shrink-0">
                 Natif
               </span>
@@ -221,7 +238,7 @@ export function SourcesManager({
                 }`}
               />
             </button>
-            {!NATIVE_SOURCES.includes(source.id) && (
+            {!NATIVE_SOURCE_IDS.includes(source.id as (typeof NATIVE_SOURCE_IDS)[number]) && (
               <button
                 type="button"
                 className="w-6 h-6 rounded-full flex items-center justify-center !text-muted hover:!text-primary hover:bg-muted"

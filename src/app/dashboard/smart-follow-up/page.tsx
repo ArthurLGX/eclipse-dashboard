@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
+import { mergeLeadSourcesWithDefaults } from '@/data/lead-sources-default';
+import { detectLeadSource } from '@/lib/lead-source-detector';
 import { useRouter } from 'next/navigation';
 import AddClientModal from '@/app/dashboard/clients/AddClientModal';
 import Image from 'next/image';
@@ -131,6 +133,11 @@ export default function SmartFollowUpPage() {
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
   const priorityKeywords = settings?.priority_keywords ?? [];
 
+  const mergedLeadSources = useMemo(
+    () => mergeLeadSourcesWithDefaults(settings?.lead_sources ?? null),
+    [settings?.lead_sources]
+  );
+
   const isLeadFromPriorityDomain = (action: AutomationAction): boolean => {
     if (priorityKeywords.length === 0) return false;
     const email = action.client?.email || action.proposed_content?.to?.[0] || '';
@@ -142,23 +149,39 @@ export default function SmartFollowUpPage() {
     });
   };
 
+  /** Walego / Folk : même logique que le bypass ICP côté ingestion — visibles dans le tableau principal même si le score IA est bas. */
+  const isLeadSourceBypassICP = (action: AutomationAction): boolean => {
+    const ctx = action.follow_up_task?.context;
+    const fromEmail = action.follow_up_task?.received_email?.from_email ?? '';
+    const subject = action.proposed_content?.subject ?? '';
+    const fe = fromEmail.toLowerCase();
+    const s = subject.toLowerCase();
+    if (ctx?.source === 'walego' || ctx?.lead_source === 'walego') return true;
+    if (ctx?.source === 'folk' || ctx?.lead_source === 'folk') return true;
+    if (fe.includes('walego') || s.includes('walego')) return true;
+    if (fe.includes('folk') || s.includes('folk')) return true;
+    return false;
+  };
+
   const qualifiedActions = allActions?.filter((a) => {
     const meetsScore = a.confidence_score >= minScoreThreshold;
     const fromPriorityDomain = isLeadFromPriorityDomain(a);
-    return meetsScore || fromPriorityDomain;
+    const sourceBypass = isLeadSourceBypassICP(a);
+    return meetsScore || fromPriorityDomain || sourceBypass;
   }) ?? [];
   const nonQualifiedActions = allActions?.filter((a) => {
     const meetsScore = a.confidence_score >= minScoreThreshold;
     const fromPriorityDomain = isLeadFromPriorityDomain(a);
-    return !meetsScore && !fromPriorityDomain;
+    const sourceBypass = isLeadSourceBypassICP(a);
+    return !meetsScore && !fromPriorityDomain && !sourceBypass;
   }) ?? [];
   // Filtrage par source (email / whatsapp / both)
   const sourceFilter = (settings?.source_filter as 'both' | 'email' | 'whatsapp') || 'both';
   const notificationChannel = (settings?.notification_preferences as { channel?: 'both' | 'email' | 'whatsapp' })?.channel || 'both';
-  const enabledLeadSourcesCount =
-    Array.isArray(settings?.lead_sources) && settings.lead_sources.length > 0
-      ? settings.lead_sources.filter((s) => s.enabled).length
-      : 3;
+  const enabledLeadSourcesCount = useMemo(
+    () => mergedLeadSources.filter((s) => s.enabled).length,
+    [mergedLeadSources]
+  );
 
   const isActionWhatsApp = (a: AutomationAction) => {
     const ctx = a.follow_up_task?.context;
@@ -450,8 +473,9 @@ const getContactType = (action: AutomationAction) => {
       render: (_, action) => {
         const contactType = getContactType(action);
         const ContactIcon = contactType.icon;
-        const isLowScore = action.confidence_score < minScoreThreshold;
         const fromPriorityDomain = isLeadFromPriorityDomain(action);
+        const sourceBypass = isLeadSourceBypassICP(action);
+        const isLowScore = action.confidence_score < minScoreThreshold && !fromPriorityDomain && !sourceBypass;
         const avatarPath = action.avatar_path ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
         const displayName = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact inconnu';
 
@@ -459,7 +483,7 @@ const getContactType = (action: AutomationAction) => {
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
-                !action.avatar_path && (fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
+                !action.avatar_path && (fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
               }`}
             >
               {avatarPath ? (
@@ -479,14 +503,14 @@ const getContactType = (action: AutomationAction) => {
                   />
                   <div
                     className={`w-full h-full hidden items-center justify-center ${
-                      fromPriorityDomain ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
+                      fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
                     }`}
                   >
-                    <ContactIcon className={`w-5 h-5 ${fromPriorityDomain ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
+                    <ContactIcon className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
                   </div>
                 </>
               ) : (
-                <ContactIcon className={`w-5 h-5 ${fromPriorityDomain ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
+                <ContactIcon className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : contactType.color}`} />
               )}
             </div>
             <div className="min-w-0">
@@ -499,7 +523,12 @@ const getContactType = (action: AutomationAction) => {
                     Priorité domaine
                   </span>
                 )}
-                {!fromPriorityDomain && isLowScore && (
+                {sourceBypass && !fromPriorityDomain && (
+                  <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-blue-100 text-blue-700">
+                    Source partenaire
+                  </span>
+                )}
+                {!fromPriorityDomain && !sourceBypass && isLowScore && (
                   <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600">
                     Non qualifié
                   </span>
@@ -564,11 +593,13 @@ const getContactType = (action: AutomationAction) => {
       label: 'Score ICP',
       render: (_, action) => {
         const fromPriorityDomain = isLeadFromPriorityDomain(action);
+        const sourceBypass = isLeadSourceBypassICP(action);
         const displayScore = fromPriorityDomain ? 1 : action.confidence_score;
+        const scoreTrusted = fromPriorityDomain || sourceBypass;
         return (
           <div className="flex items-center gap-1 flex-wrap">
             <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
-              fromPriorityDomain || displayScore >= 0.8
+              scoreTrusted || displayScore >= 0.8
                 ? 'bg-success-light text-success-text' 
                 : displayScore >= 0.6
                   ? 'bg-warning-light text-warning-text'
@@ -638,7 +669,7 @@ const getContactType = (action: AutomationAction) => {
         </div>
       ),
     },
-  ], [minScoreThreshold, priorityKeywords, handleQualifyLead, isLeadFromPriorityDomain]);
+  ], [minScoreThreshold, priorityKeywords, handleQualifyLead, isLeadFromPriorityDomain, isLeadSourceBypassICP]);
 
   // Colonnes pour les tâches
   const taskColumns: Column<FollowUpTask>[] = useMemo(() => [
