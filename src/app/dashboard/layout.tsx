@@ -58,7 +58,7 @@ import type { MobileDrawerItem } from '@/app/components/mobile';
 import AIChatAssistant from '@/app/components/AIChatAssistant';
 import { AIAssistantProvider } from '@/app/context/AIAssistantContext';
 import { ConnectAPIProvider } from '@/app/context/ConnectAPIContext';
-import { useAutomationActions } from '@/hooks/useSmartFollowUp';
+import { useSfuLeadsMapped } from '@/hooks/useSmartFollowUp';
 import { FALLBACK_AVATAR } from '@/lib/randomuser-avatar';
 
 interface SidebarItem {
@@ -121,8 +121,8 @@ function DashboardLayoutContent({
   const { resolvedMode, setThemeMode } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
-  const { data: automationActions } = useAutomationActions(['pending', 'approved']);
-  const smartFollowUpLeadsCount = automationActions?.length ?? 0;
+  const { allActions: sfuInboxLeads } = useSfuLeadsMapped();
+  const smartFollowUpLeadsCount = sfuInboxLeads?.length ?? 0;
 
   // Load module statuses from localStorage (admin-configurable)
   useEffect(() => {

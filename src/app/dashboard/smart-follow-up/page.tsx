@@ -42,13 +42,13 @@ import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
   useFollowUpTasks, 
-  useAutomationActions,
+  useSfuLeadsMapped,
   useAutomationSettings,
   useDailyDigest,
 } from '@/hooks/useSmartFollowUp';
 import { 
-  approveAutomationAction, 
-  rejectAutomationAction, 
+  updateSfuLead,
+  archiveSfuLead,
   updateFollowUpTask,
   deleteFollowUpTask,
   updateAutomationSettings,
@@ -84,8 +84,7 @@ export default function SmartFollowUpPage() {
   const { showGlobalPopup } = usePopup();
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
-  const { data: allActions, mutate: mutateActions } = useAutomationActions(['pending', 'approved']);
-  const { data: sentActions = [], mutate: mutateSentActions } = useAutomationActions(['executed', 'failed']);
+  const { allActions, sentActions, mutateActions, mutateSentActions } = useSfuLeadsMapped();
   const { data: settings, mutate: mutateSettings, isLoading: settingsLoading } = useAutomationSettings();
   const { data: todayDigest } = useDailyDigest();
   
@@ -334,10 +333,13 @@ export default function SmartFollowUpPage() {
   const handleQualifyLead = async (action: AutomationAction, status: 'qualified' | 'rejected') => {
     try {
       if (status === 'qualified') {
-        await approveAutomationAction(action.documentId);
+        await updateSfuLead(action.documentId, {
+          status: 'seen',
+          seen_at: new Date().toISOString(),
+        });
         showGlobalPopup('✓ Lead qualifié', 'success');
       } else {
-        await rejectAutomationAction(action.documentId, 'Lead non qualifié');
+        await archiveSfuLead(action.documentId);
         showGlobalPopup('Lead rejeté', 'info');
       }
       mutateActions();
@@ -383,7 +385,7 @@ export default function SmartFollowUpPage() {
       let rejected = 0;
       for (const action of nonQualifiedActions) {
         try {
-          await rejectAutomationAction(action.documentId, `Score ICP < ${Math.round(minScoreThreshold * 100)}%`);
+          await archiveSfuLead(action.documentId);
           rejected++;
         } catch (error) {
           console.error(`Erreur:`, error);
@@ -1250,12 +1252,12 @@ const getContactType = (action: AutomationAction) => {
 
           {/* Bannière filtre ICP */}
           {activeTab === 'actions' && nonQualifiedActions && nonQualifiedActions.length > 0 && !showLowScoreEmails && (
-            <div className="p-3 bg-blue-50 border border-blue-200  flex items-center justify-between mb-4 rounded-lg">
-              <div className="flex items-center gap-2 !text-sm !text-blue-600">
-                <IconFilter className="w-4 h-4" />
-                <span>{nonQualifiedActions.length} emails filtrés (score ICP &lt; {Math.round(minScoreThreshold * 100)}%)</span>
+            <div className="p-2 bg-info border border-info  flex items-center justify-between mb-4 rounded-lg">
+                <div className="flex items-center gap-2 !text-sm !text-info">
+                <IconFilter className="w-4 h-4 !text-info" />
+                <span className="!text-[11px]">{nonQualifiedActions.length} emails filtrés (score ICP &lt; {Math.round(minScoreThreshold * 100)}%)</span>
               </div>
-              <button onClick={() => setShowLowScoreEmails(true)} className="!text-xs !text-blue-600 hover:underline font-medium">
+              <button onClick={() => setShowLowScoreEmails(true)} className="!text-xs !text-info hover:underline font-medium">
                 Afficher
               </button>
             </div>

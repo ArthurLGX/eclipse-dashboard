@@ -20,10 +20,11 @@ import { usePopup } from '@/app/context/PopupContext';
 import { useModalFocus, useModalScroll } from '@/hooks/useModalFocus';
 import { getToken } from '@/lib/api';
 import {
-  fetchAutomationActionDetail,
+  fetchSfuLeadDetail,
+  sfuLeadToAutomationAction,
   sendWhatsAppNotification,
-  rejectAutomationAction,
-  snoozeFollowUpTaskToJ2,
+  archiveSfuLead,
+  snoozeSfuLeadTomorrow,
 } from '@/lib/smart-follow-up-api';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { extractWalegoLead } from '@/utils/extract-walego-lead';
@@ -161,8 +162,9 @@ export default function LeadDetailModal({
     setLoading(true);
     setDetail(null);
     setAnalysis(null);
-    fetchAutomationActionDetail(currentAction.documentId)
-      .then((data) => {
+    fetchSfuLeadDetail(currentAction.documentId)
+      .then((lead) => {
+        const data = lead ? sfuLeadToAutomationAction(lead) : null;
         setDetail(data || currentAction);
         if (data?.proposed_content?.body) {
           setDraft(data.proposed_content.body);
@@ -353,7 +355,7 @@ export default function LeadDetailModal({
     if (!detail?.documentId) return;
     setArchiving(true);
     try {
-      await rejectAutomationAction(detail.documentId, 'Archivé depuis le dashboard');
+      await archiveSfuLead(detail.documentId);
       showGlobalPopup(`${displayName} archivé`, 'success');
       onSuccess?.();
       onClose();
@@ -365,15 +367,15 @@ export default function LeadDetailModal({
   };
 
   const handleSnoozeJ2 = async () => {
-    const taskId = detail?.follow_up_task?.documentId;
-    if (!taskId) {
-      showGlobalPopup('Aucune tâche de suivi liée', 'error');
+    const leadId = detail?.documentId;
+    if (!leadId) {
+      showGlobalPopup('Lead introuvable', 'error');
       return;
     }
     setSnoozing(true);
     try {
-      await snoozeFollowUpTaskToJ2(taskId);
-      showGlobalPopup(`${displayName} reporté à J+2`, 'success');
+      await snoozeSfuLeadTomorrow(leadId);
+      showGlobalPopup(`${displayName} reporté à demain 9h`, 'success');
       onSuccess?.();
       onClose();
     } catch (e) {

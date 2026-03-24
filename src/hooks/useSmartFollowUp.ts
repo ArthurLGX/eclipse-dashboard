@@ -10,7 +10,11 @@ import {
   fetchAutomationLogs,
   fetchSmartFollowUpStats,
   fetchDailyDigest,
+  fetchSfuLeads,
+  sfuLeadToAutomationAction,
 } from '@/lib/smart-follow-up-api';
+import { useMemo, useCallback } from 'react';
+import type { AutomationAction } from '@/types/smart-follow-up';
 
 export function useAutomationSettings() {
   return useSWR('automation-settings', fetchAutomationSettings, {
@@ -28,6 +32,46 @@ export function useAutomationActions(status?: string | string[]) {
   return useSWR(['automation-actions', status], () => fetchAutomationActions(status), {
     refreshInterval: 60000,
   });
+}
+
+/** Tableau principal SFU : leads unifiés (Strapi `leads`) mappés en forme AutomationAction pour l’UI. */
+export function useSfuLeadsMapped() {
+  const { data: inboxRaw, mutate: mutateInbox, isLoading: loadingInbox } = useSWR(
+    ['sfu-leads-inbox'],
+    () => fetchSfuLeads(['new', 'seen', 'snoozed']),
+    { refreshInterval: 60000 }
+  );
+  const { data: sentRaw, mutate: mutateSent, isLoading: loadingSent } = useSWR(
+    ['sfu-leads-sent'],
+    () => fetchSfuLeads(['replied']),
+    { refreshInterval: 60000 }
+  );
+
+  const allActions = useMemo(
+    () => (inboxRaw ?? []).map(sfuLeadToAutomationAction) as AutomationAction[],
+    [inboxRaw]
+  );
+  const sentActions = useMemo(
+    () => (sentRaw ?? []).map(sfuLeadToAutomationAction) as AutomationAction[],
+    [sentRaw]
+  );
+
+  const mutateActions = useCallback(async () => {
+    await mutateInbox();
+    await mutateSent();
+  }, [mutateInbox, mutateSent]);
+
+  const mutateSentActions = useCallback(async () => {
+    await mutateSent();
+  }, [mutateSent]);
+
+  return {
+    allActions,
+    sentActions,
+    mutateActions,
+    mutateSentActions,
+    isLoading: loadingInbox || loadingSent,
+  };
 }
 
 export function useAutomationLogs(limit = 50) {

@@ -10,6 +10,8 @@ import type {
   AutomationLog,
   SmartFollowUpStats,
   DailyDigest,
+  SfuLead,
+  TaskAIAnalysis,
 } from '@/types/smart-follow-up';
 
 const API_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
@@ -252,6 +254,155 @@ export async function deleteAutomationAction(id: string): Promise<void> {
 }
 
 // ============================================================================
+// Leads (table unifiée SFU)
+// ============================================================================
+
+/** Convertit un lead Strapi en forme compatible avec l’UI historique (AutomationAction). */
+export function sfuLeadToAutomationAction(lead: SfuLead): AutomationAction {
+  const pc = (lead.proposed_content || {}) as AutomationAction['proposed_content'];
+  const body = (pc?.body as string) || lead.draft || '';
+  const to =
+    Array.isArray(pc?.to) && pc.to.length
+      ? pc.to
+      : lead.email
+        ? [lead.email]
+        : [];
+  const statusMap: Record<string, AutomationAction['status_automation_action']> = {
+    new: 'approved',
+    seen: 'approved',
+    replied: 'executed',
+    archived: 'rejected',
+    snoozed: 'snoozed',
+  };
+  return {
+    id: lead.id,
+    documentId: lead.documentId,
+    user: lead.user as AutomationAction['user'],
+    client: lead.client ?? null,
+    avatar_path: lead.avatar_url ?? undefined,
+    lead_title: lead.title ?? undefined,
+    linkedin_url: lead.linkedin_url ?? undefined,
+    follow_up_task: {
+      id: 0,
+      documentId: '',
+      task_type: lead.task_type || 'custom',
+      context: {
+        lead_source: lead.source || undefined,
+        from_email: lead.email || undefined,
+      },
+      ai_analysis: lead.ai_analysis as TaskAIAnalysis | undefined,
+      received_email: lead.received_email ?? undefined,
+    },
+    approved_by: null,
+    action_type: 'send_email',
+    proposed_content: {
+      subject: (pc?.subject as string) || '',
+      body,
+      to,
+      cc: (pc?.cc as string[]) || [],
+      attachments: (pc?.attachments as unknown[]) || [],
+      scheduled_time: lead.scheduled_for ?? undefined,
+      lead_display_name: (pc as { lead_display_name?: string })?.lead_display_name,
+    },
+    status_automation_action: statusMap[lead.status] || 'pending',
+    edited_content: null,
+    execution_result: null,
+    approved_at: null,
+    executed_at: lead.replied_at || null,
+    rejection_reason: null,
+    confidence_score: Number(lead.confidence) || 0,
+    requires_approval: lead.requires_approval !== false,
+    createdAt: lead.createdAt || '',
+    updatedAt: lead.updatedAt || '',
+  };
+}
+
+export async function fetchSfuLeads(statusIn: string[]): Promise<SfuLead[]> {
+  const params = new URLSearchParams({
+    'populate[received_email][fields][0]': 'id',
+    'populate[received_email][fields][1]': 'subject',
+    'populate[received_email][fields][2]': 'from_email',
+    'populate[received_email][fields][3]': 'content_text',
+    'populate[received_email][fields][4]': 'content_html',
+    'populate[received_email][fields][5]': 'received_at',
+    'populate[client][fields][0]': 'name',
+    'populate[client][fields][1]': 'email',
+    'populate[client][fields][2]': 'documentId',
+    'populate[user][fields][0]': 'username',
+    'sort[0]': 'createdAt:desc',
+    'pagination[pageSize]': '200',
+  });
+  statusIn.forEach((s, i) => params.append(`filters[status][$in][${i}]`, s));
+  const response = await apiRequest<{ data: SfuLead[] }>(`leads?${params}`);
+  return response.data || [];
+}
+
+export async function fetchSfuLeadDetail(documentId: string): Promise<SfuLead | null> {
+  const params = new URLSearchParams({
+    'populate[received_email][fields][0]': 'id',
+    'populate[received_email][fields][1]': 'subject',
+    'populate[received_email][fields][2]': 'from_email',
+    'populate[received_email][fields][3]': 'content_text',
+    'populate[received_email][fields][4]': 'content_html',
+    'populate[received_email][fields][5]': 'received_at',
+    'populate[client][fields][0]': 'name',
+    'populate[client][fields][1]': 'email',
+    'populate[client][fields][2]': 'documentId',
+    'populate[user][fields][0]': 'username',
+  });
+  try {
+    const response = await apiRequest<{ data: SfuLead }>(`leads/${documentId}?${params}`);
+    return response.data || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function archiveSfuLead(leadDocumentId: string): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  const res = await fetch(`${API_URL}/api/smart-follow-up/lead-archive`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ leadDocumentId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: { message?: string } })?.error?.message || 'Erreur archivage');
+  }
+}
+
+export async function snoozeSfuLeadTomorrow(leadDocumentId: string): Promise<void> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+  const res = await fetch(`${API_URL}/api/smart-follow-up/lead-snooze`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ leadDocumentId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { error?: { message?: string } })?.error?.message || 'Erreur report');
+  }
+}
+
+export async function updateSfuLead(
+  documentId: string,
+  data: Partial<Pick<SfuLead, 'status' | 'seen_at'>>
+): Promise<void> {
+  await apiRequest(`leads/${documentId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ data }),
+  });
+}
+
+// ============================================================================
 // Automation Logs
 // ============================================================================
 
@@ -310,26 +461,41 @@ export async function fetchReceivedEmailsToday(): Promise<ReceivedEmailToday[]> 
 // ============================================================================
 
 export async function fetchSmartFollowUpStats(): Promise<SmartFollowUpStats> {
-  const [actions, tasks] = await Promise.all([
-    fetchAutomationActions(),
-    fetchFollowUpTasks(),
-  ]);
-
+  const [tasks] = await Promise.all([fetchFollowUpTasks()]);
   const now = new Date();
   const today = now.toISOString().split('T')[0];
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-  return {
-    activeActions: actions.filter((a) =>
-      a.status_automation_action === 'pending' || a.status_automation_action === 'approved'
-    ).length,
-    dueToday: tasks.filter(t => t.scheduled_for.split('T')[0] === today && t.status_follow_up === 'pending').length,
-    sentThisWeek: actions.filter(a => a.status_automation_action === 'executed' && a.executed_at && a.executed_at >= weekAgo).length,
-    recoveredOpportunities: 0, // À calculer selon votre logique
-    totalTasks: tasks.length,
-    completedTasks: tasks.filter(t => t.status_follow_up === 'completed').length,
-    successRate: tasks.length > 0 ? (tasks.filter(t => t.status_follow_up === 'completed').length / tasks.length) * 100 : 0,
-  };
+  try {
+    const [inboxLeads, sentLeads] = await Promise.all([
+      fetchSfuLeads(['new', 'seen', 'snoozed']),
+      fetchSfuLeads(['replied']),
+    ]);
+    return {
+      activeActions: inboxLeads.length,
+      dueToday: tasks.filter(t => t.scheduled_for.split('T')[0] === today && t.status_follow_up === 'pending').length,
+      sentThisWeek: sentLeads.filter(
+        (l) => l.replied_at && new Date(l.replied_at).toISOString() >= weekAgo
+      ).length,
+      recoveredOpportunities: 0,
+      totalTasks: tasks.length,
+      completedTasks: tasks.filter(t => t.status_follow_up === 'completed').length,
+      successRate: tasks.length > 0 ? (tasks.filter(t => t.status_follow_up === 'completed').length / tasks.length) * 100 : 0,
+    };
+  } catch {
+    const actions = await fetchAutomationActions();
+    return {
+      activeActions: actions.filter((a) =>
+        a.status_automation_action === 'pending' || a.status_automation_action === 'approved'
+      ).length,
+      dueToday: tasks.filter(t => t.scheduled_for.split('T')[0] === today && t.status_follow_up === 'pending').length,
+      sentThisWeek: actions.filter(a => a.status_automation_action === 'executed' && a.executed_at && a.executed_at >= weekAgo).length,
+      recoveredOpportunities: 0,
+      totalTasks: tasks.length,
+      completedTasks: tasks.filter(t => t.status_follow_up === 'completed').length,
+      successRate: tasks.length > 0 ? (tasks.filter(t => t.status_follow_up === 'completed').length / tasks.length) * 100 : 0,
+    };
+  }
 }
 
 // ============================================================================

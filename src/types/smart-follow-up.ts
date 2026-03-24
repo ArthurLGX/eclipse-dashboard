@@ -297,7 +297,7 @@ export interface AutomationAction {
     /** Nom affiché extrait du mail (Walego texte/HTML) si pas de fiche client */
     lead_display_name?: string;
   };
-  status_automation_action: 'pending' | 'approved' | 'rejected' | 'executed' | 'failed';
+  status_automation_action: 'pending' | 'approved' | 'rejected' | 'executed' | 'failed' | 'snoozed';
   edited_content: unknown | null;
   execution_result: unknown | null;
   approved_at: string | null;
@@ -307,6 +307,39 @@ export interface AutomationAction {
   requires_approval: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+/** Lead unifié (Strapi `api::lead.lead`) — tableau Smart Follow-Up */
+export interface SfuLead {
+  id: number;
+  documentId: string;
+  name?: string | null;
+  title?: string | null;
+  avatar_url?: string | null;
+  linkedin_url?: string | null;
+  email?: string | null;
+  source?: string | null;
+  score?: 'hot' | 'warm' | 'neutral' | 'cold';
+  confidence?: number | null;
+  signal?: string | null;
+  fog_risk?: boolean;
+  fog_reason?: string | null;
+  draft?: string | null;
+  proposed_content?: AutomationAction['proposed_content'] | Record<string, unknown> | null;
+  ai_analysis?: TaskAIAnalysis | Record<string, unknown> | null;
+  task_type?: string | null;
+  scheduled_for?: string | null;
+  requires_approval?: boolean;
+  status: 'new' | 'seen' | 'replied' | 'snoozed' | 'archived';
+  snoozed_until?: string | null;
+  received_email?: FollowUpTask['received_email'] | null;
+  user?: { id: number; username?: string };
+  client?: AutomationAction['client'];
+  replied_at?: string | null;
+  archived_at?: string | null;
+  seen_at?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AutomationLog {
