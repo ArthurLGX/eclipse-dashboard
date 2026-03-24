@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   IconBell,
   IconClock,
@@ -15,6 +16,7 @@ import {
   IconCalendar,
   IconSparkles,
   IconPlug,
+  IconMail,
 } from '@tabler/icons-react';
 import { IconBrandWhatsapp } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
@@ -28,6 +30,8 @@ import FilterSummary from '@/app/components/settings/FilterSummary';
 import { resetSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
 import { SourcesManager } from '@/app/components/smart-follow-up/SourcesManager';
+import { GoogleGlyph } from '@/app/components/smart-follow-up/onboarding/StepCredentials';
+import { getToken } from '@/lib/api';
 
 const DEFAULT_WHATSAPP_TEMPLATE =
   '{{emoji}} {{source}} · {{name}}\n{{title}}\n{{signal}}\n→ {{action_url}}';
@@ -101,6 +105,7 @@ function SettingToggleOrange({ checked, onChange }: { checked: boolean; onChange
 }
 
 export default function SmartFollowUpSettingsPage() {
+  const router = useRouter();
   const { user } = useAuth();
   const { showGlobalPopup } = usePopup();
   const { activeSection, setActiveSection } = useSettingsLayout();
@@ -175,6 +180,7 @@ export default function SmartFollowUpSettingsPage() {
   const [testWhatsAppResult, setTestWhatsAppResult] = useState<{ success: boolean; error?: string } | null>(null);
   const [aiInstructionsBySource, setAiInstructionsBySource] = useState<Record<string, string>>({});
   const [instructionTab, setInstructionTab] = useState<string>('default');
+  const [gmailConnecting, setGmailConnecting] = useState(false);
   const [seasonalInstruction, setSeasonalInstruction] = useState({
     enabled: false,
     content: '',
@@ -227,6 +233,56 @@ export default function SmartFollowUpSettingsPage() {
       }
     }
   }, [settings]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const gmail = sp.get('gmail');
+    if (gmail !== 'connected' && gmail !== 'error') return;
+    let cancelled = false;
+    void (async () => {
+      await mutate();
+      if (cancelled) return;
+      setActiveSection('gmail');
+      if (gmail === 'connected') {
+        const email = sp.get('email');
+        showGlobalPopup(
+          email
+            ? `Connexion Gmail réussie (${decodeURIComponent(email)})`
+            : 'Connexion Gmail réussie',
+          'success'
+        );
+      } else {
+        showGlobalPopup('La connexion Gmail a échoué ou a été annulée.', 'error');
+      }
+      router.replace('/dashboard/smart-follow-up/settings', { scroll: false });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [mutate, router, showGlobalPopup, setActiveSection]);
+
+  const handleConnectGmail = async () => {
+    const token = getToken();
+    if (!token) {
+      showGlobalPopup('Session requise pour connecter Gmail.', 'error');
+      return;
+    }
+    setGmailConnecting(true);
+    try {
+      const res = await fetch('/api/auth/gmail?from=settings', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = (await res.json()) as { authUrl?: string; error?: string };
+      if (!res.ok || !data.authUrl) {
+        throw new Error(data.error || 'Impossible de démarrer la connexion Gmail');
+      }
+      window.location.href = data.authUrl;
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur Gmail OAuth', 'error');
+      setGmailConnecting(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!user) return;
@@ -586,6 +642,66 @@ export default function SmartFollowUpSettingsPage() {
                 </p>
                 <SourcesManager settingsId={settings.documentId} initialSources={settings.lead_sources} />
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Boîte Gmail (OAuth) */}
+        {activeSection === 'gmail' && (
+          <section className="bg-card border border-default w-full overflow-hidden mb-5">
+            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[#EA4335]/15 border border-[#EA4335]/30 flex items-center justify-center !text-[#EA4335]">
+                <IconMail className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="!text-sm font-semibold !text-primary">Boîte Gmail</div>
+                <div className="font-mono !text-[11px] !text-muted">
+                  Connexion OAuth (lecture Gmail) pour la synchronisation et l&apos;automatisation Smart Follow-Up
+                </div>
+              </div>
+            </div>
+            <div className="p-4 space-y-4">
+              {settings?.gmail_configured || settings?.gmail_config?.connected ? (
+                <div className="flex flex-wrap items-center gap-3 rounded-lg border border-success/30 bg-success/5 px-4 py-3">
+                  <span className="text-success text-lg leading-none">✓</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="!text-[12px] font-semibold !text-primary">Gmail connecté</div>
+                    {settings?.gmail_config?.email ? (
+                      <div className="font-mono !text-[11px] !text-muted truncate">{settings.gmail_config.email}</div>
+                    ) : null}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleConnectGmail}
+                    disabled={gmailConnecting}
+                    className="font-mono !text-[10px] px-2.5 py-1.5 rounded-md border border-default !text-muted hover:!text-primary hover:border-primary/30 disabled:opacity-50"
+                  >
+                    Reconnecter
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleConnectGmail}
+                    disabled={gmailConnecting}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-lg bg-primary !text-white !text-xs font-semibold hover:opacity-90 disabled:opacity-50"
+                  >
+                    {gmailConnecting ? (
+                      'Redirection…'
+                    ) : (
+                      <>
+                        <GoogleGlyph />
+                        Connecter avec Gmail (OAuth)
+                      </>
+                    )}
+                  </button>
+                  <p className="font-mono !text-[10px] !text-muted">
+                    Vous serez redirigé vers Google pour autoriser l&apos;accès en lecture à votre boîte (scopes Gmail
+                    readonly + profil).
+                  </p>
+                </div>
+              )}
             </div>
           </section>
         )}

@@ -19,11 +19,17 @@ function getGmailRedirectUri(request: NextRequest): string {
 function redirectWithGmail(
   request: NextRequest,
   status: 'connected' | 'error',
-  email?: string
+  email?: string,
+  returnToSettings?: boolean
 ): NextResponse {
   const base = getAppBaseUrl(request);
-  const u = new URL(`${base}/dashboard/smart-follow-up`);
-  u.searchParams.set('step', '4');
+  const path = returnToSettings
+    ? '/dashboard/smart-follow-up/settings'
+    : '/dashboard/smart-follow-up';
+  const u = new URL(`${base}${path}`);
+  if (!returnToSettings) {
+    u.searchParams.set('step', '4');
+  }
   u.searchParams.set('gmail', status);
   if (status === 'connected' && email) {
     u.searchParams.set('email', email);
@@ -37,22 +43,30 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state');
   const error = searchParams.get('error');
 
+  const stateParts = state?.split(':') ?? [];
+  const userIdFromState = parseInt(stateParts[0] ?? '', 10);
+  const returnToSettings = stateParts[1] === 'settings';
+
   if (error || !code) {
     console.error('[Gmail OAuth] Erreur ou refus:', error);
-    return redirectWithGmail(request, 'error');
+    return redirectWithGmail(request, 'error', undefined, returnToSettings);
   }
 
-  if (!state || !/^\d+$/.test(state)) {
+  if (
+    !state ||
+    !Number.isFinite(userIdFromState) ||
+    userIdFromState < 1
+  ) {
     console.error('[Gmail OAuth] state invalide');
-    return redirectWithGmail(request, 'error');
+    return redirectWithGmail(request, 'error', undefined, returnToSettings);
   }
 
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
     console.error('[Gmail OAuth] credentials manquants');
-    return redirectWithGmail(request, 'error');
+    return redirectWithGmail(request, 'error', undefined, returnToSettings);
   }
 
-  const userId = parseInt(state, 10);
+  const userId = userIdFromState;
   const redirectUri = getGmailRedirectUri(request);
 
   try {
@@ -72,7 +86,7 @@ export async function GET(request: NextRequest) {
 
     if (!tokens.access_token) {
       console.error('[Gmail OAuth] Pas d\'access_token');
-      return redirectWithGmail(request, 'error');
+      return redirectWithGmail(request, 'error', undefined, returnToSettings);
     }
 
     const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
@@ -90,14 +104,14 @@ export async function GET(request: NextRequest) {
     const settingsRes = await fetch(listUrl, { headers: listHeaders });
     if (!settingsRes.ok) {
       console.error('[Gmail OAuth] lecture automation-settings:', await settingsRes.text());
-      return redirectWithGmail(request, 'error');
+      return redirectWithGmail(request, 'error', undefined, returnToSettings);
     }
 
     const settingsData = await settingsRes.json();
     const row = settingsData.data?.[0];
     if (!row) {
       console.error('[Gmail OAuth] aucun automation-setting pour user', userId);
-      return redirectWithGmail(request, 'error');
+      return redirectWithGmail(request, 'error', undefined, returnToSettings);
     }
 
     const documentId = row.documentId ?? row.id;
@@ -128,12 +142,17 @@ export async function GET(request: NextRequest) {
 
     if (!putRes.ok) {
       console.error('[Gmail OAuth] PUT automation-settings:', await putRes.text());
-      return redirectWithGmail(request, 'error');
+      return redirectWithGmail(request, 'error', undefined, returnToSettings);
     }
 
-    return redirectWithGmail(request, 'connected', profileEmail);
+    return redirectWithGmail(
+      request,
+      'connected',
+      profileEmail,
+      returnToSettings
+    );
   } catch (err) {
     console.error('[Gmail OAuth] callback:', err);
-    return redirectWithGmail(request, 'error');
+    return redirectWithGmail(request, 'error', undefined, returnToSettings);
   }
 }

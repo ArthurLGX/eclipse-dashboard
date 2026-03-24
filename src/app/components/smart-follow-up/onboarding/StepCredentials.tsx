@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { IconChevronDown } from '@tabler/icons-react';
 
-function GoogleGlyph() {
+export function GoogleGlyph() {
   return (
     <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" aria-hidden>
       <path

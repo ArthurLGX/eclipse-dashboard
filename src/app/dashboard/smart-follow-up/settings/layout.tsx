@@ -15,6 +15,7 @@ import {
   IconBrandWhatsapp,
   IconSparkles,
   IconPlug,
+  IconMail,
 } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
 import { SettingsLayoutContext } from './settings-context';
@@ -28,6 +29,7 @@ const NAV_GROUPS: { label: string; items: { id: NavSection; label: string; icon:
       { id: 'icp', label: 'Mon client idéal', icon: <IconUsers className="w-3.5 h-3.5" />, badge: 'Actif' },
       { id: 'domaines', label: 'Emails à ignorer', icon: <IconBan className="w-3.5 h-3.5" /> },
       { id: 'sources', label: 'Sources de leads', icon: <IconPlug className="w-3.5 h-3.5" /> },
+      { id: 'gmail', label: 'Boîte Gmail', icon: <IconMail className="w-3.5 h-3.5" /> },
     ],
   },
   { label: 'Automatisation', items: [{ id: 'mots-cles', label: 'Mots-clés importants', icon: <IconBolt className="w-3.5 h-3.5" /> }, { id: 'instruction', label: 'Instruction IA', icon: <IconSparkles className="w-3.5 h-3.5" /> }, { id: 'delais', label: 'Délais de relance', icon: <IconClock className="w-3.5 h-3.5" />, badgeWarn: true }, { id: 'regles', label: 'Règles avancées', icon: <IconShieldCheck className="w-3.5 h-3.5" /> }] },

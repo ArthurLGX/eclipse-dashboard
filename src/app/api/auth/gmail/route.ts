@@ -41,6 +41,10 @@ export async function GET(request: NextRequest) {
   }
 
   const redirectUri = getGmailRedirectUri(request);
+  const from = request.nextUrl.searchParams.get('from');
+  const state =
+    from === 'settings' ? `${user.id}:settings` : String(user.id);
+
   const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
   authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
   authUrl.searchParams.set('redirect_uri', redirectUri);
@@ -48,7 +52,7 @@ export async function GET(request: NextRequest) {
   authUrl.searchParams.set('scope', SCOPES.join(' '));
   authUrl.searchParams.set('access_type', 'offline');
   authUrl.searchParams.set('prompt', 'consent');
-  authUrl.searchParams.set('state', String(user.id));
+  authUrl.searchParams.set('state', state);
 
   return NextResponse.json({ authUrl: authUrl.toString() });
 }

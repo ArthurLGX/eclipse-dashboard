@@ -6,6 +6,7 @@ export type NavSection =
   | 'activation'
   | 'domaines'
   | 'sources'
+  | 'gmail'
   | 'icp'
   | 'mots-cles'
   | 'instruction'
