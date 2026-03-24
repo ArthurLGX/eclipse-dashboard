@@ -6,6 +6,7 @@ export function getDefaultAutomationCreatePayload(): Partial<AutomationSettings>
   return {
     enabled: true,
     auto_approve: false,
+    auto_approve_threshold: 0.92,
     priority_keywords: [],
     excluded_domains: [],
     delay_settings: {

@@ -121,7 +121,7 @@ function DashboardLayoutContent({
   const { resolvedMode, setThemeMode } = useTheme();
   const { isLinkVisible } = useSidebar();
   const [menuItemHovered, setMenuItemHovered] = useState<string | null>(null);
-  const { data: automationActions } = useAutomationActions('pending');
+  const { data: automationActions } = useAutomationActions(['pending', 'approved']);
   const smartFollowUpLeadsCount = automationActions?.length ?? 0;
 
   // Load module statuses from localStorage (admin-configurable)

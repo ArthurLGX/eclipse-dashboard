@@ -61,6 +61,7 @@ import { useAuth } from '@/app/context/AuthContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { clearCache } from '@/hooks/useApi';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
+import { resolveLeadAvatarSrc, resolveLeadDisplayName } from '@/lib/lead-display';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import type { AutomationAction, FollowUpTask } from '@/types/smart-follow-up';
 import type { CreateClientData } from '@/types';
@@ -83,7 +84,7 @@ export default function SmartFollowUpPage() {
   const { showGlobalPopup } = usePopup();
   const { data: stats, isLoading: statsLoading } = useSmartFollowUpStats();
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
-  const { data: allActions, mutate: mutateActions } = useAutomationActions('pending');
+  const { data: allActions, mutate: mutateActions } = useAutomationActions(['pending', 'approved']);
   const { data: sentActions = [], mutate: mutateSentActions } = useAutomationActions(['executed', 'failed']);
   const { data: settings, mutate: mutateSettings, isLoading: settingsLoading } = useAutomationSettings();
   const { data: todayDigest } = useDailyDigest();
@@ -144,6 +145,31 @@ export default function SmartFollowUpPage() {
       .then(setSmtpConfig)
       .finally(() => setSmtpReady(true));
   }, [user?.id]);
+
+  const showFullPageOnboarding =
+    !!user &&
+    smtpReady &&
+    !settingsLoading &&
+    shouldShowSfuFullPageOnboarding(settings, smtpConfig);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (!smtpReady || settingsLoading || !user) return;
+    if (showFullPageOnboarding) return;
+    const sp = new URLSearchParams(window.location.search);
+    const gmail = sp.get('gmail');
+    if (gmail !== 'connected' && gmail !== 'error') return;
+    if (gmail === 'connected') {
+      const email = sp.get('email');
+      showGlobalPopup(
+        email ? `Gmail connecté (${decodeURIComponent(email)})` : 'Gmail connecté',
+        'success'
+      );
+    } else {
+      showGlobalPopup('Connexion Gmail échouée. Réessayez ou utilisez IMAP.', 'error');
+    }
+    router.replace('/dashboard/smart-follow-up', { scroll: false });
+  }, [smtpReady, settingsLoading, user, showFullPageOnboarding, router, showGlobalPopup]);
 
   // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
@@ -493,14 +519,17 @@ const getContactType = (action: AutomationAction) => {
         const fromPriorityDomain = isLeadFromPriorityDomain(action);
         const sourceBypass = isLeadSourceBypassICP(action);
         const isLowScore = action.confidence_score < minScoreThreshold && !fromPriorityDomain && !sourceBypass;
-        const avatarPath = action.avatar_path ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
-        const displayName = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact inconnu';
+        const mailOrCachedAvatar = resolveLeadAvatarSrc(action);
+        const avatarPath =
+          mailOrCachedAvatar ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
+        const displayName = resolveLeadDisplayName(action);
+        const hasLeadPhoto = Boolean(mailOrCachedAvatar || action.avatar_path);
 
         return (
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
-                !action.avatar_path && (fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
+                !hasLeadPhoto && (fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
               }`}
             >
               {avatarPath ? (
@@ -562,7 +591,8 @@ const getContactType = (action: AutomationAction) => {
       label: 'Sujet',
       className: 'min-w-[280px]',
       render: (_, action) => {
-        const name = action.client?.name ?? extractWalegoLeadName(action.proposed_content.subject) ?? 'Contact';
+        const nameRaw = resolveLeadDisplayName(action);
+        const name = nameRaw === 'Contact inconnu' ? 'Contact' : nameRaw;
         const title = action.lead_title || '';
         const preview = action.follow_up_task?.context?.lead_response_preview as string | undefined;
         const subjectLine = [name, title].filter(Boolean).join(' · ');
@@ -606,6 +636,20 @@ const getContactType = (action: AutomationAction) => {
       },
     },
     {
+      key: 'approval_status',
+      label: 'Validation',
+      render: (_, action) =>
+        action.status_automation_action === 'approved' ? (
+          <span className="px-2 py-1 text-xs font-medium rounded whitespace-nowrap bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-300">
+            Auto-approuvé
+          </span>
+        ) : (
+          <span className="px-2 py-1 text-xs font-medium rounded whitespace-nowrap bg-amber-100 text-amber-900 dark:bg-amber-500/15 dark:text-amber-200">
+            À traiter
+          </span>
+        ),
+    },
+    {
       key: 'score',
       label: 'Score ICP',
       render: (_, action) => {
@@ -647,11 +691,15 @@ const getContactType = (action: AutomationAction) => {
               onClick={(e) => {
                 e.stopPropagation();
                 const email = action.proposed_content?.to?.[0] || '';
-                const nameFromSubject = extractWalegoLeadName(action.proposed_content?.subject || '');
+                const resolvedName = resolveLeadDisplayName(action);
+                const nameForClient =
+                  resolvedName !== 'Contact inconnu'
+                    ? resolvedName
+                    : extractWalegoLeadName(action.proposed_content?.subject || '') || email?.split('@')[0] || '';
                 setAddClientModal({
                   isOpen: true,
                   initialData: {
-                    name: nameFromSubject || email?.split('@')[0] || '',
+                    name: nameForClient,
                     email,
                     enterprise: action.lead_title || '',
                   },
@@ -834,7 +882,7 @@ const getContactType = (action: AutomationAction) => {
       render: (_, action) => (
         <div className="min-w-0">
           <p className="font-medium text-primary truncate">
-            {action.client?.name ?? extractWalegoLeadName(action.proposed_content?.subject) ?? 'Contact inconnu'}
+            {resolveLeadDisplayName(action)}
           </p>
           <p className="text-xs text-muted truncate">{action.client?.email || '—'}</p>
         </div>
@@ -977,12 +1025,6 @@ const getContactType = (action: AutomationAction) => {
       variant: 'success',
     },
   ], [handleUpdateTask]);
-
-  const showFullPageOnboarding =
-    !!user &&
-    smtpReady &&
-    !settingsLoading &&
-    shouldShowSfuFullPageOnboarding(settings, smtpConfig);
 
   if (!smtpReady || settingsLoading) {
     return (

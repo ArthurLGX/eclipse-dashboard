@@ -85,6 +85,8 @@ export interface AutomationSettings {
   };
   enabled: boolean;
   auto_approve: boolean;
+  /** Seuil 0–1 pour l’auto-approbation (ex. 0.92). Défaut côté Strapi : 0.92 */
+  auto_approve_threshold?: number;
   priority_keywords: string[];
   delay_settings: {
     payment_reminder: number;
@@ -141,6 +143,15 @@ export interface AutomationSettings {
   } | null;
   /** Gmail OAuth connecté (inbox) */
   gmail_configured?: boolean;
+  /** Tokens Gmail OAuth (Smart Follow-Up) — ne jamais exposer au client hors API serveur */
+  gmail_config?: {
+    connected?: boolean;
+    email?: string;
+    access_token?: string;
+    refresh_token?: string | null;
+    token_expiry?: number;
+    connected_at?: string;
+  } | null;
   /** IMAP configuré et vérifié */
   imap_configured?: boolean;
   /** Onboarding pleine page terminé */
@@ -283,6 +294,8 @@ export interface AutomationAction {
     cc: string[];
     attachments: unknown[];
     scheduled_time?: string;
+    /** Nom affiché extrait du mail (Walego texte/HTML) si pas de fiche client */
+    lead_display_name?: string;
   };
   status_automation_action: 'pending' | 'approved' | 'rejected' | 'executed' | 'failed';
   edited_content: unknown | null;

@@ -1,11 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { IconLoader2 } from '@tabler/icons-react';
 import { useAuth } from '@/app/context/AuthContext';
 import { usePopup } from '@/app/context/PopupContext';
-import { fetchSmtpConfig, saveSmtpConfig, testImapConnection } from '@/lib/api';
+import { fetchSmtpConfig, saveSmtpConfig, testImapConnection, getToken } from '@/lib/api';
 import { createAutomationSettings, updateAutomationSettings } from '@/lib/smart-follow-up-api';
 import { mergeLeadSourcesWithDefaults } from '@/data/lead-sources-default';
 import type { AutomationSettings } from '@/types/smart-follow-up';
@@ -50,6 +50,7 @@ export function SFUOnboardingPage({
   const [credSection, setCredSection] = useState<'gmail' | 'whatsapp'>('gmail');
   const [imapMsg, setImapMsg] = useState<string | null>(null);
   const [testingImap, setTestingImap] = useState(false);
+  const [gmailConnecting, setGmailConnecting] = useState(false);
   const [imapVerified, setImapVerified] = useState(
     () => !!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled)
   );
@@ -83,6 +84,30 @@ export function SFUOnboardingPage({
   useEffect(() => {
     setImapVerified(!!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled));
   }, [smtpConfig?.imap_verified, smtpConfig?.imap_enabled]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const sp = new URLSearchParams(window.location.search);
+    const st = sp.get('step');
+    const gmail = sp.get('gmail');
+    if (st === '4' || gmail === 'connected' || gmail === 'error') {
+      setStep(4);
+      setMaxReached((m) => Math.max(m, 4));
+      if (gmail === 'connected' || gmail === 'error') {
+        if (gmail === 'connected') {
+          const email = sp.get('email');
+          showGlobalPopup(
+            email ? `Gmail connecté (${decodeURIComponent(email)})` : 'Gmail connecté',
+            'success'
+          );
+        } else {
+          showGlobalPopup('Connexion Gmail échouée. Réessayez ou utilisez IMAP.', 'error');
+        }
+        void mutateSettings();
+        router.replace('/dashboard/smart-follow-up', { scroll: false });
+      }
+    }
+  }, [mutateSettings, router, showGlobalPopup]);
 
   const displayName = useMemo(() => {
     const fn = user?.firstname?.trim();
@@ -164,6 +189,28 @@ export function SFUOnboardingPage({
     }
   };
 
+  const handleConnectGmail = async () => {
+    const token = getToken();
+    if (!token) {
+      showGlobalPopup('Session requise pour connecter Gmail.', 'error');
+      return;
+    }
+    setGmailConnecting(true);
+    try {
+      const res = await fetch('/api/auth/gmail', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = (await res.json()) as { authUrl?: string; error?: string };
+      if (!res.ok || !data.authUrl) {
+        throw new Error(data.error || 'Impossible de démarrer la connexion Gmail');
+      }
+      window.location.href = data.authUrl;
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur Gmail OAuth', 'error');
+      setGmailConnecting(false);
+    }
+  };
+
   const handleTestImap = async () => {
     if (!imap.imap_host || !imap.imap_user || !imap.imap_password) {
       setImapMsg('Remplissez serveur, email et mot de passe.');
@@ -219,9 +266,10 @@ export function SFUOnboardingPage({
     const ok =
       imapVerified ||
       settings?.imap_configured ||
-      !!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled);
+      !!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled) ||
+      !!settings?.gmail_configured;
     if (!ok) {
-      showGlobalPopup('Testez et validez la connexion IMAP avant de continuer.', 'warning');
+      showGlobalPopup('Connectez Gmail (OAuth) ou testez la connexion IMAP avant de continuer.', 'warning');
       return;
     }
     setSaving(true);
@@ -275,7 +323,8 @@ export function SFUOnboardingPage({
       return (
         imapVerified ||
         !!settings?.imap_configured ||
-        !!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled)
+        !!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled) ||
+        !!settings?.gmail_configured
       );
     }
     return true;
@@ -318,7 +367,8 @@ export function SFUOnboardingPage({
   const emailConnected =
     !!settings?.imap_configured ||
     !!(smtpConfig?.imap_verified && smtpConfig?.imap_enabled) ||
-    imapVerified;
+    imapVerified ||
+    !!settings?.gmail_configured;
 
   const whatsappOk =
     !!(whatsappMeta.phone_number_id && whatsappMeta.access_token && whatsappMeta.recipient_number) ||
@@ -444,17 +494,25 @@ export function SFUOnboardingPage({
             <p className="text-sm text-[#888]">Session requise pour configurer les connexions.</p>
           )}
           {step === 4 && user?.id && (
-            <StepCredentials
-              openSection={credSection}
-              onOpenSection={setCredSection}
-              imap={imap}
-              onImapChange={(p) => setImap((prev) => ({ ...prev, ...p }))}
-              onTestImap={handleTestImap}
-              testingImap={testingImap}
-              imapMessage={imapMsg}
-              whatsappMeta={whatsappMeta}
-              onWhatsappMetaChange={(p) => setWhatsappMeta((prev) => ({ ...prev, ...p }))}
-            />
+            <Suspense
+              fallback={<p className="text-sm text-[#888] font-mono text-[11px]">Chargement des connexions…</p>}
+            >
+              <StepCredentials
+                openSection={credSection}
+                onOpenSection={setCredSection}
+                imap={imap}
+                onImapChange={(p) => setImap((prev) => ({ ...prev, ...p }))}
+                onTestImap={handleTestImap}
+                testingImap={testingImap}
+                imapMessage={imapMsg}
+                whatsappMeta={whatsappMeta}
+                onWhatsappMetaChange={(p) => setWhatsappMeta((prev) => ({ ...prev, ...p }))}
+                gmailConfigured={!!settings?.gmail_configured}
+                gmailEmailFromSettings={settings?.gmail_config?.email ?? null}
+                onConnectGmail={handleConnectGmail}
+                gmailConnecting={gmailConnecting}
+              />
+            </Suspense>
           )}
           {step === 5 && (
             <StepRecap

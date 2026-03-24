@@ -72,15 +72,23 @@ export function isWalegoPlainTextContent(text: string): boolean {
 }
 
 /**
- * Photo de profil : ligne « Profile Picture » puis URL entre crochets, ou /im/…jpg (CDN Brevo).
+ * Photo de profil : après « Profile Picture », préférer l’URL image (/im/, .jpg…) — pas le lien tracking tr/op.
  */
 export function extractWalegoProfilePicFromPlainText(text: string): string | null {
   if (!text?.trim()) return null;
-  const labeled = text.match(/Profile\s+Picture\s*\r?\n\s*\[(https?:\/\/[^\]\s]+)\]/i);
-  if (labeled?.[1]) return labeled[1].trim();
-  for (const m of text.matchAll(/\[(https?:\/\/[^\]\s]+)\]/g)) {
+  const normalized = text.replace(/\r\n/g, '\n');
+  const ppIdx = normalized.search(/Profile\s+Picture/i);
+  const haystack = ppIdx >= 0 ? normalized.slice(ppIdx) : normalized;
+
+  for (const m of haystack.matchAll(/\[((https?:\/\/[^\]\s]+))\]/g)) {
     const u = m[1];
-    if (/\/im\//i.test(u) && /\.(jpe?g|png|webp|gif)(\?|$)/i.test(u)) return u;
+    const looksLikeImage =
+      (/\/im\//i.test(u) || /\.(jpe?g|png|webp|gif)(\?|$)/i.test(u)) && !/\/tr\/op\//i.test(u);
+    if (looksLikeImage) return u.trim();
+  }
+  for (const m of normalized.matchAll(/\[((https?:\/\/[^\]\s]+))\]/g)) {
+    const u = m[1];
+    if (/\/im\//i.test(u) && /\.(jpe?g|png|webp|gif)(\?|$)/i.test(u)) return u.trim();
   }
   return null;
 }
@@ -94,21 +102,72 @@ export function extractWalegoLinkedInFromPlainText(text: string): string | null 
   return bracket?.[1]?.trim() ?? null;
 }
 
-/** Nom et titre : lignes suivant le bloc « Profile Picture » + [url] */
+/** Nom et titre : après « Profile Picture » + 1ère image [url], puis lignes nom / titre (texte Brevo aplati). */
 export function extractWalegoNameAndTitleFromPlainText(text: string): {
   name: string | null;
   title: string | null;
 } {
-  const m = text.match(
-    /Profile\s+Picture\s*\r?\n\s*\[[^\]]+\]\s*\r?\n+\s*([^\r\n]+)\s*\r?\n+\s*([^\r\n]+)/i
+  if (!text?.trim()) return { name: null, title: null };
+  const normalized = text.replace(/\r\n/g, '\n');
+
+  const legacy = normalized.match(
+    /Profile\s+Picture\s*\n\s*\[[^\]]+\]\s*\n+\s*([^\n]+)\s*\n+\s*([^\n]+)/i
   );
-  if (!m?.[1]) return { name: null, title: null };
-  const name = m[1].trim();
-  const title = (m[2] ?? '').trim();
+  if (legacy?.[1]) {
+    const name = legacy[1].trim();
+    const title = (legacy[2] ?? '').trim();
+    if (name.length >= 2 && name.length < 120) {
+      const titleOut =
+        title && !/^linkedin\s+profile$/i.test(title) && !/^email\s*:/i.test(title) ? title : null;
+      return { name, title: titleOut || null };
+    }
+  }
+
+  const ppIdx = normalized.search(/Profile\s+Picture/i);
+  if (ppIdx < 0) return { name: null, title: null };
+  const fromPP = normalized.slice(ppIdx);
+
+  let imgEnd = -1;
+  for (const m of fromPP.matchAll(/\[((https?:\/\/[^\]\s]+))\]/g)) {
+    const u = m[1];
+    const looksLikeImage =
+      (/\/im\//i.test(u) || /\.(jpe?g|png|webp|gif)(\?|$)/i.test(u)) && !/\/tr\/op\//i.test(u);
+    if (looksLikeImage) {
+      imgEnd = (m.index ?? 0) + m[0].length;
+      break;
+    }
+  }
+
+  if (imgEnd < 0) return { name: null, title: null };
+
+  const afterImg = fromPP.slice(imgEnd);
+  const lines = afterImg
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  let i = 0;
+  while (i < lines.length && lines[i].trimStart().startsWith('[http')) i++;
+
+  if (i >= lines.length) return { name: null, title: null };
+
+  let name = lines[i];
+  if (/^linkedin\s+profile$/i.test(name)) {
+    i++;
+    if (i >= lines.length) return { name: null, title: null };
+    name = lines[i];
+  }
+
   if (name.length < 2 || name.length >= 120) return { name: null, title: null };
-  const titleOut =
-    title && !/^linkedin\s+profile$/i.test(title) && !/^email\s*:/i.test(title) ? title : null;
-  return { name, title: titleOut };
+  if (/^email\s*:/i.test(name)) return { name: null, title: null };
+
+  const next = lines[i + 1];
+  const title =
+    next && !/^linkedin\s+profile$/i.test(next) && !/^email\s*:/i.test(next) && !next.trimStart().startsWith('[http')
+      ? next
+      : null;
+
+  return { name, title: title || null };
 }
 
 export interface WalegoPlainTextProfile {

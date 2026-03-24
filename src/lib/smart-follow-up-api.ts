@@ -152,8 +152,11 @@ export async function fetchAutomationActions(status?: string | string[]): Promis
     'populate[follow_up_task][fields][2]': 'context',
     'populate[follow_up_task][populate][received_email][fields][0]': 'from_email',
     'populate[follow_up_task][populate][received_email][fields][1]': 'subject',
+    'populate[follow_up_task][populate][received_email][fields][2]': 'content_text',
+    'populate[follow_up_task][populate][received_email][fields][3]': 'content_html',
     'populate[approved_by][fields][0]': 'username',
     'sort[0]': 'createdAt:desc',
+    'pagination[pageSize]': '200',
   });
 
   if (status) {
@@ -317,7 +320,9 @@ export async function fetchSmartFollowUpStats(): Promise<SmartFollowUpStats> {
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
   return {
-    activeActions: actions.filter(a => a.status_automation_action === 'pending').length,
+    activeActions: actions.filter((a) =>
+      a.status_automation_action === 'pending' || a.status_automation_action === 'approved'
+    ).length,
     dueToday: tasks.filter(t => t.scheduled_for.split('T')[0] === today && t.status_follow_up === 'pending').length,
     sentThisWeek: actions.filter(a => a.status_automation_action === 'executed' && a.executed_at && a.executed_at >= weekAgo).length,
     recoveredOpportunities: 0, // À calculer selon votre logique

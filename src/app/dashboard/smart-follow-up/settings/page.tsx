@@ -131,6 +131,8 @@ export default function SmartFollowUpSettingsPage() {
 
   const [enabled, setEnabled] = useState(true);
   const [autoApprove, setAutoApprove] = useState(false);
+  /** 70–99, affiché comme pourcentage ; persisté en auto_approve_threshold 0–1 */
+  const [autoApproveThresholdPct, setAutoApproveThresholdPct] = useState(92);
   const [excludedDomains, setExcludedDomains] = useState<string[]>([]);
   const [priorityKeywords, setPriorityKeywords] = useState<string[]>([]);
   const [delaySettings, setDelaySettings] = useState({
@@ -184,6 +186,10 @@ export default function SmartFollowUpSettingsPage() {
     if (settings) {
       setEnabled(settings.enabled);
       setAutoApprove(settings.auto_approve);
+      const th = settings.auto_approve_threshold;
+      setAutoApproveThresholdPct(
+        th != null && Number.isFinite(Number(th)) ? Math.round(Number(th) * 100) : 92
+      );
       setExcludedDomains(settings.excluded_domains || []);
       setPriorityKeywords(settings.priority_keywords || []);
       setDelaySettings(settings.delay_settings);
@@ -229,6 +235,7 @@ export default function SmartFollowUpSettingsPage() {
       const data: Partial<AutomationSettings> = {
         enabled,
         auto_approve: autoApprove,
+        auto_approve_threshold: Math.min(0.99, Math.max(0.7, autoApproveThresholdPct / 100)),
         excluded_domains: excludedDomains,
         priority_keywords: priorityKeywords,
         delay_settings: delaySettings,
@@ -462,9 +469,40 @@ export default function SmartFollowUpSettingsPage() {
               <div className={settingRow}>
                 <div className={settingLabel}>
                   <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Approbation automatique</h4>
-                  <p className="font-mono !text-[11px] !text-muted">Les actions à haute confiance (&gt;90%) seront approuvées automatiquement</p>
+                  <p className="font-mono !text-[11px] !text-muted">
+                    Les actions dont le score dépasse le seuil peuvent être approuvées sans review. Walego, Folk,
+                    WhatsApp et les fils « direct » restent toujours en attente de validation.
+                  </p>
                 </div>
                 <SettingToggleOrange checked={autoApprove} onChange={setAutoApprove} />
+              </div>
+              {autoApprove && (
+                <div className={settingRow}>
+                  <div className={settingLabel}>
+                    <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Seuil de confiance minimum</h4>
+                    <p className="font-mono !text-[11px] !text-muted">Score minimum pour l&apos;auto-approbation (recommandé : 92 ou plus)</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min={70}
+                      max={99}
+                      value={autoApproveThresholdPct}
+                      onChange={(e) => {
+                        const v = parseInt(e.target.value, 10);
+                        if (Number.isFinite(v)) setAutoApproveThresholdPct(Math.min(99, Math.max(70, v)));
+                      }}
+                      className={`${settingInput} w-20 font-mono text-center`}
+                    />
+                    <span className="font-mono !text-[11px] !text-muted">/ 100</span>
+                  </div>
+                </div>
+              )}
+              <div className="px-4 py-3 border-t border-default bg-muted/20">
+                <p className="font-mono !text-[10px] !text-muted leading-relaxed">
+                  Les sources Walego, Folk, WhatsApp et les emails classés « direct » sont toujours soumis à validation
+                  manuelle, quel que soit le seuil.
+                </p>
               </div>
             </div>
           </section>
