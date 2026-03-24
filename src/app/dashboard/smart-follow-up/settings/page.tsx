@@ -527,7 +527,7 @@ export default function SmartFollowUpSettingsPage() {
 
         {/* Sources de leads (détection dynamique) */}
         {activeSection === 'sources' && settings?.documentId && (
-          <section className="bg-card border border-default w-full overflow-hidden mb-5">
+          <section className="bg-card border border-default w-full overflow-visible mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-primary border border-default flex items-center justify-center !text-white">
                 <IconPlug className="w-4 h-4 !text-white" />

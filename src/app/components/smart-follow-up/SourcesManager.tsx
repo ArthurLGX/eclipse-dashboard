@@ -122,8 +122,8 @@ export function SourcesManager({
     'w-full px-3 py-2 rounded-lg border border-default bg-card !text-sm !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-success';
 
   return (
-    <div className="flex flex-col gap-3 w-full">
-      <div className="relative flex items-center gap-2">
+    <div className="flex flex-col gap-3 w-full overflow-visible">
+      <div className="relative z-[100] flex items-center gap-2 overflow-visible">
         <input
           type="text"
           className={settingInput}
@@ -143,7 +143,7 @@ export function SourcesManager({
         )}
 
         {showDropdown && query.length >= 1 && (
-          <div className="absolute top-full left-0 right-0 mt-1 z-50 bg-card border border-default rounded-lg shadow-lg max-h-[280px] overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 z-[200] bg-card border border-default rounded-lg shadow-xl max-h-[min(280px,70vh)] overflow-y-auto">
             {suggestions.length > 0 ? (
               suggestions.map((s) => (
                 <button

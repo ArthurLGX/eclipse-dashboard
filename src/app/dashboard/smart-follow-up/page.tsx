@@ -21,6 +21,7 @@ import {
   IconSparkles,
   IconSend,
   IconRefresh,
+  IconPlug,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -33,6 +34,7 @@ import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
 import SFUOnboarding, { hasSeenSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
 import SyncInboxToast from '@/app/components/SyncInboxToast';
 import { DailyDigestCard } from '@/app/components/smart-follow-up/DailyDigestCard';
+import { SourcesManager } from '@/app/components/smart-follow-up/SourcesManager';
 import { usePopup } from '@/app/context/PopupContext';
 import { 
   useSmartFollowUpStats, 
@@ -80,7 +82,7 @@ export default function SmartFollowUpPage() {
   const { data: settings, mutate: mutateSettings } = useAutomationSettings();
   const { data: todayDigest } = useDailyDigest();
   
-  const [activeTab, setActiveTab] = useState<'actions' | 'tasks' | 'sent'>('actions');
+  const [activeTab, setActiveTab] = useState<'actions' | 'tasks' | 'sent' | 'sources'>('actions');
   const [filterSentStatus, setFilterSentStatus] = useState<'Tous' | 'Envoyés' | 'Échoués'>('Tous');
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -146,6 +148,10 @@ export default function SmartFollowUpPage() {
   // Filtrage par source (email / whatsapp / both)
   const sourceFilter = (settings?.source_filter as 'both' | 'email' | 'whatsapp') || 'both';
   const notificationChannel = (settings?.notification_preferences as { channel?: 'both' | 'email' | 'whatsapp' })?.channel || 'both';
+  const enabledLeadSourcesCount =
+    Array.isArray(settings?.lead_sources) && settings.lead_sources.length > 0
+      ? settings.lead_sources.filter((s) => s.enabled).length
+      : 3;
 
   const isActionWhatsApp = (a: AutomationAction) => {
     const ctx = a.follow_up_task?.context;
@@ -1023,6 +1029,20 @@ const getContactType = (action: AutomationAction) => {
                 </span>
               </button>
               <button
+                onClick={() => setActiveTab('sources')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
+                  activeTab === 'sources' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
+                }`}
+              >
+                <IconPlug className="w-3.5 h-3.5" />
+                Sources
+                <span className={`!text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                  activeTab === 'sources' ? 'bg-emerald-600 !text-white' : 'bg-muted !text-muted'
+                }`}>
+                  {enabledLeadSourcesCount}
+                </span>
+              </button>
+              <button
                 onClick={() => setActiveTab('tasks')}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5  !text-sm font-medium transition-all ${
                   activeTab === 'tasks' ? 'bg-card !text-primary shadow-sm border border-default rounded-lg' : '!text-muted hover:!text-primary rounded-lg'
@@ -1183,6 +1203,36 @@ const getContactType = (action: AutomationAction) => {
               </div>
             )}
             </>
+          ) : activeTab === 'sources' ? (
+            /* SOURCES DE LEADS */
+            <div className="bg-card border border-default rounded-lg overflow-visible p-4 mb-4">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 border border-default flex items-center justify-center shrink-0">
+                  <IconPlug className="w-4 h-4 !text-primary" />
+                </div>
+                <div>
+                  <h3 className="!text-sm font-semibold !text-primary">Sources de prospection</h3>
+                  <p className="font-mono !text-[11px] !text-muted mt-0.5 max-w-2xl">
+                    Définissez les outils (domaines, sujets) pour le bypass ICP et les notifications. Identique aux
+                    paramètres → Sources de leads.
+                  </p>
+                </div>
+              </div>
+              {settings?.documentId ? (
+                <SourcesManager settingsId={settings.documentId} initialSources={settings.lead_sources} />
+              ) : (
+                <div className="p-6 text-center rounded-lg border border-dashed border-default">
+                  <p className="!text-sm !text-muted mb-3">Créez d’abord la configuration Smart Follow-Up.</p>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/dashboard/smart-follow-up/settings')}
+                    className="px-4 py-2 rounded-lg bg-primary !text-white !text-xs font-semibold"
+                  >
+                    Ouvrir les paramètres
+                  </button>
+                </div>
+              )}
+            </div>
           ) : activeTab === 'sent' ? (
             /* RELANCES ENVOYÉES */
             <>
