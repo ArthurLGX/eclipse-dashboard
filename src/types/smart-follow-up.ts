@@ -132,6 +132,19 @@ export interface AutomationSettings {
     active_from?: string;
     active_until?: string;
   } | null;
+  /** Profil onboarding (rôle, objectifs, identité) */
+  user_profile?: {
+    role?: string;
+    goals?: string[];
+    name?: string;
+    email?: string;
+  } | null;
+  /** Gmail OAuth connecté (inbox) */
+  gmail_configured?: boolean;
+  /** IMAP configuré et vérifié */
+  imap_configured?: boolean;
+  /** Onboarding pleine page terminé */
+  onboarding_completed?: boolean;
   /** Configuration WhatsApp multiprovider (Twilio | Meta) */
   whatsapp_config?: {
     enabled: boolean;

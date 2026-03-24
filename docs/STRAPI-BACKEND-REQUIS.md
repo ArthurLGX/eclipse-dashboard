@@ -210,3 +210,36 @@ Vérifier que le champ `source` accepte `'whatsapp'` :
   }
 }
 ```
+
+---
+
+## Automation Settings — onboarding Smart Follow-Up (pleine page)
+
+Le dashboard enregistre les étapes d’onboarding et l’état de la boîte mail dans le content-type **automation-setting** (API `automation-settings`). Sans ces champs, les `PUT` depuis l’onboarding peuvent renvoyer une erreur de validation.
+
+### Champs à ajouter (Content-Type Builder)
+
+| Nom API | Type | Description |
+|---------|------|-------------|
+| `user_profile` | JSON | Optionnel. Objet libre, ex. `{ "role": "founder", "goals": ["qualify","score"], "name": "…", "email": "…" }` |
+| `gmail_configured` | Boolean | `true` si OAuth Gmail / inbox Google connecté (prévu pour usage futur). Défaut : `false`. |
+| `imap_configured` | Boolean | `true` si IMAP testé et enregistré (souvent après `smtp-configs` avec IMAP vérifié). Défaut : `false`. |
+| `onboarding_completed` | Boolean | `true` quand l’utilisateur termine l’assistant (bouton « Lancer le Smart Follow-Up »). Défaut : `false`. |
+
+### Fusion fichier schema (Strapi v5)
+
+Ajouter dans `src/api/automation-setting/content-types/automation-setting/schema.json` les attributs du fichier :
+
+`docs/strapi-automation-setting-onboarding-attributes.json`
+
+(merge uniquement la clé `attributes` avec les attributs existants du schema.)
+
+### Via l’admin Strapi
+
+1. **Content-Type Builder** → **Automation Settings**  
+2. Ajouter les champs ci-dessus avec les types indiqués.  
+3. Sauvegarder et redémarrer Strapi.
+
+### Comportement
+
+- Tant que `onboarding_completed` est `false` et qu’aucune boîte entrante n’est considérée comme configurée (`gmail_configured`, `imap_configured`, ou IMAP déjà vérifié côté `smtp-configs`), le dashboard affiche l’onboarding pleine page sur `/dashboard/smart-follow-up`.

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconX,
@@ -28,6 +28,10 @@ import {
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { extractWalegoLead } from '@/utils/extract-walego-lead';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
+import {
+  mergeLeadProfileForModal,
+  type ExtendedTaskAIAnalysis,
+} from '@/lib/parse-walego-content';
 import type { AutomationAction } from '@/types/smart-follow-up';
 
 export interface ParsedAnalysis {
@@ -78,7 +82,13 @@ function parseMailScannerOutput(reasoning: string, suggestion: string): ParsedAn
   return result;
 }
 
+function sanitizeDraftGreeting(draft: string, leadDisplayName: string): string {
+  const first = leadDisplayName.split(/\s+/)[0] || 'there';
+  return draft.replace(/^Hi\s+Walego\b[,]?\s*/i, `Hi ${first}, `);
+}
+
 type Channel = 'linkedin' | 'email' | 'whatsapp';
+type LeadTab = 'response' | 'context';
 
 interface LeadDetailModalProps {
   isOpen: boolean;
@@ -114,12 +124,30 @@ export default function LeadDetailModal({
   const [whatsappSending, setWhatsappSending] = useState(false);
   const [archiving, setArchiving] = useState(false);
   const [snoozing, setSnoozing] = useState(false);
+  const [leadTab, setLeadTab] = useState<LeadTab>('response');
 
+  const leadSource = detail ?? action;
   const emailBody =
-    detail?.follow_up_task?.received_email?.content_text ||
-    detail?.follow_up_task?.received_email?.content_html ||
-    detail?.follow_up_task?.context?.email_body ||
+    leadSource?.follow_up_task?.received_email?.content_text ||
+    leadSource?.follow_up_task?.received_email?.content_html ||
+    leadSource?.follow_up_task?.context?.email_body ||
     '';
+
+  const profile = useMemo(() => {
+    if (!leadSource) return null;
+    const re = leadSource.follow_up_task?.received_email;
+    return mergeLeadProfileForModal({
+      contentText: re?.content_text,
+      contentHtml: re?.content_html,
+      clientName: leadSource.client?.name,
+      leadTitle: leadSource.lead_title,
+      linkedinUrl: leadSource.linkedin_url,
+      avatarPath: leadSource.avatar_path,
+      aiAnalysis: leadSource.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined,
+      receivedAt: re?.received_at,
+      rawEmailSubject: re?.subject,
+    });
+  }, [leadSource]);
 
   useEffect(() => {
     const currentAction = actionRef.current;
@@ -163,6 +191,10 @@ export default function LeadDetailModal({
   }, [isOpen, detail?.documentId, detail?.follow_up_task?.ai_analysis]);
 
   useEffect(() => {
+    if (isOpen) setLeadTab('response');
+  }, [isOpen, action?.documentId]);
+
+  useEffect(() => {
     if (isOpen) {
       const t = setTimeout(() => {
         scrollRef.current?.scrollTo(0, 0);
@@ -184,9 +216,15 @@ export default function LeadDetailModal({
     setDraft((prev) => {
       if (prev) return prev;
       const parsed = parseMailScannerOutput(analysis.reasoning, analysis.suggestion);
-      if (parsed.draft) return parsed.draft;
+      const nameForGreeting =
+        detail?.client?.name ||
+        extractWalegoLeadName(
+          detail?.follow_up_task?.received_email?.subject || detail?.proposed_content?.subject || ''
+        ) ||
+        'Contact';
+      if (parsed.draft) return sanitizeDraftGreeting(parsed.draft, nameForGreeting);
       if (analysis.suggestion && analysis.suggestion.length > 20 && analysis.suggestion.length < 500) {
-        return analysis.suggestion;
+        return sanitizeDraftGreeting(analysis.suggestion, nameForGreeting);
       }
       return prev;
     });
@@ -194,20 +232,29 @@ export default function LeadDetailModal({
 
   const displayName =
     detail?.client?.name ||
+    (profile && profile.name !== 'Contact' ? profile.name : null) ||
     extractWalegoLeadName(
-      detail?.follow_up_task?.received_email?.subject ||
-        detail?.proposed_content?.subject ||
-        ''
+      detail?.follow_up_task?.received_email?.subject || detail?.proposed_content?.subject || ''
     ) ||
+    profile?.name ||
     'Contact';
-  const extractedLead = emailBody ? extractWalegoLead(emailBody, {
-    receivedAt: detail?.follow_up_task?.received_email?.received_at,
-    rawEmailSubject: detail?.follow_up_task?.received_email?.subject,
-  }) : null;
-  const leadResponse = extractedLead?.leadResponse ?? null;
+  const extractedLead = emailBody
+    ? extractWalegoLead(emailBody, {
+        receivedAt: detail?.follow_up_task?.received_email?.received_at,
+        rawEmailSubject: detail?.follow_up_task?.received_email?.subject,
+      })
+    : null;
+  const leadResponse =
+    (profile?.lead_response?.trim() ? profile.lead_response : null) || extractedLead?.leadResponse || null;
   const parsed = analysis ? parseMailScannerOutput(analysis.reasoning, analysis.suggestion) : {};
   const confScore = detail?.confidence_score ?? 0;
   const score = parsed.score || (confScore >= 0.8 ? 'hot' : confScore >= 0.6 ? 'warm' : 'neutral');
+  const scoreNum = Math.round(confScore * 100);
+  const scoreRingColor =
+    scoreNum >= 80 ? '#dc2626' : scoreNum >= 60 ? '#ea580c' : scoreNum >= 40 ? '#ca8a04' : '#6b7280';
+  const scoreLabelFr =
+    scoreNum >= 80 ? 'CHAUD' : scoreNum >= 60 ? 'TIÈDE' : scoreNum >= 40 ? 'NEUTRE' : 'FROID';
+  const extendedAi = detail?.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined;
   const receivedEmail = detail?.follow_up_task?.received_email;
   const receivedAt = receivedEmail?.received_at
     ? new Date(receivedEmail.received_at).toLocaleDateString('fr-FR', {
@@ -338,6 +385,16 @@ export default function LeadDetailModal({
 
   if (!action) return null;
 
+  const docForAvatar = detail ?? action;
+  const avatarDisplayUrl =
+    profile?.avatar_url ||
+    docForAvatar?.avatar_path ||
+    (docForAvatar
+      ? getDefaultContactAvatar(docForAvatar.client?.documentId ?? docForAvatar.documentId).avatarUrl
+      : '');
+  const linkedinHref = profile?.linkedin_url || detail?.linkedin_url || '';
+  const titleLine = profile?.title || detail?.lead_title;
+
   const signalBarClass =
     score === 'hot'
       ? 'bg-red-500/10 border-red-500/20 text-red-600'
@@ -365,7 +422,7 @@ export default function LeadDetailModal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="w-full max-w-[720px] max-h-[92vh] overflow-hidden flex flex-col rounded-[20px] shadow-2xl border border-[#e2ddd8] bg-[#ffffff] outline-none overscroll-contain"
+            className="w-full max-w-[780px] max-h-[92vh] overflow-hidden flex flex-col rounded-[20px] shadow-2xl border border-[#e2ddd8] bg-[#ffffff] outline-none overscroll-contain"
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
@@ -375,182 +432,306 @@ export default function LeadDetailModal({
               style={{ paddingBottom: 24 }}
               tabIndex={-1}
             >
-              {/* Header */}
-              <div className="sticky top-0 z-10 bg-white border-b border-[#e2ddd8] px-7 pt-6 pb-5 rounded-t-[20px]">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="flex items-center gap-3.5">
-                    <div className="relative w-[52px] h-[52px] flex-shrink-0">
-                      {detail && (
-                        <>
-                          <img
-                            src={detail.avatar_path ?? getDefaultContactAvatar(detail.client?.documentId ?? detail.documentId).avatarUrl}
-                            alt={displayName}
-                            className="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-[#e2ddd8]"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                              const fb = e.currentTarget.parentElement?.querySelector('[data-avatar-fallback]');
-                              if (fb) (fb as HTMLElement).style.display = 'flex';
-                            }}
-                          />
-                          <div
-                            data-avatar-fallback
-                            className="absolute inset-0 w-[52px] h-[52px] rounded-full bg-gradient-to-br from-[#ff5c3a] to-[#e8441f] flex items-center justify-center text-white font-bold text-lg border-2 border-[#e2ddd8]"
-                            style={{ display: 'none' }}
-                          >
-                            {displayName
-                              .split(' ')
-                              .map((n) => n[0])
-                              .slice(0, 2)
-                              .join('')
-                              .toUpperCase()}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                    <div>
-                      <h2 className="font-[family-name:var(--font-instrument-serif)] text-[22px] font-normal text-[#1a1714] leading-tight">
-                        {displayName}
-                      </h2>
-                      {detail?.lead_title && (
-                        <p className="text-[11px] text-[#8a8178] mt-0.5">{detail.lead_title}</p>
-                      )}
-                      {detail?.follow_up_task?.context?.source === 'contact' && (
-                        <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
-                          <IconUser className="w-3 h-3" />
-                          Contact existant
-                        </span>
-                      )}
-                      {detail?.linkedin_url && (
-                        <a
-                          href={detail.linkedin_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 mt-1.5 font-mono text-[11px] text-[#0077b5] no-underline py-1 px-2 rounded bg-[#0077b5]/10 border border-[#0077b5]/20"
-                        >
-                          <IconBrandLinkedin className="w-3 h-3" />
-                          Voir profil LinkedIn
-                        </a>
-                      )}
-                    </div>
-                  </div>
+              {/* Sticky header : hero + signal */}
+              <div className="sticky top-0 z-10 bg-white border-b border-[#e2ddd8] rounded-t-[20px]">
+                <div className="relative px-7 pt-6 pb-4">
                   <button
+                    type="button"
                     onClick={onClose}
-                    className="w-8 h-8  border border-[#e2ddd8] flex items-center justify-center text-[#8a8178] hover:bg-[#f0ede8] hover:text-[#1a1714] transition-colors flex-shrink-0"
+                    className="absolute right-5 top-5 w-8 h-8 rounded-full border border-[#e2ddd8] flex items-center justify-center text-[#8a8178] hover:bg-[#f0ede8] hover:text-[#1a1714] transition-colors z-10"
+                    aria-label="Fermer"
                   >
                     <IconX className="w-3.5 h-3.5" />
                   </button>
+                  <div className="flex items-start justify-between gap-4 pr-10">
+                    <div className="flex items-start gap-4 min-w-0 flex-1">
+                      <div className="relative w-14 h-14 flex-shrink-0">
+                        <img
+                          src={avatarDisplayUrl}
+                          alt={displayName}
+                          className="absolute inset-0 w-full h-full rounded-full object-cover border-2 border-[#e2ddd8]"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fb = e.currentTarget.parentElement?.querySelector('[data-avatar-fallback]');
+                            if (fb) (fb as HTMLElement).style.display = 'flex';
+                          }}
+                        />
+                        <div
+                          data-avatar-fallback
+                          className="absolute inset-0 w-14 h-14 rounded-full bg-gradient-to-br from-[#1a1714] to-[#3d3530] flex items-center justify-center text-white font-bold text-base border-2 border-[#e2ddd8]"
+                          style={{ display: 'none' }}
+                        >
+                          {displayName
+                            .split(' ')
+                            .map((n) => n[0])
+                            .slice(0, 2)
+                            .join('')
+                            .toUpperCase()}
+                        </div>
+                        <div
+                          className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#0a66c2] border-2 border-white flex items-center justify-center text-[8px] font-bold text-white"
+                          title="Source Walego"
+                        >
+                          W
+                        </div>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h2 className="font-[family-name:var(--font-instrument-serif)] text-[22px] font-normal text-[#1a1714] leading-tight">
+                          {displayName}
+                        </h2>
+                        {titleLine && (
+                          <p className="text-[13px] text-[#8a8178] mt-0.5 leading-snug">{titleLine}</p>
+                        )}
+                        {profile?.campaign && (
+                          <p className="flex items-center gap-1.5 mt-1 font-mono text-[10px] text-[#b5afa9]">
+                            <span className="text-emerald-600">●</span>
+                            {profile.campaign}
+                          </p>
+                        )}
+                        {detail?.follow_up_task?.context?.source === 'contact' && (
+                          <span className="inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+                            <IconUser className="w-3 h-3" />
+                            Contact existant
+                          </span>
+                        )}
+                        <div className="flex flex-wrap items-center gap-2 mt-2">
+                          {linkedinHref ? (
+                            <a
+                              href={linkedinHref}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 font-mono text-[11px] text-white no-underline py-1.5 px-3 rounded-lg bg-[#0a66c2] hover:bg-[#084fa1] transition-colors"
+                            >
+                              <IconBrandLinkedin className="w-3 h-3" />
+                              Voir profil LinkedIn
+                            </a>
+                          ) : null}
+                          {profile?.email && (
+                            <span className="font-mono text-[10px] text-[#8a8178] bg-[#f0ede8] border border-[#e2ddd8] px-2 py-1 rounded-md">
+                              {profile.email}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-0.5">
+                      <div
+                        className="w-14 h-14 rounded-full border-[3px] flex flex-col items-center justify-center"
+                        style={{ borderColor: scoreRingColor }}
+                      >
+                        <span className="text-base font-bold text-[#1a1714] leading-none">{scoreNum}</span>
+                        <span className="font-mono text-[8px] text-[#b5afa9]">/100</span>
+                      </div>
+                      <span className="font-mono text-[10px] font-semibold" style={{ color: scoreRingColor }}>
+                        {scoreLabelFr}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Signal bar */}
                 {loading ? (
-                  <div className="flex items-center gap-2 py-2.5 px-3.5  bg-[#f0ede8] border border-[#e2ddd8]">
+                  <div className="flex items-center gap-2 py-2.5 px-7 mx-0 mb-4 bg-[#f0ede8] border-y border-[#e2ddd8]">
                     <IconLoader2 className="w-4 h-4 animate-spin text-[#8a8178]" />
                     <span className="text-[11px] text-[#8a8178]">Chargement...</span>
                   </div>
                 ) : (
                   <div
-                    className={`flex items-center gap-2 py-2.5 px-3.5  border text-[11px] font-medium ${signalBarClass}`}
+                    className={`flex items-center gap-2 py-2.5 px-7 mx-0 mb-0 border-t border-[#e2ddd8] text-[11px] font-medium ${signalBarClass}`}
                   >
                     <div className="w-2 h-2 rounded-full bg-current animate-pulse flex-shrink-0" />
-                    <span className="flex-1">
+                    <span className="flex-1 min-w-0">
                       {parsed.signal || analysis?.suggestion || "Analyse en attente — traitement automatique en cours (cron ~1 min)"}
                     </span>
-                    <span className="font-mono text-[11px] opacity-70 ml-auto">
+                    <span className="font-mono text-[11px] opacity-70 flex-shrink-0">
                       {score === 'hot' && '🔴 CHAUD'}
                       {score === 'warm' && '🟠 TIÈDE'}
                       {score === 'neutral' && '🟡 NEUTRE'}
                       {score === 'cold' && '⚫ FROID'}
-                      {detail?.confidence_score != null && ` · ${Math.round(detail.confidence_score * 100)}/100`}
+                      {detail?.confidence_score != null && ` · ${scoreNum}/100`}
                     </span>
                   </div>
                 )}
               </div>
 
-              {/* Body */}
-              <div className="px-7 py-6 flex flex-col gap-5">
-                {/* Réponse reçue */}
-                <section>
-                  <div className="flex items-center gap-2 mb-2.5 font-mono text-[10px] text-[#b5afa9] uppercase tracking-wider">
-                    <span>Réponse reçue</span>
-                    <div className="flex-1 h-px bg-[#e2ddd8]" />
-                  </div>
-                  <div className="bg-[#f0ede8] border border-[#e2ddd8]  p-4">
-                    {leadResponse ? (
-                      <>
-                        <blockquote className="font-[family-name:var(--font-instrument-serif)] italic text-[15px] text-[#1a1714] leading-relaxed !pl-3.5 border-l-2 border-red-500 mb-2">
-                          &ldquo;{leadResponse}&rdquo;
-                        </blockquote>
-                        <p className="font-mono text-[11px] text-[#b5afa9]">
-                          {displayName} · via Email · {receivedAt || 'N/A'}
-                        </p>
-                      </>
-                    ) : emailBody ? (
-                      <>
-                        <p className="text-[11px] text-[#b5afa9] mb-2 font-mono uppercase tracking-wider">Aperçu brut (extraction non reconnue)</p>
-                        <blockquote className="text-[11px] text-[#1a1714] leading-relaxed !pl-3.5 border-l-2 border-[#d0cbc4] max-h-32 overflow-y-auto">
-                          {emailBody.slice(0, 600)}
-                          {emailBody.length > 600 && '…'}
-                        </blockquote>
-                        <p className="font-mono text-[11px] text-[#b5afa9] mt-2">
-                          {displayName} · via Email · {receivedAt || 'N/A'}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="text-[11px] text-[#8a8178] italic">
-                        Aucun contenu email disponible (content_text/html absent de l&apos;API)
-                      </p>
-                    )}
-                  </div>
-                </section>
+              {/* Onglets + grille 2 colonnes */}
+              <div className="border-b border-[#e2ddd8] px-7 flex gap-0">
+                <button
+                  type="button"
+                  onClick={() => setLeadTab('response')}
+                  className={`py-3 px-4 text-[12px] font-medium border-b-2 -mb-px transition-colors ${
+                    leadTab === 'response'
+                      ? 'text-[#1a1714] border-[#1a1714]'
+                      : 'text-[#8a8178] border-transparent hover:text-[#1a1714]'
+                  }`}
+                >
+                  Réponse reçue
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLeadTab('context')}
+                  className={`py-3 px-4 text-[12px] font-medium border-b-2 -mb-px transition-colors ${
+                    leadTab === 'context'
+                      ? 'text-[#1a1714] border-[#1a1714]'
+                      : 'text-[#8a8178] border-transparent hover:text-[#1a1714]'
+                  }`}
+                >
+                  Contexte Walego
+                </button>
+              </div>
 
-                {/* Analyse IA */}
-                <section>
-                  <div className="flex items-center gap-2 mb-2.5 font-mono text-[10px] text-[#b5afa9] uppercase tracking-wider">
-                    <span>Analyse</span>
-                    <div className="flex-1 h-px bg-[#e2ddd8]" />
-                  </div>
-                  <div className="bg-[#f0ede8] border border-[#e2ddd8]  overflow-hidden">
-                    <div className="flex items-start gap-3 px-4 py-3.5 border-b border-[#e2ddd8] last:border-b-0">
-                      <div className="w-7 h-7  bg-red-500/10 text-red-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <IconActivity className="w-3.5 h-3.5" />
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] min-h-[200px]">
+                <div className="border-b md:border-b-0 md:border-r border-[#e2ddd8] px-7 py-5">
+                  {leadTab === 'response' ? (
+                    <>
+                      <div className="mb-5">
+                        <div className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-2">
+                          Message du lead
+                        </div>
+                        {leadResponse ? (
+                          <>
+                            <blockquote className="bg-[#f0ede8] border-l-[3px] border-[#1a1714] rounded-r-lg py-3 px-4 text-[13px] leading-relaxed text-[#1a1714] italic m-0">
+                              &ldquo;{leadResponse}&rdquo;
+                            </blockquote>
+                            <p className="font-mono text-[11px] text-[#b5afa9] mt-2">
+                              {displayName} · via Email · {receivedAt || 'N/A'}
+                            </p>
+                          </>
+                        ) : emailBody ? (
+                          <>
+                            <p className="text-[11px] text-[#b5afa9] mb-2 font-mono uppercase tracking-wider">
+                              Aperçu brut (extraction non reconnue)
+                            </p>
+                            <blockquote className="text-[11px] text-[#1a1714] leading-relaxed pl-3 border-l-2 border-[#d0cbc4] max-h-40 overflow-y-auto">
+                              {emailBody.slice(0, 600)}
+                              {emailBody.length > 600 && '…'}
+                            </blockquote>
+                            <p className="font-mono text-[11px] text-[#b5afa9] mt-2">
+                              {displayName} · via Email · {receivedAt || 'N/A'}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="text-[11px] text-[#8a8178] italic">
+                            Aucun message — signal non verbal ou contenu email indisponible
+                          </p>
+                        )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#1a1714] mb-0.5">Signal détecté</p>
-                        <p className="text-[11px] text-[#8a8178] leading-relaxed">
-                          {parsed.signal || analysis?.reasoning?.slice(0, 200) || '—'}
+                      {(profile?.lead_reasoning || extendedAi?.signal) && (
+                        <div>
+                          <div className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-2">
+                            Pourquoi c&apos;est un lead
+                          </div>
+                          <p className="text-[12px] text-[#8a8178] leading-relaxed m-0">
+                            {extendedAi?.signal || profile?.lead_reasoning || '—'}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {profile?.persona && (
+                        <div className="mb-5">
+                          <div className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-2">
+                            Persona Walego
+                          </div>
+                          <span className="inline-flex px-2.5 py-1.5 rounded-md border border-[#e2ddd8] bg-white text-[11px] font-medium text-[#1a1714]">
+                            {profile.persona}
+                          </span>
+                        </div>
+                      )}
+                      {profile?.persona_reasoning && (
+                        <div className="mb-5">
+                          <div className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-2">
+                            Analyse du profil
+                          </div>
+                          <p className="text-[12px] text-[#8a8178] leading-relaxed m-0 line-clamp-4">
+                            {profile.persona_reasoning}
+                          </p>
+                        </div>
+                      )}
+                      {!profile?.persona?.trim() && !profile?.persona_reasoning?.trim() && (
+                        <p className="text-[11px] text-[#8a8178] italic">
+                          Aucun contexte persona extrait du mail.
+                        </p>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                <div className="bg-[#f0ede8]/80 px-5 py-5 md:px-5">
+                  <div className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-3">
+                    Analyse IA
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-sm flex-shrink-0" aria-hidden>
+                        🎯
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-0.5">
+                          Signal détecté
+                        </p>
+                        <p className="text-[12px] text-[#1a1714] leading-snug">
+                          {extendedAi?.signal ||
+                            parsed.signal ||
+                            profile?.lead_reasoning?.slice(0, 200) ||
+                            analysis?.reasoning?.slice(0, 200) ||
+                            '—'}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 px-4 py-3.5 border-b border-[#e2ddd8] last:border-b-0">
-                      <div className="w-7 h-7  bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <IconAlertTriangle className="w-3.5 h-3.5" />
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-sm flex-shrink-0" aria-hidden>
+                        👤
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-0.5">
+                          Profil
+                        </p>
+                        <p className="text-[12px] text-[#1a1714] leading-snug">
+                          {parsed.profil || profile?.persona || profile?.title || detail?.lead_title || '—'}
+                        </p>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#1a1714] mb-0.5">Risque fog</p>
-                        <p className="text-[11px] text-[#8a8178] leading-relaxed">
+                    </div>
+                    {profile?.lead_tips ? (
+                      <div className="flex items-start gap-2.5">
+                        <span className="text-sm flex-shrink-0" aria-hidden>
+                          ⚡
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-0.5">
+                            Conseil Walego
+                          </p>
+                          <p className="text-[12px] text-[#1a1714] leading-snug line-clamp-4">
+                            {profile.lead_tips}
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                    <div className="flex items-start gap-2.5">
+                      <span className="text-sm flex-shrink-0" aria-hidden>
+                        🌡️
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-mono text-[9px] text-[#b5afa9] uppercase tracking-wider mb-0.5">
+                          Risque fog
+                        </p>
+                        <p className="text-[12px] text-[#1a1714] leading-snug">
                           {parsed.fogExplanation || (parsed.fogRisk ? 'Oui' : 'Non')}
+                          {extendedAi?.fog_risk === true && ' · ⚠'}
                         </p>
                         {parsed.fogRisk && (
                           <span className="inline-flex items-center gap-1 mt-1.5 font-mono text-[10px] py-1 px-2 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                            ⚠ Fog élevé · agir rapidement
+                            Fog élevé · agir rapidement
                           </span>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-start gap-3 px-4 py-3.5">
-                      <div className="w-7 h-7  bg-green-500/10 text-green-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <IconUser className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#1a1714] mb-0.5">Profil</p>
-                        <p className="text-[11px] text-[#8a8178] leading-relaxed">
-                          {parsed.profil || detail?.lead_title || '—'}
-                        </p>
-                      </div>
-                    </div>
                   </div>
-                </section>
+                </div>
+              </div>
 
+              {/* Body : actions + draft */}
+              <div className="px-7 py-6 flex flex-col gap-5 border-t border-[#e2ddd8]">
                 {/* Actions */}
                 <section>
                   <div className="flex items-center gap-2 mb-2.5 font-mono text-[10px] text-[#b5afa9] uppercase tracking-wider">
@@ -616,7 +797,7 @@ export default function LeadDetailModal({
                         </div>
                       </button>
                       <a
-                        href={detail?.linkedin_url || '#'}
+                        href={linkedinHref || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2.5 px-3.5 py-3 bg-white border border-[#e2ddd8] transition-colors hover:border-[#d0cbc4] hover:bg-[#f0ede8] text-left no-underline"

@@ -24,6 +24,7 @@ import {
   IconSend,
   IconRefresh,
   IconPlug,
+  IconLoader2,
 } from '@tabler/icons-react';
 import DataTable, { Column, CustomAction } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -52,7 +53,10 @@ import {
   deleteFollowUpTask,
   updateAutomationSettings,
 } from '@/lib/smart-follow-up-api';
-import { addClientUser, syncInboxStream, type ProcessedEmail } from '@/lib/api';
+import { addClientUser, syncInboxStream, fetchSmtpConfig, type ProcessedEmail } from '@/lib/api';
+import type { SmtpConfig } from '@/types';
+import { shouldShowSfuFullPageOnboarding } from '@/lib/sfu-onboarding-gate';
+import SFUOnboardingPage from '@/app/components/smart-follow-up/SFUOnboardingPage';
 import { useAuth } from '@/app/context/AuthContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { clearCache } from '@/hooks/useApi';
@@ -81,7 +85,7 @@ export default function SmartFollowUpPage() {
   const { data: tasks, mutate: mutateTasks } = useFollowUpTasks();
   const { data: allActions, mutate: mutateActions } = useAutomationActions('pending');
   const { data: sentActions = [], mutate: mutateSentActions } = useAutomationActions(['executed', 'failed']);
-  const { data: settings, mutate: mutateSettings } = useAutomationSettings();
+  const { data: settings, mutate: mutateSettings, isLoading: settingsLoading } = useAutomationSettings();
   const { data: todayDigest } = useDailyDigest();
   
   const [activeTab, setActiveTab] = useState<'actions' | 'tasks' | 'sent' | 'sources'>('actions');
@@ -122,12 +126,24 @@ export default function SmartFollowUpPage() {
   }>({ isOpen: false, loading: false, processedEmails: [] });
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [savingFilter, setSavingFilter] = useState(false);
+  const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
+  const [smtpReady, setSmtpReady] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !hasSeenSFUOnboarding()) {
       setShowOnboarding(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setSmtpReady(true);
+      return;
+    }
+    fetchSmtpConfig(user.id)
+      .then(setSmtpConfig)
+      .finally(() => setSmtpReady(true));
+  }, [user?.id]);
 
   // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
   const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
@@ -961,6 +977,33 @@ const getContactType = (action: AutomationAction) => {
       variant: 'success',
     },
   ], [handleUpdateTask]);
+
+  const showFullPageOnboarding =
+    !!user &&
+    smtpReady &&
+    !settingsLoading &&
+    shouldShowSfuFullPageOnboarding(settings, smtpConfig);
+
+  if (!smtpReady || settingsLoading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <IconLoader2 className="w-8 h-8 animate-spin text-muted" />
+      </div>
+    );
+  }
+
+  if (showFullPageOnboarding) {
+    return (
+      <SFUOnboardingPage
+        settings={settings ?? null}
+        smtpConfig={smtpConfig}
+        mutateSettings={mutateSettings}
+        onSmtpRefresh={async () => {
+          if (user?.id) setSmtpConfig(await fetchSmtpConfig(user.id));
+        }}
+      />
+    );
+  }
 
   return (
     <>

@@ -1,0 +1,24 @@
+{
+  "comment": "À fusionner dans attributes de src/api/automation-setting/content-types/automation-setting/schema.json (Strapi v5)",
+  "attributes": {
+    "user_profile": {
+      "type": "json",
+      "required": false
+    },
+    "gmail_configured": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    },
+    "imap_configured": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false,
+      "required": false
+    }
+  }
+}
