@@ -24,6 +24,40 @@ function logError(requestId: string, message: string, err: unknown, meta?: Recor
   });
 }
 
+/**
+ * Code sûr pour le client (pas de fuite de message brut). Aide au debug sans AI_ROUTE_ERROR_DETAIL.
+ * Les logs serveur complets restent dans console.error avec le même requestId.
+ */
+function classifyLeadIntentError(err: unknown): string {
+  const e = err as {
+    message?: string;
+    statusCode?: number;
+    code?: string;
+    cause?: { message?: string };
+  };
+  const msg = `${e.message ?? err} ${e.cause?.message ?? ''}`.toLowerCase();
+  const status = e.statusCode;
+
+  if (status === 429 || msg.includes('429') || msg.includes('rate limit')) return 'rate_limit';
+  if (status === 401 || msg.includes('invalid_api_key') || msg.includes('incorrect api key'))
+    return 'invalid_api_key';
+  if (status === 402 || msg.includes('insufficient_quota') || msg.includes('billing')) return 'quota_exhausted';
+  if (status === 403) return 'forbidden';
+  if (msg.includes('model') && (msg.includes('not found') || msg.includes('does not exist'))) return 'model_not_found';
+  if (msg.includes('timeout') || msg.includes('etimedout') || msg.includes('timed out')) return 'timeout';
+  if (
+    msg.includes('fetch failed') ||
+    msg.includes('econnrefused') ||
+    msg.includes('enotfound') ||
+    msg.includes('network')
+  )
+    return 'network';
+  if (msg.includes('decrypt')) return 'decryption';
+  if (msg.includes('anthropic') || msg.includes('claude')) return 'anthropic_provider';
+  if (msg.includes('openai') || msg.includes('gpt')) return 'openai_provider';
+  return 'unknown';
+}
+
 /** Limite d’entrée pour limiter les tokens (uniquement appelé côté lead, pas sur tout le flux mail). */
 const MAX_LEAD_MESSAGE_CHARS = 4500;
 

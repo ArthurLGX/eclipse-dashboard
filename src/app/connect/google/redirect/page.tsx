@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { IconBrandGoogle, IconAlertCircle } from '@tabler/icons-react';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { sanitizeUserForStorage, persistUserToLocalStorage } from '@/lib/auth-user-storage';
 
 export default function GoogleRedirectPage() {
   const router = useRouter();
@@ -43,11 +44,12 @@ export default function GoogleRedirectPage() {
           throw new Error(errorData.error?.message || t('authentication_error'));
         }
 
-        const user = await response.json();
-        
-        // Stocker le token JWT Strapi et les infos utilisateur
+        const userRaw = await response.json();
+        const user = sanitizeUserForStorage(userRaw);
+
+        // Stocker le token JWT Strapi et les infos utilisateur (compact — évite QuotaExceededError)
         localStorage.setItem('token', jwtToken);
-        localStorage.setItem('user', JSON.stringify(user));
+        persistUserToLocalStorage(user);
 
         // Rediriger vers le dashboard
         router.push('/dashboard');

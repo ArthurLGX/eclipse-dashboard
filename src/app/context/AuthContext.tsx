@@ -2,6 +2,11 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchSubscriptionsUser } from '@/lib/api';
+import {
+  sanitizeUserForStorage,
+  persistUserToLocalStorage,
+  type AuthStoredUser,
+} from '@/lib/auth-user-storage';
 
 interface SubscriptionData {
   plan: { name: string };
@@ -9,20 +14,8 @@ interface SubscriptionData {
   start_date: string;
 }
 
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  firstname?: string;
-  lastname?: string;
-  role?: string;
-  profile_picture?: {
-    url: string;
-  };
-  confirmed?: boolean;
-  blocked?: boolean;
-  // Note: Ne JAMAIS stocker le mot de passe côté client
-}
+/** Données réduites en localStorage (pas de populate=* — sinon QuotaExceededError). */
+export type User = AuthStoredUser;
 
 type AuthContextType = {
   user: User | null;
@@ -51,25 +44,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const storedUser = localStorage.getItem('user');
     const storedToken = localStorage.getItem('token');
     if (storedUser && storedToken) {
-      const parsedUser = JSON.parse(storedUser);
-      if (parsedUser.id !== user?.id) {
-        localStorage.setItem('user', JSON.stringify(parsedUser)); // assure-toi d'avoir le bon utilisateur
+      try {
+        const raw = JSON.parse(storedUser) as unknown;
+        const parsedUser = sanitizeUserForStorage(raw);
+        const rawLen = JSON.stringify(raw).length;
+        const compactLen = JSON.stringify(parsedUser).length;
+        if (rawLen > compactLen + 50) {
+          persistUserToLocalStorage(parsedUser);
+        }
+        setUser(parsedUser);
+        setToken(storedToken);
+        setAuthenticated(true);
+      } catch (e) {
+        console.error('[auth] Invalid stored user', e);
+        localStorage.removeItem('user');
       }
-      setUser(parsedUser);
-      setToken(storedToken);
-      setAuthenticated(true);
     }
     setHasHydrated(true); // ✅ quand les données sont lues
-  }, [user?.id]);
+  }, []);
 
   const login = async (user: User, token: string) => {
     localStorage.setItem('token', token);
     setToken(token);
 
     try {
-      // Récupérer les détails complets de l'utilisateur avec le token
+      /** Pas de populate=* : évite un JSON énorme (QuotaExceededError sur localStorage). */
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}?populate=*`,
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${user.id}?populate=profile_picture`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -83,8 +84,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       const fullUser = await res.json();
-      localStorage.setItem('user', JSON.stringify(fullUser));
-      setUser(fullUser);
+      const compact = sanitizeUserForStorage(fullUser);
+      persistUserToLocalStorage(compact);
+      setUser(compact);
       setAuthenticated(true);
 
       // Vérifier si l'utilisateur a un trial expiré
@@ -112,9 +114,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     } catch (err) {
       console.error('Failed to fetch full user details:', err);
-      // En cas d'erreur, utiliser les données de base
-      localStorage.setItem('user', JSON.stringify(user));
-      setUser(user);
+      const compact = sanitizeUserForStorage(user);
+      persistUserToLocalStorage(compact);
+      setUser(compact);
       setAuthenticated(true);
     }
   };

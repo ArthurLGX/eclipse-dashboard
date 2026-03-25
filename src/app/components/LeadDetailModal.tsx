@@ -41,6 +41,8 @@ type LeadIntentReplyErrorBody = {
   error?: string;
   requestId?: string;
   detail?: string;
+  /** Catégorie renvoyée par l’API en prod (sans message brut). */
+  errorCode?: string;
 };
 
 function logLeadIntentFailure(scope: string, res: Response, body: LeadIntentReplyErrorBody) {
@@ -48,8 +50,11 @@ function logLeadIntentFailure(scope: string, res: Response, body: LeadIntentRepl
     status: res.status,
     statusText: res.statusText,
     requestId: body.requestId,
+    errorCode: body.errorCode,
     error: body.error,
     detail: body.detail,
+    hint:
+      'Les logs détaillés sont sur le serveur Next.js (dashboard), pas Strapi — chercher le requestId dans les logs PM2/Docker du front.',
   });
 }
 
@@ -433,7 +438,7 @@ export default function LeadDetailModal({
         logLeadIntentFailure('regenerate', res, errBody);
         showGlobalPopup(
           errBody.requestId
-            ? `Erreur régénération — ref: ${errBody.requestId}`
+            ? `Erreur régénération — ref: ${errBody.requestId}${errBody.errorCode ? ` [${errBody.errorCode}]` : ''}`
             : 'Erreur régénération',
           'error'
         );
