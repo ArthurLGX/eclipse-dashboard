@@ -13,9 +13,22 @@ import {
   isWalegoPlainTextContent,
 } from '@/utils/walego-lead-status';
 
+/** Email pour affichage / réponse (client CRM, sinon expéditeur du mail reçu, sinon brouillon). */
+export function resolveLeadRecipientEmail(action: AutomationAction): string {
+  return (
+    action.client?.email?.trim() ||
+    action.follow_up_task?.received_email?.from_email?.trim() ||
+    action.proposed_content?.to?.[0]?.trim() ||
+    ''
+  );
+}
+
 export function resolveLeadDisplayName(action: AutomationAction): string {
   const clientName = action.client?.name?.trim();
   if (clientName) return clientName;
+
+  const fromReceived = action.follow_up_task?.received_email?.from_name?.trim();
+  if (fromReceived) return fromReceived;
 
   const stored = (action.proposed_content as { lead_display_name?: string } | undefined)?.lead_display_name?.trim();
   if (stored) return stored;

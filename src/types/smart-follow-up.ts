@@ -233,7 +233,12 @@ export interface FollowUpTask {
   received_email: {
     id: number;
     from_email: string;
+    from_name?: string;
+    snippet?: string;
     subject: string;
+    content_text?: string;
+    content_html?: string;
+    received_at?: string;
   } | null;
   task_type: 'payment_reminder' | 'proposal_follow_up' | 'meeting_follow_up' | 'thank_you' | 'check_in' | 'custom';
   scheduled_for: string;
@@ -277,6 +282,8 @@ export interface AutomationAction {
       id: number;
       subject?: string;
       from_email?: string;
+      from_name?: string;
+      snippet?: string;
       content_text?: string;
       content_html?: string;
       received_at?: string;

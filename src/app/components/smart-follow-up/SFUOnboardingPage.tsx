@@ -10,6 +10,7 @@ import { createAutomationSettings, updateAutomationSettings } from '@/lib/smart-
 import { mergeLeadSourcesWithDefaults } from '@/data/lead-sources-default';
 import type { AutomationSettings } from '@/types/smart-follow-up';
 import type { SmtpConfig } from '@/types';
+import { getGmailOAuthErrorMessage } from '@/lib/gmail-oauth-feedback';
 import { getDefaultAutomationCreatePayload } from '@/app/components/smart-follow-up/onboarding/default-automation-payload';
 import { buildLeadSourcesForOnboarding } from '@/app/components/smart-follow-up/onboarding/build-lead-sources-selection';
 import { StepProfile } from '@/app/components/smart-follow-up/onboarding/StepProfile';
@@ -101,7 +102,7 @@ export function SFUOnboardingPage({
             'success'
           );
         } else {
-          showGlobalPopup('Connexion Gmail échouée. Réessayez ou utilisez IMAP.', 'error');
+          showGlobalPopup(getGmailOAuthErrorMessage(sp.get('gmail_err')), 'error');
         }
         void mutateSettings();
         router.replace('/dashboard/smart-follow-up', { scroll: false });

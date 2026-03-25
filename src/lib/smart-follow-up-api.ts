@@ -112,6 +112,7 @@ export async function fetchFollowUpTasks(filters?: Record<string, unknown>): Pro
     'populate[received_email][fields][0]': 'id',
     'populate[received_email][fields][1]': 'subject',
     'populate[received_email][fields][2]': 'from_email',
+    'populate[received_email][fields][3]': 'from_name',
     'sort[0]': 'scheduled_for:asc',
   });
 
@@ -153,9 +154,11 @@ export async function fetchAutomationActions(status?: string | string[]): Promis
     'populate[follow_up_task][fields][1]': 'documentId',
     'populate[follow_up_task][fields][2]': 'context',
     'populate[follow_up_task][populate][received_email][fields][0]': 'from_email',
-    'populate[follow_up_task][populate][received_email][fields][1]': 'subject',
-    'populate[follow_up_task][populate][received_email][fields][2]': 'content_text',
-    'populate[follow_up_task][populate][received_email][fields][3]': 'content_html',
+    'populate[follow_up_task][populate][received_email][fields][1]': 'from_name',
+    'populate[follow_up_task][populate][received_email][fields][2]': 'snippet',
+    'populate[follow_up_task][populate][received_email][fields][3]': 'subject',
+    'populate[follow_up_task][populate][received_email][fields][4]': 'content_text',
+    'populate[follow_up_task][populate][received_email][fields][5]': 'content_html',
     'populate[approved_by][fields][0]': 'username',
     'sort[0]': 'createdAt:desc',
     'pagination[pageSize]': '200',
@@ -181,9 +184,11 @@ export async function fetchAutomationActionDetail(id: string): Promise<Automatio
     'populate[client][fields][2]': 'documentId',
     'populate[follow_up_task][populate][received_email][fields][0]': 'subject',
     'populate[follow_up_task][populate][received_email][fields][1]': 'from_email',
-    'populate[follow_up_task][populate][received_email][fields][2]': 'content_text',
-    'populate[follow_up_task][populate][received_email][fields][3]': 'content_html',
-    'populate[follow_up_task][populate][received_email][fields][4]': 'received_at',
+    'populate[follow_up_task][populate][received_email][fields][2]': 'from_name',
+    'populate[follow_up_task][populate][received_email][fields][3]': 'snippet',
+    'populate[follow_up_task][populate][received_email][fields][4]': 'content_text',
+    'populate[follow_up_task][populate][received_email][fields][5]': 'content_html',
+    'populate[follow_up_task][populate][received_email][fields][6]': 'received_at',
     'populate[follow_up_task][fields][0]': 'context',
     'populate[follow_up_task][fields][1]': 'ai_analysis',
     'populate[follow_up_task][fields][2]': 'task_type',
@@ -261,11 +266,18 @@ export async function deleteAutomationAction(id: string): Promise<void> {
 export function sfuLeadToAutomationAction(lead: SfuLead): AutomationAction {
   const pc = (lead.proposed_content || {}) as AutomationAction['proposed_content'];
   const body = (pc?.body as string) || lead.draft || '';
+  const replyEmail =
+    lead.client?.email?.trim() ||
+    lead.received_email?.from_email?.trim() ||
+    lead.email?.trim() ||
+    '';
+  const pcTo0 =
+    Array.isArray(pc?.to) && pc.to.length ? String(pc.to[0]).trim() : '';
   const to =
-    Array.isArray(pc?.to) && pc.to.length
-      ? pc.to
-      : lead.email
-        ? [lead.email]
+    replyEmail
+      ? [replyEmail]
+      : pcTo0
+        ? [pcTo0]
         : [];
   const statusMap: Record<string, AutomationAction['status_automation_action']> = {
     new: 'approved',
@@ -289,7 +301,8 @@ export function sfuLeadToAutomationAction(lead: SfuLead): AutomationAction {
       context: {
         lead_source: lead.source || undefined,
         source: lead.source || undefined,
-        from_email: lead.email || undefined,
+        from_email: replyEmail || lead.email || undefined,
+        from_name: lead.received_email?.from_name || undefined,
       },
       ai_analysis: lead.ai_analysis as TaskAIAnalysis | undefined,
       received_email: lead.received_email ?? undefined,
@@ -323,9 +336,11 @@ export async function fetchSfuLeads(statusIn: string[]): Promise<SfuLead[]> {
     'populate[received_email][fields][0]': 'id',
     'populate[received_email][fields][1]': 'subject',
     'populate[received_email][fields][2]': 'from_email',
-    'populate[received_email][fields][3]': 'content_text',
-    'populate[received_email][fields][4]': 'content_html',
-    'populate[received_email][fields][5]': 'received_at',
+    'populate[received_email][fields][3]': 'from_name',
+    'populate[received_email][fields][4]': 'snippet',
+    'populate[received_email][fields][5]': 'content_text',
+    'populate[received_email][fields][6]': 'content_html',
+    'populate[received_email][fields][7]': 'received_at',
     'populate[client][fields][0]': 'name',
     'populate[client][fields][1]': 'email',
     'populate[client][fields][2]': 'documentId',
@@ -343,9 +358,11 @@ export async function fetchSfuLeadDetail(documentId: string): Promise<SfuLead | 
     'populate[received_email][fields][0]': 'id',
     'populate[received_email][fields][1]': 'subject',
     'populate[received_email][fields][2]': 'from_email',
-    'populate[received_email][fields][3]': 'content_text',
-    'populate[received_email][fields][4]': 'content_html',
-    'populate[received_email][fields][5]': 'received_at',
+    'populate[received_email][fields][3]': 'from_name',
+    'populate[received_email][fields][4]': 'snippet',
+    'populate[received_email][fields][5]': 'content_text',
+    'populate[received_email][fields][6]': 'content_html',
+    'populate[received_email][fields][7]': 'received_at',
     'populate[client][fields][0]': 'name',
     'populate[client][fields][1]': 'email',
     'populate[client][fields][2]': 'documentId',

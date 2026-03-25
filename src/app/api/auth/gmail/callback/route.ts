@@ -20,7 +20,8 @@ function redirectWithGmail(
   request: NextRequest,
   status: 'connected' | 'error',
   email?: string,
-  returnToSettings?: boolean
+  returnToSettings?: boolean,
+  errorCode?: string | null
 ): NextResponse {
   const base = getAppBaseUrl(request);
   const path = returnToSettings
@@ -33,6 +34,9 @@ function redirectWithGmail(
   u.searchParams.set('gmail', status);
   if (status === 'connected' && email) {
     u.searchParams.set('email', email);
+  }
+  if (status === 'error' && errorCode) {
+    u.searchParams.set('gmail_err', errorCode);
   }
   return NextResponse.redirect(u);
 }
@@ -86,7 +90,7 @@ export async function GET(request: NextRequest) {
 
     if (!tokens.access_token) {
       console.error('[Gmail OAuth] Pas d\'access_token');
-      return redirectWithGmail(request, 'error', undefined, returnToSettings);
+      return redirectWithGmail(request, 'error', undefined, returnToSettings, 'token_exchange_failed');
     }
 
     const profileRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
@@ -142,7 +146,7 @@ export async function GET(request: NextRequest) {
 
     if (!putRes.ok) {
       console.error('[Gmail OAuth] PUT automation-settings:', await putRes.text());
-      return redirectWithGmail(request, 'error', undefined, returnToSettings);
+      return redirectWithGmail(request, 'error', undefined, returnToSettings, 'strapi_save_failed');
     }
 
     return redirectWithGmail(
@@ -153,6 +157,6 @@ export async function GET(request: NextRequest) {
     );
   } catch (err) {
     console.error('[Gmail OAuth] callback:', err);
-    return redirectWithGmail(request, 'error', undefined, returnToSettings);
+    return redirectWithGmail(request, 'error', undefined, returnToSettings, 'server_error');
   }
 }

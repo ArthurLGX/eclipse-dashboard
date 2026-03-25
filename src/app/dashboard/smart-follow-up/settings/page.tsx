@@ -32,6 +32,7 @@ import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
 import { SourcesManager } from '@/app/components/smart-follow-up/SourcesManager';
 import { GoogleGlyph } from '@/app/components/smart-follow-up/onboarding/StepCredentials';
 import { getToken } from '@/lib/api';
+import { getGmailOAuthErrorMessage } from '@/lib/gmail-oauth-feedback';
 
 const DEFAULT_WHATSAPP_TEMPLATE =
   '{{emoji}} {{source}} · {{name}}\n{{title}}\n{{signal}}\n→ {{action_url}}';
@@ -253,7 +254,8 @@ export default function SmartFollowUpSettingsPage() {
           'success'
         );
       } else {
-        showGlobalPopup('La connexion Gmail a échoué ou a été annulée.', 'error');
+        const gmailErr = sp.get('gmail_err');
+        showGlobalPopup(getGmailOAuthErrorMessage(gmailErr), 'error');
       }
       router.replace('/dashboard/smart-follow-up/settings', { scroll: false });
     })();

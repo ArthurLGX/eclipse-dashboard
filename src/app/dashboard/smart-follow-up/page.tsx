@@ -47,6 +47,7 @@ import { clearCache } from '@/hooks/useApi';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
 import { resolveLeadAvatarSrc, resolveLeadDisplayName } from '@/lib/lead-display';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
+import { getGmailOAuthErrorMessage } from '@/lib/gmail-oauth-feedback';
 import type { AutomationAction, SfuLead } from '@/types/smart-follow-up';
 import type { CreateClientData } from '@/types';
 
@@ -139,7 +140,7 @@ export default function SmartFollowUpPage() {
         'success'
       );
     } else {
-      showGlobalPopup('Connexion Gmail échouée. Réessayez ou utilisez IMAP.', 'error');
+      showGlobalPopup(getGmailOAuthErrorMessage(sp.get('gmail_err')), 'error');
     }
     router.replace('/dashboard/smart-follow-up', { scroll: false });
   }, [smtpReady, settingsLoading, user, showFullPageOnboarding, router, showGlobalPopup]);
@@ -155,7 +156,11 @@ export default function SmartFollowUpPage() {
 
   const isLeadFromPriorityDomain = (action: AutomationAction): boolean => {
     if (priorityKeywords.length === 0) return false;
-    const email = action.client?.email || action.proposed_content?.to?.[0] || '';
+    const email =
+      action.client?.email ||
+      action.follow_up_task?.received_email?.from_email ||
+      action.proposed_content?.to?.[0] ||
+      '';
     const domain = email.includes('@') ? email.split('@')[1]?.toLowerCase() : '';
     const domainBase = domain?.split('.')[0] ?? '';
     return priorityKeywords.some((kw) => {
@@ -540,7 +545,11 @@ export default function SmartFollowUpPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-muted truncate">{action.client?.email || 'aucun email'}</p>
+                <p className="text-xs text-muted truncate">
+                  {action.client?.email ||
+                    action.follow_up_task?.received_email?.from_email ||
+                    'aucun email'}
+                </p>
               </div>
             </div>
           );
@@ -625,7 +634,10 @@ export default function SmartFollowUpPage() {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    const email = action.proposed_content?.to?.[0] || '';
+                    const email =
+                      action.follow_up_task?.received_email?.from_email ||
+                      action.proposed_content?.to?.[0] ||
+                      '';
                     const resolvedName = resolveLeadDisplayName(action);
                     const nameForClient =
                       resolvedName !== 'Contact inconnu'

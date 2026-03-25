@@ -26,9 +26,10 @@ import {
   archiveSfuLead,
   snoozeSfuLeadTomorrow,
 } from '@/lib/smart-follow-up-api';
-import { extractWalegoLeadName } from '@/utils/walego-lead-status';
+import { extractWalegoLeadName, isWalegoPlainTextContent } from '@/utils/walego-lead-status';
 import { extractWalegoLead } from '@/utils/extract-walego-lead';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
+import { greetingFirstName } from '@/lib/lead-greeting';
 import {
   mergeLeadProfileForModal,
   type ExtendedTaskAIAnalysis,
@@ -83,9 +84,16 @@ function parseMailScannerOutput(reasoning: string, suggestion: string): ParsedAn
   return result;
 }
 
-function sanitizeDraftGreeting(draft: string, leadDisplayName: string): string {
-  const first = leadDisplayName.split(/\s+/)[0] || 'there';
-  return draft.replace(/^Hi\s+Walego\b[,]?\s*/i, `Hi ${first}, `);
+function sanitizeDraftGreeting(
+  draft: string,
+  leadDisplayName: string,
+  fromName?: string | null
+): string {
+  const first = greetingFirstName(fromName, leadDisplayName);
+  let out = draft.replace(/^Hi\s+Walego\b[,]?\s*/i, `Hi ${first}, `);
+  out = out.replace(/^Bonjour\s+La\b[,]?\s*/i, `Bonjour ${first}, `);
+  out = out.replace(/^Bonjour\s+Le\b[,]?\s*/i, `Bonjour ${first}, `);
+  return out;
 }
 
 type Channel = 'linkedin' | 'email' | 'whatsapp';
@@ -132,11 +140,22 @@ export default function LeadDetailModal({
   const [leadTab, setLeadTab] = useState<LeadTab>('response');
 
   const leadSource = detail ?? action;
+  const receivedEmail = leadSource?.follow_up_task?.received_email;
   const emailBody =
-    leadSource?.follow_up_task?.received_email?.content_text ||
-    leadSource?.follow_up_task?.received_email?.content_html ||
+    receivedEmail?.content_text ||
+    receivedEmail?.content_html ||
     leadSource?.follow_up_task?.context?.email_body ||
     '';
+
+  const isWalegoMail = useMemo(() => {
+    const t = receivedEmail?.content_text ?? '';
+    const h = receivedEmail?.content_html ?? '';
+    if (isWalegoPlainTextContent(t)) return true;
+    if (h && /<[a-z]/i.test(h) && /NEW\s+LEAD|Profile\s+Picture|Lead\s+Status|walego/i.test(h)) {
+      return true;
+    }
+    return false;
+  }, [receivedEmail?.content_text, receivedEmail?.content_html]);
 
   const profile = useMemo(() => {
     if (!leadSource) return null;
@@ -151,6 +170,9 @@ export default function LeadDetailModal({
       aiAnalysis: leadSource.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined,
       receivedAt: re?.received_at,
       rawEmailSubject: re?.subject,
+      fromEmail: re?.from_email,
+      fromName: re?.from_name,
+      snippet: re?.snippet,
     });
   }, [leadSource]);
 
@@ -228,9 +250,15 @@ export default function LeadDetailModal({
           detail?.follow_up_task?.received_email?.subject || detail?.proposed_content?.subject || ''
         ) ||
         'Contact';
-      if (parsed.draft) return sanitizeDraftGreeting(parsed.draft, nameForGreeting);
+      if (parsed.draft) {
+        return sanitizeDraftGreeting(parsed.draft, nameForGreeting, detail?.follow_up_task?.received_email?.from_name);
+      }
       if (analysis.suggestion && analysis.suggestion.length > 20 && analysis.suggestion.length < 500) {
-        return sanitizeDraftGreeting(analysis.suggestion, nameForGreeting);
+        return sanitizeDraftGreeting(
+          analysis.suggestion,
+          nameForGreeting,
+          detail?.follow_up_task?.received_email?.from_name
+        );
       }
       return prev;
     });
@@ -238,20 +266,23 @@ export default function LeadDetailModal({
 
   const displayName =
     detail?.client?.name ||
+    receivedEmail?.from_name?.trim() ||
     (profile && profile.name !== 'Contact' ? profile.name : null) ||
     extractWalegoLeadName(
       detail?.follow_up_task?.received_email?.subject || detail?.proposed_content?.subject || ''
     ) ||
     profile?.name ||
     'Contact';
-  const extractedLead = emailBody
-    ? extractWalegoLead(emailBody, {
-        receivedAt: detail?.follow_up_task?.received_email?.received_at,
-        rawEmailSubject: detail?.follow_up_task?.received_email?.subject,
-      })
-    : null;
+  const extractedLead = useMemo(() => {
+    if (!emailBody || !isWalegoMail) return null;
+    return extractWalegoLead(emailBody, {
+      receivedAt: receivedEmail?.received_at,
+      rawEmailSubject: receivedEmail?.subject,
+    });
+  }, [emailBody, isWalegoMail, receivedEmail?.received_at, receivedEmail?.subject]);
   const leadResponse =
-    (profile?.lead_response?.trim() ? profile.lead_response : null) || extractedLead?.leadResponse || null;
+    (profile?.lead_response?.trim() ? profile.lead_response : null) ||
+    (isWalegoMail ? extractedLead?.leadResponse?.trim() || null : null);
   const parsed = analysis ? parseMailScannerOutput(analysis.reasoning, analysis.suggestion) : {};
   const confScore = detail?.confidence_score ?? 0;
   const score = parsed.score || (confScore >= 0.8 ? 'hot' : confScore >= 0.6 ? 'warm' : 'neutral');
@@ -261,7 +292,6 @@ export default function LeadDetailModal({
   const scoreLabelFr =
     scoreNum >= 80 ? 'CHAUD' : scoreNum >= 60 ? 'TIÈDE' : scoreNum >= 40 ? 'NEUTRE' : 'FROID';
   const extendedAi = detail?.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined;
-  const receivedEmail = detail?.follow_up_task?.received_email;
   const receivedAt = receivedEmail?.received_at
     ? new Date(receivedEmail.received_at).toLocaleDateString('fr-FR', {
         day: 'numeric',
@@ -275,6 +305,12 @@ export default function LeadDetailModal({
     draftRef.current?.focus();
     draftRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
+
+  const recipientEmail =
+    detail?.client?.email?.trim() ||
+    receivedEmail?.from_email?.trim() ||
+    detail?.proposed_content?.to?.[0]?.trim() ||
+    '';
 
   const handleRegenerate = async () => {
     if (!detail || !leadResponse) return;
@@ -304,7 +340,6 @@ export default function LeadDetailModal({
 
   const handleSend = async () => {
     if (!draft.trim() || !detail) return;
-    const recipientEmail = detail.client?.email || detail.proposed_content?.to?.[0];
     if (!recipientEmail && channel === 'email') {
       showGlobalPopup('Email du destinataire non trouvé', 'error');
       return;
@@ -321,7 +356,7 @@ export default function LeadDetailModal({
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
           body: JSON.stringify({
-            to: [recipientEmail],
+            to: [recipientEmail!],
             subject: `Re: ${detail.proposed_content?.subject || 'Votre message'}`,
             html: draft.replace(/\n/g, '<br>'),
           }),
@@ -497,10 +532,12 @@ export default function LeadDetailModal({
                             .toUpperCase()}
                         </div>
                         <div
-                          className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#0a66c2] border-2 border-white flex items-center justify-center text-[8px] font-bold text-white"
-                          title="Source Walego"
+                          className={`absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold text-white ${
+                            isWalegoMail ? 'bg-[#0a66c2]' : 'bg-[#1a1714]'
+                          }`}
+                          title={isWalegoMail ? 'Source Walego' : 'Email'}
                         >
-                          W
+                          {isWalegoMail ? 'W' : '✉'}
                         </div>
                       </div>
                       <div className="min-w-0 flex-1">
@@ -534,9 +571,9 @@ export default function LeadDetailModal({
                               Voir profil LinkedIn
                             </a>
                           ) : null}
-                          {profile?.email && (
+                          {(profile?.email || receivedEmail?.from_email) && (
                             <span className="font-mono text-[10px] text-[#8a8178] bg-[#f0ede8] border border-[#e2ddd8] px-2 py-1 rounded-md">
-                              {profile.email}
+                              {profile?.email || receivedEmail?.from_email}
                             </span>
                           )}
                         </div>
@@ -603,7 +640,7 @@ export default function LeadDetailModal({
                       : 'text-[#8a8178] border-transparent hover:text-[#1a1714]'
                   }`}
                 >
-                  Contexte Walego
+                  {isWalegoMail ? 'Contexte Walego' : 'Contexte email'}
                 </button>
               </div>
 
@@ -878,15 +915,20 @@ export default function LeadDetailModal({
                           : ch === 'whatsapp'
                             ? 'bg-[#25d366] border-[#25d366] text-white'
                             : 'bg-[#1a1714] border-[#1a1714] text-white';
+                      const disabledChannel =
+                        (ch === 'email' && !recipientEmail) ||
+                        (ch === 'linkedin' && !linkedinHref);
                       return (
                         <button
                           key={ch}
+                          type="button"
+                          disabled={disabledChannel}
                           onClick={() => setChannel(ch)}
                           className={`flex items-center gap-1.5 py-1.5 px-3 rounded-lg border font-mono text-[11px] transition-colors ${
                             channel === ch
                               ? activeStyles
                               : 'border-[#e2ddd8] text-[#8a8178] hover:border-[#d0cbc4]'
-                          }`}
+                          } ${disabledChannel ? 'opacity-40 cursor-not-allowed' : ''}`}
                         >
                           {ch === 'linkedin' && <IconBrandLinkedin className="w-3 h-3" />}
                           {ch === 'email' && <IconMail className="w-3 h-3" />}
@@ -924,7 +966,7 @@ export default function LeadDetailModal({
                       </button>
                       <button
                         onClick={handleSend}
-                        disabled={sending || !draft.trim()}
+                        disabled={sending || !draft.trim() || (channel === 'email' && !recipientEmail)}
                         className="py-2 px-4 btn-primary font-sans text-xs font-semibold flex items-center gap-1.5 transition-all disabled:opacity-50 disabled:hover:translate-y-0"
                       >
                         {sending ? (

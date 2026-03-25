@@ -3,8 +3,9 @@
  */
 
 import type { TaskAIAnalysis } from '@/types/smart-follow-up';
+import { extractLatestReplyPlainText } from '@/utils/extract-email-reply';
 import { extractWalegoLead, type WalegoExtractedLead } from '@/utils/extract-walego-lead';
-import { extractWalegoProfilePicFromPlainText } from '@/utils/walego-lead-status';
+import { extractWalegoProfilePicFromPlainText, isWalegoPlainTextContent } from '@/utils/walego-lead-status';
 
 export interface ExtractedLeadProfile {
   name: string;
@@ -224,6 +225,11 @@ function pick<T extends string | null | undefined>(...vals: (T | undefined)[]): 
 /**
  * Fusionne texte, HTML, champs action et analyse IA selon la priorité métier.
  */
+function looksLikeWalegoHtml(html: string): boolean {
+  if (!html?.trim()) return false;
+  return /NEW\s+LEAD\s+IDENTIFIED|Profile\s+Picture|Lead\s+Status|walego/i.test(html);
+}
+
 export function mergeLeadProfileForModal(args: {
   contentText?: string | null;
   contentHtml?: string | null;
@@ -234,13 +240,19 @@ export function mergeLeadProfileForModal(args: {
   aiAnalysis?: ExtendedTaskAIAnalysis | null;
   receivedAt?: string;
   rawEmailSubject?: string;
+  /** Expéditeur du mail reçu (identité réelle du lead) */
+  fromEmail?: string | null;
+  fromName?: string | null;
+  snippet?: string | null;
 }): ExtractedLeadProfile {
   const text = args.contentText?.trim() || '';
   const html = args.contentHtml?.trim() || '';
   const fromText = parseWalegoContentText(text);
+  const isWalegoMail =
+    isWalegoPlainTextContent(text) || (html && /<[a-z][\s\S]*>/i.test(html) && looksLikeWalegoHtml(html));
 
   let fromHtml: ExtractedLeadProfile | null = null;
-  if (html && /<[a-z][\s\S]*>/i.test(html)) {
+  if (html && /<[a-z][\s\S]*>/i.test(html) && looksLikeWalegoHtml(html)) {
     try {
       const w = extractWalegoLead(html, {
         receivedAt: args.receivedAt,
@@ -294,6 +306,22 @@ export function mergeLeadProfileForModal(args: {
   if (args.linkedinUrl?.trim()) p.linkedin_url = args.linkedinUrl.trim();
   if (args.avatarPath?.trim()) p.avatar_url = args.avatarPath.trim();
 
+  if (!isWalegoMail) {
+    const fromEmail = args.fromEmail?.trim();
+    if (fromEmail) {
+      p.email = pick(fromEmail, p.email);
+    }
+    const fromName = args.fromName?.trim();
+    if (fromName && (!p.name || p.name === 'Contact')) {
+      p.name = fromName;
+    }
+    const directReply =
+      extractLatestReplyPlainText(text) || args.snippet?.trim() || '';
+    if (directReply.length > 15) {
+      p.lead_response = directReply;
+    }
+  }
+
   const ai = args.aiAnalysis;
   if (ai) {
     if ((ai as ExtendedTaskAIAnalysis).lead_name?.trim()) {
@@ -310,7 +338,7 @@ export function mergeLeadProfileForModal(args: {
     }
   }
 
-  if ((!p.name || p.name === 'Contact') && args.clientName?.trim()) {
+  if (args.clientName?.trim()) {
     p.name = args.clientName.trim();
   }
 
