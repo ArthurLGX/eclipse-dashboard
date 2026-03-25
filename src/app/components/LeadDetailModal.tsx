@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   IconX,
@@ -25,11 +25,11 @@ import {
   sendWhatsAppNotification,
   archiveSfuLead,
   snoozeSfuLeadTomorrow,
+  patchSfuLeadDraftBody,
 } from '@/lib/smart-follow-up-api';
 import { extractWalegoLeadName, isWalegoPlainTextContent } from '@/utils/walego-lead-status';
 import { extractWalegoLead } from '@/utils/extract-walego-lead';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
-import { greetingFirstName } from '@/lib/lead-greeting';
 import {
   mergeLeadProfileForModal,
   type ExtendedTaskAIAnalysis,
@@ -84,18 +84,6 @@ function parseMailScannerOutput(reasoning: string, suggestion: string): ParsedAn
   return result;
 }
 
-function sanitizeDraftGreeting(
-  draft: string,
-  leadDisplayName: string,
-  fromName?: string | null
-): string {
-  const first = greetingFirstName(fromName, leadDisplayName);
-  let out = draft.replace(/^Hi\s+Walego\b[,]?\s*/i, `Hi ${first}, `);
-  out = out.replace(/^Bonjour\s+La\b[,]?\s*/i, `Bonjour ${first}, `);
-  out = out.replace(/^Bonjour\s+Le\b[,]?\s*/i, `Bonjour ${first}, `);
-  return out;
-}
-
 type Channel = 'linkedin' | 'email' | 'whatsapp';
 type LeadTab = 'response' | 'context';
 
@@ -138,6 +126,26 @@ export default function LeadDetailModal({
   const [archiving, setArchiving] = useState(false);
   const [snoozing, setSnoozing] = useState(false);
   const [leadTab, setLeadTab] = useState<LeadTab>('response');
+  const [intentDraftLoading, setIntentDraftLoading] = useState(false);
+  const [intentSummary, setIntentSummary] = useState<string | null>(null);
+  const intentAppliedRef = useRef<string | null>(null);
+  const detailRef = useRef<AutomationAction | null>(null);
+  detailRef.current = detail;
+
+  const persistLeadDraftToStrapi = useCallback(async (body: string) => {
+    const d = detailRef.current;
+    if (!d?.documentId || d.documentId === 'simulated-walego') return;
+    try {
+      await patchSfuLeadDraftBody(d.documentId, body, d.proposed_content);
+      setDetail((prev) =>
+        prev && prev.documentId === d.documentId
+          ? { ...prev, proposed_content: { ...prev.proposed_content, body } }
+          : prev
+      );
+    } catch (e) {
+      console.error('[LeadDetailModal] Persist draft Strapi:', e);
+    }
+  }, []);
 
   const leadSource = detail ?? action;
   const receivedEmail = leadSource?.follow_up_task?.received_email;
@@ -176,6 +184,35 @@ export default function LeadDetailModal({
     });
   }, [leadSource]);
 
+  const extractedLead = useMemo(() => {
+    if (!emailBody || !isWalegoMail) return null;
+    return extractWalegoLead(emailBody, {
+      receivedAt: receivedEmail?.received_at,
+      rawEmailSubject: receivedEmail?.subject,
+    });
+  }, [emailBody, isWalegoMail, receivedEmail?.received_at, receivedEmail?.subject]);
+
+  const leadResponse =
+    (profile?.lead_response?.trim() ? profile.lead_response : null) ||
+    (isWalegoMail ? extractedLead?.leadResponse?.trim() || null : null);
+
+  const displayName = useMemo(() => {
+    if (!leadSource) return 'Contact';
+    const re = leadSource.follow_up_task?.received_email;
+    return (
+      leadSource.client?.name ||
+      re?.from_name?.trim() ||
+      (profile && profile.name !== 'Contact' ? profile.name : null) ||
+      extractWalegoLeadName(re?.subject || leadSource.proposed_content?.subject || '') ||
+      profile?.name ||
+      'Contact'
+    );
+  }, [leadSource, profile]);
+
+  useEffect(() => {
+    intentAppliedRef.current = null;
+  }, [action?.documentId]);
+
   useEffect(() => {
     const currentAction = actionRef.current;
     if (!isOpen || !currentAction?.documentId) return;
@@ -204,6 +241,70 @@ export default function LeadDetailModal({
       })
       .finally(() => setLoading(false));
   }, [isOpen, action?.documentId]);
+
+  /**
+   * Un seul appel IA côté lead (pas sur tout le flux mail) : intention + brouillon aligné sur le message réel.
+   */
+  useEffect(() => {
+    if (!isOpen || !detail?.documentId || loading) return;
+    if (detail.documentId === 'simulated-walego') return;
+    if (!leadResponse?.trim()) return;
+    if (intentAppliedRef.current === detail.documentId) return;
+
+    const ac = new AbortController();
+    setIntentDraftLoading(true);
+    setIntentSummary(null);
+
+    const ext = detail.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined;
+    const signalHint = ext?.signal?.trim() || '';
+    const intentChannel = receivedEmail ? 'email' : channel;
+
+    (async () => {
+      try {
+        const res = await fetch('/api/ai/lead-intent-reply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            leadMessage: leadResponse,
+            subject: receivedEmail?.subject || detail.proposed_content?.subject,
+            fromName: receivedEmail?.from_name,
+            contactName: displayName,
+            companyName: profile?.company || undefined,
+            channel: intentChannel,
+            signalHint: signalHint || undefined,
+          }),
+          signal: ac.signal,
+        });
+        if (ac.signal.aborted) return;
+        if (!res.ok) return;
+        const data = (await res.json()) as { draft_reply?: string; intent?: { summary?: string } };
+        if (data.draft_reply?.trim()) {
+          setDraft(data.draft_reply.trim());
+          if (data.intent?.summary) setIntentSummary(data.intent.summary);
+        }
+      } catch {
+        /* conserve le brouillon Strapi / existant */
+      } finally {
+        if (!ac.signal.aborted) {
+          setIntentDraftLoading(false);
+          intentAppliedRef.current = detail.documentId;
+        }
+      }
+    })();
+
+    return () => ac.abort();
+  }, [
+    isOpen,
+    detail?.documentId,
+    loading,
+    leadResponse,
+    displayName,
+    receivedEmail?.subject,
+    receivedEmail?.from_name,
+    receivedEmail?.id,
+    profile?.company,
+    persistLeadDraftToStrapi,
+  ]);
 
   // Aucune génération IA à l'ouverture : on affiche uniquement l'analyse déjà présente (créée lors de la lecture du mail)
   useEffect(() => {
@@ -239,50 +340,6 @@ export default function LeadDetailModal({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!analysis) return;
-    setDraft((prev) => {
-      if (prev) return prev;
-      const parsed = parseMailScannerOutput(analysis.reasoning, analysis.suggestion);
-      const nameForGreeting =
-        detail?.client?.name ||
-        extractWalegoLeadName(
-          detail?.follow_up_task?.received_email?.subject || detail?.proposed_content?.subject || ''
-        ) ||
-        'Contact';
-      if (parsed.draft) {
-        return sanitizeDraftGreeting(parsed.draft, nameForGreeting, detail?.follow_up_task?.received_email?.from_name);
-      }
-      if (analysis.suggestion && analysis.suggestion.length > 20 && analysis.suggestion.length < 500) {
-        return sanitizeDraftGreeting(
-          analysis.suggestion,
-          nameForGreeting,
-          detail?.follow_up_task?.received_email?.from_name
-        );
-      }
-      return prev;
-    });
-  }, [analysis?.reasoning, analysis?.suggestion]);
-
-  const displayName =
-    detail?.client?.name ||
-    receivedEmail?.from_name?.trim() ||
-    (profile && profile.name !== 'Contact' ? profile.name : null) ||
-    extractWalegoLeadName(
-      detail?.follow_up_task?.received_email?.subject || detail?.proposed_content?.subject || ''
-    ) ||
-    profile?.name ||
-    'Contact';
-  const extractedLead = useMemo(() => {
-    if (!emailBody || !isWalegoMail) return null;
-    return extractWalegoLead(emailBody, {
-      receivedAt: receivedEmail?.received_at,
-      rawEmailSubject: receivedEmail?.subject,
-    });
-  }, [emailBody, isWalegoMail, receivedEmail?.received_at, receivedEmail?.subject]);
-  const leadResponse =
-    (profile?.lead_response?.trim() ? profile.lead_response : null) ||
-    (isWalegoMail ? extractedLead?.leadResponse?.trim() || null : null);
   const parsed = analysis ? parseMailScannerOutput(analysis.reasoning, analysis.suggestion) : {};
   const confScore = detail?.confidence_score ?? 0;
   const score = parsed.score || (confScore >= 0.8 ? 'hot' : confScore >= 0.6 ? 'warm' : 'neutral');
@@ -316,21 +373,31 @@ export default function LeadDetailModal({
     if (!detail || !leadResponse) return;
     setRegenerating(true);
     try {
-      const res = await fetch('/api/ai/lead-draft-regenerate', {
+      const ext = detail.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined;
+      const signalHint = ext?.signal?.trim() || '';
+      const intentChannel = receivedEmail ? 'email' : channel;
+      const res = await fetch('/api/ai/lead-intent-reply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          leadName: displayName,
-          leadTitle: detail.lead_title,
-          leadResponse,
-          channel,
-          analysis: parsed,
+          leadMessage: leadResponse,
+          subject: receivedEmail?.subject || detail.proposed_content?.subject,
+          fromName: receivedEmail?.from_name,
+          contactName: displayName,
+          companyName: profile?.company || undefined,
+          channel: intentChannel,
+          signalHint: signalHint || undefined,
         }),
       });
       if (!res.ok) throw new Error('Erreur');
-      const data = await res.json();
-      if (data.draft) setDraft(data.draft);
-      showGlobalPopup('Draft régénéré', 'success');
+      const data = (await res.json()) as { draft_reply?: string; intent?: { summary?: string } };
+      if (data.draft_reply?.trim()) {
+        const text = data.draft_reply.trim();
+        setDraft(text);
+        if (data.intent?.summary) setIntentSummary(data.intent.summary);
+        void persistLeadDraftToStrapi(text);
+      }
+      showGlobalPopup('Brouillon régénéré (intention + contexte)', 'success');
     } catch {
       showGlobalPopup('Erreur régénération', 'error');
     } finally {
@@ -906,6 +973,18 @@ export default function LeadDetailModal({
                     <span>Message à envoyer</span>
                     <div className="flex-1 h-px bg-[#e2ddd8]" />
                   </div>
+                  {intentDraftLoading && (
+                    <p className="text-[11px] text-[#8a8178] mb-2 flex items-center gap-2">
+                      <IconLoader2 className="w-3.5 h-3.5 animate-spin" />
+                      Analyse d&apos;intention et rédaction du brouillon…
+                    </p>
+                  )}
+                  {!intentDraftLoading && intentSummary && (
+                    <p className="text-[11px] text-[#5c564f] mb-2 leading-snug border-l-2 border-[#1a1714]/20 pl-2">
+                      <span className="font-mono text-[9px] text-[#b5afa9] uppercase">Intention détectée · </span>
+                      {intentSummary}
+                    </p>
+                  )}
 
                   <div className="flex gap-1.5 mb-2.5">
                     {(['linkedin', 'email', 'whatsapp'] as const).map((ch) => {
@@ -955,7 +1034,7 @@ export default function LeadDetailModal({
                     <div className="flex gap-2">
                       <button
                         onClick={handleRegenerate}
-                        disabled={regenerating}
+                        disabled={regenerating || intentDraftLoading || !leadResponse}
                         className="py-2 px-3.5  border border-[#e2ddd8] font-sans text-xs font-medium text-[#8a8178] hover:border-[#d0cbc4] hover:text-[#1a1714] hover:bg-[#f0ede8] transition-colors disabled:opacity-50"
                       >
                         {regenerating ? (

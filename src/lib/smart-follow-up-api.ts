@@ -417,6 +417,39 @@ export async function updateSfuLead(
   });
 }
 
+/**
+ * Persiste le brouillon IA dans Strapi (`proposed_content.body` + champ `draft` si présent au schéma).
+ */
+export async function patchSfuLeadDraftBody(
+  documentId: string,
+  draftBody: string,
+  currentProposed: AutomationAction['proposed_content'] | undefined
+): Promise<void> {
+  const proposed_content: AutomationAction['proposed_content'] = {
+    subject: currentProposed?.subject ?? '',
+    body: draftBody,
+    to: currentProposed?.to ?? [],
+    cc: currentProposed?.cc ?? [],
+    attachments: currentProposed?.attachments ?? [],
+    ...(currentProposed?.scheduled_time != null
+      ? { scheduled_time: currentProposed.scheduled_time }
+      : {}),
+    ...(currentProposed?.lead_display_name
+      ? { lead_display_name: currentProposed.lead_display_name }
+      : {}),
+  };
+
+  await apiRequest(`leads/${documentId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      data: {
+        proposed_content,
+        draft: draftBody,
+      },
+    }),
+  });
+}
+
 // ============================================================================
 // Automation Logs
 // ============================================================================
