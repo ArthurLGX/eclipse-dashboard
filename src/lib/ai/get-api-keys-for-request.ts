@@ -89,12 +89,12 @@ export async function getApiKeysForRequest(
   if (isAdmin) {
     return {
       keys: {
-        openaiKey: process.env.OPENAI_API_KEY || process.env.OPEN_API_KEY || null,
+        openaiKey: process.env.OPENAI_API_KEY || null,
         anthropicKey: process.env.ANTHROPIC_API_KEY || null,
       },
       userId: user.id,
       isAdmin: true,
-      hasAnyKey: !!(process.env.OPENAI_API_KEY || process.env.OPEN_API_KEY || process.env.ANTHROPIC_API_KEY),
+      hasAnyKey: !!(process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY),
     };
   }
 

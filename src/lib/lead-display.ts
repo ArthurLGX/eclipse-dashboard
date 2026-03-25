@@ -2,7 +2,9 @@
  * Nom et avatar affichés pour une automation-action (client Strapi ou contenu mail Walego/Brevo).
  */
 
+import type { Client } from '@/types';
 import type { AutomationAction } from '@/types/smart-follow-up';
+import { FAVICON_SERVICES, getFaviconDomain } from '@/lib/favicon';
 import { extractLeadProfileUnified } from '@/utils/extract-lead-profile';
 import {
   extractWalegoAvatarFromBody,
@@ -54,6 +56,82 @@ export function resolveLeadDisplayName(action: AutomationAction): string {
   }
 
   return 'Contact inconnu';
+}
+
+const STRAPI_PUBLIC = process.env.NEXT_PUBLIC_STRAPI_URL || '';
+
+/** Même logique que la page contacts : URL absolue pour `image.url`. */
+export function getContactImageUrlFromClient(
+  client: { image?: { url?: string } | null } | null | undefined
+): string | null {
+  const url = client?.image?.url;
+  if (!url) return null;
+  if (url.startsWith('/') || url.startsWith('http')) return url;
+  return `${STRAPI_PUBLIC}${url}`;
+}
+
+function normalizeContactLookupKey(s: string): string {
+  return s.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+export type ContactAvatarLookup = {
+  imageByEmail: Map<string, string>;
+  imageByName: Map<string, string>;
+};
+
+/** Index email + nom normalisé → URL image (contacts chargés côté client). */
+export function buildContactAvatarLookup(contacts: Client[]): ContactAvatarLookup {
+  const imageByEmail = new Map<string, string>();
+  const imageByName = new Map<string, string>();
+  for (const c of contacts) {
+    const img = getContactImageUrlFromClient(c);
+    if (!img) continue;
+    const email = c.email?.trim().toLowerCase();
+    if (email) imageByEmail.set(email, img);
+    const nk = normalizeContactLookupKey(c.name || '');
+    if (nk && !imageByName.has(nk)) imageByName.set(nk, img);
+  }
+  return { imageByEmail, imageByName };
+}
+
+function duckduckgoFaviconForLead(action: AutomationAction): string | null {
+  const email = resolveLeadRecipientEmail(action);
+  const domain = getFaviconDomain(action.client?.website ?? null, email || null);
+  if (!domain) return null;
+  return FAVICON_SERVICES.duckduckgo(domain);
+}
+
+/**
+ * Avatar tableau SFU : Walego/cache, image fiche client Strapi, contact CRM (email/nom), favicon domaine (DuckDuckGo), sinon null (Jazz dans l’UI).
+ */
+export function resolveLeadTableAvatarUrl(
+  action: AutomationAction,
+  lookup: ContactAvatarLookup | null | undefined
+): { src: string | null; hasLeadPhoto: boolean } {
+  const primary = resolveLeadAvatarSrc(action);
+  if (primary) return { src: primary, hasLeadPhoto: true };
+
+  const clientImg = getContactImageUrlFromClient(action.client);
+  if (clientImg) return { src: clientImg, hasLeadPhoto: true };
+
+  const email = resolveLeadRecipientEmail(action).trim().toLowerCase();
+  const displayName = resolveLeadDisplayName(action);
+  const nameKey = normalizeContactLookupKey(displayName);
+  const nameOk = Boolean(nameKey && nameKey !== 'contact inconnu');
+
+  if (lookup) {
+    if (email && lookup.imageByEmail.has(email)) {
+      return { src: lookup.imageByEmail.get(email)!, hasLeadPhoto: true };
+    }
+    if (nameOk && lookup.imageByName.has(nameKey)) {
+      return { src: lookup.imageByName.get(nameKey)!, hasLeadPhoto: true };
+    }
+  }
+
+  const fav = duckduckgoFaviconForLead(action);
+  if (fav) return { src: fav, hasLeadPhoto: true };
+
+  return { src: null, hasLeadPhoto: false };
 }
 
 /** URL publique pour l’avatar : cache local /leads/avatars/… ou URL extraite du mail si pas encore en cache */

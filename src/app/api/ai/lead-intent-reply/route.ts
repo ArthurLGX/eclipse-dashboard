@@ -1,7 +1,8 @@
-import { openai } from '@ai-sdk/openai';
-import { anthropic } from '@ai-sdk/anthropic';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createAnthropic } from '@ai-sdk/anthropic';
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
+import { getApiKeysForRequest } from '@/lib/ai/get-api-keys-for-request';
 
 export const maxDuration = 30;
 
@@ -71,33 +72,65 @@ ${signalHint ? `Indicateur signal (si utile): ${signalHint}
 --- Message du lead (texte à analyser et auquel répondre) ---
 ${truncated}`;
 
-    const modelOptions = { temperature: 0.35, maxOutputTokens: 900 } as const;
+    const keysResult = await getApiKeysForRequest(req.headers.get('authorization'));
+    const envOpenai = process.env.OPENAI_API_KEY || null;
+    const envAnthropic = process.env.ANTHROPIC_API_KEY || null;
+
+    let openaiKey = envOpenai;
+    let anthropicKey = envAnthropic;
+    if (!('error' in keysResult)) {
+      if (keysResult.keys.openaiKey) openaiKey = keysResult.keys.openaiKey;
+      if (keysResult.keys.anthropicKey) anthropicKey = keysResult.keys.anthropicKey;
+    }
+
+    if (!openaiKey && !anthropicKey) {
+      return NextResponse.json(
+        {
+          error:
+            'Aucune clé IA disponible. Définissez OPENAI_API_KEY (ou clés OpenAI dans le profil utilisateur).',
+        },
+        { status: 503 }
+      );
+    }
+
+    const openaiProvider = openaiKey ? createOpenAI({ apiKey: openaiKey }) : null;
+    const anthropicProvider = anthropicKey ? createAnthropic({ apiKey: anthropicKey }) : null;
+
+    const modelOptions = { temperature: 0.35, maxRetries: 0 } as const;
 
     const run = async () => {
-      try {
-        return await generateText({
-          ...modelOptions,
-          model: openai('gpt-4o-mini'),
-          system,
-          prompt: user,
-        });
-      } catch (openaiError) {
-        const err = openaiError as { statusCode?: number; message?: string };
-        if (
-          (err?.statusCode === 429 || err?.message?.toLowerCase().includes('quota')) &&
-          process.env.ANTHROPIC_API_KEY
-        ) {
+      if (openaiProvider) {
+        try {
           return await generateText({
             ...modelOptions,
-            model: anthropic('claude-sonnet-4-20250514') as unknown as Parameters<
-              typeof generateText
-            >[0]['model'],
+            model: openaiProvider('gpt-4o-mini'),
             system,
             prompt: user,
           });
+        } catch (openaiError) {
+          const err = openaiError as { statusCode?: number; message?: string };
+          const quota =
+            err?.statusCode === 429 || err?.message?.toLowerCase().includes('quota');
+          if (quota && anthropicProvider) {
+            return await generateText({
+              ...modelOptions,
+              model: anthropicProvider('claude-sonnet-4-20250514'),
+              system,
+              prompt: user,
+            });
+          }
+          throw openaiError;
         }
-        throw openaiError;
       }
+      if (anthropicProvider) {
+        return await generateText({
+          ...modelOptions,
+          model: anthropicProvider('claude-sonnet-4-20250514'),
+          system,
+          prompt: user,
+        });
+      }
+      throw new Error('Aucun provider IA');
     };
 
     const { text } = await run();
@@ -122,7 +155,14 @@ ${truncated}`;
       draft_reply: draft,
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
     console.error('lead-intent-reply:', error);
-    return NextResponse.json({ error: 'Erreur lors de la génération' }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Erreur lors de la génération',
+        ...(process.env.NODE_ENV === 'development' ? { detail: message } : {}),
+      },
+      { status: 500 }
+    );
   }
 }

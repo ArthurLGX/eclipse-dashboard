@@ -43,9 +43,13 @@ import { shouldShowSfuFullPageOnboarding } from '@/lib/sfu-onboarding-gate';
 import SFUOnboardingPage from '@/app/components/smart-follow-up/SFUOnboardingPage';
 import { useAuth } from '@/app/context/AuthContext';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { clearCache } from '@/hooks/useApi';
+import { clearCache, useClients } from '@/hooks/useApi';
 import { extractWalegoLeadName } from '@/utils/walego-lead-status';
-import { resolveLeadAvatarSrc, resolveLeadDisplayName } from '@/lib/lead-display';
+import {
+  buildContactAvatarLookup,
+  resolveLeadDisplayName,
+  resolveLeadTableAvatarUrl,
+} from '@/lib/lead-display';
 import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import { getGmailOAuthErrorMessage } from '@/lib/gmail-oauth-feedback';
 import type { AutomationAction, SfuLead } from '@/types/smart-follow-up';
@@ -72,6 +76,11 @@ export default function SmartFollowUpPage() {
   const { allLeads: allLeadsRaw, mutateLeads, isLoading: leadsLoading } = useSfuLeadsAll();
   const { data: settings, mutate: mutateSettings, isLoading: settingsLoading } = useAutomationSettings();
   const { data: todayDigest } = useDailyDigest();
+  const { data: clientsList } = useClients(user?.id);
+  const contactAvatarLookup = useMemo(
+    () => buildContactAvatarLookup(clientsList ?? []),
+    [clientsList]
+  );
 
   const [leadStatusTab, setLeadStatusTab] = useState<SfuLead['status']>('new');
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
@@ -481,11 +490,14 @@ export default function SmartFollowUpPage() {
           const fromPriorityDomain = isLeadFromPriorityDomain(action);
           const sourceBypass = isLeadSourceBypassICP(action);
           const isLowScore = action.confidence_score < minScoreThreshold && !fromPriorityDomain && !sourceBypass;
-          const mailOrCachedAvatar = resolveLeadAvatarSrc(action);
+          const { src: resolvedAvatar, hasLeadPhoto: hasResolvedPhoto } = resolveLeadTableAvatarUrl(
+            action,
+            contactAvatarLookup
+          );
           const avatarPath =
-            mailOrCachedAvatar ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
+            resolvedAvatar ?? getDefaultContactAvatar(action.client?.documentId ?? action.documentId).avatarUrl;
           const displayName = resolveLeadDisplayName(action);
-          const hasLeadPhoto = Boolean(mailOrCachedAvatar || action.avatar_path);
+          const hasLeadPhoto = hasResolvedPhoto;
 
           return (
             <div className="flex items-center gap-3">
@@ -683,7 +695,7 @@ export default function SmartFollowUpPage() {
         },
       },
     ],
-    [minScoreThreshold, handleQualifyLead, isLeadFromPriorityDomain, isLeadSourceBypassICP]
+    [minScoreThreshold, handleQualifyLead, isLeadFromPriorityDomain, isLeadSourceBypassICP, contactAvatarLookup]
   );
 
   const aiInstruction = settings?.ai_instruction ?? '';

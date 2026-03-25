@@ -35,6 +35,7 @@ import {
   type ExtendedTaskAIAnalysis,
 } from '@/lib/parse-walego-content';
 import type { AutomationAction } from '@/types/smart-follow-up';
+import { formatLeadMessageForDisplay } from '@/utils/format-lead-message-display';
 
 export interface ParsedAnalysis {
   signal?: string;
@@ -196,6 +197,16 @@ export default function LeadDetailModal({
     (profile?.lead_response?.trim() ? profile.lead_response : null) ||
     (isWalegoMail ? extractedLead?.leadResponse?.trim() || null : null);
 
+  const leadMessageDisplay = useMemo(
+    () => (leadResponse ? formatLeadMessageForDisplay(leadResponse) : ''),
+    [leadResponse]
+  );
+
+  const rawEmailPreviewDisplay = useMemo(
+    () => (emailBody ? formatLeadMessageForDisplay(emailBody, { maxChars: 8000 }) : ''),
+    [emailBody]
+  );
+
   const displayName = useMemo(() => {
     if (!leadSource) return 'Contact';
     const re = leadSource.follow_up_task?.received_email;
@@ -261,9 +272,13 @@ export default function LeadDetailModal({
 
     (async () => {
       try {
+        const token = getToken();
         const res = await fetch('/api/ai/lead-intent-reply', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
           body: JSON.stringify({
             leadMessage: leadResponse,
             subject: receivedEmail?.subject || detail.proposed_content?.subject,
@@ -376,9 +391,13 @@ export default function LeadDetailModal({
       const ext = detail.follow_up_task?.ai_analysis as ExtendedTaskAIAnalysis | undefined;
       const signalHint = ext?.signal?.trim() || '';
       const intentChannel = receivedEmail ? 'email' : channel;
+      const token = getToken();
       const res = await fetch('/api/ai/lead-intent-reply', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           leadMessage: leadResponse,
           subject: receivedEmail?.subject || detail.proposed_content?.subject,
@@ -721,8 +740,8 @@ export default function LeadDetailModal({
                         </div>
                         {leadResponse ? (
                           <>
-                            <blockquote className="bg-[#f0ede8] border-l-[3px] border-[#1a1714] rounded-r-lg py-3 px-4 text-[13px] leading-relaxed text-[#1a1714] italic m-0">
-                              &ldquo;{leadResponse}&rdquo;
+                            <blockquote className="bg-[#f0ede8] border-l-[3px] border-[#1a1714] rounded-r-lg py-3 px-4 text-[12px] leading-relaxed text-[#1a1714] not-italic m-0 max-h-[min(42vh,380px)] max-w-full overflow-y-auto overflow-x-hidden break-words [overflow-wrap:anywhere] whitespace-pre-wrap font-sans">
+                              {leadMessageDisplay}
                             </blockquote>
                             <p className="font-mono text-[11px] text-[#b5afa9] mt-2">
                               {displayName} · via Email · {receivedAt || 'N/A'}
@@ -733,9 +752,8 @@ export default function LeadDetailModal({
                             <p className="text-[11px] text-[#b5afa9] mb-2 font-mono uppercase tracking-wider">
                               Aperçu brut (extraction non reconnue)
                             </p>
-                            <blockquote className="text-[11px] text-[#1a1714] leading-relaxed pl-3 border-l-2 border-[#d0cbc4] max-h-40 overflow-y-auto">
-                              {emailBody.slice(0, 600)}
-                              {emailBody.length > 600 && '…'}
+                            <blockquote className="text-[12px] text-[#1a1714] leading-relaxed pl-3 border-l-2 border-[#d0cbc4] max-h-[min(42vh,380px)] max-w-full overflow-y-auto overflow-x-hidden break-words [overflow-wrap:anywhere] whitespace-pre-wrap font-sans">
+                              {rawEmailPreviewDisplay}
                             </blockquote>
                             <p className="font-mono text-[11px] text-[#b5afa9] mt-2">
                               {displayName} · via Email · {receivedAt || 'N/A'}

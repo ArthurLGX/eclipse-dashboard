@@ -344,6 +344,8 @@ export async function fetchSfuLeads(statusIn: string[]): Promise<SfuLead[]> {
     'populate[client][fields][0]': 'name',
     'populate[client][fields][1]': 'email',
     'populate[client][fields][2]': 'documentId',
+    'populate[client][fields][3]': 'website',
+    'populate[client][populate][image][fields][0]': 'url',
     'populate[user][fields][0]': 'username',
     'sort[0]': 'createdAt:desc',
     'pagination[pageSize]': '200',
@@ -366,6 +368,8 @@ export async function fetchSfuLeadDetail(documentId: string): Promise<SfuLead | 
     'populate[client][fields][0]': 'name',
     'populate[client][fields][1]': 'email',
     'populate[client][fields][2]': 'documentId',
+    'populate[client][fields][3]': 'website',
+    'populate[client][populate][image][fields][0]': 'url',
     'populate[user][fields][0]': 'username',
   });
   try {

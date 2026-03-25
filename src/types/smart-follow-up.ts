@@ -265,6 +265,8 @@ export interface AutomationAction {
     documentId: string;
     name: string;
     email: string;
+    website?: string | null;
+    image?: { url?: string } | null;
   } | null;
   /** Photo de profil extraite du mail Walego (chemin local /leads/avatars/...) */
   avatar_path?: string | null;

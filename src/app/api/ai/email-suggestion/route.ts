@@ -6,7 +6,7 @@ import { selectModel } from '@/lib/ai/router';
 import { isOpenAIQuotaExceeded, canUseClaudeFallback } from '@/lib/ai/openai-claude-fallback';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPEN_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 interface QuoteInfo {

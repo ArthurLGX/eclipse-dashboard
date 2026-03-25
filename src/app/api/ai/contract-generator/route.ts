@@ -193,7 +193,7 @@ RETOURNE UN JSON VALIDE avec cette structure:
   "warnings": ["Point d'attention 1", "Point d'attention 2"]
 }`;
 
-    const openaiKey = keys.openaiKey || process.env.OPENAI_API_KEY || process.env.OPEN_API_KEY;
+    const openaiKey = keys.openaiKey || process.env.OPENAI_API_KEY;
     const anthropicKey = keys.anthropicKey || process.env.ANTHROPIC_API_KEY;
     const anthropicProvider = anthropicKey ? createAnthropic({ apiKey: anthropicKey }) : null;
 
