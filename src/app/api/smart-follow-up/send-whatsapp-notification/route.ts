@@ -13,9 +13,13 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const actionId = body.actionId || body.action_id;
+    const actionId =
+      body.actionId ||
+      body.action_id ||
+      body.leadDocumentId ||
+      body.lead_document_id;
     if (!actionId) {
-      return NextResponse.json({ error: 'actionId requis' }, { status: 400 });
+      return NextResponse.json({ error: 'actionId ou leadDocumentId requis' }, { status: 400 });
     }
 
     const res = await fetch(`${STRAPI_URL}/api/smart-follow-up/send-whatsapp-notification`, {

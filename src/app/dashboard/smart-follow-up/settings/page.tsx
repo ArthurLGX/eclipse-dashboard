@@ -20,7 +20,12 @@ import {
 } from '@tabler/icons-react';
 import { IconBrandWhatsapp } from '@tabler/icons-react';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
-import { updateAutomationSettings, createAutomationSettings, testWhatsAppConnection } from '@/lib/smart-follow-up-api';
+import {
+  updateAutomationSettings,
+  createAutomationSettings,
+  testWhatsAppConnection,
+  testWhatsAppNotificationFromSavedSettings,
+} from '@/lib/smart-follow-up-api';
 import { useAuth } from '@/app/context/AuthContext';
 import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { usePopup } from '@/app/context/PopupContext';
@@ -179,6 +184,7 @@ export default function SmartFollowUpSettingsPage() {
   const templateTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [testingWhatsApp, setTestingWhatsApp] = useState(false);
   const [testWhatsAppResult, setTestWhatsAppResult] = useState<{ success: boolean; error?: string } | null>(null);
+  const [testingSavedNotif, setTestingSavedNotif] = useState(false);
   const [aiInstructionsBySource, setAiInstructionsBySource] = useState<Record<string, string>>({});
   const [instructionTab, setInstructionTab] = useState<string>('default');
   const [gmailConnecting, setGmailConnecting] = useState(false);
@@ -417,6 +423,23 @@ export default function SmartFollowUpSettingsPage() {
       setTestWhatsAppResult({ success: false, error: String(err) });
     } finally {
       setTestingWhatsApp(false);
+    }
+  };
+
+  /** Test avec la config WhatsApp/Twilio **déjà enregistrée** (Strapi), pas le formulaire courant. */
+  const handleTestSavedWhatsAppNotif = async () => {
+    setTestingSavedNotif(true);
+    try {
+      const result = await testWhatsAppNotificationFromSavedSettings();
+      if (result.success) {
+        showGlobalPopup('Message de test envoyé (config enregistrée)', 'success');
+      } else {
+        showGlobalPopup(result.error || 'Échec du test', 'error');
+      }
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur test', 'error');
+    } finally {
+      setTestingSavedNotif(false);
     }
   };
 
@@ -1213,6 +1236,33 @@ export default function SmartFollowUpSettingsPage() {
                   <option value="weekly">Résumé hebdomadaire</option>
                 </select>
               </div>
+              <div className={`${settingRow} flex-col items-stretch gap-3`}>
+                <div className={settingLabel}>
+                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Test envoi notifs WhatsApp</h4>
+                  <p className="font-mono !text-[11px] !text-muted">
+                    Envoie un message de test via Twilio ou Meta selon la configuration <strong>enregistrée</strong> (section
+                    WhatsApp ci-dessous). À utiliser après avoir cliqué sur Enregistrer.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleTestSavedWhatsAppNotif}
+                  disabled={testingSavedNotif}
+                  className="self-start inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#25D366] !text-white !text-xs font-semibold hover:opacity-90 disabled:opacity-50"
+                >
+                  {testingSavedNotif ? (
+                    <>
+                      <span className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                      Envoi…
+                    </>
+                  ) : (
+                    <>
+                      <IconBrandWhatsapp className="w-4 h-4" />
+                      Test envoi notifs
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </section>
         )}
@@ -1453,7 +1503,7 @@ export default function SmartFollowUpSettingsPage() {
                     </div>
                   </div>
 
-                  <div className="p-4 border-t border-default flex items-center gap-3">
+                  <div className="p-4 border-t border-default flex flex-wrap items-center gap-3">
                     <button
                       type="button"
                       onClick={handleTestWhatsApp}
@@ -1468,7 +1518,26 @@ export default function SmartFollowUpSettingsPage() {
                       ) : (
                         <>
                           <IconBrandWhatsapp className="w-4 h-4" />
-                          Tester la connexion
+                          Tester la connexion (formulaire)
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleTestSavedWhatsAppNotif}
+                      disabled={testingSavedNotif}
+                      className="px-4 py-2 border border-[#25D366] !text-[#128C7E] dark:!text-[#25D366] !text-sm font-semibold hover:bg-[#25D366]/10 disabled:opacity-50 flex items-center gap-2"
+                      title="Utilise la config enregistrée sur le serveur (après Enregistrer)"
+                    >
+                      {testingSavedNotif ? (
+                        <>
+                          <span className="w-3.5 h-3.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                          Envoi…
+                        </>
+                      ) : (
+                        <>
+                          <IconBrandWhatsapp className="w-4 h-4" />
+                          Test envoi notifs (config enregistrée)
                         </>
                       )}
                     </button>

@@ -71,6 +71,28 @@ export async function createAutomationSettings(data: Partial<AutomationSettings>
   return response.data;
 }
 
+/**
+ * Test d’envoi WhatsApp avec la config **déjà enregistrée** sur Strapi
+ * (pas le brouillon du formulaire — utile pour valider la prod).
+ */
+export async function testWhatsAppNotificationFromSavedSettings(): Promise<{
+  success: boolean;
+  error?: string;
+  preview?: string;
+}> {
+  const token = getToken();
+  if (!token) throw new Error('Non authentifié');
+
+  const res = await fetch('/api/smart-follow-up/test-notification', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.json();
+}
+
 /** Tester la connexion WhatsApp (Twilio | Meta) */
 export async function testWhatsAppConnection(config: {
   provider: 'twilio' | 'meta';

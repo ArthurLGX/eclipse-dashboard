@@ -19,6 +19,7 @@ import {
   IconRefresh,
   IconPlug,
   IconLoader2,
+  IconBrandWhatsapp,
 } from '@tabler/icons-react';
 import DataTable, { Column } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
@@ -36,6 +37,7 @@ import {
   archiveSfuLead,
   sfuLeadToAutomationAction,
   updateAutomationSettings,
+  testWhatsAppNotificationFromSavedSettings,
 } from '@/lib/smart-follow-up-api';
 import { addClientUser, syncInboxStream, fetchSmtpConfig, type ProcessedEmail } from '@/lib/api';
 import type { SmtpConfig } from '@/types';
@@ -54,6 +56,7 @@ import { getDefaultContactAvatar } from '@/lib/jazz-avatar';
 import { getGmailOAuthErrorMessage } from '@/lib/gmail-oauth-feedback';
 import type { AutomationAction, SfuLead } from '@/types/smart-follow-up';
 import type { CreateClientData } from '@/types';
+import { useAutoWhatsAppLeadNotifications } from '@/hooks/useAutoWhatsAppLeadNotifications';
 
 type LeadTableRow = { lead: SfuLead; action: AutomationAction };
 
@@ -112,6 +115,7 @@ export default function SmartFollowUpPage() {
   const [savingFilter, setSavingFilter] = useState(false);
   const [smtpConfig, setSmtpConfig] = useState<SmtpConfig | null>(null);
   const [smtpReady, setSmtpReady] = useState(false);
+  const [testNotifLoading, setTestNotifLoading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !hasSeenSFUOnboarding()) {
@@ -134,6 +138,11 @@ export default function SmartFollowUpPage() {
     smtpReady &&
     !settingsLoading &&
     shouldShowSfuFullPageOnboarding(settings, smtpConfig);
+
+  /** Une fois par lead (dédup localStorage) : envoi WA via Strapi selon provider + template (hello_world / smart_follow_up). */
+  useAutoWhatsAppLeadNotifications(allLeadsRaw, settings ?? undefined, user?.id, {
+    enabled: Boolean(user?.id && smtpReady && !settingsLoading && !showFullPageOnboarding),
+  });
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -375,6 +384,22 @@ export default function SmartFollowUpPage() {
       showGlobalPopup(error instanceof Error ? error.message : 'Erreur lors de la récupération des emails', 'error');
     } finally {
       setSyncingEmails(false);
+    }
+  };
+
+  const handleTestWhatsAppNotif = async () => {
+    setTestNotifLoading(true);
+    try {
+      const result = await testWhatsAppNotificationFromSavedSettings();
+      if (result.success) {
+        showGlobalPopup('Message de test WhatsApp envoyé (config enregistrée sur Strapi).', 'success');
+      } else {
+        showGlobalPopup(result.error || 'Échec du test', 'error');
+      }
+    } catch (e) {
+      showGlobalPopup(e instanceof Error ? e.message : 'Erreur test notification', 'error');
+    } finally {
+      setTestNotifLoading(false);
     }
   };
 
@@ -764,6 +789,20 @@ export default function SmartFollowUpPage() {
                 >
                   <IconRefresh className={`w-3.5 h-3.5 ${syncingEmails ? 'animate-spin' : ''}`} />
                   {t('sync_inbox') || 'Récupérer les emails'}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleTestWhatsAppNotif}
+                  disabled={testNotifLoading}
+                  title="Test envoi WhatsApp (Twilio ou Meta selon la config enregistrée)"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium border border-[#25D366]/40 !text-[#128C7E] dark:!text-[#25D366] hover:bg-[#25D366]/10 transition-colors disabled:opacity-50"
+                >
+                  {testNotifLoading ? (
+                    <IconLoader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <IconBrandWhatsapp className="w-3.5 h-3.5" />
+                  )}
+                  Test notif
                 </button>
                 <button
                   onClick={() => router.push('/dashboard/smart-follow-up/settings#icp')}
