@@ -7,6 +7,8 @@ import { updateAutomationSettings } from '@/lib/smart-follow-up-api';
 import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
 import type { LeadSource } from '@/types/lead-source';
 import type { KnownSourceTemplate } from '@/data/known-sources';
+import { resolveSourceIconEmoji } from '@/lib/source-notification-icon';
+import { useLanguage } from '@/app/context/LanguageContext';
 
 function getFaviconUrl(domain: string): string {
   return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
@@ -17,6 +19,7 @@ function toLeadSource(known: KnownSourceTemplate): LeadSource {
     id: known.id,
     name: known.name,
     domain: known.domain,
+    icon_emoji: known.icon_emoji ?? resolveSourceIconEmoji(known.id, null),
     favicon_url: getFaviconUrl(known.domain),
     enabled: true,
     detection: known.detection,
@@ -36,6 +39,7 @@ export function SourcesManager({
   initialSources: LeadSource[] | null | undefined;
 }) {
   const { mutate } = useAutomationSettings();
+  const { t } = useLanguage();
   const mergedInitial = mergeLeadSourcesWithDefaults(initialSources);
   const [sources, setSources] = useState<LeadSource[]>(mergedInitial);
   const [query, setQuery] = useState('');
@@ -102,9 +106,11 @@ export function SourcesManager({
     const raw = query.trim();
     const domain = raw.toLowerCase().replace(/^https?:\/\//, '').split('/')[0];
     if (!domain) return;
+    const id = domain.replace(/\./g, '_');
     const newSource: LeadSource = {
-      id: domain.replace(/\./g, '_'),
+      id,
       name: raw,
+      icon_emoji: resolveSourceIconEmoji(id, null),
       favicon_url: getFaviconUrl(domain),
       domain,
       enabled: true,
@@ -137,6 +143,9 @@ export function SourcesManager({
 
   const settingInput =
     'w-full px-3 py-2 rounded-lg border border-default bg-card !text-sm !text-primary placeholder:!text-muted focus:outline-none focus:ring-1 focus:ring-success';
+
+  const emojiInput =
+    'w-11 min-w-[2.75rem] px-1 py-1 rounded-md border border-default bg-background text-center text-base leading-none !text-primary focus:outline-none focus:ring-1 focus:ring-success';
 
   return (
     <div className="flex flex-col gap-3 w-full overflow-visible">
@@ -201,7 +210,7 @@ export function SourcesManager({
         {sources.map((source) => (
           <div
             key={source.id}
-            className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg border border-default bg-card ${
+            className={`flex flex-wrap items-center gap-2.5 px-3 py-2.5 rounded-lg border border-default bg-card ${
               !source.enabled ? 'opacity-45' : ''
             }`}
           >
@@ -216,6 +225,43 @@ export function SourcesManager({
             <div className="flex-1 min-w-0 flex flex-col gap-0.5">
               <span className="!text-xs font-medium !text-primary truncate">{source.name}</span>
               <span className="font-mono !text-[10px] !text-muted truncate">{source.domain}</span>
+            </div>
+            <div
+              className="flex flex-col items-center gap-0.5 flex-shrink-0"
+              title={t('sfu_source_icon_emoji_help')}
+            >
+              <label htmlFor={`sfu-icon-${source.id}`} className="font-mono !text-[9px] !text-muted uppercase tracking-wide cursor-default">
+                {t('sfu_source_icon_emoji')}
+              </label>
+              <input
+                id={`sfu-icon-${source.id}`}
+                type="text"
+                inputMode="text"
+                autoComplete="off"
+                spellCheck={false}
+                maxLength={8}
+                className={emojiInput}
+                placeholder={resolveSourceIconEmoji(source.id, null)}
+                aria-label={t('sfu_source_icon_emoji_help')}
+                value={source.icon_emoji ?? ''}
+                onChange={(e) => {
+                  const v = e.target.value.slice(0, 8);
+                  setSources((prev) =>
+                    prev.map((s) => (s.id === source.id ? { ...s, icon_emoji: v } : s))
+                  );
+                }}
+                onBlur={() => {
+                  setSources((prev) => {
+                    const updated = prev.map((s) =>
+                      s.id === source.id
+                        ? { ...s, icon_emoji: (s.icon_emoji ?? '').trim() || undefined }
+                        : s
+                    );
+                    void save(updated);
+                    return updated;
+                  });
+                }}
+              />
             </div>
             {NATIVE_SOURCE_IDS.includes(source.id as (typeof NATIVE_SOURCE_IDS)[number]) && (
               <span className="font-mono !text-[9px] px-1.5 py-0.5 rounded bg-muted border border-default !text-muted flex-shrink-0">

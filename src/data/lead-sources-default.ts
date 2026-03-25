@@ -41,6 +41,7 @@ export const DEFAULT_LEAD_SOURCES: LeadSource[] = [
   {
     id: 'walego',
     name: 'Walego',
+    icon_emoji: '🟣',
     favicon_url: 'https://icons.duckduckgo.com/ip3/walego.co.ico',
     domain: 'walego.co',
     enabled: true,
@@ -58,6 +59,7 @@ export const DEFAULT_LEAD_SOURCES: LeadSource[] = [
   {
     id: 'folk',
     name: 'Folk',
+    icon_emoji: '👥',
     favicon_url: 'https://icons.duckduckgo.com/ip3/folk.app.ico',
     domain: 'folk.app',
     enabled: true,
@@ -81,6 +83,7 @@ export const DEFAULT_LEAD_SOURCES: LeadSource[] = [
   {
     id: 'whatsapp',
     name: 'WhatsApp',
+    icon_emoji: '💬',
     favicon_url: 'https://icons.duckduckgo.com/ip3/whatsapp.com.ico',
     domain: 'whatsapp.com',
     enabled: true,

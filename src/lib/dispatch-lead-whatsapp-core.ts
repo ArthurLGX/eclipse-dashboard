@@ -3,6 +3,9 @@
  * Utilisable avec JWT utilisateur ou token API Strapi (webhook serveur).
  */
 
+import type { LeadSource } from '@/types/lead-source';
+import { resolveSourceDisplayName, resolveSourceIconEmoji } from '@/lib/source-notification-icon';
+
 const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || 'http://localhost:1337';
 const GRAPH_VERSION = process.env.WHATSAPP_GRAPH_API_VERSION || 'v21.0';
 
@@ -51,10 +54,16 @@ function normalizeWaTo(raw: string): string {
 }
 
 function leadDisplayName(lead: Record<string, unknown>): string {
+  const pc = lead.proposed_content as { subject?: string; lead_display_name?: string } | undefined;
+  if (pc?.lead_display_name && typeof pc.lead_display_name === 'string' && pc.lead_display_name.trim()) {
+    return pc.lead_display_name.trim();
+  }
   const n = lead.name;
   if (typeof n === 'string' && n.trim()) return n.trim();
-  const pc = lead.proposed_content as { subject?: string } | undefined;
-  if (pc?.subject && typeof pc.subject === 'string') return pc.subject.slice(0, 80);
+  if (pc?.subject && typeof pc.subject === 'string') {
+    const subj = pc.subject.trim();
+    if (!/^Walego Lead Notification/i.test(subj)) return subj.slice(0, 120);
+  }
   const re = lead.received_email as { from_name?: string } | undefined;
   if (re?.from_name) return String(re.from_name);
   return 'Nouveau lead';
@@ -77,6 +86,40 @@ function leadTitle(lead: Record<string, unknown>): string {
   return '—';
 }
 
+/** Aligné sur Strapi `whatsapp-meta.service` → `buildTemplateVars` + `sendViaMeta` (5 variables body). */
+function buildTemplateVarsForMeta(
+  lead: Record<string, unknown>,
+  leadSources: LeadSource[] | null | undefined
+): {
+  line1: string;
+  name: string;
+  title: string;
+  signal: string;
+  actionUrl: string;
+} {
+  const sourceId = typeof lead.source === 'string' ? lead.source : 'direct';
+  const rawSource = sourceId.toLowerCase();
+  const iconEmoji = resolveSourceIconEmoji(sourceId, leadSources);
+  const sourceLabel = resolveSourceDisplayName(sourceId, leadSources);
+
+  const linkedinUrl = typeof lead.linkedin_url === 'string' ? lead.linkedin_url.trim() : '';
+  const appBase =
+    process.env.NEXT_PUBLIC_APP_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
+    'https://dashboard.eclipsestudiodev.fr';
+  const appUrl = `${String(appBase).replace(/\/$/, '')}/dashboard/smart-follow-up`;
+  const actionUrl =
+    rawSource === 'walego' || rawSource === 'folk' ? linkedinUrl || appUrl : appUrl;
+
+  return {
+    line1: `${iconEmoji} ${sourceLabel}`,
+    name: leadDisplayName(lead),
+    title: leadTitle(lead),
+    signal: leadSignal(lead),
+    actionUrl: actionUrl.slice(0, 512),
+  };
+}
+
 /**
  * @param strapiAuthHeader - `Bearer <JWT utilisateur>` ou `Bearer <STRAPI_API_TOKEN>`
  * @param userId - id numérique Strapi du propriétaire du lead (users-permissions)
@@ -88,15 +131,19 @@ export async function runDispatchLeadWhatsApp(params: {
 }): Promise<DispatchLeadWhatsAppResult> {
   const { leadDocumentId, userId, strapiAuthHeader: authHeader } = params;
 
-  const settingsRes = await strapiJson<{ data?: Array<{ whatsapp_config?: Record<string, unknown>; documentId?: string }> }>(
-    `automation-settings?filters[user][id][$eq]=${userId}`,
-    authHeader
-  );
+  const settingsRes = await strapiJson<{
+    data?: Array<{
+      whatsapp_config?: Record<string, unknown>;
+      documentId?: string;
+      lead_sources?: LeadSource[] | null;
+    }>;
+  }>(`automation-settings?filters[user][id][$eq]=${userId}`, authHeader);
   if (!settingsRes.ok || !settingsRes.data?.data?.[0]) {
     return { ok: false, error: settingsRes.err || 'Paramètres automation introuvables', status: 400 };
   }
 
   const settingsRow = settingsRes.data.data[0];
+  const leadSources = settingsRow.lead_sources;
   const wc = settingsRow.whatsapp_config as
     | {
         enabled?: boolean;
@@ -175,13 +222,11 @@ export async function runDispatchLeadWhatsApp(params: {
   }
 
   const useSfuTpl = wc.use_smart_follow_up_template === true;
-  const name = leadDisplayName(lead);
-  const title = leadTitle(lead);
-  const signal = leadSignal(lead);
+  const tplVars = buildTemplateVarsForMeta(lead, leadSources);
 
   const paramCount = Math.min(
     6,
-    Math.max(1, parseInt(process.env.WHATSAPP_META_SFU_BODY_PARAM_COUNT || '3', 10) || 3)
+    Math.max(1, parseInt(process.env.WHATSAPP_META_SFU_BODY_PARAM_COUNT || '5', 10) || 5)
   );
 
   let templatePayload: Record<string, unknown>;
@@ -193,21 +238,37 @@ export async function runDispatchLeadWhatsApp(params: {
     };
   } else {
     const templateName = process.env.WHATSAPP_META_SFU_TEMPLATE_NAME || 'smart_follow_up_notification';
-    const lang = process.env.WHATSAPP_META_SFU_TEMPLATE_LANG || 'fr';
+    const lang = process.env.WHATSAPP_META_SFU_TEMPLATE_LANG || 'en';
 
     const params: { type: string; text: string }[] =
       paramCount === 1
-        ? [{ type: 'text', text: `🔔 ${name}\n${title}\n${signal}`.slice(0, 1024) }]
+        ? [
+            {
+              type: 'text',
+              text: `${tplVars.line1} · ${tplVars.name}\n${tplVars.title}\n${tplVars.signal}\n→ ${tplVars.actionUrl}`.slice(
+                0,
+                1024
+              ),
+            },
+          ]
         : paramCount === 2
           ? [
-              { type: 'text', text: name.slice(0, 500) },
-              { type: 'text', text: `${title} — ${signal}`.slice(0, 500) },
+              { type: 'text', text: `${tplVars.line1} · ${tplVars.name}`.slice(0, 500) },
+              { type: 'text', text: `${tplVars.title} — ${tplVars.signal}`.slice(0, 500) },
             ]
-          : [
-              { type: 'text', text: name.slice(0, 400) },
-              { type: 'text', text: title.slice(0, 400) },
-              { type: 'text', text: signal.slice(0, 500) },
-            ];
+          : paramCount === 3
+            ? [
+                { type: 'text', text: tplVars.name.slice(0, 400) },
+                { type: 'text', text: tplVars.title.slice(0, 400) },
+                { type: 'text', text: tplVars.signal.slice(0, 500) },
+              ]
+            : [
+                { type: 'text', text: tplVars.line1.slice(0, 80) },
+                { type: 'text', text: tplVars.name.slice(0, 400) },
+                { type: 'text', text: tplVars.title === '—' ? 'N/A' : tplVars.title.slice(0, 400) },
+                { type: 'text', text: tplVars.signal.slice(0, 500) },
+                { type: 'text', text: tplVars.actionUrl.slice(0, 512) },
+              ];
 
     templatePayload = {
       name: templateName,

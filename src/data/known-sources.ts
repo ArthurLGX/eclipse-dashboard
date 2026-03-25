@@ -4,6 +4,8 @@ export interface KnownSourceTemplate {
   id: string;
   name: string;
   domain: string;
+  /** Icône notif WhatsApp (optionnel — sinon repli par id) */
+  icon_emoji?: string;
   detection: LeadSourceDetection;
 }
 

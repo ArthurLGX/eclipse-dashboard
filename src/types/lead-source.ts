@@ -12,6 +12,8 @@ export interface LeadSourceDetection {
 export interface LeadSource {
   id: string;
   name: string;
+  /** Icône texte pour WhatsApp (Meta ne permet pas les images dans le template) — équivalent au favicon */
+  icon_emoji?: string;
   favicon_url: string;
   domain: string;
   enabled: boolean;

@@ -509,6 +509,10 @@ const translations = {
     // Smart Follow-Up Settings
     smart_follow_up_settings: 'Paramètres Smart Follow-Up',
     smart_follow_up_settings_desc: 'Configurez les règles d\'automatisation des relances',
+    sfu_source_icon_emoji: 'Icône WA',
+    sfu_source_icon_emoji_placeholder: 'Emoji',
+    sfu_source_icon_emoji_help:
+      'Emoji affiché dans les notifications WhatsApp pour cette source. Vide = icône par défaut.',
     system_activation: 'Activation du système',
     system_enabled: 'Smart Follow-Up activé',
     system_enabled_desc: 'Activer ou désactiver le système de relances automatiques',
@@ -4418,6 +4422,10 @@ const translations = {
     // Smart Follow-Up Settings
     smart_follow_up_settings: 'Smart Follow-Up Settings',
     smart_follow_up_settings_desc: 'Configure follow-up automation rules',
+    sfu_source_icon_emoji: 'WA icon',
+    sfu_source_icon_emoji_placeholder: 'Emoji',
+    sfu_source_icon_emoji_help:
+      'Emoji shown in WhatsApp notifications for this source. Empty = default icon.',
     system_activation: 'System Activation',
     system_enabled: 'Smart Follow-Up enabled',
     system_enabled_desc: 'Enable or disable the automatic follow-up system',
