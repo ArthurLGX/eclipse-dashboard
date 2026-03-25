@@ -17,7 +17,6 @@ const cardVariants = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 
 
 
 export default function LandingPage() {
-  const [navScrolled, setNavScrolled] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [togglePlan, setTogglePlan] = useState(false);
@@ -28,7 +27,6 @@ export default function LandingPage() {
   useLenis();
   useEffect(() => {
     const onScroll = () => {
-      setNavScrolled(window.scrollY > 40);
       const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
       setScrollProgress(Math.min(100, pct));
     };
@@ -63,31 +61,6 @@ export default function LandingPage() {
         animate={{ width: `${scrollProgress}%` }}
         transition={{ type: 'tween', duration: 0.2, ease: 'easeOut' }}
       />
-
-      <nav className={`landing-nav ${navScrolled ? 'scrolled' : ''}`} id="landing-nav">
-        <Link href="/" className="landing-nav-logo">
-          <Image src="/images/logo/eclipse-logo.png" alt="Eclipse Studio" width={30} height={30} className="landing-nav-logo-mark object-contain" />
-          <span>Eclipse Studio Dashboard</span>
-        </Link>
-        <ul className="landing-nav-links">
-          <li><a href="#features">{t('landing_nav_features')}</a></li>
-          <li><a href="#pricing">{t('landing_nav_pricing')}</a></li>
-          <li><a href="#testimonials">{t('landing_nav_testimonials')}</a></li>
-          <li><a href="#faq">{t('landing_nav_faq')}</a></li>
-        </ul>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setThemeMode(resolvedMode === 'dark' ? 'light' : 'dark')}
-            className="landing-btn-ghost"
-            title={resolvedMode === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}
-          >
-            {resolvedMode === 'dark' ? '☀️' : '🌙'}
-          </button>
-          <Link href="/login" className="landing-btn-ghost">{t('landing_nav_login')}</Link>
-          <Link href="/pricing" className="landing-btn-primary-lg">{t('landing_nav_free_trial')}</Link>
-        </div>
-      </nav>
 
       <section className={`landing-hero ${resolvedMode === 'dark' ? 'landing-hero-with-video' : ''}`}>
         {resolvedMode === 'dark' && (

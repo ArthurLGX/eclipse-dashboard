@@ -53,6 +53,22 @@ function normalizeWaTo(raw: string): string {
   return raw.replace(/\D/g, '');
 }
 
+/** Message Meta + indication si le jeton est expiré / invalide (erreur fréquente en prod). */
+function metaGraphUserFacingMessage(graphError: { message?: string } | undefined, httpStatus: number): string {
+  const base =
+    graphError?.message ||
+    `Meta API ${httpStatus} — vérifiez le nom du template et le nombre de variables dans Meta Business.`;
+  const lower = base.toLowerCase();
+  if (
+    lower.includes('session has expired') ||
+    lower.includes('error validating access token') ||
+    (lower.includes('expired') && lower.includes('session'))
+  ) {
+    return `${base} — Renouvelez le jeton Meta (access_token) dans Paramètres → Smart Follow‑up → WhatsApp, ou générez un jeton longue durée dans Meta for Developers.`;
+  }
+  return base;
+}
+
 function leadDisplayName(lead: Record<string, unknown>): string {
   const pc = lead.proposed_content as { subject?: string; lead_display_name?: string } | undefined;
   if (pc?.lead_display_name && typeof pc.lead_display_name === 'string' && pc.lead_display_name.trim()) {
@@ -301,11 +317,10 @@ export async function runDispatchLeadWhatsApp(params: {
   const graphData = await graphRes.json().catch(() => ({}));
   if (!graphRes.ok) {
     console.error('[dispatch-lead-whatsapp-core] Meta Graph error', graphRes.status, graphData);
+    const graphErr = (graphData as { error?: { message?: string } })?.error;
     return {
       ok: false,
-      error:
-        (graphData as { error?: { message?: string } })?.error?.message ||
-        `Meta API ${graphRes.status} — vérifiez le nom du template et le nombre de variables dans Meta Business.`,
+      error: metaGraphUserFacingMessage(graphErr, graphRes.status),
       status: 502,
       detail: graphData,
     };

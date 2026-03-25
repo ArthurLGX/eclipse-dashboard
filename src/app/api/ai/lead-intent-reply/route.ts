@@ -4,8 +4,9 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { generateText } from 'ai';
 import { NextResponse } from 'next/server';
 import { getApiKeysForRequest } from '@/lib/ai/get-api-keys-for-request';
+import { isOpenAIQuotaExceeded } from '@/lib/ai/openai-claude-fallback';
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 const LOG_PREFIX = '[lead-intent-reply]';
 
@@ -57,6 +58,69 @@ function classifyLeadIntentError(err: unknown): string {
   if (msg.includes('openai') || msg.includes('gpt')) return 'openai_provider';
   return 'unknown';
 }
+
+const USER_MSG_FR: Record<string, string> = {
+  rate_limit: 'Trop de requêtes vers l’IA. Réessayez dans quelques instants.',
+  invalid_api_key: 'Clé API IA invalide. Vérifiez vos clés dans le profil ou la configuration serveur.',
+  quota_exhausted: 'Quota OpenAI épuisé. Vérifiez la facturation ou configurez Anthropic.',
+  forbidden: 'Accès au modèle refusé.',
+  model_not_found: 'Modèle IA indisponible ou renommé.',
+  timeout: 'Délai de réponse IA dépassé. Réessayez.',
+  network: 'Réseau indisponible vers le fournisseur IA.',
+  decryption: 'Impossible de déchiffrer vos clés IA. Reconfigurez-les dans les paramètres.',
+  anthropic_provider: 'Erreur lors de l’appel Anthropic.',
+  openai_provider: 'Erreur lors de l’appel OpenAI.',
+  parse_failed: 'Réponse IA illisible (format JSON). Réessayez ou raccourcissez le message du lead.',
+  unknown: 'Erreur lors de la génération.',
+};
+
+function httpStatusForErrorCode(code: string): number {
+  switch (code) {
+    case 'rate_limit':
+      return 429;
+    case 'invalid_api_key':
+      return 401;
+    case 'quota_exhausted':
+      return 402;
+    case 'forbidden':
+      return 403;
+    case 'model_not_found':
+      return 502;
+    case 'timeout':
+      return 504;
+    case 'network':
+      return 503;
+    case 'parse_failed':
+      return 502;
+    default:
+      return 500;
+  }
+}
+
+/** Extrait le JSON même si le modèle ajoute du texte avant/après ou des fences incomplets. */
+function tryParseLeadIntentJson(text: string): { intent?: LeadIntentPayload; draft_reply?: string } | null {
+  const raw = text.trim();
+  const stripped = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
+  try {
+    return JSON.parse(stripped) as { intent?: LeadIntentPayload; draft_reply?: string };
+  } catch {
+    const first = stripped.indexOf('{');
+    const last = stripped.lastIndexOf('}');
+    if (first >= 0 && last > first) {
+      try {
+        return JSON.parse(stripped.slice(first, last + 1)) as {
+          intent?: LeadIntentPayload;
+          draft_reply?: string;
+        };
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+}
+
+type GenerateTextModel = Parameters<typeof generateText>[0]['model'];
 
 /** Limite d’entrée pour limiter les tokens (uniquement appelé côté lead, pas sur tout le flux mail). */
 const MAX_LEAD_MESSAGE_CHARS = 4500;
@@ -179,14 +243,11 @@ ${truncated}`;
             prompt: user,
           });
         } catch (openaiError) {
-          const err = openaiError as { statusCode?: number; message?: string };
-          const quota =
-            err?.statusCode === 429 || err?.message?.toLowerCase().includes('quota');
-          if (quota && anthropicProvider) {
+          if (isOpenAIQuotaExceeded(openaiError) && anthropicProvider) {
             logInfo(requestId, 'openai_quota_fallback_anthropic', {});
             return await generateText({
               ...modelOptions,
-              model: anthropicProvider('claude-sonnet-4-20250514'),
+              model: anthropicProvider('claude-sonnet-4-20250514') as unknown as GenerateTextModel,
               system,
               prompt: user,
             });
@@ -198,7 +259,7 @@ ${truncated}`;
       if (anthropicProvider) {
         return await generateText({
           ...modelOptions,
-          model: anthropicProvider('claude-sonnet-4-20250514'),
+          model: anthropicProvider('claude-sonnet-4-20250514') as unknown as GenerateTextModel,
           system,
           prompt: user,
         });
@@ -210,27 +271,28 @@ ${truncated}`;
     const { text } = await run();
     logInfo(requestId, 'generateText_ok', { responseChars: text?.length ?? 0 });
 
-    let parsed: { intent?: LeadIntentPayload; draft_reply?: string };
-    try {
-      const cleaned = text
-        .trim()
-        .replace(/^```(?:json)?\s*/i, '')
-        .replace(/\s*```$/i, '');
-      parsed = JSON.parse(cleaned) as { intent?: LeadIntentPayload; draft_reply?: string };
-    } catch (parseErr) {
-      logError(requestId, 'json_parse_failed', parseErr, {
+    const parsed = tryParseLeadIntentJson(text);
+    if (!parsed) {
+      logError(requestId, 'json_parse_failed', new Error('tryParseLeadIntentJson'), {
         preview: text?.slice(0, 200),
       });
       return NextResponse.json(
-        { error: 'Réponse IA illisible (JSON)', requestId },
-        { status: 502 }
+        {
+          error: USER_MSG_FR.parse_failed,
+          errorCode: 'parse_failed',
+          requestId,
+        },
+        { status: httpStatusForErrorCode('parse_failed') },
       );
     }
 
     const draft = typeof parsed.draft_reply === 'string' ? parsed.draft_reply.trim() : '';
     if (!draft) {
       logInfo(requestId, 'empty_draft', { hasIntent: Boolean(parsed.intent) });
-      return NextResponse.json({ error: 'Brouillon vide', requestId }, { status: 502 });
+      return NextResponse.json(
+        { error: 'Brouillon vide', errorCode: 'empty_draft', requestId },
+        { status: 502 },
+      );
     }
 
     logInfo(requestId, 'success', { draftChars: draft.length });
@@ -241,16 +303,20 @@ ${truncated}`;
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logError(requestId, 'unhandled', error, {});
+    const errorCode = classifyLeadIntentError(error);
+    const status = httpStatusForErrorCode(errorCode);
+    const userMessage = USER_MSG_FR[errorCode] ?? USER_MSG_FR.unknown;
+    logError(requestId, 'unhandled', error, { errorCode, status });
     const exposeDetail =
       process.env.NODE_ENV === 'development' || process.env.AI_ROUTE_ERROR_DETAIL === '1';
     return NextResponse.json(
       {
-        error: 'Erreur lors de la génération',
+        error: userMessage,
+        errorCode,
         requestId,
         ...(exposeDetail ? { detail: message } : {}),
       },
-      { status: 500 }
+      { status }
     );
   }
 }

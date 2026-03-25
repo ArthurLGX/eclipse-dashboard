@@ -32,7 +32,8 @@ export const Header = () => {
   const { authenticated, logout, user } = useAuth();
   const pathname = usePathname();
 
-  const isLandingStyle = pathname === '/pricing';
+  /** Landing marketing : même barre sur l’accueil et la page tarifs (ancres alignées sur LandingPage). */
+  const isLandingStyle = pathname === '/' || pathname === '/pricing';
 
   const { data: currentUserData } = useCurrentUser(user?.id);
 
@@ -56,12 +57,22 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, [isLandingStyle]);
 
-  const landingLinks = [
-    { name: t('landing_nav_features'), path: '/#features' },
-    { name: t('landing_nav_pricing'), path: '/pricing' },
-    { name: t('landing_nav_testimonials'), path: '/#testimonials' },
-    { name: t('landing_nav_faq'), path: '/#faq' },
-  ];
+  const landingLinks = useMemo(() => {
+    if (pathname === '/') {
+      return [
+        { name: t('landing_nav_features'), path: '#features' },
+        { name: t('landing_nav_pricing'), path: '#pricing' },
+        { name: t('landing_nav_testimonials'), path: '#testimonials' },
+        { name: t('landing_nav_faq'), path: '#faq' },
+      ];
+    }
+    return [
+      { name: t('landing_nav_features'), path: '/#features' },
+      { name: t('landing_nav_pricing'), path: '/pricing#pricing-plans' },
+      { name: t('landing_nav_testimonials'), path: '/#testimonials' },
+      { name: t('landing_nav_faq'), path: '/#faq' },
+    ];
+  }, [pathname, t]);
 
   const links = [
     { name: t('dashboard'), path: '/dashboard', icon: <IconLayoutGrid size={16} stroke={1} /> },
