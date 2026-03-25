@@ -2,8 +2,11 @@
 
 /**
  * Pour chaque lead affiché dans le tableau SFU (hors archivé / répondu), déclenche une fois
- * l’API d’envoi WhatsApp (Strapi : provider Twilio ou Meta, template hello_world vs smart_follow_up selon les paramètres).
+ * l’API d’envoi WhatsApp (Meta/Twilio selon les paramètres).
  * Déduplication par documentId (localStorage) pour éviter les doublons au rechargement.
+ * Pour un envoi dès création côté Strapi sans ouvrir cette page, utiliser le webhook serveur
+ * `POST /api/smart-follow-up/webhooks/lead-created` et désactiver l’auto client via
+ * `NEXT_PUBLIC_SFU_DISABLE_AUTO_WA_ON_CLIENT=1`.
  */
 
 import { useEffect, useRef } from 'react';

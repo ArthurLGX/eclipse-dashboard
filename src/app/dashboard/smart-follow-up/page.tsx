@@ -60,6 +60,11 @@ import { useAutoWhatsAppLeadNotifications } from '@/hooks/useAutoWhatsAppLeadNot
 
 type LeadTableRow = { lead: SfuLead; action: AutomationAction };
 
+/** Si tu utilises le webhook Strapi (`/api/smart-follow-up/webhooks/lead-created`), mets `1` pour éviter un double envoi depuis le navigateur. */
+const SFU_DISABLE_CLIENT_AUTO_WA =
+  process.env.NEXT_PUBLIC_SFU_DISABLE_AUTO_WA_ON_CLIENT === '1' ||
+  process.env.NEXT_PUBLIC_SFU_DISABLE_AUTO_WA_ON_CLIENT === 'true';
+
 function formatRelativeTime(date: Date): string {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -139,9 +144,11 @@ export default function SmartFollowUpPage() {
     !settingsLoading &&
     shouldShowSfuFullPageOnboarding(settings, smtpConfig);
 
-  /** Une fois par lead (dédup localStorage) : envoi WA via Strapi selon provider + template (hello_world / smart_follow_up). */
+  /** Une fois par lead (dédup localStorage) : envoi WA via Strapi selon provider + template (hello_world / smart_follow_up). Désactivable si webhook serveur. */
   useAutoWhatsAppLeadNotifications(allLeadsRaw, settings ?? undefined, user?.id, {
-    enabled: Boolean(user?.id && smtpReady && !settingsLoading && !showFullPageOnboarding),
+    enabled: Boolean(
+      user?.id && smtpReady && !settingsLoading && !showFullPageOnboarding && !SFU_DISABLE_CLIENT_AUTO_WA
+    ),
   });
 
   useEffect(() => {
