@@ -248,18 +248,18 @@ export async function rejectAutomationAction(id: string, reason?: string): Promi
   } as Partial<AutomationAction>);
 }
 
-/** Envoie une notification WhatsApp pour le lead (action) affiché */
-export async function sendWhatsAppNotification(actionId: string): Promise<{ ok?: boolean; error?: string }> {
+/** Envoie une notification WhatsApp pour le lead affiché (documentId du lead SFU). */
+export async function sendWhatsAppNotification(leadDocumentId: string): Promise<{ ok?: boolean; error?: string }> {
   const token = getToken();
   if (!token) throw new Error('Non authentifié');
 
-  const res = await fetch('/api/smart-follow-up/send-whatsapp-notification', {
+  const res = await fetch('/api/smart-follow-up/dispatch-lead-whatsapp', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ actionId }),
+    body: JSON.stringify({ leadDocumentId }),
   });
   const data = await res.json();
   if (!res.ok) return { error: data.error || 'Erreur envoi' };

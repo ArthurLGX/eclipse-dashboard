@@ -28,7 +28,11 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
         Authorization: authHeader,
       },
-      body: JSON.stringify({ actionId }),
+      body: JSON.stringify({
+        actionId,
+        leadDocumentId: actionId,
+        source: 'lead',
+      }),
     });
 
     const data = await res.json();
