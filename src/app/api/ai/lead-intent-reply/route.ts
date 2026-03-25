@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { generateText } from 'ai';
@@ -5,6 +6,23 @@ import { NextResponse } from 'next/server';
 import { getApiKeysForRequest } from '@/lib/ai/get-api-keys-for-request';
 
 export const maxDuration = 30;
+
+const LOG_PREFIX = '[lead-intent-reply]';
+
+function logInfo(requestId: string, message: string, meta?: Record<string, unknown>) {
+  console.info(LOG_PREFIX, requestId, message, meta ?? '');
+}
+
+function logError(requestId: string, message: string, err: unknown, meta?: Record<string, unknown>) {
+  const e = err instanceof Error ? err : new Error(String(err));
+  console.error(LOG_PREFIX, requestId, message, {
+    ...meta,
+    name: e.name,
+    message: e.message,
+    stack: e.stack?.split('\n').slice(0, 6).join(' | '),
+    cause: e.cause instanceof Error ? e.cause.message : e.cause,
+  });
+}
 
 /** Limite d’entrée pour limiter les tokens (uniquement appelé côté lead, pas sur tout le flux mail). */
 const MAX_LEAD_MESSAGE_CHARS = 4500;
@@ -27,15 +45,23 @@ export interface LeadIntentPayload {
 }
 
 export async function POST(req: Request) {
+  const requestId = randomUUID();
   try {
     const body = (await req.json()) as LeadIntentReplyRequest;
     const leadMessage = String(body.leadMessage || '').trim();
     if (leadMessage.length < 12) {
+      logInfo(requestId, 'validation_failed', { reason: 'leadMessage_too_short', len: leadMessage.length });
       return NextResponse.json(
-        { error: 'leadMessage requis (au moins quelques mots du message du lead).' },
+        { error: 'leadMessage requis (au moins quelques mots du message du lead).', requestId },
         { status: 400 }
       );
     }
+
+    logInfo(requestId, 'request', {
+      leadLen: Math.min(leadMessage.length, MAX_LEAD_MESSAGE_CHARS),
+      channel: body.channel || 'email',
+      hasAuthHeader: Boolean(req.headers.get('authorization')?.trim()),
+    });
 
     const truncated = leadMessage.slice(0, MAX_LEAD_MESSAGE_CHARS);
     const subject = body.subject ? String(body.subject) : '';
@@ -73,6 +99,9 @@ ${signalHint ? `Indicateur signal (si utile): ${signalHint}
 ${truncated}`;
 
     const keysResult = await getApiKeysForRequest(req.headers.get('authorization'));
+    if ('error' in keysResult) {
+      logInfo(requestId, 'getApiKeysForRequest', { ok: false, keysError: keysResult.error });
+    }
     const envOpenai = process.env.OPENAI_API_KEY || null;
     const envAnthropic = process.env.ANTHROPIC_API_KEY || null;
 
@@ -83,11 +112,19 @@ ${truncated}`;
       if (keysResult.keys.anthropicKey) anthropicKey = keysResult.keys.anthropicKey;
     }
 
+    logInfo(requestId, 'providers', {
+      hasOpenAI: Boolean(openaiKey),
+      hasAnthropic: Boolean(anthropicKey),
+      userKeysResolved: !('error' in keysResult),
+    });
+
     if (!openaiKey && !anthropicKey) {
+      logError(requestId, 'no_api_keys', new Error('no_openai_no_anthropic'), {});
       return NextResponse.json(
         {
           error:
             'Aucune clé IA disponible. Définissez OPENAI_API_KEY (ou clés OpenAI dans le profil utilisateur).',
+          requestId,
         },
         { status: 503 }
       );
@@ -112,6 +149,7 @@ ${truncated}`;
           const quota =
             err?.statusCode === 429 || err?.message?.toLowerCase().includes('quota');
           if (quota && anthropicProvider) {
+            logInfo(requestId, 'openai_quota_fallback_anthropic', {});
             return await generateText({
               ...modelOptions,
               model: anthropicProvider('claude-sonnet-4-20250514'),
@@ -119,6 +157,7 @@ ${truncated}`;
               prompt: user,
             });
           }
+          logError(requestId, 'openai_generate_failed', openaiError, { quotaFallback: false });
           throw openaiError;
         }
       }
@@ -133,7 +172,10 @@ ${truncated}`;
       throw new Error('Aucun provider IA');
     };
 
+    logInfo(requestId, 'generateText_start', {});
     const { text } = await run();
+    logInfo(requestId, 'generateText_ok', { responseChars: text?.length ?? 0 });
+
     let parsed: { intent?: LeadIntentPayload; draft_reply?: string };
     try {
       const cleaned = text
@@ -141,26 +183,38 @@ ${truncated}`;
         .replace(/^```(?:json)?\s*/i, '')
         .replace(/\s*```$/i, '');
       parsed = JSON.parse(cleaned) as { intent?: LeadIntentPayload; draft_reply?: string };
-    } catch {
-      return NextResponse.json({ error: 'Réponse IA illisible (JSON)' }, { status: 502 });
+    } catch (parseErr) {
+      logError(requestId, 'json_parse_failed', parseErr, {
+        preview: text?.slice(0, 200),
+      });
+      return NextResponse.json(
+        { error: 'Réponse IA illisible (JSON)', requestId },
+        { status: 502 }
+      );
     }
 
     const draft = typeof parsed.draft_reply === 'string' ? parsed.draft_reply.trim() : '';
     if (!draft) {
-      return NextResponse.json({ error: 'Brouillon vide' }, { status: 502 });
+      logInfo(requestId, 'empty_draft', { hasIntent: Boolean(parsed.intent) });
+      return NextResponse.json({ error: 'Brouillon vide', requestId }, { status: 502 });
     }
 
+    logInfo(requestId, 'success', { draftChars: draft.length });
     return NextResponse.json({
       intent: parsed.intent ?? null,
       draft_reply: draft,
+      requestId,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    console.error('lead-intent-reply:', error);
+    logError(requestId, 'unhandled', error, {});
+    const exposeDetail =
+      process.env.NODE_ENV === 'development' || process.env.AI_ROUTE_ERROR_DETAIL === '1';
     return NextResponse.json(
       {
         error: 'Erreur lors de la génération',
-        ...(process.env.NODE_ENV === 'development' ? { detail: message } : {}),
+        requestId,
+        ...(exposeDetail ? { detail: message } : {}),
       },
       { status: 500 }
     );

@@ -37,6 +37,22 @@ import {
 import type { AutomationAction } from '@/types/smart-follow-up';
 import { formatLeadMessageForDisplay } from '@/utils/format-lead-message-display';
 
+type LeadIntentReplyErrorBody = {
+  error?: string;
+  requestId?: string;
+  detail?: string;
+};
+
+function logLeadIntentFailure(scope: string, res: Response, body: LeadIntentReplyErrorBody) {
+  console.error('[LeadDetailModal] /api/ai/lead-intent-reply', scope, {
+    status: res.status,
+    statusText: res.statusText,
+    requestId: body.requestId,
+    error: body.error,
+    detail: body.detail,
+  });
+}
+
 export interface ParsedAnalysis {
   signal?: string;
   score?: 'hot' | 'warm' | 'neutral' | 'cold';
@@ -291,14 +307,18 @@ export default function LeadDetailModal({
           signal: ac.signal,
         });
         if (ac.signal.aborted) return;
-        if (!res.ok) return;
+        if (!res.ok) {
+          const errBody = (await res.json().catch(() => ({}))) as LeadIntentReplyErrorBody;
+          logLeadIntentFailure('auto_on_open', res, errBody);
+          return;
+        }
         const data = (await res.json()) as { draft_reply?: string; intent?: { summary?: string } };
         if (data.draft_reply?.trim()) {
           setDraft(data.draft_reply.trim());
           if (data.intent?.summary) setIntentSummary(data.intent.summary);
         }
-      } catch {
-        /* conserve le brouillon Strapi / existant */
+      } catch (e) {
+        console.error('[LeadDetailModal] /api/ai/lead-intent-reply auto_on_open', e);
       } finally {
         if (!ac.signal.aborted) {
           setIntentDraftLoading(false);
@@ -408,7 +428,17 @@ export default function LeadDetailModal({
           signalHint: signalHint || undefined,
         }),
       });
-      if (!res.ok) throw new Error('Erreur');
+      if (!res.ok) {
+        const errBody = (await res.json().catch(() => ({}))) as LeadIntentReplyErrorBody;
+        logLeadIntentFailure('regenerate', res, errBody);
+        showGlobalPopup(
+          errBody.requestId
+            ? `Erreur régénération — ref: ${errBody.requestId}`
+            : 'Erreur régénération',
+          'error'
+        );
+        return;
+      }
       const data = (await res.json()) as { draft_reply?: string; intent?: { summary?: string } };
       if (data.draft_reply?.trim()) {
         const text = data.draft_reply.trim();
@@ -417,8 +447,9 @@ export default function LeadDetailModal({
         void persistLeadDraftToStrapi(text);
       }
       showGlobalPopup('Brouillon régénéré (intention + contexte)', 'success');
-    } catch {
-      showGlobalPopup('Erreur régénération', 'error');
+    } catch (e) {
+      console.error('[LeadDetailModal] /api/ai/lead-intent-reply regenerate', e);
+      showGlobalPopup('Erreur régénération (réseau ou exception)', 'error');
     } finally {
       setRegenerating(false);
     }

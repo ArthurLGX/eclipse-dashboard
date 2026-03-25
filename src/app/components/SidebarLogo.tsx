@@ -14,7 +14,7 @@ interface Company {
 
 export default function SidebarLogo() {
   const { user } = useAuth();
-  const { data: company } = useCompany(user?.id);
+  const { data: company, loading: companyLoading } = useCompany(user?.id);
   const [faviconError, setFaviconError] = useState(false);
   const [currentService, setCurrentService] = useState<'duckduckgo' | 'google'>('duckduckgo');
   
@@ -96,6 +96,7 @@ export default function SidebarLogo() {
         alt="Eclipse Studio"
         width={24}
         height={24}
+        unoptimized
       />
     </div>
   );
