@@ -28,7 +28,11 @@ import {
   updateTaskStatus,
 } from '@/lib/api';
 import type { ProjectTask, TaskStatus } from '@/types';
-import { calculateParentTaskState, getEffectiveTaskProgress } from '@/utils/dataCoherence';
+import {
+  calculateParentTaskState,
+  getEffectiveTaskProgress,
+  wouldProgressLinkCreateCycle,
+} from '@/utils/dataCoherence';
 import ExcelImportModal, { type ImportedTask } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
 import RichTextEditor from './RichTextEditor';
@@ -174,6 +178,9 @@ export default function TaskSectionRedesign({
       estimated_hours?: number | null;
       assignedToDocId?: string;
       start_date?: string | null;
+      progress_sync_mode?: 'manual' | 'average_of_linked';
+      progress_driver_tasks?: string[];
+      progress?: number;
     }
   ) => {
     if (!canEdit) return;
@@ -186,6 +193,9 @@ export default function TaskSectionRedesign({
         estimated_hours: updates.estimated_hours ?? null,
         assigned_to: updates.assignedToDocId ? allMembers.find((m) => m.documentId === updates.assignedToDocId)?.id ?? null : null,
         start_date: updates.start_date || null,
+        ...(updates.progress_sync_mode !== undefined && { progress_sync_mode: updates.progress_sync_mode }),
+        ...(updates.progress_driver_tasks !== undefined && { progress_driver_tasks: updates.progress_driver_tasks }),
+        ...(updates.progress !== undefined && { progress: updates.progress }),
       });
       await loadTasks();
       showGlobalPopup('Modifications sauvegardées', 'success');
@@ -545,6 +555,9 @@ interface TaskCardRedesignProps {
       estimated_hours?: number | null;
       assignedToDocId?: string;
       start_date?: string | null;
+      progress_sync_mode?: 'manual' | 'average_of_linked';
+      progress_driver_tasks?: string[];
+      progress?: number;
     }
   ) => void;
   onDelete: (e: React.MouseEvent, task: ProjectTask) => void;
@@ -591,6 +604,21 @@ function TaskCardRedesign({
   const [editAssigned, setEditAssigned] = useState(task.assigned_to?.documentId || '');
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [editStartDate, setEditStartDate] = useState(task.start_date?.split('T')[0] || '');
+  const [progressSyncMode, setProgressSyncMode] = useState<'manual' | 'average_of_linked'>(
+    task.progress_sync_mode ?? 'manual'
+  );
+  const [linkedDriverIds, setLinkedDriverIds] = useState<string[]>(() =>
+    (task.progress_driver_tasks || []).map((d) => d.documentId).filter(Boolean) as string[]
+  );
+
+  const flatTasksForLinks = useMemo(() => {
+    const out: ProjectTask[] = [];
+    for (const x of tasks) {
+      out.push(x);
+      x.subtasks?.forEach((st) => out.push(st));
+    }
+    return out;
+  }, [tasks]);
 
   useEffect(() => {
     setEditTitle(task.title);
@@ -600,7 +628,30 @@ function TaskCardRedesign({
     setEditEstimated(task.estimated_hours?.toString() || '');
     setEditAssigned(task.assigned_to?.documentId || '');
     setEditStartDate(task.start_date?.split('T')[0] || '');
-    }, [task.documentId, task.title, task.description, task.task_status, task.due_date, task.estimated_hours, task.assigned_to?.documentId, task.start_date]);
+    setProgressSyncMode(task.progress_sync_mode ?? 'manual');
+    setLinkedDriverIds((task.progress_driver_tasks || []).map((d) => d.documentId).filter(Boolean) as string[]);
+  }, [
+    task.documentId,
+    task.title,
+    task.description,
+    task.task_status,
+    task.due_date,
+    task.estimated_hours,
+    task.assigned_to?.documentId,
+    task.start_date,
+    task.progress_sync_mode,
+    task.progress_driver_tasks,
+  ]);
+
+  const previewLinkedProgress = useMemo(() => {
+    if (progressSyncMode !== 'average_of_linked' || linkedDriverIds.length === 0) return null;
+    const sum = linkedDriverIds.reduce((s, id) => {
+      const x = flatTasksForLinks.find((u) => u.documentId === id);
+      return s + (x?.progress ?? 0);
+    }, 0);
+    return Math.round(sum / linkedDriverIds.length);
+  }, [progressSyncMode, linkedDriverIds, flatTasksForLinks]);
+
   const [subtaskInputFocused, setSubtaskInputFocused] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -621,6 +672,12 @@ function TaskCardRedesign({
 
   const handleSave = async () => {
     setSaving(true);
+    const mode: 'manual' | 'average_of_linked' = subtasks.length > 0 ? 'manual' : progressSyncMode;
+    const drivers = subtasks.length === 0 && mode === 'average_of_linked' ? linkedDriverIds : [];
+    const progressVal =
+      subtasks.length === 0 && mode === 'average_of_linked' && drivers.length > 0 && previewLinkedProgress != null
+        ? previewLinkedProgress
+        : undefined;
     await onSave(task, {
       title: editTitle,
       description: editDescription,
@@ -629,6 +686,9 @@ function TaskCardRedesign({
       estimated_hours: editEstimated ? parseFloat(editEstimated) : null,
       assignedToDocId: editAssigned || undefined,
       start_date: editStartDate || null,
+      progress_sync_mode: mode,
+      progress_driver_tasks: mode === 'average_of_linked' ? drivers : [],
+      ...(progressVal !== undefined ? { progress: progressVal } : {}),
     });
     setSaving(false);
   };
@@ -862,6 +922,66 @@ function TaskCardRedesign({
                     </select>
                   </div>
                 </div>
+
+                {subtasks.length === 0 && (
+                  <div className="mb-3 p-3 bg-secondary/40 border border-default rounded-lg space-y-2">
+                    <label className="font-mono !text-[10px] !text-muted2 uppercase tracking-wider block">
+                      {t('task_progress_link_mode') || 'Progression liée à d’autres tâches'}
+                    </label>
+                    <p className="!text-[11px] !text-muted leading-snug">
+                      {t('task_progress_link_mode_hint') || ''}
+                    </p>
+                    <select
+                      value={progressSyncMode}
+                      onChange={(e) => setProgressSyncMode(e.target.value as 'manual' | 'average_of_linked')}
+                      className="w-full bg-card border border-default px-3 py-2 !text-[11px] !text-primary outline-none focus:border-primary"
+                    >
+                      <option value="manual">{t('task_progress_manual') || 'Manuelle (curseur)'}</option>
+                      <option value="average_of_linked">
+                        {t('task_progress_average_of_linked') || 'Moyenne de tâches liées'}
+                      </option>
+                    </select>
+                    {progressSyncMode === 'average_of_linked' && (
+                      <div className="max-h-36 overflow-y-auto space-y-1.5 border border-default rounded p-2 bg-card">
+                        <span className="font-mono !text-[10px] !text-muted2 uppercase block">
+                          {t('task_progress_linked_tasks') || 'Tâches sources'}
+                        </span>
+                        {flatTasksForLinks
+                          .filter((c) => c.documentId !== task.documentId)
+                          .map((c) => {
+                            const cycle = wouldProgressLinkCreateCycle(task, c, flatTasksForLinks);
+                            const checked = linkedDriverIds.includes(c.documentId);
+                            return (
+                              <label
+                                key={c.documentId}
+                                className={`flex items-center gap-2 !text-[11px] ${cycle ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  disabled={cycle}
+                                  onChange={() => {
+                                    if (cycle) return;
+                                    setLinkedDriverIds((prev) =>
+                                      checked ? prev.filter((id) => id !== c.documentId) : [...prev, c.documentId]
+                                    );
+                                  }}
+                                />
+                                <span className="truncate flex-1 !text-primary">{c.title}</span>
+                                <span className="!text-muted shrink-0">{c.progress ?? 0}%</span>
+                              </label>
+                            );
+                          })}
+                      </div>
+                    )}
+                    {progressSyncMode === 'average_of_linked' && linkedDriverIds.length > 0 && previewLinkedProgress != null && (
+                      <p className="font-mono !text-[11px] !text-muted">
+                        → {t('task_progress_link_preview') || 'Moyenne'} : {previewLinkedProgress}%
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex justify-end gap-2 pt-3 border-t border-default mt-1">
                   <button
                     type="button"
@@ -1096,6 +1216,9 @@ export function TaskListRedesignView({
       estimated_hours?: number | null;
       assignedToDocId?: string;
       start_date?: string | null;
+      progress_sync_mode?: 'manual' | 'average_of_linked';
+      progress_driver_tasks?: string[];
+      progress?: number;
     }
   ) => {
     if (!canEdit) return;
@@ -1108,6 +1231,9 @@ export function TaskListRedesignView({
         estimated_hours: updates.estimated_hours ?? null,
         assigned_to: updates.assignedToDocId ? allMembers.find((m) => m.documentId === updates.assignedToDocId)?.id ?? null : null,
         start_date: updates.start_date ?? null,
+        ...(updates.progress_sync_mode !== undefined && { progress_sync_mode: updates.progress_sync_mode }),
+        ...(updates.progress_driver_tasks !== undefined && { progress_driver_tasks: updates.progress_driver_tasks }),
+        ...(updates.progress !== undefined && { progress: updates.progress }),
       });
       await loadTasks();
       showGlobalPopup('Modifications sauvegardées', 'success');
