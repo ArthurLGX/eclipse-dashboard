@@ -55,7 +55,11 @@ import {
   updateTaskProgress,
 } from '@/lib/api';
 import type { ProjectTask, TaskStatus, TaskPriority } from '@/types';
-import { calculateParentTaskState } from '@/utils/dataCoherence';
+import {
+  calculateParentTaskState,
+  getEffectiveTaskProgress,
+  wouldProgressLinkCreateCycle,
+} from '@/utils/dataCoherence';
 
 interface Collaborator {
   documentId: string;
@@ -88,6 +92,8 @@ interface ProjectTasksProps {
   /** Utilise le design redesign (cartes + progression) pour la vue Liste */
   useListRedesign?: boolean;
 }
+
+type ProjectTaskApiUpdate = NonNullable<Parameters<typeof updateProjectTask>[1]>;
 
 type ViewMode = 'cards' | 'kanban' | 'table' | 'gantt';
 
@@ -246,6 +252,15 @@ export default function ProjectTasks({
     | 'status'
     | 'progress'
   >('title_asc');
+
+  const flatTasksForLinks = useMemo(() => {
+    const out: ProjectTask[] = [];
+    for (const t of tasks) {
+      out.push(t);
+      t.subtasks?.forEach((st) => out.push(st));
+    }
+    return out;
+  }, [tasks]);
 
   // Formulaire nouvelle tâche
   const [newTask, setNewTask] = useState({
@@ -422,14 +437,14 @@ export default function ProjectTasks({
     }
   };
 
-  const handleUpdateTask = async (taskDocumentId: string, updates: Partial<ProjectTask>) => {
+  const handleUpdateTask = async (taskDocumentId: string, updates: ProjectTaskApiUpdate) => {
     try {
       // Trouver la tâche pour savoir si c'est une sous-tâche
       const task = tasks.find(t => t.documentId === taskDocumentId);
       const isSubtask = !!task?.parent_task;
       const parentTaskDocId = task?.parent_task?.documentId;
 
-      await updateProjectTask(taskDocumentId, updates as Parameters<typeof updateProjectTask>[1]);
+      await updateProjectTask(taskDocumentId, updates);
       showGlobalPopup(t('task_updated') || 'Tâche mise à jour', 'success');
       setEditingTask(null);
       
@@ -1142,6 +1157,15 @@ export default function ProjectTasks({
   const [localProgress, setLocalProgress] = useState<Record<string, number>>({});
 
   const handleProgressChange = useCallback((taskDocumentId: string, progress: number) => {
+    const root = tasks.find((t) => t.documentId === taskDocumentId);
+    const sub = tasks.flatMap((t) => t.subtasks || []).find((s) => s.documentId === taskDocumentId);
+    const task = root ?? sub;
+    if (
+      task?.progress_sync_mode === 'average_of_linked' &&
+      (task.progress_driver_tasks?.length ?? 0) > 0
+    ) {
+      return;
+    }
     // Mise à jour locale immédiate pour l'UI
     setLocalProgress(prev => ({ ...prev, [taskDocumentId]: progress }));
     
@@ -2070,6 +2094,7 @@ export default function ProjectTasks({
         {editingTask && (
           <TaskEditModal
             task={editingTask}
+            flatTasksForLinks={flatTasksForLinks}
             onClose={() => setEditingTask(null)}
             onSave={(updates) => handleUpdateTask(editingTask.documentId, updates)}
             taskStatusOptions={TASK_STATUS_OPTIONS}
@@ -2185,7 +2210,10 @@ function TaskCard({
   onToggleSelection,
 }: TaskCardProps) {
   const isOverdue = task.due_date && new Date(task.due_date) < new Date() && task.task_status !== 'completed';
-  const displayProgress = localProgress !== undefined ? localProgress : task.progress;
+  const progressFromLinkedDrivers =
+    task.progress_sync_mode === 'average_of_linked' && (task.progress_driver_tasks?.length ?? 0) > 0;
+  const effectiveBase = getEffectiveTaskProgress(task);
+  const displayProgress = localProgress !== undefined ? localProgress : effectiveBase;
   const taskColor = task.color || parentColor || TASK_COLORS[0];
   
   // Collecter tous les utilisateurs assignés (tâche + sous-tâches)
@@ -2565,14 +2593,17 @@ function TaskCard({
       </div>
 
       {/* Slider progression (si éditable) */}
-      {canEdit && task.task_status !== 'completed' && task.task_status !== 'cancelled' && (
+      {canEdit &&
+        task.task_status !== 'completed' &&
+        task.task_status !== 'cancelled' &&
+        !progressFromLinkedDrivers && (
         <div className="px-4 pb-3">
           <input
             type="range"
             min="0"
             max="100"
             value={displayProgress}
-            onChange={(e) => onProgressChange(parseInt(e.target.value))}
+            onChange={(e) => onProgressChange(parseInt(e.target.value, 10))}
             className="w-full h-1 bg-muted  appearance-none cursor-pointer slider-thumb"
           />
         </div>
@@ -2585,8 +2616,9 @@ function TaskCard({
 // Modal d'édition de tâche
 interface TaskEditModalProps {
   task: ProjectTask;
+  flatTasksForLinks: ProjectTask[];
   onClose: () => void;
-  onSave: (updates: Partial<ProjectTask>) => void;
+  onSave: (updates: ProjectTaskApiUpdate) => void;
   taskStatusOptions: TaskStatusOption[];
   priorityOptions: TaskPriorityOption[];
   allMembers: { id: number; documentId: string; username: string; email: string; isOwner: boolean }[];
@@ -2594,11 +2626,42 @@ interface TaskEditModalProps {
   t: (key: string) => string;
 }
 
-function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptions, allMembers, onAddSubtask, t }: TaskEditModalProps) {
+function TaskEditModal({
+  task,
+  flatTasksForLinks,
+  onClose,
+  onSave,
+  taskStatusOptions,
+  priorityOptions,
+  allMembers,
+  onAddSubtask,
+  t,
+}: TaskEditModalProps) {
   const isSubtask = !!task.parent_task;
   const hasSubtasks = task.subtasks && task.subtasks.length > 0;
   const modalRef = useModalFocus(true);
-  
+
+  const [progressSyncMode, setProgressSyncMode] = useState<'manual' | 'average_of_linked'>(
+    task.progress_sync_mode ?? 'manual'
+  );
+  const [linkedDriverIds, setLinkedDriverIds] = useState<string[]>(() =>
+    (task.progress_driver_tasks || []).map((d) => d.documentId).filter(Boolean) as string[]
+  );
+
+  useEffect(() => {
+    setProgressSyncMode(task.progress_sync_mode ?? 'manual');
+    setLinkedDriverIds((task.progress_driver_tasks || []).map((d) => d.documentId).filter(Boolean) as string[]);
+  }, [task.documentId, task.progress_sync_mode, task.progress_driver_tasks]);
+
+  const previewLinkedProgress = useMemo(() => {
+    if (progressSyncMode !== 'average_of_linked' || linkedDriverIds.length === 0) return null;
+    const sum = linkedDriverIds.reduce((s, id) => {
+      const x = flatTasksForLinks.find((u) => u.documentId === id);
+      return s + (x?.progress ?? 0);
+    }, 0);
+    return Math.round(sum / linkedDriverIds.length);
+  }, [progressSyncMode, linkedDriverIds, flatTasksForLinks]);
+
   const [formData, setFormData] = useState({
     title: task.title,
     description: task.description || '',
@@ -2635,20 +2698,27 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Note: assigned_to est passé comme number pour l'API, le type sera adapté dans handleUpdateTask
+    const mode: 'manual' | 'average_of_linked' = hasSubtasks ? 'manual' : progressSyncMode;
+    const drivers = !hasSubtasks && mode === 'average_of_linked' ? linkedDriverIds : [];
+    const progressValue =
+      !hasSubtasks && mode === 'average_of_linked' && drivers.length > 0 && previewLinkedProgress != null
+        ? previewLinkedProgress
+        : formData.progress;
     onSave({
       title: formData.title,
       description: formData.description,
       task_status: formData.task_status,
       priority: formData.priority,
-      progress: formData.progress,
+      progress: progressValue,
       due_date: formData.due_date || null,
       start_date: formData.start_date || null,
       estimated_hours: formData.estimated_hours ? parseFloat(formData.estimated_hours) : null,
       actual_hours: formData.actual_hours ? parseFloat(formData.actual_hours) : null,
       color: formData.color,
-      assigned_to: (formData.assigned_to ? parseInt(formData.assigned_to) : null) as unknown as User | undefined,
-    });
+      assigned_to: formData.assigned_to ? parseInt(formData.assigned_to, 10) : null,
+      progress_sync_mode: mode,
+      progress_driver_tasks: mode === 'average_of_linked' ? drivers : [],
+    } as ProjectTaskApiUpdate);
   };
 
   return (
@@ -2764,17 +2834,75 @@ function TaskEditModal({ task, onClose, onSave, taskStatusOptions, priorityOptio
 
             <div>
               <label className="block !text-sm font-medium !text-primary mb-1">
-                {t('progress') || 'Progression'}: {formData.progress}%
+                {progressSyncMode === 'average_of_linked' && linkedDriverIds.length > 0
+                  ? `${t('progress') || 'Progression'} (${t('task_progress_computed') || 'calculée'}): ${previewLinkedProgress ?? formData.progress}%`
+                  : `${t('progress') || 'Progression'}: ${formData.progress}%`}
               </label>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={formData.progress}
-                onChange={(e) => setFormData({ ...formData, progress: parseInt(e.target.value) })}
-                className="w-full"
-              />
+              {!(progressSyncMode === 'average_of_linked' && linkedDriverIds.length > 0) ? (
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={formData.progress}
+                  onChange={(e) => setFormData({ ...formData, progress: parseInt(e.target.value, 10) })}
+                  className="w-full"
+                />
+              ) : (
+                <p className="!text-sm !text-muted py-1">
+                  {t('task_progress_link_preview') || 'Moyenne des tâches liées'} : {previewLinkedProgress}%
+                </p>
+              )}
             </div>
+
+            {!isSubtask && !hasSubtasks && (
+              <div className="space-y-2 p-3 bg-muted rounded border border-default">
+                <label className="block !text-sm font-medium !text-primary">
+                  {t('task_progress_link_mode') || 'Progression liée à d’autres tâches'}
+                </label>
+                <p className="!text-xs !text-muted">{t('task_progress_link_mode_hint') || ''}</p>
+                <select
+                  value={progressSyncMode}
+                  onChange={(e) => setProgressSyncMode(e.target.value as 'manual' | 'average_of_linked')}
+                  className="input w-full"
+                >
+                  <option value="manual">{t('task_progress_manual') || 'Manuelle'}</option>
+                  <option value="average_of_linked">{t('task_progress_average_of_linked') || 'Moyenne des tâches liées'}</option>
+                </select>
+                {progressSyncMode === 'average_of_linked' && (
+                  <div className="space-y-2 max-h-44 overflow-y-auto border border-default rounded p-2 bg-card">
+                    <span className="!text-xs font-medium !text-muted block">
+                      {t('task_progress_linked_tasks') || 'Tâches sources'}
+                    </span>
+                    {flatTasksForLinks
+                      .filter((c) => c.documentId !== task.documentId)
+                      .map((c) => {
+                        const cycle = wouldProgressLinkCreateCycle(task, c, flatTasksForLinks);
+                        const checked = linkedDriverIds.includes(c.documentId);
+                        return (
+                          <label
+                            key={c.documentId}
+                            className={`flex items-center gap-2 !text-sm ${cycle ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              disabled={cycle}
+                              onChange={() => {
+                                if (cycle) return;
+                                setLinkedDriverIds((prev) =>
+                                  checked ? prev.filter((id) => id !== c.documentId) : [...prev, c.documentId]
+                                );
+                              }}
+                            />
+                            <span className="truncate flex-1">{c.title}</span>
+                            <span className="!text-muted shrink-0">{c.progress ?? 0}%</span>
+                          </label>
+                        );
+                      })}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -3796,15 +3924,7 @@ function TaskGanttView({
     return { startOffset: Math.max(0, startOffset), duration, effectiveStartDate: effectiveStartDate || null, effectiveEndDate: effectiveEndDate || null };
   }, [ganttData, normalizeDate, today, parseLocalDate]);
 
-  // Calculer le pourcentage effectif d'une tâche (moyenne des sous-tâches si présentes)
-  const getEffectiveProgress = useCallback((task: ProjectTask): number => {
-    if (task.subtasks && task.subtasks.length > 0) {
-      // Moyenne des progrès des sous-tâches
-      const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
-      return Math.round(totalProgress / task.subtasks.length);
-    }
-    return task.progress || 0;
-  }, []);
+  const getEffectiveProgress = useCallback((task: ProjectTask): number => getEffectiveTaskProgress(task), []);
 
   const isToday = useCallback((date: Date) => {
     return date.getTime() === today.getTime();

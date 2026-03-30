@@ -2323,7 +2323,7 @@ export async function fetchProjectTasks(projectDocumentId: string): Promise<ApiR
     // Populate complet des subtasks + project pour filtrage client-side de secours
     // Note: on ne peut pas utiliser populate=* car ça inclut le rôle qui n'est pas autorisé
     const response = await get<ApiResponse<ProjectTask[]>>(
-      `project-tasks?populate[0]=assigned_to&populate[1]=parent_task&populate[2]=subtasks&populate[3]=subtasks.assigned_to&populate[4]=project&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
+      `project-tasks?populate[0]=assigned_to&populate[1]=parent_task&populate[2]=subtasks&populate[3]=subtasks.assigned_to&populate[4]=project&populate[5]=progress_driver_tasks&populate[6]=progress_feeds_tasks&filters[project][documentId][$eq]=${projectDocumentId}&sort=order:asc,createdAt:desc&pagination[pageSize]=${pageSize}&pagination[page]=${page}`
     );
 
     if (response.data && response.data.length > 0) {
@@ -2371,6 +2371,9 @@ export async function createProjectTask(data: {
   tags?: string[];
   parent_task?: string; // documentId de la tâche parente (pour sous-tâches)
   color?: string; // couleur du groupe de tâches
+  progress_sync_mode?: 'manual' | 'average_of_linked';
+  /** documentIds des tâches dont la moyenne de % alimente cette tâche */
+  progress_driver_tasks?: string[] | null;
 }) {
   const payload = {
     project: { connect: [{ documentId: data.project }] },
@@ -2390,6 +2393,17 @@ export async function createProjectTask(data: {
     tags: data.tags || [],
     parent_task: data.parent_task ? { connect: [{ documentId: data.parent_task }] } : null,
     color: data.color || '#8B5CF6',
+    ...(data.progress_sync_mode
+      ? { progress_sync_mode: data.progress_sync_mode }
+      : { progress_sync_mode: 'manual' }),
+    ...(data.progress_driver_tasks !== undefined
+      ? {
+          progress_driver_tasks:
+            data.progress_driver_tasks && data.progress_driver_tasks.length > 0
+              ? { set: data.progress_driver_tasks.map((documentId) => ({ documentId })) }
+              : { set: [] },
+        }
+      : {}),
   };
   return post('project-tasks', payload);
 }
@@ -2413,6 +2427,8 @@ export async function updateProjectTask(
     tags: string[];
     color: string;
     parent_task: string | null; // documentId de la tâche parente (pour transformer en sous-tâche)
+    progress_sync_mode?: 'manual' | 'average_of_linked';
+    progress_driver_tasks?: string[] | null;
   }>
 ) {
   const payload: Record<string, unknown> = { ...data };
@@ -2430,6 +2446,12 @@ export async function updateProjectTask(
     payload.assigned_to = data.assigned_to
       ? { connect: [{ id: data.assigned_to }] }
       : { set: [] };
+  }
+  if (data.progress_driver_tasks !== undefined) {
+    payload.progress_driver_tasks =
+      data.progress_driver_tasks && data.progress_driver_tasks.length > 0
+        ? { set: data.progress_driver_tasks.map((documentId) => ({ documentId })) }
+        : { set: [] };
   }
   return put(`project-tasks/${taskDocumentId}`, payload);
 }

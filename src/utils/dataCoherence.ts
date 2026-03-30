@@ -10,7 +10,7 @@
  * que tous les composants appliquent les mêmes invariants.
  */
 
-import type { TaskStatus } from '@/types';
+import type { ProjectTask, TaskStatus } from '@/types';
 
 // ============================================================================
 // RÈGLES TÂCHES ↔ SOUS-TÂCHES
@@ -71,6 +71,61 @@ export function calculateParentTaskState(subtasks: SubtaskState[]): TaskCoherenc
   
   // Sinon, en cours avec progression calculée (moyenne)
   return { status: 'in_progress', progress: averageProgress };
+}
+
+/**
+ * Progression affichée : sous-tâches d’abord (moyenne), sinon tâches liées (moyenne), sinon champ progress.
+ */
+export function getEffectiveTaskProgress(task: ProjectTask): number {
+  if (task.subtasks && task.subtasks.length > 0) {
+    const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
+    return Math.round(totalProgress / task.subtasks.length);
+  }
+  if (
+    task.progress_sync_mode === 'average_of_linked' &&
+    task.progress_driver_tasks &&
+    task.progress_driver_tasks.length > 0
+  ) {
+    const sum = task.progress_driver_tasks.reduce((s, d) => s + (d.progress ?? 0), 0);
+    return Math.round(sum / task.progress_driver_tasks.length);
+  }
+  return task.progress ?? 0;
+}
+
+/**
+ * True si lier `candidateDriver` comme source de progression pour `aggregatedTask` créerait un cycle.
+ */
+export function wouldProgressLinkCreateCycle(
+  aggregatedTask: ProjectTask,
+  candidateDriver: ProjectTask,
+  allTasks: ProjectTask[]
+): boolean {
+  if (aggregatedTask.documentId === candidateDriver.documentId) return true;
+  const byId = new Map<string, ProjectTask>();
+  for (const t of allTasks) {
+    byId.set(t.documentId, t);
+    t.subtasks?.forEach((st) => byId.set(st.documentId, st));
+  }
+  function followsDriversTo(
+    from: ProjectTask,
+    targetDocumentId: string,
+    visited: Set<string>
+  ): boolean {
+    if (visited.has(from.documentId)) return false;
+    visited.add(from.documentId);
+    const drivers = from.progress_driver_tasks || [];
+    for (const d of drivers) {
+      const id =
+        typeof d === 'object' && d !== null && 'documentId' in d
+          ? (d as ProjectTask).documentId
+          : String(d);
+      if (id === targetDocumentId) return true;
+      const next = byId.get(id);
+      if (next && followsDriversTo(next, targetDocumentId, visited)) return true;
+    }
+    return false;
+  }
+  return followsDriversTo(candidateDriver, aggregatedTask.documentId, new Set());
 }
 
 /**

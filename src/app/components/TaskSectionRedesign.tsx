@@ -28,7 +28,7 @@ import {
   updateTaskStatus,
 } from '@/lib/api';
 import type { ProjectTask, TaskStatus } from '@/types';
-import { calculateParentTaskState } from '@/utils/dataCoherence';
+import { calculateParentTaskState, getEffectiveTaskProgress } from '@/utils/dataCoherence';
 import ExcelImportModal, { type ImportedTask } from './ExcelImportModal';
 import AITaskGenerator, { type GeneratedTask } from './AITaskGenerator';
 import RichTextEditor from './RichTextEditor';
@@ -700,7 +700,9 @@ function TaskCardRedesign({
             </span>
           </div>
         </div>
-        <span className="font-mono !text-[11px] !text-muted flex-shrink-0 mr-2">{task.progress}%</span>
+        <span className="font-mono !text-[11px] !text-muted flex-shrink-0 mr-2">
+          {getEffectiveTaskProgress(task)}%
+        </span>
         {canEdit && (
           <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
             <button
@@ -982,7 +984,10 @@ function TaskCardRedesign({
       <div className="h-[3px] bg-secondary overflow-hidden rounded-b-xl">
         <div
           className="h-full rounded-b-xl transition-[width] duration-400"
-          style={{ width: `${task.progress}%`, background: task.color || TASK_COLORS[0] }}
+          style={{
+            width: `${getEffectiveTaskProgress(task)}%`,
+            background: task.color || TASK_COLORS[0],
+          }}
         />
       </div>
     </motion.div>

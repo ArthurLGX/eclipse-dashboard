@@ -30,6 +30,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import useLenis from '@/utils/useLenis';
 import useDocumentTitle from '@/hooks/useDocumentTitle';
 import { generateSlug } from '@/utils/slug';
+import { getEffectiveTaskProgress } from '@/utils/dataCoherence';
 // Rich text description is now HTML from RichTextEditor
 
 // API call pour récupérer les données du projet partagé
@@ -227,13 +228,7 @@ export default function SharedProjectPage() {
   const completedTasks = parentTasks.filter(task => task.task_status === 'completed').length;
   
   // Calculer la progression effective (moyenne des sous-tâches si présentes)
-  const getTaskEffectiveProgress = (task: ProjectTask): number => {
-    if (task.subtasks && task.subtasks.length > 0) {
-      const totalProgress = task.subtasks.reduce((sum, s) => sum + (s.progress || 0), 0);
-      return Math.round(totalProgress / task.subtasks.length);
-    }
-    return task.progress || 0;
-  };
+  const getTaskEffectiveProgress = (task: ProjectTask): number => getEffectiveTaskProgress(task);
   
   const overallProgress = parentTasks.length > 0
     ? Math.round(parentTasks.reduce((sum, task) => sum + getTaskEffectiveProgress(task), 0) / parentTasks.length)

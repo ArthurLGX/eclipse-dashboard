@@ -175,6 +175,9 @@ export interface Project {
   billing_type?: 'fixed' | 'hourly';
 }
 
+/** `average_of_linked` : la progression est la moyenne des % des tâches liées (progress_driver_tasks). */
+export type ProjectTaskProgressSyncMode = 'manual' | 'average_of_linked';
+
 export interface ProjectTask {
   id: number;
   documentId: string;
@@ -183,6 +186,12 @@ export interface ProjectTask {
   task_status: TaskStatus;
   priority: TaskPriority;
   progress: number; // 0-100
+  /** Manuel ou moyenne des tâches liées (voir progress_driver_tasks). */
+  progress_sync_mode?: ProjectTaskProgressSyncMode;
+  /** Tâches dont la progression est moyennée pour alimenter celle-ci (si average_of_linked). */
+  progress_driver_tasks?: ProjectTask[];
+  /** Inverse : tâches agrégées qui dépendent de cette tâche (lecture seule côté UI). */
+  progress_feeds_tasks?: ProjectTask[];
   start_date: string | null;
   due_date: string | null;
   completed_date: string | null;
