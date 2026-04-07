@@ -207,7 +207,7 @@ export default function SettingsPage() {
         className={`relative w-10 h-5 rounded-full transition-colors ${checked ? 'bg-success' : 'bg-warning'}`}
       >
         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${checked ? 'translate-x-5' : ''}`} />
-      </button>dul
+      </button>
     </label>
   );
 
