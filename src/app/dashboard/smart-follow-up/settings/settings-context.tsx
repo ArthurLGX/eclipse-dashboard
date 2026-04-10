@@ -7,12 +7,7 @@ export type NavSection =
   | 'domaines'
   | 'sources'
   | 'gmail'
-  | 'icp'
-  | 'mots-cles'
   | 'instruction'
-  | 'delais'
-  | 'heures'
-  | 'regles'
   | 'notifications'
   | 'whatsapp';
 

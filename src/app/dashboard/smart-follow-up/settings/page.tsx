@@ -4,16 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   IconBell,
-  IconClock,
-  IconShieldCheck,
   IconPlus,
   IconDeviceFloppy,
-  IconFilter,
-  IconUsers,
   IconCircleDot,
   IconBan,
-  IconBolt,
-  IconCalendar,
   IconSparkles,
   IconPlug,
   IconMail,
@@ -27,13 +21,10 @@ import {
   testWhatsAppNotificationFromSavedSettings,
 } from '@/lib/smart-follow-up-api';
 import { useAuth } from '@/app/context/AuthContext';
-import RuleManagementModal from '@/app/components/RuleManagementModal';
 import { usePopup } from '@/app/context/PopupContext';
 import { useSettingsLayout } from './settings-context';
-import FilterPipeline from '@/app/components/settings/FilterPipeline';
-import FilterSummary from '@/app/components/settings/FilterSummary';
 import { resetSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
-import type { AutomationSettings, FilterRule } from '@/types/smart-follow-up';
+import type { AutomationSettings } from '@/types/smart-follow-up';
 import { SourcesManager } from '@/app/components/smart-follow-up/SourcesManager';
 import { GoogleGlyph } from '@/app/components/smart-follow-up/onboarding/StepCredentials';
 import { getToken } from '@/lib/api';
@@ -118,47 +109,13 @@ export default function SmartFollowUpSettingsPage() {
   const { data: settings, mutate } = useAutomationSettings();
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [newDomain, setNewDomain] = useState('');
-  const [newKeyword, setNewKeyword] = useState('');
-  const [showRulesModal, setShowRulesModal] = useState(false);
-  const [customRules, setCustomRules] = useState<FilterRule[]>([]);
-
-  const [icpSettings, setICPSettings] = useState({
-    enabled: true,
-    min_score_threshold: 8,
-    types_enabled: { freelance: true, agence: true, b2b: true, b2c: false },
-    keywords: {
-      freelance: ['freelance', 'indépendant', 'auto-entrepreneur', 'consultant'],
-      agence: ['agence', 'agency', 'studio', 'équipe', 'team'],
-      b2b: ['entreprise', 'société', 'business', 'b2b', 'partenariat', 'collaboration'],
-      b2c: ['client', 'consommateur', 'b2c', 'particulier'],
-      professional: ['projet', 'devis', 'prestation', 'service', 'mission', 'collaboration', 'proposition'],
-    },
-    require_response_thread: false,
-    boost_responses: true,
-  });
-  const [editingICPType, setEditingICPType] = useState<string | null>(null);
-  const [newICPKeyword, setNewICPKeyword] = useState('');
+  const [newInboxDomain, setNewInboxDomain] = useState('');
 
   const [enabled, setEnabled] = useState(true);
   const [autoApprove, setAutoApprove] = useState(false);
   /** 70–99, affiché comme pourcentage ; persisté en auto_approve_threshold 0–1 */
   const [autoApproveThresholdPct, setAutoApproveThresholdPct] = useState(92);
-  const [excludedDomains, setExcludedDomains] = useState<string[]>([]);
-  const [priorityKeywords, setPriorityKeywords] = useState<string[]>([]);
-  const [delaySettings, setDelaySettings] = useState({
-    payment_reminder: 7,
-    proposal_follow_up: 3,
-    meeting_follow_up: 1,
-    thank_you: 3,
-    check_in: 30,
-  });
-  const [workHours, setWorkHours] = useState({
-    start: '09:00',
-    end: '18:00',
-    timezone: 'Europe/Paris',
-    days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-  });
+  const [inboxAllowedDomains, setInboxAllowedDomains] = useState<string[]>([]);
   const [notificationPreferences, setNotificationPreferences] = useState({
     email: true,
     dashboard: true,
@@ -203,13 +160,10 @@ export default function SmartFollowUpSettingsPage() {
       setAutoApproveThresholdPct(
         th != null && Number.isFinite(Number(th)) ? Math.round(Number(th) * 100) : 92
       );
-      setExcludedDomains(settings.excluded_domains || []);
-      setPriorityKeywords(settings.priority_keywords || []);
-      setDelaySettings(settings.delay_settings);
-      setWorkHours(settings.work_hours);
+      setInboxAllowedDomains(
+        Array.isArray(settings.inbox_allowed_domains) ? settings.inbox_allowed_domains : []
+      );
       setNotificationPreferences(settings.notification_preferences);
-      setCustomRules(settings.custom_rules || []);
-      if (settings.icp_settings) setICPSettings(settings.icp_settings);
       if (settings.ai_instructions_by_source) {
         setAiInstructionsBySource(settings.ai_instructions_by_source as Record<string, string>);
       } else if (settings.ai_instruction) {
@@ -300,13 +254,8 @@ export default function SmartFollowUpSettingsPage() {
         enabled,
         auto_approve: autoApprove,
         auto_approve_threshold: Math.min(0.99, Math.max(0.7, autoApproveThresholdPct / 100)),
-        excluded_domains: excludedDomains,
-        priority_keywords: priorityKeywords,
-        delay_settings: delaySettings,
-        work_hours: workHours,
+        inbox_allowed_domains: inboxAllowedDomains,
         notification_preferences: notificationPreferences,
-        custom_rules: customRules,
-        icp_settings: icpSettings,
         whatsapp_config: whatsappConfig,
         ai_instructions_by_source: aiInstructionsBySource,
         seasonal_instruction: seasonalInstruction,
@@ -329,56 +278,16 @@ export default function SmartFollowUpSettingsPage() {
     }
   };
 
-  const handleAddDomain = () => {
-    const domain = newDomain.trim().toLowerCase();
-    if (domain && !excludedDomains.includes(domain)) {
-      setExcludedDomains([...excludedDomains, domain]);
-      setNewDomain('');
+  const handleAddInboxDomain = () => {
+    const d = newInboxDomain.trim().toLowerCase().replace(/^@/, '');
+    if (d && !inboxAllowedDomains.includes(d)) {
+      setInboxAllowedDomains([...inboxAllowedDomains, d]);
+      setNewInboxDomain('');
     }
   };
 
-  const handleRemoveDomain = (d: string) => setExcludedDomains(excludedDomains.filter((x) => x !== d));
-
-  const handleAddKeyword = () => {
-    const kw = newKeyword.trim().toLowerCase();
-    if (kw && !priorityKeywords.includes(kw)) {
-      setPriorityKeywords([...priorityKeywords, kw]);
-      setNewKeyword('');
-    }
-  };
-
-  const handleRemoveKeyword = (kw: string) => setPriorityKeywords(priorityKeywords.filter((k) => k !== kw));
-
-  const handleAddICPKeyword = (type: string) => {
-    const kw = newICPKeyword.trim().toLowerCase();
-    const kws = icpSettings.keywords[type as keyof typeof icpSettings.keywords];
-    if (kw && Array.isArray(kws) && !kws.includes(kw)) {
-      setICPSettings({
-        ...icpSettings,
-        keywords: { ...icpSettings.keywords, [type]: [...kws, kw] },
-      });
-      setNewICPKeyword('');
-      setEditingICPType(null);
-    }
-  };
-
-  const handleRemoveICPKeyword = (type: string, keyword: string) => {
-    const kws = icpSettings.keywords[type as keyof typeof icpSettings.keywords];
-    if (Array.isArray(kws)) {
-      setICPSettings({
-        ...icpSettings,
-        keywords: { ...icpSettings.keywords, [type]: kws.filter((k) => k !== keyword) },
-      });
-    }
-  };
-
-  const handleDayToggle = (day: string) => {
-    if (workHours.days.includes(day)) {
-      setWorkHours({ ...workHours, days: workHours.days.filter((d) => d !== day) });
-    } else {
-      setWorkHours({ ...workHours, days: [...workHours.days, day] });
-    }
-  };
+  const handleRemoveInboxDomain = (domain: string) =>
+    setInboxAllowedDomains(inboxAllowedDomains.filter((x) => x !== domain));
 
   const handleTestWhatsApp = async () => {
     const isMeta = whatsappConfig.provider === 'meta';
@@ -457,16 +366,6 @@ export default function SmartFollowUpSettingsPage() {
     }, 0);
   };
 
-  const daysOfWeek = [
-    { value: 'monday', label: 'Lun' },
-    { value: 'tuesday', label: 'Mar' },
-    { value: 'wednesday', label: 'Mer' },
-    { value: 'thursday', label: 'Jeu' },
-    { value: 'friday', label: 'Ven' },
-    { value: 'saturday', label: 'Sam' },
-    { value: 'sunday', label: 'Dim' },
-  ];
-
   const settingRow = 'flex items-center gap-4 p-4 border-b border-default last:border-b-0 hover:bg-muted/30 transition-colors';
   const settingLabel = 'flex-1';
   const settingInput =
@@ -515,17 +414,6 @@ export default function SmartFollowUpSettingsPage() {
             )}
           </button>
         </div>
-
-        <FilterPipeline />
-        <FilterSummary
-          excludedDomainsCount={excludedDomains.length}
-          minScoreThreshold={icpSettings.min_score_threshold}
-          totalKeywords={
-            Object.values(icpSettings.keywords).flat().length + priorityKeywords.length
-          }
-          activeRules={customRules.filter((r) => r.enabled).length}
-          totalRules={customRules.length}
-        />
 
         {/* 1. ACTIVATION */}
         {activeSection === 'activation' && (
@@ -589,55 +477,59 @@ export default function SmartFollowUpSettingsPage() {
           </section>
         )}
 
-        {/* 2. EMAILS À IGNORER (ex-domaines exclus) */}
         {activeSection === 'domaines' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-               <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
+              <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
                 <IconBan className="w-4 h-4 !text-white" />
               </div>
               <div>
-                <div className="!text-sm font-semibold !text-primary">Emails à ignorer</div>
+                <div className="!text-sm font-semibold !text-primary">Domaines autorisés (boîte mail)</div>
                 <div className="font-mono !text-[11px] !text-muted">
-                  Les emails provenant de ces domaines sont automatiquement ignorés. Ex : noreply.com, newsletter.fr
+                  En plus des emails de vos contacts et des domaines définis dans les sources de leads, seuls ces
+                  domaines sont importés depuis IMAP. Le reste est ignoré.
                 </div>
               </div>
             </div>
             <div className="p-4">
               <div className="flex gap-2 mb-3">
                 <input
-                  type="text" 
-                  value={newDomain}
-                  onChange={(e) => setNewDomain(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddDomain()}
-                  placeholder="ex: noreply.com, spam.com"
+                  type="text"
+                  value={newInboxDomain}
+                  onChange={(e) => setNewInboxDomain(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddInboxDomain()}
+                  placeholder="ex: monclient.fr"
                   className={`${settingInput} flex-1`}
                 />
                 <button
-                  onClick={handleAddDomain}
-                  className="px-3.5 py-2 bg-primary !text-white  !text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 flex-shrink-0"
+                  type="button"
+                  onClick={handleAddInboxDomain}
+                  className="px-3.5 py-2 bg-primary !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1.5 flex-shrink-0"
                 >
                   <IconPlus className="w-3 h-3" />
                   Ajouter
                 </button>
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {excludedDomains.map((d) => (
+                {inboxAllowedDomains.map((d) => (
                   <span
                     key={d}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-mono !text-[11px] bg-muted border border-default !text-muted hover:border-danger hover:!text-danger transition-colors group"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg font-mono !text-[11px] bg-muted border border-default !text-primary"
                   >
                     {d}
                     <button
-                      onClick={() => handleRemoveDomain(d)}
+                      type="button"
+                      onClick={() => handleRemoveInboxDomain(d)}
                       className="w-3.5 h-3.5 rounded flex items-center justify-center opacity-50 hover:opacity-100"
                     >
                       ×
                     </button>
                   </span>
                 ))}
-                {excludedDomains.length === 0 && (
-                  <span className="font-mono !text-[11px] !text-muted">Aucun domaine exclu</span>
+                {inboxAllowedDomains.length === 0 && (
+                  <span className="font-mono !text-[11px] !text-muted">
+                    Aucun domaine supplémentaire — seuls contacts + sources de leads s’appliquent.
+                  </span>
                 )}
               </div>
             </div>
@@ -654,7 +546,7 @@ export default function SmartFollowUpSettingsPage() {
               <div>
                 <div className="!text-sm font-semibold !text-primary">Sources de leads</div>
                 <div className="font-mono !text-[11px] !text-muted">
-                  Outils de prospection dont les notifications sont qualifiées automatiquement (bypass ICP, WhatsApp)
+                  Les domaines de ces sources sont autorisés pour l’import des emails ; notifications WhatsApp selon la config.
                 </div>
               </div>
             </div>
@@ -662,8 +554,7 @@ export default function SmartFollowUpSettingsPage() {
               <div className="mb-3">
                 <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Outils connectés</h4>
                 <p className="font-mono !text-[11px] !text-muted mb-3">
-                  Recherchez un outil pour l’ajouter. Les emails correspondants contournent le filtre ICP et peuvent
-                  déclencher une notification WhatsApp selon la configuration.
+                  Les domaines configurés ici sont pris en compte pour l’import boîte mail et la détection des leads.
                 </p>
                 <SourcesManager settingsId={settings.documentId} initialSources={settings.lead_sources} />
               </div>
@@ -731,254 +622,7 @@ export default function SmartFollowUpSettingsPage() {
           </section>
         )}
 
-        {/* 3. ICP */}
-        {activeSection === 'icp' && (
-          <section className="bg-card border border-default w-full w-full overflow-hidden mb-5">
-            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
-                <IconUsers className="w-4 h-4 !text-white" />
-              </div>
-              <div>
-                <div className="!text-sm font-semibold !text-primary">Configuration Ideal Client Profile (ICP)</div>
-                <div className="font-mono !text-[11px] !text-muted">Filtre automatique des leads pertinents</div>
-              </div>
-            </div>
-            <div>
-              <div className={settingRow}>
-                <div className={settingLabel}>
-                  <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Activer le filtrage ICP</h4>
-                  <p className="font-mono !text-[11px] !text-muted">Ne traiter que les emails qui correspondent à votre profil client idéal</p>
-                </div>
-                <SettingToggle checked={icpSettings.enabled} onChange={(v) => setICPSettings({ ...icpSettings, enabled: v })} />
-              </div>
-
-              {icpSettings.enabled && (
-                <>
-                  <div className={`${settingRow} flex-col items-stretch`}>
-                    <div className={settingLabel}>
-                      <h4 className="!text-[11px] font-medium !text-primary mb-0.5">Score minimum de qualification</h4>
-                      <p className="font-mono !text-[11px] !text-muted">Un email doit atteindre ce score pour être considéré comme un lead</p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="number"
-                        min={1}
-                        max={15}
-                        value={icpSettings.min_score_threshold}
-                        onChange={(e) => setICPSettings({ ...icpSettings, min_score_threshold: parseInt(e.target.value) || 8 })}
-                        className="w-20 px-3 py-2 font-mono !text-sm font-semibold !text-primary bg-muted border border-default  text-center focus:border-primary outline-none"
-                      />
-                      <span className="font-mono !text-xs !text-muted">/ 15 points</span>
-                    </div>
-                  </div>
-
-                  <div className={`${settingRow} flex-col items-stretch`}>
-                    <div className={settingLabel}><h4 className="!text-[11px] font-medium !text-primary mb-1">Types de clients à cibler</h4></div>
-                    <div className="grid grid-cols-2 gap-2 w-full">
-                      {(['b2b', 'b2c', 'agence', 'freelance'] as const).map((type) => (
-                        <label
-                          key={type}
-                          className={`flex items-center gap-2.5 p-2.5  cursor-pointer transition-all border ${
-                            icpSettings.types_enabled[type] ? 'bg-success border-success/20' : 'bg-muted border-default hover:border-[#ccc8c2]'
-                          }`}
-                        >
-                          <div
-                            className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 ${
-                              icpSettings.types_enabled[type] ? 'bg-success' : 'border-[1.5px] border-[#ccc8c2] bg-white'
-                            }`}
-                          >
-                            {icpSettings.types_enabled[type] && <span className="!text-white !text-[10px]">✓</span>}
-                          </div>
-                          <span className="!text-[11px] font-medium capitalize">{type}</span>
-                          <input
-                            type="checkbox"
-                            checked={icpSettings.types_enabled[type]}
-                            onChange={(e) =>
-                              setICPSettings({
-                                ...icpSettings,
-                                types_enabled: { ...icpSettings.types_enabled, [type]: e.target.checked },
-                              })
-                            }
-                            className="sr-only"
-                          />
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={settingRow}>
-                    <label className="flex items-start gap-2.5 cursor-pointer flex-1">
-                      <div
-                        className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                          icpSettings.boost_responses ? 'bg-success' : 'border-[1.5px] border-[#ccc8c2] bg-white'
-                        }`}
-                      >
-                        {icpSettings.boost_responses && <span className="!text-white !text-[10px]">✓</span>}
-                      </div>
-                      <div>
-                        <h4 className="!text-[11px] font-medium !text-primary">Booster les réponses</h4>
-                        <p className="font-mono !text-[11px] !text-muted">Augmenter automatiquement le score des emails de réponse (+9 points)</p>
-                      </div>
-                      <input
-                        type="checkbox"
-                        checked={icpSettings.boost_responses}
-                        onChange={(e) => setICPSettings({ ...icpSettings, boost_responses: e.target.checked })}
-                        className="sr-only"
-                      />
-                    </label>
-                  </div>
-
-                  <div className={settingRow}>
-                    <label className="flex items-start gap-2.5 cursor-pointer flex-1">
-                      <div
-                        className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                          icpSettings.require_response_thread ? 'bg-success' : 'border-[1.5px] border-[#ccc8c2] bg-white'
-                        }`}
-                      >
-                        {icpSettings.require_response_thread && <span className="!text-white !text-[10px]">✓</span>}
-                      </div>
-                      <div>
-                        <h4 className="!text-[11px] font-medium !text-primary">Uniquement les threads de réponses</h4>
-                        <p className="font-mono !text-[11px] !text-muted">Ne traiter que les emails qui sont des réponses (Re:, rtr:, ftr:)</p>
-                      </div>
-                      <input
-                        type="checkbox"
-                        checked={icpSettings.require_response_thread}
-                        onChange={(e) => setICPSettings({ ...icpSettings, require_response_thread: e.target.checked })}
-                        className="sr-only"
-                      />
-                    </label>
-                  </div>
-
-                  <div className={settingRow}>
-                    <div className={settingLabel}>
-                      <p className="font-mono !text-[11px] !text-muted">
-                        Les mots-clés profil et priorité sont configurés dans la section Mots-clés importants.
-                      </p>
-                      <button onClick={() => setActiveSection('mots-cles')} className="mt-2 px-3 py-1.5 border border-default !text-xs font-medium !text-muted hover:!text-primary hover:border-[#ccc8c2]">
-                        Gérer les mots-clés
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* 4. MOTS-CLÉS IMPORTANTS (fusion profil + priorité) */}
-        {activeSection === 'mots-cles' && (
-          <section className="bg-card border border-default w-full overflow-hidden mb-5">
-            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-               <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
-                <IconBolt className="w-4 h-4 !text-white" />
-              </div>
-              <div>
-                <div className="!text-sm font-semibold !text-primary">Mots-clés importants</div>
-                <div className="font-mono !text-[11px] !text-muted">
-                  Si un email contient ces mots, il est traité en priorité. Ex : urgent, devis, rfp, projet
-                </div>
-              </div>
-            </div>
-            <div className="p-4 space-y-6">
-              {/* Profil client (ICP keywords) */}
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="!text-base">🎯</span>
-                  <h4 className="!text-[11px] font-semibold !text-primary">Profil client</h4>
-                </div>
-                <p className="font-mono !text-[11px] !text-muted mb-3">Ces mots identifient le type de prospect</p>
-                <div className="space-y-2 mb-3">
-                  {(['b2b', 'agence', 'freelance'] as const).map((type) => (
-                    <div key={type} className="flex flex-wrap items-center gap-1.5">
-                      <span className="font-mono !text-[10px] !text-muted uppercase w-14">{type}</span>
-                      {(icpSettings.keywords[type] || []).map((kw) => (
-                        <span
-                          key={`${type}-${kw}`}
-                          className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg font-mono !text-[11px] font-medium ${
-                            type === 'b2b'
-                              ? 'bg-blue-500/10 border border-blue-500/20 !text-blue-600'
-                              : type === 'agence'
-                                ? 'bg-accent/10 border border-accent/20 !text-accent'
-                                : 'bg-success border border-success/20 !text-success'
-                          }`}
-                        >
-                          {kw}
-                          <button onClick={() => handleRemoveICPKeyword(type, kw)} className="opacity-50 hover:opacity-100">×</button>
-                        </span>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex gap-2">
-                  <select
-                    value={editingICPType || ''}
-                    onChange={(e) => {
-                      setEditingICPType(e.target.value || null);
-                      setNewICPKeyword('');
-                    }}
-                    className={`${settingInput} max-w-[140px]`}
-                  >
-                    <option value="">Choisir un type</option>
-                    {(['b2b', 'agence', 'freelance'] as const).map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  {editingICPType && (
-                    <>
-                      <input
-                        value={newICPKeyword}
-                        onChange={(e) => setNewICPKeyword(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleAddICPKeyword(editingICPType)}
-                        placeholder="Nouveau mot-clé"
-                        className={`${settingInput} flex-1 max-w-[200px]`}
-                      />
-                      <button onClick={() => handleAddICPKeyword(editingICPType)} className="px-3 py-2 bg-success !text-white !text-xs font-semibold hover:opacity-90">
-                        Ajouter
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Priorité haute (priority keywords) */}
-              <div className="pt-4 border-t border-default">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="!text-base">⚡</span>
-                  <h4 className="!text-[11px] font-semibold !text-primary">Priorité haute</h4>
-                </div>
-                <p className="font-mono !text-[11px] !text-muted mb-3">Ces mots font remonter l&apos;email en tête de liste</p>
-                <div className="flex gap-2 mb-3">
-                  <input
-                    type="text"
-                    value={newKeyword}
-                    onChange={(e) => setNewKeyword(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddKeyword()}
-                    placeholder="ex: urgent, rfp, devis"
-                    className={`${settingInput} flex-1 max-w-[220px]`}
-                  />
-                  <button onClick={handleAddKeyword} className="px-3 py-2 bg-danger !text-white !text-xs font-semibold hover:opacity-90 flex items-center gap-1">
-                    <IconPlus className="w-3 h-3" />
-                    Ajouter
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {priorityKeywords.map((kw) => (
-                    <span
-                      key={kw}
-                      className="inline-flex items-center gap-1 px-2 py-1 rounded-lg font-mono !text-[11px] font-medium bg-danger border border-danger/20 !text-danger"
-                    >
-                      {kw}
-                      <button onClick={() => handleRemoveKeyword(kw)} className="opacity-50 hover:opacity-100">×</button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 4b. INSTRUCTION IA (par source + saisonnier) */}
+        {/* INSTRUCTION IA (par source + saisonnier) */}
         {activeSection === 'instruction' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
@@ -1068,135 +712,7 @@ export default function SmartFollowUpSettingsPage() {
           </section>
         )}
 
-        {/* 5. DÉLAIS */}
-        {activeSection === 'delais' && (
-          <section className="bg-card border border-default w-full   overflow-hidden mb-5">
-            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-               <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
-                <IconClock className="w-4 h-4 !text-white" />
-              </div>
-              <div>
-                <div className="!text-sm font-semibold !text-primary">Délais de relance</div>
-                <div className="font-mono !text-[11px] !text-muted">Nombre de jours avant chaque type de relance</div>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { key: 'payment_reminder', label: 'Rappel de paiement' },
-                  { key: 'proposal_follow_up', label: 'Suivi de devis' },
-                  { key: 'meeting_follow_up', label: 'Suivi de réunion' },
-                  { key: 'thank_you', label: 'Email de remerciement' },
-                  { key: 'check_in', label: 'Prise de contact' },
-                ].map(({ key, label }) => (
-                  <div key={key}>
-                    <label className="font-mono !text-[10px] !text-muted uppercase tracking-wider block mb-1.5">{label}</label>
-                    <input
-                      type="number"
-                      min={1}
-                      value={delaySettings[key as keyof typeof delaySettings]}
-                      onChange={(e) => setDelaySettings({ ...delaySettings, [key]: parseInt(e.target.value) || 1 })}
-                      className={settingInput}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 6. HEURES */}
-        {activeSection === 'heures' && (
-          <section className="bg-card border border-default w-full overflow-hidden mb-5">
-            <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-success border border-success flex items-center justify-center !text-white">
-                <IconCalendar className="w-4 h-4 !text-white" />
-              </div>
-              <div>
-                <div className="!text-sm font-semibold !text-primary">Heures de travail</div>
-                <div className="font-mono !text-[11px] !text-muted">Les emails ne seront envoyés que pendant ces horaires</div>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div>
-                  <label className="font-mono !text-[10px] !text-muted uppercase tracking-wider block mb-1.5">Heure de début</label>
-                  <input type="time" value={workHours.start} onChange={(e) => setWorkHours({ ...workHours, start: e.target.value })} className={settingInput} />
-                </div>
-                <div>
-                  <label className="font-mono !text-[10px] !text-muted uppercase tracking-wider block mb-1.5">Heure de fin</label>
-                  <input type="time" value={workHours.end} onChange={(e) => setWorkHours({ ...workHours, end: e.target.value })} className={settingInput} />
-                </div>
-              </div>
-              <div>
-                <div className="font-mono !text-[10px] !text-muted uppercase tracking-wider mb-2">Jours ouvrés</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {daysOfWeek.map((d) => (
-                    <button
-                      key={d.value}
-                      onClick={() => handleDayToggle(d.value)}
-                      className={`px-3 py-1.5  font-mono !text-[11px] transition-all ${
-                        workHours.days.includes(d.value)
-                          ? 'bg-primary !text-white border border-primary'
-                          : 'bg-muted border border-default !text-muted hover:border-[#ccc8c2]'
-                      }`}
-                    >
-                      {d.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* 7. RÈGLES AVANCÉES */}
-        {activeSection === 'regles' && (
-          <section className="bg-card border border-default w-full overflow-hidden mb-5">
-            <div className="p-4 border-b border-default bg-muted/30 flex items-center justify-between gap-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-accent border border-accent flex items-center justify-center !text-white">
-                  <IconShieldCheck className="w-4 h-4 !text-white" />
-                </div>
-                <div>
-                  <div className="!text-sm font-semibold !text-primary">Règles avancées</div>
-                  <div className="font-mono !text-[11px] !text-muted">
-                    Règles personnalisées pour les cas particuliers. Ex : si expéditeur = concurrent.com → ignorer
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowRulesModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-default  !text-xs font-medium !text-muted hover:!text-primary hover:border-[#ccc8c2] transition-colors"
-              >
-                <IconFilter className="w-3 h-3" />
-                Gérer les règles
-              </button>
-            </div>
-            <div className="p-4">
-              {customRules.length > 0 ? (
-                <div className="space-y-2">
-                  {customRules.map((rule) => (
-                    <div
-                      key={rule.id}
-                      className="flex items-center gap-3 p-3 bg-muted border border-default  hover:border-[#ccc8c2] transition-colors"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-success flex-shrink-0" />
-                      <span className="flex-1 !text-[11px] font-medium !text-primary">{rule.name}</span>
-                      <span className="font-mono !text-[10px] px-2 py-0.5 rounded bg-success !text-success border border-success/20">
-                        Priorité {rule.priority}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="!text-sm !text-muted">Aucune règle configurée</p>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* 8. NOTIFICATIONS */}
+        {/* NOTIFICATIONS */}
         {activeSection === 'notifications' && (
           <section className="bg-card border border-default w-full overflow-hidden mb-5">
             <div className="p-4 border-b border-default bg-muted/30 flex items-center gap-2.5">
@@ -1585,15 +1101,6 @@ export default function SmartFollowUpSettingsPage() {
         <div className="h-12" />
       </main>
 
-      <RuleManagementModal
-        isOpen={showRulesModal}
-        onClose={() => setShowRulesModal(false)}
-        rules={customRules}
-        onSaveRules={(newRules) => {
-          setCustomRules(newRules);
-          setShowRulesModal(false);
-        }}
-      />
     </>
   );
 }

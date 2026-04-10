@@ -5,19 +5,13 @@ import { useRouter } from 'next/navigation';
 import {
   IconSettings,
   IconBell,
-  IconClock,
-  IconShieldCheck,
-  IconUsers,
   IconCircleDot,
   IconBan,
-  IconBolt,
-  IconCalendar,
   IconBrandWhatsapp,
   IconSparkles,
   IconPlug,
   IconMail,
 } from '@tabler/icons-react';
-import { useAutomationSettings } from '@/hooks/useSmartFollowUp';
 import { SettingsLayoutContext } from './settings-context';
 import type { NavSection } from './settings-context';
 
@@ -26,22 +20,18 @@ const NAV_GROUPS: { label: string; items: { id: NavSection; label: string; icon:
     label: 'Général',
     items: [
       { id: 'activation', label: 'Activation', icon: <IconCircleDot className="w-3.5 h-3.5" />, badge: 'ON' },
-      { id: 'icp', label: 'Mon client idéal', icon: <IconUsers className="w-3.5 h-3.5" />, badge: 'Actif' },
-      { id: 'domaines', label: 'Emails à ignorer', icon: <IconBan className="w-3.5 h-3.5" /> },
+      { id: 'domaines', label: 'Domaines boîte mail', icon: <IconBan className="w-3.5 h-3.5" /> },
       { id: 'sources', label: 'Sources de leads', icon: <IconPlug className="w-3.5 h-3.5" /> },
       { id: 'gmail', label: 'Boîte Gmail', icon: <IconMail className="w-3.5 h-3.5" /> },
     ],
   },
-  { label: 'Automatisation', items: [{ id: 'mots-cles', label: 'Mots-clés importants', icon: <IconBolt className="w-3.5 h-3.5" /> }, { id: 'instruction', label: 'Instruction IA', icon: <IconSparkles className="w-3.5 h-3.5" /> }, { id: 'delais', label: 'Délais de relance', icon: <IconClock className="w-3.5 h-3.5" />, badgeWarn: true }, { id: 'regles', label: 'Règles avancées', icon: <IconShieldCheck className="w-3.5 h-3.5" /> }] },
-  { label: 'Préférences', items: [{ id: 'notifications', label: 'Notifications', icon: <IconBell className="w-3.5 h-3.5" /> }, { id: 'heures', label: 'Heures de travail', icon: <IconCalendar className="w-3.5 h-3.5" /> }, { id: 'whatsapp', label: 'WhatsApp', icon: <IconBrandWhatsapp className="w-3.5 h-3.5" /> }] },
+  { label: 'Automatisation', items: [{ id: 'instruction', label: 'Instruction IA', icon: <IconSparkles className="w-3.5 h-3.5" /> }] },
+  { label: 'Préférences', items: [{ id: 'notifications', label: 'Notifications', icon: <IconBell className="w-3.5 h-3.5" /> }, { id: 'whatsapp', label: 'WhatsApp', icon: <IconBrandWhatsapp className="w-3.5 h-3.5" /> }] },
 ];
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { data: settings } = useAutomationSettings();
   const [activeSection, setActiveSection] = useState<NavSection>('activation');
-  const rulesCount = settings?.custom_rules?.filter((r) => r.enabled).length ?? 0;
-
   return (
     <SettingsLayoutContext.Provider value={{ activeSection, setActiveSection }}>
       <div className="min-h-[calc(100vh-8rem)]">
@@ -90,7 +80,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
           <div className="mt-auto pt-4 border-t border-default">
             <div className="flex items-center gap-2 px-3 py-2.5 bg-success border border-success rounded-lg !text-success !text[11px] font-medium">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              Système actif · {rulesCount} règles
+              Smart Follow-Up
             </div>
           </div>
         </aside>

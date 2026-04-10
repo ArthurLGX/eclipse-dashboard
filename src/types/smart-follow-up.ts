@@ -4,77 +4,6 @@
 
 import type { LeadSource } from '@/types/lead-source';
 
-export interface FilterCondition {
-  sender?: {
-    type: 'contains' | 'equals' | 'starts_with' | 'ends_with' | 'regex';
-    value: string;
-    case_sensitive?: boolean;
-  };
-  domain?: {
-    type: 'is' | 'is_not' | 'in_list' | 'not_in_list';
-    value: string | string[];
-  };
-  subject?: {
-    type: 'contains' | 'equals' | 'starts_with' | 'ends_with' | 'regex';
-    value: string;
-    case_sensitive?: boolean;
-  };
-  body?: {
-    type: 'contains' | 'not_contains' | 'regex';
-    value: string;
-    case_sensitive?: boolean;
-  };
-  keywords?: {
-    type: 'contains_any' | 'contains_all' | 'contains_none';
-    value: string[];
-  };
-  has_contact?: boolean;
-  received_date?: {
-    type: 'before' | 'after' | 'between';
-    value: string | { start: string; end: string };
-  };
-}
-
-export interface FilterAction {
-  skip_automation?: boolean;
-  set_priority?: 'low' | 'medium' | 'high' | 'urgent';
-  force_task_type?: 'payment_reminder' | 'proposal_follow_up' | 'meeting_follow_up' | 'thank_you' | 'check_in' | 'custom';
-  custom_delay?: number;
-  add_tags?: string[];
-  notify_users?: number[];
-  auto_approve?: boolean;
-}
-
-export interface FilterRule {
-  id: string;
-  name: string;
-  description?: string;
-  enabled: boolean;
-  priority: number;
-  conditions: FilterCondition;
-  actions: FilterAction;
-}
-
-export interface ICPSettings {
-  enabled: boolean;
-  min_score_threshold: number;
-  types_enabled: {
-    freelance: boolean;
-    agence: boolean;
-    b2b: boolean;
-    b2c: boolean;
-  };
-  keywords: {
-    freelance: string[];
-    agence: string[];
-    b2b: string[];
-    b2c: string[];
-    professional: string[];
-  };
-  require_response_thread: boolean;
-  boost_responses: boolean;
-}
-
 export interface AutomationSettings {
   id: number;
   documentId: string;
@@ -87,21 +16,8 @@ export interface AutomationSettings {
   auto_approve: boolean;
   /** Seuil 0–1 pour l’auto-approbation (ex. 0.92). Défaut côté Strapi : 0.92 */
   auto_approve_threshold?: number;
-  priority_keywords: string[];
-  delay_settings: {
-    payment_reminder: number;
-    proposal_follow_up: number;
-    meeting_follow_up: number;
-    thank_you: number;
-    check_in: number;
-  };
-  work_hours: {
-    start: string;
-    end: string;
-    timezone: string;
-    days: string[];
-  };
-  excluded_domains: string[];
+  /** Domaines supplémentaires autorisés pour l’ingestion IMAP (hors contacts et domaines des sources) */
+  inbox_allowed_domains?: string[];
   notification_preferences: {
     email: boolean;
     dashboard: boolean;
@@ -113,8 +29,6 @@ export interface AutomationSettings {
   source_filter?: 'both' | 'email' | 'whatsapp';
   /** Sources de prospection (détection ICP, WhatsApp, etc.) */
   lead_sources?: LeadSource[] | null;
-  custom_rules: FilterRule[];
-  icp_settings: ICPSettings;
   /** Instruction personnalisée pour l'IA (ex: contexte Walego, priorités) */
   ai_instruction?: string | null;
   /** Historique des instructions précédentes (réutilisables) */

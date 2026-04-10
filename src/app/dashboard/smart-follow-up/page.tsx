@@ -24,7 +24,6 @@ import {
 import DataTable, { Column } from '@/app/components/DataTable';
 import { Switch } from '@/components/ui/switch';
 import LeadDetailModal from '@/app/components/LeadDetailModal';
-import RuleManagementModal from '@/app/components/RuleManagementModal';
 import InstructionIADrawer from '@/app/components/InstructionIADrawer';
 import WalegoSimulationDrawer from '@/app/components/WalegoSimulationDrawer';
 import SFUOnboarding, { hasSeenSFUOnboarding } from '@/app/components/onboarding/SFUOnboarding';
@@ -94,7 +93,6 @@ export default function SmartFollowUpPage() {
   const [selectedAction, setSelectedAction] = useState<AutomationAction | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [togglingPause, setTogglingPause] = useState(false);
-  const [showRulesModal, setShowRulesModal] = useState(false);
   const [showLowScoreEmails, setShowLowScoreEmails] = useState(false);
   const [cleaningNonICP, setCleaningNonICP] = useState(false);
   const [showInstructionDrawer, setShowInstructionDrawer] = useState(false);
@@ -170,29 +168,13 @@ export default function SmartFollowUpPage() {
     router.replace('/dashboard/smart-follow-up', { scroll: false });
   }, [smtpReady, settingsLoading, user, showFullPageOnboarding, router, showGlobalPopup]);
 
-  // min_score_threshold est sur 15 points, confidence_score est 0-1 → seuil = threshold/15
-  const minScoreThreshold = (settings?.icp_settings?.min_score_threshold ?? 3) / 15;
-  const priorityKeywords = settings?.priority_keywords ?? [];
+  /** Seuil d’affichage « qualifié » (sans réglage ICP — valeur fixe) */
+  const minScoreThreshold = 0.45;
 
   const mergedLeadSources = useMemo(
     () => mergeLeadSourcesWithDefaults(settings?.lead_sources ?? null),
     [settings?.lead_sources]
   );
-
-  const isLeadFromPriorityDomain = (action: AutomationAction): boolean => {
-    if (priorityKeywords.length === 0) return false;
-    const email =
-      action.client?.email ||
-      action.follow_up_task?.received_email?.from_email ||
-      action.proposed_content?.to?.[0] ||
-      '';
-    const domain = email.includes('@') ? email.split('@')[1]?.toLowerCase() : '';
-    const domainBase = domain?.split('.')[0] ?? '';
-    return priorityKeywords.some((kw) => {
-      const k = kw.toLowerCase().trim();
-      return domain?.includes(k) || domainBase?.includes(k) || k.includes(domainBase);
-    });
-  };
 
   /** Aligné sur lead_sources + detectLeadSource (notification de lead, pas tout mail outil). */
   const isLeadSourceBypassICP = useCallback(
@@ -213,11 +195,10 @@ export default function SmartFollowUpPage() {
     (lead: SfuLead) => {
       const a = sfuLeadToAutomationAction(lead);
       const meetsScore = a.confidence_score >= minScoreThreshold;
-      const fromPriorityDomain = isLeadFromPriorityDomain(a);
       const sourceBypass = isLeadSourceBypassICP(a);
-      return meetsScore || fromPriorityDomain || sourceBypass;
+      return meetsScore || sourceBypass;
     },
-    [minScoreThreshold, isLeadFromPriorityDomain, isLeadSourceBypassICP]
+    [minScoreThreshold, isLeadSourceBypassICP]
   );
 
   const allActions = useMemo(
@@ -519,9 +500,8 @@ export default function SmartFollowUpPage() {
         label: 'Contact',
         render: (_, row) => {
           const action = row.action;
-          const fromPriorityDomain = isLeadFromPriorityDomain(action);
           const sourceBypass = isLeadSourceBypassICP(action);
-          const isLowScore = action.confidence_score < minScoreThreshold && !fromPriorityDomain && !sourceBypass;
+          const isLowScore = action.confidence_score < minScoreThreshold && !sourceBypass;
           const { src: resolvedAvatar, hasLeadPhoto: hasResolvedPhoto } = resolveLeadTableAvatarUrl(
             action,
             contactAvatarLookup
@@ -536,7 +516,7 @@ export default function SmartFollowUpPage() {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden ${
                   !hasLeadPhoto &&
-                  (fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
+                  (sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10')
                 }`}
               >
                 {avatarPath ? (
@@ -556,34 +536,29 @@ export default function SmartFollowUpPage() {
                     />
                     <div
                       className={`w-full h-full hidden items-center justify-center ${
-                        fromPriorityDomain || sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
+                        sourceBypass ? 'bg-emerald-100' : isLowScore ? 'bg-red-100' : 'bg-accent/10'
                       }`}
                     >
                       <IconUser
-                        className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : 'text-muted'}`}
+                        className={`w-5 h-5 ${sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : 'text-muted'}`}
                       />
                     </div>
                   </>
                 ) : (
                   <IconUser
-                    className={`w-5 h-5 ${fromPriorityDomain || sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : 'text-muted'}`}
+                    className={`w-5 h-5 ${sourceBypass ? 'text-emerald-600' : isLowScore ? 'text-red-500' : 'text-muted'}`}
                   />
                 )}
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-medium text-primary truncate">{displayName}</p>
-                  {fromPriorityDomain && (
-                    <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-emerald-100 text-emerald-700">
-                      Priorité domaine
-                    </span>
-                  )}
-                  {sourceBypass && !fromPriorityDomain && (
+                  {sourceBypass && (
                     <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-blue-100 text-blue-700">
                       Source partenaire
                     </span>
                   )}
-                  {!fromPriorityDomain && !sourceBypass && isLowScore && (
+                  {!sourceBypass && isLowScore && (
                     <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-red-100 text-red-600">
                       Non qualifié
                     </span>
@@ -624,23 +599,22 @@ export default function SmartFollowUpPage() {
         render: (_, row) => {
           const action = row.action;
           const lead = row.lead;
-          const fromPriorityDomain = isLeadFromPriorityDomain(action);
           const sourceBypass = isLeadSourceBypassICP(action);
-          const pct = fromPriorityDomain ? '100%' : `${(action.confidence_score * 100).toFixed(0)}%`;
+          const pct = `${(action.confidence_score * 100).toFixed(0)}%`;
           const tier = leadLeadScoreLabel(lead);
           return (
             <div className="flex flex-col gap-0.5">
               <span className="text-xs font-medium text-primary whitespace-nowrap">{tier}</span>
               <span
                 className={`px-2 py-0.5 text-[10px] font-semibold rounded-full w-fit ${
-                  fromPriorityDomain || sourceBypass || action.confidence_score >= 0.8
+                  sourceBypass || action.confidence_score >= 0.8
                     ? 'bg-success-light text-success-text'
                     : action.confidence_score >= 0.6
                       ? 'bg-warning-light text-warning-text'
                       : 'bg-error-light text-error-text'
                 }`}
               >
-                ICP {pct}
+                {pct}
               </span>
             </div>
           );
@@ -727,7 +701,7 @@ export default function SmartFollowUpPage() {
         },
       },
     ],
-    [minScoreThreshold, handleQualifyLead, isLeadFromPriorityDomain, isLeadSourceBypassICP, contactAvatarLookup]
+    [minScoreThreshold, handleQualifyLead, isLeadSourceBypassICP, contactAvatarLookup]
   );
 
   const aiInstruction = settings?.ai_instruction ?? '';
@@ -838,13 +812,6 @@ export default function SmartFollowUpPage() {
                       1
                     </span>
                   )}
-                </button>
-                <button
-                  onClick={() => setShowRulesModal(true)}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg !text-xs font-medium bg-secondary !text-primary border border-default hover:bg-hover transition-colors"
-                >
-                  <IconFilter className="w-3.5 h-3.5" />
-                  Filtres
                 </button>
                 {nonQualifiedActions && nonQualifiedActions.length > 0 && (
                   <button
@@ -992,7 +959,7 @@ export default function SmartFollowUpPage() {
             <div className="p-2 bg-info border border-info  flex items-center justify-between mb-4 rounded-lg">
                 <div className="flex items-center gap-2 !text-sm !text-info">
                 <IconFilter className="w-4 h-4 !text-info" />
-                <span className="!text-[11px]">{nonQualifiedActions.length} emails filtrés (score ICP &lt; {Math.round(minScoreThreshold * 100)}%)</span>
+                <span className="!text-[11px]">{nonQualifiedActions.length} emails filtrés (score &lt; {Math.round(minScoreThreshold * 100)}%)</span>
               </div>
               <button onClick={() => setShowLowScoreEmails(true)} className="!text-xs !text-info hover:underline font-medium">
                 Afficher
@@ -1086,26 +1053,7 @@ export default function SmartFollowUpPage() {
           setShowDetailModal(false);
           setSelectedAction(null);
         }}
-        hotLeadKeywords={settings?.priority_keywords}
-      />
-
-      <RuleManagementModal
-        isOpen={showRulesModal}
-        onClose={() => setShowRulesModal(false)}
-        rules={settings?.custom_rules || []}
-        onSaveRules={async (newRules) => {
-          if (settings?.documentId) {
-            try {
-              await updateAutomationSettings(settings.documentId, { custom_rules: newRules });
-              mutateSettings();
-              setShowRulesModal(false);
-              showGlobalPopup('✓ Règles enregistrées', 'success');
-            } catch (error) {
-              console.error('Erreur:', error);
-              showGlobalPopup('Erreur', 'error');
-            }
-          }
-        }}
+        hotLeadKeywords={[]}
       />
 
       <AddClientModal
