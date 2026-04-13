@@ -269,8 +269,17 @@ function generateAlertEmailTemplate(site: MonitoredSite, result: CheckResult): s
   `.trim();
 }
 
+/**
+ * E-mails « Alerte Monitoring » désactivés par défaut.
+ * Pour les réactiver : MONITORING_EMAIL_ALERTS_ENABLED=true sur l’environnement serveur (ex. Vercel).
+ */
+function isMonitoringEmailAlertsEnabled(): boolean {
+  return process.env.MONITORING_EMAIL_ALERTS_ENABLED === 'true';
+}
+
 // Envoyer une alerte email
 async function sendAlert(site: MonitoredSite, result: CheckResult) {
+  if (!isMonitoringEmailAlertsEnabled()) return;
   if (!site.alert_email || !site.users?.length) return;
   
   const userEmail = site.users[0]?.email;
