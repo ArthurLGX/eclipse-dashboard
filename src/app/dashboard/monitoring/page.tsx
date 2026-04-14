@@ -445,11 +445,12 @@ export default function MonitoringPage() {
           site={editingSite}
           onSave={async (data) => {
             try {
+              const payload = { ...data, alert_email: false as const };
               if (editingSite) {
-                await updateMonitoredSite(editingSite.documentId, data);
+                await updateMonitoredSite(editingSite.documentId, payload);
                 showGlobalPopup(t('site_updated') || 'Site mis à jour', 'success');
               } else {
-                await createMonitoredSite(user!.id, data);
+                await createMonitoredSite(user!.id, payload);
                 showGlobalPopup(t('site_added') || 'Site ajouté', 'success');
               }
               await mutate();
@@ -493,11 +494,10 @@ interface AddSiteModalProps {
   isOpen: boolean;
   onClose: () => void;
   site: MonitoredSite | null;
-  onSave: (data: { 
-    name: string; 
-    url: string; 
-    check_interval: number; 
-    alert_email: boolean; 
+  onSave: (data: {
+    name: string;
+    url: string;
+    check_interval: number;
     alert_threshold: number;
     site_type: SiteType;
     hosting_provider: HostingProvider | null;
@@ -511,7 +511,6 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
   const [checkInterval, setCheckInterval] = useState(5);
-  const [alertEmail, setAlertEmail] = useState(true);
   const [alertThreshold, setAlertThreshold] = useState(2000);
   const [siteType, setSiteType] = useState<SiteType>('frontend');
   const [hostingProvider, setHostingProvider] = useState<HostingProvider | null>(null);
@@ -537,7 +536,6 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       setName('');
       setUrl('');
       setCheckInterval(5);
-      setAlertEmail(true);
       setAlertThreshold(2000);
       setSiteType('frontend');
       setHostingProvider(null);
@@ -670,19 +668,6 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
                 max={10000}
               />
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="alertEmail"
-              checked={alertEmail}
-              onChange={(e) => setAlertEmail(e.target.checked)}
-              className="w-4 h-4 rounded border-default accent-accent"
-            />
-            <label htmlFor="alertEmail" className="!text-sm !text-secondary">
-              {t('alert_by_email') || 'M\'alerter par email si le site est down'}
-            </label>
           </div>
 
           {/* Server Info Toggle */}
