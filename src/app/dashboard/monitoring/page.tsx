@@ -525,7 +525,6 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
       setName(site.name);
       setUrl(site.url);
       setCheckInterval(site.check_interval);
-      setAlertEmail(site.alert_email);
       setAlertThreshold(site.alert_threshold);
       setSiteType(site.site_type || 'frontend');
       setHostingProvider(site.hosting_provider);
@@ -553,7 +552,6 @@ function AddSiteModal({ isOpen, onClose, site, onSave }: AddSiteModalProps) {
         name,
         url: url.startsWith('http') ? url : `https://${url}`,
         check_interval: checkInterval,
-        alert_email: alertEmail,
         alert_threshold: alertThreshold,
         site_type: siteType,
         hosting_provider: showServerInfo ? hostingProvider : null,
